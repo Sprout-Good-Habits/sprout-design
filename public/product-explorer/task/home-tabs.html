@@ -183,65 +183,89 @@
 /* ── Time-of-day Tab Bar ── */
 .time-tabs {
   position: absolute;
-  top: 96px;
+  top: 109px;
   left: 0;
   right: 0;
   z-index: 3;
   display: flex;
-  justify-content: center;
   gap: 6px;
-  padding: 0 16px;
+  padding: 0 12px;
   transform: scale(0.751);
-  transform-origin: top center;
+  transform-origin: top left;
+  width: calc(100% / 0.751);
 }
 .time-tab {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 36px;
+  gap: var(--spacing-sm, 6px);
+  height: 44px;
+  padding: 0 var(--spacing-lg, 12px);
   border-radius: var(--radius-full, 9999px);
-  background: rgba(255,255,255,0.45);
-  border: 1.5px solid rgba(255,255,255,0.3);
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
-  position: relative;
+  transition: flex 0.3s cubic-bezier(0.22,1,0.36,1),
+              gap 0.3s cubic-bezier(0.22,1,0.36,1),
+              padding 0.3s cubic-bezier(0.22,1,0.36,1),
+              background 0.15s,
+              border-color 0.15s,
+              box-shadow 0.15s;
+  overflow: hidden;
+  flex: 1 1 0;
+  min-width: 0;
 }
 .time-tab .tf-tab {
   font-family: 'TossFace', sans-serif;
   font-size: 18px;
   line-height: 1;
+  flex-shrink: 0;
+}
+/* Count badge — always visible on inactive tabs */
+.time-tab-count {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-tertiary, #535862);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.time-tab-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-width 0.3s cubic-bezier(0.22,1,0.36,1),
+              opacity 0.2s ease;
 }
 .time-tab.active {
-  background: var(--bg-primary, #ffffff);
-  border-color: var(--border-secondary, #e9eaeb);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-  transform: scale(1.08);
+  flex: 2.5 1 0;
+  padding: 0 var(--spacing-xl, 16px) 0 var(--spacing-lg, 12px);
+  background: var(--bg-brand-solid, #0086c9);
+  border-color: var(--brand-600, #0086c9);
+  box-shadow: 0 3px 0 0 var(--brand-700, #026aa2);
 }
-/* Count badge on tab */
-.time-tab-count {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  background: var(--bg-primary, #ffffff);
-  border: 1.5px solid var(--border-secondary, #e9eaeb);
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 9px;
-  font-weight: var(--font-weight-bold, 700);
-  color: var(--text-secondary, #414651);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 3px;
+.time-tab.active .tf-tab {
+  filter: brightness(10);
+}
+.time-tab.active .time-tab-label {
+  max-width: 80px;
+  opacity: 1;
+  color: white;
+}
+.time-tab.active .time-tab-count {
+  color: rgba(255,255,255,0.85);
 }
 
 /* ── Task Card Carousel ── */
 .carousel-container {
   position: absolute;
-  top: 128px;
+  top: 155px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -253,7 +277,7 @@
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  padding: 12px;
+  padding: 0 12px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -624,42 +648,35 @@
 
                   <!-- Time-of-day Tabs -->
                   <div class="time-tabs" id="time-tabs">
-                    <div class="time-tab active" data-filter="morning">
+                    <div class="time-tab" data-filter="morning">
                       <span class="tf-tab">&#x2600;&#xFE0F;</span>
+                      <span class="time-tab-label">Morning</span>
                       <span class="time-tab-count">2</span>
                     </div>
                     <div class="time-tab" data-filter="afternoon">
                       <span class="tf-tab">&#x26C5;</span>
+                      <span class="time-tab-label">Afternoon</span>
                       <span class="time-tab-count">2</span>
                     </div>
                     <div class="time-tab" data-filter="evening">
                       <span class="tf-tab">&#x1F319;</span>
-                      <span class="time-tab-count">1</span>
+                      <span class="time-tab-label">Evening</span>
+                      <span class="time-tab-count">2</span>
                     </div>
                     <div class="time-tab" data-filter="anytime">
                       <span class="tf-tab">&#x2B50;</span>
-                      <span class="time-tab-count">1</span>
+                      <span class="time-tab-label">Anytime</span>
+                      <span class="time-tab-count">4</span>
                     </div>
                   </div>
 
                   <!-- Card Carousel -->
                   <div class="carousel-container" id="carousel">
 
-                    <!-- Morning cards -->
-                    <div class="task-card card-orange" data-time="morning">
-                      <div class="card-badges">
-                        <span class="card-badge badge-orange"><span class="tf-badge flame-muted">&#x1F525;</span> 5 days</span>
-                        <span class="card-badge badge-orange"><span class="tf-badge">&#x1F48E;</span> 5</span>
-                      </div>
-                      <div class="card-content">
-                        <div class="card-name">Brush Teeth</div>
-                        <div class="card-desc">Take a photo brushing your teeth</div>
-                      </div>
-                      <div class="card-emoji-area"><span class="card-emoji">&#x1FAE7;</span></div>
-                      <div class="card-cta">Try again</div>
-                    </div>
+                    <!-- ── Morning ☀️ ── -->
 
-                    <div class="task-card card-violet" data-time="morning">
+                    <!-- Read for 20 min — Reviewing -->
+                    <div class="task-card card-violet card-hidden" data-time="morning">
                       <div class="card-badges">
                         <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 7 days</span>
                         <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 15</span>
@@ -672,7 +689,23 @@
                       <div class="card-cta card-cta-disabled">Reviewing...</div>
                     </div>
 
-                    <!-- Afternoon cards -->
+                    <!-- Homework — Rejected -->
+                    <div class="task-card card-blue-dark card-hidden" data-time="morning">
+                      <div class="card-badges">
+                        <span class="card-badge badge-blue-dark"><span class="tf-badge flame-muted">&#x1F525;</span> 5 days</span>
+                        <span class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F48E;</span> 20</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Homework</div>
+                        <div class="card-desc">Finish your homework and take a photo</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F4DD;</span></div>
+                      <div class="card-cta">Try again</div>
+                    </div>
+
+                    <!-- ── Afternoon ⛅ ── -->
+
+                    <!-- Talk to Sprout — Not Started (NOW) -->
                     <div class="task-card card-brand card-now card-hidden" id="now-card" data-time="afternoon">
                       <div class="card-badges">
                         <span class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 3 days</span>
@@ -686,9 +719,56 @@
                       <div class="card-cta">Start</div>
                     </div>
 
-                    <div class="task-card card-green card-hidden" id="claim-card" data-time="afternoon">
+                    <!-- Practice Piano — Claimable -->
+                    <div class="task-card card-brand card-hidden" id="claim-card" data-time="afternoon">
                       <div class="card-badges">
-                        <span class="card-badge badge-green"><span class="tf-badge">&#x1F525;</span> 10 days</span>
+                        <span class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 12 days</span>
+                        <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 20</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Practice Piano</div>
+                        <div class="card-desc">Practice your piano for 15 minutes</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+                      <div class="card-cta" id="claim-cta"><span class="tf-cta">&#x1F48E;</span> Claim</div>
+                    </div>
+
+                    <!-- ── Evening 🌙 ── -->
+
+                    <!-- Brush Teeth PM — Not Started -->
+                    <div class="task-card card-orange card-hidden" data-time="evening">
+                      <div class="card-badges">
+                        <span class="card-badge badge-orange"><span class="tf-badge flame-muted">&#x1F525;</span> 8 days</span>
+                        <span class="card-badge badge-orange"><span class="tf-badge">&#x1F48E;</span> 5</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Brush Teeth</div>
+                        <div class="card-desc">Take a photo brushing your teeth</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1FAE7;</span></div>
+                      <div class="card-cta">Start</div>
+                    </div>
+
+                    <!-- Pack Backpack — Not Started -->
+                    <div class="task-card card-violet card-hidden" data-time="evening">
+                      <div class="card-badges">
+                        <span class="card-badge badge-violet"><span class="tf-badge flame-muted">&#x1F525;</span> 2 days</span>
+                        <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 5</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Pack Backpack</div>
+                        <div class="card-desc">Get your backpack ready for tomorrow</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F392;</span></div>
+                      <div class="card-cta">Start</div>
+                    </div>
+
+                    <!-- ── Anytime ⭐ ── -->
+
+                    <!-- Drink Water — Not Started -->
+                    <div class="task-card card-green card-hidden" data-time="anytime">
+                      <div class="card-badges">
+                        <span class="card-badge badge-green"><span class="tf-badge flame-muted">&#x1F525;</span> 10 days</span>
                         <span class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 5</span>
                       </div>
                       <div class="card-content">
@@ -696,35 +776,49 @@
                         <div class="card-desc">Drink a full glass of water</div>
                       </div>
                       <div class="card-emoji-area"><span class="card-emoji">&#x1F4A7;</span></div>
-                      <div class="card-cta" id="claim-cta"><span class="tf-cta">&#x1F48E;</span> Claim</div>
-                    </div>
-
-                    <!-- Evening card -->
-                    <div class="task-card card-blue-dark card-hidden" data-time="evening">
-                      <div class="card-badges">
-                        <span class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F525;</span> 12 days</span>
-                        <span class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F48E;</span> 20</span>
-                      </div>
-                      <div class="card-content">
-                        <div class="card-name">Practice Piano</div>
-                        <div class="card-desc">Practice your piano for 15 minutes</div>
-                      </div>
-                      <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
                       <div class="card-cta">Start</div>
                     </div>
 
-                    <!-- Anytime card -->
-                    <div class="task-card card-brand card-hidden" data-time="anytime" style="background: var(--pink-500, #ee46bc);">
+                    <!-- Tidy Room — Not Started -->
+                    <div class="task-card card-green card-hidden" data-time="anytime">
                       <div class="card-badges">
-                        <span class="card-badge" style="background: var(--pink-200, #fcceee); color: var(--pink-700, #c11574);"><span class="tf-badge flame-muted">&#x1F525;</span> 1 day</span>
-                        <span class="card-badge" style="background: var(--pink-200, #fcceee); color: var(--pink-700, #c11574);"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                        <span class="card-badge badge-green"><span class="tf-badge flame-muted">&#x1F525;</span> 4 days</span>
+                        <span class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Tidy Room</div>
+                        <div class="card-desc">Clean up your room</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F9F9;</span></div>
+                      <div class="card-cta">Start</div>
+                    </div>
+
+                    <!-- Go Outside — Reviewing -->
+                    <div class="task-card card-brand card-hidden" data-time="anytime">
+                      <div class="card-badges">
+                        <span class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 6 days</span>
+                        <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Go Outside</div>
+                        <div class="card-desc">Spend some time playing outside</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F3DE;&#xFE0F;</span></div>
+                      <div class="card-cta card-cta-disabled">Reviewing...</div>
+                    </div>
+
+                    <!-- Draw Something — Claimable -->
+                    <div class="task-card card-violet card-hidden" data-time="anytime">
+                      <div class="card-badges">
+                        <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 3 days</span>
+                        <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 15</span>
                       </div>
                       <div class="card-content">
                         <div class="card-name">Draw Something</div>
                         <div class="card-desc">Draw anything you want and share it</div>
                       </div>
                       <div class="card-emoji-area"><span class="card-emoji">&#x1F3A8;</span></div>
-                      <div class="card-cta">Start</div>
+                      <div class="card-cta"><span class="tf-cta">&#x1F48E;</span> Claim</div>
                     </div>
 
                   </div>
@@ -794,10 +888,13 @@
   var tabs = document.querySelectorAll('.time-tab');
   var allCards = document.querySelectorAll('.task-card');
 
-  var gemReward = 5;
+  var gemReward = 20;
   var gemCount = 8;
   var claimed = false;
-  var activeFilter = 'morning';
+  // Default tab based on current time of day
+  var hour = new Date().getHours();
+  var defaultFilter = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+  var activeFilter = defaultFilter;
 
   function getRelPos(el) {
     var elRect = el.getBoundingClientRect();
@@ -832,6 +929,9 @@
       filterCards(tab.getAttribute('data-filter'));
     });
   });
+
+  // Set initial tab based on time of day
+  filterCards(activeFilter);
 
   // ── Reset button ──
   document.getElementById('reset-btn').addEventListener('click', function() {
@@ -945,7 +1045,7 @@
 
         var flyEmoji = document.createElement('span');
         flyEmoji.className = 'flying-emoji';
-        flyEmoji.innerHTML = '&#x1F4A7;';
+        flyEmoji.innerHTML = '&#x1F3B9;';
         flyEmoji.style.fontSize = '60px';
         flyEmoji.style.left = emojiFrom.x + 'px';
         flyEmoji.style.top = emojiFrom.y + 'px';

@@ -180,10 +180,44 @@
   flex-shrink: 0;
 }
 
+/* ── Today / Anytime Tabs ── */
+.home-tabs {
+  position: absolute;
+  top: 94px;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+  transform: scale(0.751);
+  transform-origin: top left;
+  width: calc(100% / 0.751);
+}
+.home-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl, 16px) var(--spacing-xs, 4px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-quaternary, #717680);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.home-tab.active {
+  color: var(--brand-700, #026aa2);
+  border-bottom-color: var(--fg-brand-primary, #0086c9);
+}
+
 /* ── Task Card Carousel ── */
 .carousel-container {
   position: absolute;
-  top: 96px;
+  top: 132px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -230,35 +264,6 @@
   animation: now-glow 2s ease-in-out infinite;
 }
 
-/* ── Dot divider between time groups ── */
-.carousel-divider {
-  flex-shrink: 0;
-  width: 2px;
-  height: 315px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  scroll-snap-align: none;
-}
-.carousel-divider::before {
-  content: '';
-  position: absolute;
-  top: 40px;
-  bottom: 40px;
-  width: 1px;
-  background: rgba(255,255,255,0.25);
-}
-.carousel-divider::after {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.5);
-  position: relative;
-  z-index: 1;
-}
-
 /* Card layout */
 .card-badges {
   display: flex;
@@ -266,11 +271,6 @@
   align-items: flex-start;
   position: relative;
   z-index: 2;
-}
-.card-badges-left {
-  display: flex;
-  align-items: center;
-  gap: 4px;
 }
 .card-badge {
   display: inline-flex;
@@ -291,22 +291,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Time-of-day badge */
-.time-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  font-size: 0;
-}
-.time-badge .tf-time {
-  font-family: 'TossFace', sans-serif;
-  font-size: 14px;
-  line-height: 1;
 }
 
 .card-content {
@@ -341,7 +325,7 @@
 }
 .card-emoji {
   font-family: 'TossFace', sans-serif;
-  font-size: 120px;
+  font-size: 96px;
   line-height: 1;
 }
 
@@ -450,28 +434,6 @@
   border-radius: var(--radius-full, 9999px);
   flex-shrink: 0;
 }
-.legend-time-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-lg, 12px) var(--spacing-3xl, 24px);
-  justify-content: center;
-  margin-top: var(--spacing-md, 8px);
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-sm, 14px);
-  line-height: var(--line-height-text-sm, 20px);
-  color: var(--text-secondary, #414651);
-}
-.legend-time-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs, 4px);
-}
-.legend-time-item .tf-legend {
-  font-family: 'TossFace', sans-serif;
-  font-size: 14px;
-  line-height: 1;
-}
-
 /* ── Reset button ── */
 .page-header {
   display: flex;
@@ -537,6 +499,11 @@
 }
 .card-celebrate {
   animation: card-celebrate 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* Hidden card (filtered out by tab) */
+.task-card.card-hidden {
+  display: none;
 }
 
 /* Card shrink away — scale down */
@@ -609,33 +576,21 @@
                     </div>
                   </div>
 
-                  <!-- Card Carousel (time-ordered) -->
+                  <!-- Today / Anytime Tabs -->
+                  <div class="home-tabs" id="home-tabs">
+                    <div class="home-tab active" data-filter="today">Today</div>
+                    <div class="home-tab" data-filter="anytime">Anytime</div>
+                  </div>
+
+                  <!-- Card Carousel -->
                   <div class="carousel-container" id="carousel">
 
-                    <!-- Card 1: Brush Teeth — Morning ☀️ — Rejected (past/dimmed) -->
-                    <div class="task-card card-orange" data-time="morning" data-emoji="&#x1FAE7;">
-                      <div class="card-badges">
-                        <div class="card-badges-left">
-                          <span class="time-badge badge-orange"><span class="tf-time">&#x2600;&#xFE0F;</span></span>
-                          <span class="card-badge badge-orange"><span class="tf-badge flame-muted">&#x1F525;</span> 5 days</span>
-                        </div>
-                        <span class="card-badge badge-orange"><span class="tf-badge">&#x1F48E;</span> 5</span>
-                      </div>
-                      <div class="card-content">
-                        <div class="card-name">Brush Teeth</div>
-                        <div class="card-desc">Take a photo brushing your teeth</div>
-                      </div>
-                      <div class="card-emoji-area"><span class="card-emoji">&#x1FAE7;</span></div>
-                      <div class="card-cta">Try again</div>
-                    </div>
+                    <!-- ── TODAY CARDS ── -->
 
-                    <!-- Card 2: Read for 20 min — Morning ☀️ — Reviewing (past/dimmed) -->
-                    <div class="task-card card-violet" data-time="morning" data-emoji="&#x1F4D6;">
+                    <!-- Read for 20 min — Reviewing -->
+                    <div class="task-card card-violet" data-filter="today">
                       <div class="card-badges">
-                        <div class="card-badges-left">
-                          <span class="time-badge badge-violet"><span class="tf-time">&#x2600;&#xFE0F;</span></span>
-                          <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 7 days</span>
-                        </div>
+                        <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 7 days</span>
                         <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 15</span>
                       </div>
                       <div class="card-content">
@@ -646,16 +601,24 @@
                       <div class="card-cta card-cta-disabled">Reviewing...</div>
                     </div>
 
-                    <!-- Dot divider: morning → afternoon -->
-                    <div class="carousel-divider"></div>
-
-                    <!-- Card 3: Talk to Sprout — Afternoon ⛅ — Not Started (NOW) -->
-                    <div class="task-card card-brand card-now" id="now-card" data-time="afternoon" data-emoji="&#x1F4AC;">
+                    <!-- Homework — Rejected -->
+                    <div class="task-card card-blue-dark" data-filter="today">
                       <div class="card-badges">
-                        <div class="card-badges-left">
-                          <span class="time-badge badge-brand"><span class="tf-time">&#x26C5;</span></span>
-                          <span class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 3 days</span>
-                        </div>
+                        <span class="card-badge badge-blue-dark"><span class="tf-badge flame-muted">&#x1F525;</span> 5 days</span>
+                        <span class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F48E;</span> 20</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Homework</div>
+                        <div class="card-desc">Finish your homework and take a photo</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F4DD;</span></div>
+                      <div class="card-cta">Try again</div>
+                    </div>
+
+                    <!-- Talk to Sprout — Not Started (NOW) -->
+                    <div class="task-card card-brand card-now" id="now-card" data-filter="today">
+                      <div class="card-badges">
+                        <span class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 3 days</span>
                         <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</span>
                       </div>
                       <div class="card-content">
@@ -666,13 +629,54 @@
                       <div class="card-cta">Start</div>
                     </div>
 
-                    <!-- Card 4: Drink Water — Afternoon ⛅ — Claimable -->
-                    <div class="task-card card-green" id="claim-card" data-time="afternoon" data-emoji="&#x1F4A7;">
+                    <!-- Practice Piano — Claimable -->
+                    <div class="task-card card-brand" id="claim-card" data-filter="today">
                       <div class="card-badges">
-                        <div class="card-badges-left">
-                          <span class="time-badge badge-green"><span class="tf-time">&#x26C5;</span></span>
-                          <span class="card-badge badge-green"><span class="tf-badge">&#x1F525;</span> 10 days</span>
-                        </div>
+                        <span class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 12 days</span>
+                        <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 20</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Practice Piano</div>
+                        <div class="card-desc">Practice your piano for 15 minutes</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+                      <div class="card-cta" id="claim-cta"><span class="tf-cta">&#x1F48E;</span> Claim</div>
+                    </div>
+
+                    <!-- Brush Teeth PM — Not Started -->
+                    <div class="task-card card-orange" data-filter="today">
+                      <div class="card-badges">
+                        <span class="card-badge badge-orange"><span class="tf-badge flame-muted">&#x1F525;</span> 8 days</span>
+                        <span class="card-badge badge-orange"><span class="tf-badge">&#x1F48E;</span> 5</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Brush Teeth</div>
+                        <div class="card-desc">Take a photo brushing your teeth</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1FAE7;</span></div>
+                      <div class="card-cta">Start</div>
+                    </div>
+
+                    <!-- Pack Backpack — Not Started -->
+                    <div class="task-card card-violet" data-filter="today">
+                      <div class="card-badges">
+                        <span class="card-badge badge-violet"><span class="tf-badge flame-muted">&#x1F525;</span> 2 days</span>
+                        <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 5</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Pack Backpack</div>
+                        <div class="card-desc">Get your backpack ready for tomorrow</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F392;</span></div>
+                      <div class="card-cta">Start</div>
+                    </div>
+
+                    <!-- ── ANYTIME CARDS (hidden by default) ── -->
+
+                    <!-- Drink Water — Not Started -->
+                    <div class="task-card card-green card-hidden" data-filter="anytime">
+                      <div class="card-badges">
+                        <span class="card-badge badge-green"><span class="tf-badge flame-muted">&#x1F525;</span> 10 days</span>
                         <span class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 5</span>
                       </div>
                       <div class="card-content">
@@ -680,27 +684,49 @@
                         <div class="card-desc">Drink a full glass of water</div>
                       </div>
                       <div class="card-emoji-area"><span class="card-emoji">&#x1F4A7;</span></div>
-                      <div class="card-cta" id="claim-cta"><span class="tf-cta">&#x1F48E;</span> Claim</div>
+                      <div class="card-cta">Start</div>
                     </div>
 
-                    <!-- Dot divider: afternoon → evening -->
-                    <div class="carousel-divider"></div>
-
-                    <!-- Card 5: Practice Piano — Evening 🌙 — Not Started -->
-                    <div class="task-card card-blue-dark" data-time="evening" data-emoji="&#x1F3B9;">
+                    <!-- Tidy Room — Not Started -->
+                    <div class="task-card card-green card-hidden" data-filter="anytime">
                       <div class="card-badges">
-                        <div class="card-badges-left">
-                          <span class="time-badge badge-blue-dark"><span class="tf-time">&#x1F319;</span></span>
-                          <span class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F525;</span> 12 days</span>
-                        </div>
-                        <span class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F48E;</span> 20</span>
+                        <span class="card-badge badge-green"><span class="tf-badge flame-muted">&#x1F525;</span> 4 days</span>
+                        <span class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 10</span>
                       </div>
                       <div class="card-content">
-                        <div class="card-name">Practice Piano</div>
-                        <div class="card-desc">Practice your piano for 15 minutes</div>
+                        <div class="card-name">Tidy Room</div>
+                        <div class="card-desc">Clean up your room</div>
                       </div>
-                      <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F9F9;</span></div>
                       <div class="card-cta">Start</div>
+                    </div>
+
+                    <!-- Go Outside — Reviewing -->
+                    <div class="task-card card-brand card-hidden" data-filter="anytime">
+                      <div class="card-badges">
+                        <span class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 6 days</span>
+                        <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Go Outside</div>
+                        <div class="card-desc">Spend some time playing outside</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F3DE;&#xFE0F;</span></div>
+                      <div class="card-cta card-cta-disabled">Reviewing...</div>
+                    </div>
+
+                    <!-- Draw Something — Claimable -->
+                    <div class="task-card card-violet card-hidden" data-filter="anytime">
+                      <div class="card-badges">
+                        <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 3 days</span>
+                        <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 15</span>
+                      </div>
+                      <div class="card-content">
+                        <div class="card-name">Draw Something</div>
+                        <div class="card-desc">Draw anything you want and share it</div>
+                      </div>
+                      <div class="card-emoji-area"><span class="card-emoji">&#x1F3A8;</span></div>
+                      <div class="card-cta"><span class="tf-cta">&#x1F48E;</span> Claim</div>
                     </div>
 
                   </div>
@@ -724,12 +750,6 @@
         <div class="legend-item"><span class="legend-dot" style="background:var(--violet-500)"></span> Submitted</div>
         <div class="legend-item"><span class="legend-dot" style="background:var(--green-500)"></span> Claimable</div>
         <div class="legend-item"><span class="legend-dot" style="background:var(--blue-dark-500)"></span> Claimed</div>
-      </div>
-      <div class="legend-time-row">
-        <div class="legend-time-item"><span class="tf-legend">&#x2600;&#xFE0F;</span> Morning</div>
-        <div class="legend-time-item"><span class="tf-legend">&#x26C5;</span> Afternoon</div>
-        <div class="legend-time-item"><span class="tf-legend">&#x1F319;</span> Evening</div>
-        <div class="legend-time-item"><span class="tf-legend">&#x2B50;</span> Anytime</div>
       </div>
 
     </div>
@@ -764,14 +784,16 @@
   var gemCounter = document.getElementById('gem-counter');
   var gemLabel = document.getElementById('gem-counter-label');
   var streakCounter = document.getElementById('streak-counter');
-  var streakLabel = document.getElementById('streak-counter-label');
   var deviceScreen = document.querySelector('.device-screen');
   var carousel = document.getElementById('carousel');
   var nowCard = document.getElementById('now-card');
+  var homeTabs = document.querySelectorAll('.home-tab');
+  var allCards = document.querySelectorAll('.task-card');
 
-  var gemReward = 5;
+  var gemReward = 20;
   var gemCount = 8;
   var claimed = false;
+  var activeTab = 'today';
 
   function getRelPos(el) {
     var elRect = el.getBoundingClientRect();
@@ -786,11 +808,35 @@
   function scrollToNow() {
     if (!nowCard || !carousel) return;
     var cardLeft = nowCard.offsetLeft;
+    // Center the now card so both neighbors peek on each side
     var cardWidth = nowCard.offsetWidth;
     var containerWidth = carousel.offsetWidth;
     var scrollTarget = cardLeft - (containerWidth - cardWidth) / 2;
     carousel.scrollTo({ left: Math.max(0, scrollTarget), behavior: 'smooth' });
   }
+  // ── Tab filtering ──
+  function filterByTab(tab) {
+    activeTab = tab;
+    homeTabs.forEach(function(t) {
+      t.classList.toggle('active', t.getAttribute('data-filter') === tab);
+    });
+    allCards.forEach(function(card) {
+      if (card.getAttribute('data-filter') === tab) {
+        card.classList.remove('card-hidden');
+      } else {
+        card.classList.add('card-hidden');
+      }
+    });
+    carousel.scrollLeft = 0;
+    if (tab === 'today') setTimeout(scrollToNow, 50);
+  }
+
+  homeTabs.forEach(function(t) {
+    t.addEventListener('click', function() {
+      filterByTab(t.getAttribute('data-filter'));
+    });
+  });
+
   // Scroll on load after a brief delay for layout
   setTimeout(scrollToNow, 300);
 
@@ -816,7 +862,8 @@
     // Clean up flying emojis
     deviceScreen.querySelectorAll('.flying-emoji').forEach(function(el) { el.remove(); });
 
-    // Scroll back to now
+    // Reset to Today tab and scroll to now
+    filterByTab('today');
     setTimeout(scrollToNow, 100);
   });
 
@@ -906,7 +953,7 @@
 
         var flyEmoji = document.createElement('span');
         flyEmoji.className = 'flying-emoji';
-        flyEmoji.innerHTML = '&#x1F4A7;';
+        flyEmoji.innerHTML = '&#x1F3B9;';
         flyEmoji.style.fontSize = '60px';
         flyEmoji.style.left = emojiFrom.x + 'px';
         flyEmoji.style.top = emojiFrom.y + 'px';
