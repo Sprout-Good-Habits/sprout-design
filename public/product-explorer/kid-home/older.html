@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Product Explorer — Home (Older)</title>
+<title>Sprout Product Explorer — Kid 3 Tier</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <style>
@@ -73,6 +73,8 @@
   background: var(--bg-sky, #e0f2fe);
   width: 100%;
   min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Toolbar ── */
@@ -149,6 +151,9 @@
 /* ── Grass (absolute, pinned to bottom of scroll content) ── */
 .grass-container {
   width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 .grass-edge {
   height: 18px;
@@ -159,6 +164,7 @@
   background: var(--bg-grass, #86cb3c);
   width: 100%;
   padding-bottom: 0;
+  flex: 1;
 }
 /* ── Character (absolute, feet on grass edge) ── */
 .rive-wrap {
@@ -168,7 +174,7 @@
   height: 302px;
   z-index: 2;
   pointer-events: none;
-  transform: translateX(-50%) scale(1.25);
+  transform: translateX(-50%) scale(1);
   transform-origin: bottom center;
 }
 .rive-canvas {
@@ -176,9 +182,37 @@
   height: 302px;
 }
 
+/* ── Today / Anytime Tabs (on grass) ── */
+.home-tabs {
+  display: flex;
+  padding: 48px 12px 0;
+  margin-bottom: 0;
+  gap: 0;
+}
+.home-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  border-bottom: 2px solid rgba(255,255,255,0.2);
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.home-tab.active {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
 /* ── Progress section ── */
 .progress-section {
-  padding: 48px 12px 0;
+  padding: 16px 12px 0;
   position: relative;
   z-index: 3;
 }
@@ -688,6 +722,114 @@
 .gem-counter-glow {
   animation: gem-counter-glow 0.35s ease-out;
 }
+
+/* ── Preview tabs (time of day) ── */
+.preview-tabs {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm, 6px);
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.preview-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  background: var(--bg-primary, #fff);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #535862);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.preview-tab:hover {
+  border-color: var(--border-primary, #d5d7da);
+}
+.preview-tab.active {
+  background: var(--brand-50, #f0f9ff);
+  border-color: var(--brand-200, #b9e6fe);
+  color: var(--brand-700, #026aa2);
+  font-weight: var(--font-weight-semibold, 600);
+}
+.preview-tab-emoji {
+  font-family: 'TossFace', sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ── Device toggle ── */
+.device-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.device-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  background: var(--bg-primary, #fff);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #535862);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.device-btn:hover {
+  border-color: var(--border-primary, #d5d7da);
+}
+.device-btn.active {
+  background: var(--gray-50, #fafafa);
+  border-color: var(--border-primary, #d5d7da);
+  color: var(--text-primary, #181d27);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* ── iPad overrides ── */
+.device-wrapper.ipad .device-screen {
+  width: 480px;
+  height: 640px;
+}
+
+/* ── Empty state (all done) ── */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+.empty-state.visible {
+  display: flex;
+}
+.empty-state-emoji {
+  font-family: 'TossFace', sans-serif;
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.empty-state-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary, #181d27);
+  line-height: 24px;
+  margin-bottom: 4px;
+}
+.empty-state-desc {
+  font-size: 13px;
+  color: var(--text-tertiary, #535862);
+  line-height: 18px;
+  max-width: 220px;
+}
 </style>
 </head>
 <body>
@@ -699,12 +841,23 @@
 
       <div class="page-header">
         <div class="page-header-text">
-          <div class="sec-title">Home (Older)</div>
+          <div class="sec-title">Kid 3 Tier</div>
           <div class="sec-desc">Older kid home screen — inbox-style task list with grouped sections, streak and gem badges, and colored emoji containers.</div>
         </div>
         <button class="btn-reset" id="reset-btn" aria-label="Reset prototype">
           <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
         </button>
+      </div>
+
+      <div class="preview-tabs" id="preview-tabs">
+        <button class="preview-tab" data-preview="morning"><span class="preview-tab-emoji">&#x2600;&#xFE0F;</span> Morning</button>
+        <button class="preview-tab active" data-preview="afternoon"><span class="preview-tab-emoji">&#x26C5;</span> Afternoon</button>
+        <button class="preview-tab" data-preview="night"><span class="preview-tab-emoji">&#x1F319;</span> Night</button>
+      </div>
+
+      <div class="device-toggle">
+        <button class="device-btn active" data-device="iphone">iPhone</button>
+        <button class="device-btn" data-device="ipad">iPad</button>
       </div>
 
       <div class="viewer">
@@ -737,9 +890,9 @@
                     <!-- Grass with character -->
                     <div class="grass-container" style="position: relative;">
                       <!-- Sky spacer (pushes grass down to show sky) -->
-                      <div class="sky-spacer" style="height: 192px; position: relative;">
+                      <div class="sky-spacer" style="height: 152px; position: relative;">
                         <!-- Character — absolute, feet on grass edge -->
-                        <div class="rive-wrap" style="position: absolute; bottom: -112px;">
+                        <div class="rive-wrap" style="position: absolute; bottom: -90px;">
                           <canvas id="rive-character" class="rive-canvas" width="302" height="302"></canvas>
                         </div>
                       </div>
@@ -747,21 +900,37 @@
                       <div class="grass-edge"></div>
                       <div class="grass-fill">
 
-                        <!-- Progress section -->
-                        <div class="progress-section">
-                          <div class="progress-header">
-                            <span class="progress-title">8 tasks left today!</span>
-                          </div>
+                        <!-- Today / Anytime Tabs -->
+                        <div class="home-tabs" id="home-tabs">
+                          <div class="home-tab active" data-home-tab="today">Today <span id="today-count">(8)</span></div>
+                          <div class="home-tab" data-home-tab="anytime">Anytime</div>
                         </div>
+
 
                         <!-- Task list -->
                         <div class="task-list">
 
                           <!-- ── NOW ── -->
-                          <div class="section-label">Now</div>
+                          <div class="section-label" data-show="morning afternoon" data-tab="today">Now</div>
+
+                          <!-- Morning NOW: Read for 20 min — Not Started -->
+                          <div class="task-row" data-show="morning" data-now="morning" data-tab="today">
+                            <div class="task-emoji-box emoji-violet"><span class="tf-task">&#x1F4D6;</span></div>
+                            <div class="task-info">
+                              <div class="task-time">8:00 AM</div>
+                              <div class="task-name">Read for 20 min</div>
+                              <div class="task-desc">Grab your book and a cozy spot</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">7</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
+                              </div>
+                            </div>
+                          </div>
 
                           <!-- 6: Talk to Sprout — Not Started (Brand) 5:00 PM -->
-                          <div class="task-row" id="task-1">
+                          <div class="task-row" id="task-1" data-show="afternoon" data-now="afternoon" data-tab="today">
                             <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F4AC;</span></div>
                             <div class="task-info">
                               <div class="task-time">5:00 PM</div>
@@ -777,10 +946,10 @@
                           </div>
 
                           <!-- ── EARLIER TODAY ── -->
-                          <div class="section-label">Earlier Today</div>
+                          <div class="section-label" data-show="afternoon" data-tab="today">Earlier Today</div>
 
                           <!-- 3: Read for 20 min — Reviewing (Violet) 3:30 PM -->
-                          <div class="task-row task-row-reviewing">
+                          <div class="task-row task-row-reviewing" data-show="afternoon" data-tab="today">
                             <div class="task-emoji-box emoji-violet">
                               <span class="tf-task">&#x1F4D6;</span>
                               <span class="emoji-status-badge">&#x1F504;</span>
@@ -799,7 +968,7 @@
                           </div>
 
                           <!-- 4: Homework — Rejected (Blue Dark) 4:00 PM -->
-                          <div class="task-card-rejected" id="task-2">
+                          <div class="task-card-rejected" id="task-2" data-show="afternoon" data-tab="today">
                             <div class="task-row">
                               <div class="task-emoji-box emoji-blue-dark">
                                 <span class="tf-task">&#x1F4DD;</span>
@@ -824,7 +993,7 @@
                           </div>
 
                           <!-- 5: Practice Piano — Claimable (Brand) 4:30 PM -->
-                          <div class="task-card-claim" id="task-4">
+                          <div class="task-card-claim" id="task-4" data-show="afternoon" data-tab="today">
                             <div class="task-row">
                               <div class="task-emoji-box emoji-brand">
                                 <span class="tf-task">&#x1F3B9;</span>
@@ -849,10 +1018,58 @@
                           </div>
 
                           <!-- ── UP NEXT ── -->
-                          <div class="section-label">Up Next</div>
+                          <div class="section-label" data-show="morning afternoon" data-tab="today">Up Next</div>
+
+                          <!-- Morning Up Next: Homework — Not Started -->
+                          <div class="task-row" data-show="morning" data-tab="today">
+                            <div class="task-emoji-box emoji-blue-dark"><span class="tf-task">&#x1F4DD;</span></div>
+                            <div class="task-info">
+                              <div class="task-time">4:00 PM</div>
+                              <div class="task-name">Homework</div>
+                              <div class="task-desc">Math worksheet, pages 12 and 13</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">5</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Morning Up Next: Talk to Sprout -->
+                          <div class="task-row" data-show="morning" data-tab="today">
+                            <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F4AC;</span></div>
+                            <div class="task-info">
+                              <div class="task-time">5:00 PM</div>
+                              <div class="task-name">Talk to Sprout</div>
+                              <div class="task-desc">Chat with Sprout about your day</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Morning Up Next: Practice Piano -->
+                          <div class="task-row" data-show="morning" data-tab="today">
+                            <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F3B9;</span></div>
+                            <div class="task-info">
+                              <div class="task-time">4:30 PM</div>
+                              <div class="task-name">Practice Piano</div>
+                              <div class="task-desc">Practice for 15 minutes</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                              </div>
+                            </div>
+                          </div>
 
                           <!-- 7: Brush Teeth (PM) — Not Started (Orange) 8:00 PM -->
-                          <div class="task-row">
+                          <div class="task-row" data-show="morning afternoon" data-tab="today">
                             <div class="task-emoji-box emoji-orange"><span class="tf-task">&#x1FAE7;</span></div>
                             <div class="task-info">
                               <div class="task-time">8:00 PM</div>
@@ -868,7 +1085,7 @@
                           </div>
 
                           <!-- 8: Pack Backpack — Not Started (Violet) 8:30 PM -->
-                          <div class="task-row">
+                          <div class="task-row" data-show="morning afternoon" data-tab="today">
                             <div class="task-emoji-box emoji-violet"><span class="tf-task">&#x1F392;</span></div>
                             <div class="task-info">
                               <div class="task-time">8:30 PM</div>
@@ -884,10 +1101,9 @@
                           </div>
 
                           <!-- ── ANYTIME ── -->
-                          <div class="section-label">Anytime</div>
 
                           <!-- 9: Drink Water — Not Started (Green) -->
-                          <div class="task-row">
+                          <div class="task-row" data-show="morning afternoon" data-tab="anytime">
                             <div class="task-emoji-box emoji-green"><span class="tf-task">&#x1F4A7;</span></div>
                             <div class="task-info">
                               <div class="task-name">Drink Water</div>
@@ -902,7 +1118,7 @@
                           </div>
 
                           <!-- 10: Tidy Room — Not Started (Green) -->
-                          <div class="task-row">
+                          <div class="task-row" data-show="morning afternoon" data-tab="anytime">
                             <div class="task-emoji-box emoji-green"><span class="tf-task">&#x1F9F9;</span></div>
                             <div class="task-info">
                               <div class="task-name">Tidy Room</div>
@@ -917,7 +1133,7 @@
                           </div>
 
                           <!-- 11: Go Outside — Reviewing (Brand) -->
-                          <div class="task-row task-row-reviewing">
+                          <div class="task-row task-row-reviewing" data-show="morning afternoon" data-tab="anytime">
                             <div class="task-emoji-box emoji-brand">
                               <span class="tf-task">&#x1F3DE;&#xFE0F;</span>
                               <span class="emoji-status-badge">&#x1F504;</span>
@@ -935,7 +1151,7 @@
                           </div>
 
                           <!-- 12: Draw Something — Claimable (Violet) -->
-                          <div class="task-card-claim">
+                          <div class="task-card-claim" data-show="morning afternoon night" id="night-claim-card" data-tab="anytime">
                             <div class="task-row">
                               <div class="task-emoji-box emoji-violet">
                                 <span class="tf-task">&#x1F3A8;</span>
@@ -959,9 +1175,9 @@
                           </div>
 
                           <!-- ── DONE (stacked, bottom) ── -->
-                          <div class="section-label done-toggle" id="done-toggle">Done <svg class="done-toggle-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5l3 3 3-3"/></svg></div>
+                          <div class="section-label done-toggle" id="done-toggle" data-show="morning afternoon night" data-tab="today">Done <svg class="done-toggle-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5l3 3 3-3"/></svg></div>
 
-                          <div class="done-stack collapsed" id="done-stack">
+                          <div class="done-stack collapsed" id="done-stack" data-show="morning afternoon night" data-tab="today">
                             <div class="done-stack-items">
                               <!-- Most recent on top -->
                               <div class="task-row task-row-claimed">
@@ -1018,6 +1234,12 @@
                             </div>
                           </div>
 
+                          <div class="empty-state" id="empty-state">
+                            <span class="empty-state-emoji">&#x1F31F;</span>
+                            <div class="empty-state-title">Amazing job today!</div>
+                            <div class="empty-state-desc">You finished everything. Come back tomorrow and we will keep growing together!</div>
+                          </div>
+
                         </div><!-- /task-list -->
                       </div><!-- /grass-fill -->
                     </div><!-- /grass-container -->
@@ -1040,7 +1262,7 @@
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Cards',href:'/product-explorer/kid-home/cards.html'},{label:'Tabs',href:'/product-explorer/kid-home/tabs.html'},{label:'Older',href:'/product-explorer/kid-home/older.html'}]},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Kid 1 Tier (Coming Soon)',href:'#'},{label:'Kid 2 Tier',href:'/product-explorer/kid-home/2-tabs-bg.html'},{label:'Kid 3 Tier',href:'/product-explorer/kid-home/older.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
@@ -1071,6 +1293,8 @@
   var doneStack = document.getElementById('done-stack');
   var doneItems = doneStack ? doneStack.querySelector('.done-stack-items') : null;
   var ios = 'cubic-bezier(0.32, 0.72, 0, 1)';
+  var emptyState = document.getElementById('empty-state');
+  var todayCount = document.getElementById('today-count');
 
   function getRelPos(el) {
     var r = el.getBoundingClientRect(), s = deviceScreen.getBoundingClientRect();
@@ -1129,15 +1353,14 @@
   // ── Claim handler (works for any claim card) ──
   function handleClaim(card, btn) {
     var reward = parseInt(btn.textContent.replace(/\D/g,''), 10) || 5;
-    // Get reward from badge
     var badges = card.querySelectorAll('.badge-num');
     if (badges.length >= 2) reward = parseInt(badges[1].textContent, 10) || 5;
+    var isNightCard = (card.id === 'night-claim-card' && currentPreview === 'night');
 
     flyGems(btn, reward, function() {
       setTimeout(function() {
         var actionArea = card.querySelector('.task-action-area');
         var row = card.querySelector('.task-row');
-        // Collapse action area
         actionArea.style.transition = 'max-height 0.35s '+ios+', padding 0.35s '+ios+', opacity 0.15s '+ios;
         actionArea.style.maxHeight = actionArea.offsetHeight + 'px';
         actionArea.style.overflow = 'hidden';
@@ -1145,7 +1368,6 @@
         actionArea.style.opacity = '0';
         actionArea.style.maxHeight = '0';
         actionArea.style.padding = '0 10px';
-        // Add check badge
         var emojiBox = card.querySelector('.task-emoji-box');
         if (!emojiBox.querySelector('.emoji-status-badge')) {
           var b = document.createElement('span');
@@ -1153,20 +1375,41 @@
           b.textContent = '\u2705';
           emojiBox.appendChild(b);
         }
-        // Fade shadow
         row.style.transition = 'box-shadow 0.35s '+ios;
         row.style.boxShadow = 'none';
         row.style.cursor = 'default';
-        // After collapse, move to done stack
+
         setTimeout(function() {
-          var clonedRow = row.cloneNode(true);
-          clonedRow.classList.add('task-row-claimed');
-          clonedRow.style.marginBottom = '5px';
-          clonedRow.style.borderRadius = '10px';
-          card.remove();
-          // Prepend to done stack
-          if (doneItems) {
-            doneItems.insertBefore(clonedRow, doneItems.firstChild);
+          if (isNightCard) {
+            // In night mode, after claiming the last task, show empty state
+            card.style.transition = 'opacity 0.35s '+ios+', max-height 0.35s '+ios;
+            card.style.opacity = '0';
+            card.style.maxHeight = card.offsetHeight + 'px';
+            void card.offsetWidth;
+            card.style.maxHeight = '0';
+            card.style.overflow = 'hidden';
+            // Hide the Anytime section label too
+            var sectionLabels = document.querySelectorAll('.section-label[data-show]');
+            sectionLabels.forEach(function(lbl) {
+              if (lbl.dataset.show.indexOf('night') !== -1 && !lbl.id) {
+                lbl.style.transition = 'opacity 0.35s '+ios;
+                lbl.style.opacity = '0';
+                setTimeout(function() { lbl.style.display = 'none'; }, 350);
+              }
+            });
+            setTimeout(function() {
+              card.style.display = 'none';
+              emptyState.classList.add('visible');
+            }, 370);
+          } else {
+            var clonedRow = row.cloneNode(true);
+            clonedRow.classList.add('task-row-claimed');
+            clonedRow.style.marginBottom = '5px';
+            clonedRow.style.borderRadius = '10px';
+            card.remove();
+            if (doneItems) {
+              doneItems.insertBefore(clonedRow, doneItems.firstChild);
+            }
           }
         }, 370);
       }, 150);
@@ -1221,6 +1464,135 @@
       }
     });
   }
+
+  // ── Preview tabs ──
+  var currentPreview = 'afternoon';
+  var previewTabs = document.querySelectorAll('.preview-tab');
+  var allShowItems = document.querySelectorAll('[data-show]');
+
+  var todayCounts = {
+    morning: '(10)',
+    afternoon: '(8)',
+    night: '(1)'
+  };
+
+  function applyPreview(state) {
+    currentPreview = state;
+    // Update tab active states
+    previewTabs.forEach(function(tab) {
+      tab.classList.toggle('active', tab.dataset.preview === state);
+    });
+    // Show/hide elements based on data-show attribute + data-tab
+    allShowItems.forEach(function(el) {
+      var shows = el.dataset.show.split(' ');
+      var showByTime = shows.indexOf(state) !== -1;
+      var showByTab = !el.dataset.tab || el.dataset.tab === currentHomeTab;
+      if (showByTime && showByTab) {
+        el.style.display = '';
+        // Reset any inline styles from night claim animation
+        el.style.opacity = '';
+        el.style.maxHeight = '';
+        el.style.overflow = '';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+    // Reset empty state
+    emptyState.classList.remove('visible');
+    // Reset claimed state on night card
+    var nightCard = document.getElementById('night-claim-card');
+    if (nightCard) {
+      nightCard.dataset.claimed = '';
+      var actionArea = nightCard.querySelector('.task-action-area');
+      if (actionArea) {
+        actionArea.style.transition = '';
+        actionArea.style.maxHeight = '';
+        actionArea.style.overflow = '';
+        actionArea.style.opacity = '';
+        actionArea.style.padding = '';
+      }
+      var row = nightCard.querySelector('.task-row');
+      if (row) {
+        row.style.boxShadow = '';
+        row.style.cursor = '';
+        row.style.transition = '';
+      }
+      nightCard.style.display = '';
+      nightCard.style.opacity = '';
+      nightCard.style.maxHeight = '';
+      nightCard.style.overflow = '';
+    }
+    // Update today tab count
+    if (todayCount) {
+      todayCount.textContent = todayCounts[state] || todayCounts.afternoon;
+    }
+    // Scroll device to top
+    if (deviceScreen) deviceScreen.scrollTop = 0;
+  }
+
+  previewTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      applyPreview(tab.dataset.preview);
+    });
+  });
+
+  // ── Device toggle ──
+  var deviceBtns = document.querySelectorAll('.device-btn');
+  var deviceWrapper = document.querySelector('.device-wrapper');
+  deviceBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var device = btn.getAttribute('data-device');
+      deviceBtns.forEach(function(b) { b.classList.toggle('active', b === btn); });
+      if (device === 'ipad') {
+        deviceWrapper.classList.add('ipad');
+      } else {
+        deviceWrapper.classList.remove('ipad');
+      }
+      applyPreview(currentPreview);
+    });
+  });
+
+  // ── Home tabs (Today / Anytime) ──
+  var currentHomeTab = 'today';
+  var homeTabs = document.querySelectorAll('.home-tab');
+  var allTabItems = document.querySelectorAll('[data-tab]');
+
+  function applyHomeTab(tab) {
+    currentHomeTab = tab;
+    homeTabs.forEach(function(t) {
+      t.classList.toggle('active', t.dataset.homeTab === tab);
+    });
+    var firstAnytime = true;
+    allTabItems.forEach(function(el) {
+      el.style.marginTop = '';
+      if (el.dataset.tab === tab) {
+        // Respect data-show visibility
+        if (el.dataset.show) {
+          var shows = el.dataset.show.split(' ');
+          el.style.display = shows.indexOf(currentPreview) !== -1 ? '' : 'none';
+        } else {
+          el.style.display = '';
+        }
+        // Add top spacing to first visible anytime item
+        if (tab === 'anytime' && firstAnytime && el.style.display !== 'none') {
+          el.style.marginTop = '10px';
+          firstAnytime = false;
+        }
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  }
+
+  homeTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      applyHomeTab(tab.dataset.homeTab);
+    });
+  });
+
+  // Initialize with afternoon view + today tab
+  applyPreview('afternoon');
+  applyHomeTab('today');
 
   // ── Reset ──
   document.getElementById('reset-btn').addEventListener('click', function() {
