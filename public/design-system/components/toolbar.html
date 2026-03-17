@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Toolbar</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Toolbar",
+  "slug": "toolbar",
+  "intent": {
+    "purpose": "Provide persistent navigation and context at the top of screens with flexible slot patterns",
+    "taskContext": ["navigation", "context-display", "progress-tracking"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["leading-slot"],
+    "allows": ["center-slot", "trailing-slot", "progress-bar", "title", "subtitle"],
+    "forbids": ["nested-toolbar"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Standard navigation with back button", "pairWith": [] },
+    { "name": "Chat", "useWhen": "Chat screens with title and avatar group", "pairWith": ["AvatarGroup"] },
+    { "name": "Quest", "useWhen": "Exercise flow with progress bar and stat counters", "pairWith": ["ProgressBar", "ButtonUtility"] },
+    { "name": "Kid Home", "useWhen": "Home screen with shield and stat display", "pairWith": ["ButtonUtility"] },
+    { "name": "Large Title", "useWhen": "Section headers with prominent text", "pairWith": [] },
+    { "name": "Quest - Transparent", "useWhen": "Exercise flow with btn-util close and progress bar", "pairWith": ["ProgressBar", "ButtonUtility"] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "Standard — 56px height" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["top-fixed"]
+  },
+  "relationships": {
+    "related": ["ButtonUtility", "ProgressBar", "AvatarGroup"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["ButtonUtility", "ProgressBar"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "navigation",
+    "keyboard": ["Tab"],
+    "ariaAttributes": ["aria-label"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Phone frame for in-context demos ── */
+.phone-frame {
+  width:402px; height:200px;
+  background:var(--bg-sky, #e0f2fe);
+  border-radius:36px; overflow:hidden;
+  position:relative;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  display:flex; flex-direction:column;
+}
+.phone-frame-tall { height:500px; }
+.phone-frame-white { background:var(--bg-primary, #ffffff); }
+.phone-frame-world {
+  background:linear-gradient(145deg, var(--sprout-300, #acdc79) 0%, var(--sprout-400, #86cb3c) 40%, #c68b4e 60%, var(--sprout-300, #acdc79) 100%);
+}
+
+/* Status bar inside phone */
+.phone-status {
+  height:54px; padding:14px 24px 0;
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:15px; font-weight:600;
+  color:var(--text-primary, #181d27);
+}
+.phone-status-icons { display:flex; gap:4px; align-items:center; }
+.phone-status-icons svg { width:16px; height:16px; }
+
+/* Placeholder content below toolbar */
+.phone-content {
+  padding:16px;
+}
+.phone-content-line {
+  height:12px;
+  background:var(--gray-100, #f5f5f5);
+  border-radius:6px;
+  margin-bottom:8px;
+}
+.phone-content-line:nth-child(2) { width:80%; }
+.phone-content-line:nth-child(3) { width:60%; }
+
+/* ── Toolbar shared ── */
+.toolbar {
+  display:flex;
+  align-items:center;
+  padding:0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  position:relative;
+  width:100%;
+  box-sizing:border-box;
+}
+
+/* ── Leading / Trailing slot labels ── */
+.slot-label {
+  position:absolute;
+  font-size:10px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.8px;
+  color:var(--violet-500, #875bf7);
+  background:var(--violet-50, #f5f3ff);
+  padding:2px 6px; border-radius:3px;
+  white-space:nowrap; z-index:10;
+  pointer-events:none;
+}
+
+/* ── Button utility ── */
+.btn-util {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  padding:var(--spacing-lg, 12px);
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-full, 9999px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink:0;
+  overflow:hidden;
+  cursor:pointer;
+  transition:background 0.15s, box-shadow 0.15s, transform 0.1s, border-color 0.15s;
+}
+.btn-util:hover {
+  background:var(--gray-50, #fafafa);
+}
+.btn-util:active {
+  box-shadow:none;
+  transform:translateY(2px);
+}
+.btn-util-disabled {
+  background:var(--gray-300, #d5d7da) !important;
+  border-color:var(--gray-400, #a4a7ae) !important;
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae) !important;
+  cursor:not-allowed;
+  pointer-events:none;
+}
+.btn-util-pressed {
+  box-shadow:none !important;
+  transform:translateY(2px);
+}
+.btn-util-sm { padding:var(--spacing-md, 8px); }
+.btn-util-icon {
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.btn-util-icon svg { width:100%; height:100%; }
+.btn-util-with-label { gap:var(--spacing-md, 8px); }
+.btn-util-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-lg, 18px);
+  line-height:var(--line-height-text-lg, 28px);
+  font-weight:var(--font-weight-medium, 500);
+  color:var(--text-secondary, #414651);
+  white-space:nowrap;
+}
+
+/* ── TossFace emoji icon ── */
+.tf-icon {
+  font-family:'TossFace', sans-serif;
+  font-size:24px; line-height:1;
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+
+/* ── Toolbar: Compact Large ── */
+.toolbar-compact-large {
+  gap:5px;
+  align-items:flex-start;
+  justify-content:center;
+}
+.toolbar-compact-large .toolbar-title-display {
+  flex:1;
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+  font-size:var(--font-size-display-md, 36px);
+  line-height:var(--line-height-display-md, 44px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+  letter-spacing:-0.72px;
+}
+
+/* ── Toolbar: Large Title ── */
+.toolbar-large-title {
+  flex-direction:column; gap:10px; align-items:center;
+}
+.toolbar-large-title .toolbar-controls {
+  display:flex; align-items:center; justify-content:space-between; width:100%;
+}
+.toolbar-large-title .toolbar-controls .leading,
+.toolbar-large-title .toolbar-controls .trailing {
+  flex:1; display:flex; align-items:center;
+}
+.toolbar-large-title .toolbar-controls .trailing { justify-content:flex-end; }
+.toolbar-large-title .toolbar-title-block {
+  display:flex; flex-direction:column; align-items:flex-start; width:100%;
+}
+.toolbar-large-title .toolbar-title-display {
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+  font-size:var(--font-size-display-md, 36px);
+  line-height:var(--line-height-display-md, 44px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+  letter-spacing:-0.72px; width:100%;
+}
+.toolbar-subtitle {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651); width:100%;
+}
+
+/* ── Toolbar: Title 2 Line ── */
+.toolbar-title-2-line {
+  gap:10px; align-items:center; justify-content:center;
+}
+.toolbar-title-2-line .leading,
+.toolbar-title-2-line .trailing {
+  flex:1; display:flex; align-items:center;
+}
+.toolbar-title-2-line .trailing { justify-content:flex-end; }
+.toolbar-title-2-line .toolbar-center {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.toolbar-center-title {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-primary, #181d27); white-space:nowrap;
+}
+.toolbar-center-subtitle {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:var(--line-height-text-xs, 16px);
+  font-weight:var(--font-weight-medium, 500);
+  color:var(--text-secondary, #414651); white-space:nowrap;
+}
+
+/* ── Toolbar: Default & Chat ── */
+.toolbar-default, .toolbar-chat {
+  align-items:flex-start; justify-content:space-between;
+}
+.toolbar-default .leading, .toolbar-default .trailing,
+.toolbar-chat .leading, .toolbar-chat .trailing {
+  flex:1; display:flex; align-items:center;
+}
+.toolbar-default .trailing, .toolbar-chat .trailing { justify-content:flex-end; }
+.toolbar-default .toolbar-abs-title, .toolbar-chat .toolbar-abs-title {
+  position:absolute; left:50%; top:50%; transform:translate(-50%, -50%);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-lg, 18px);
+  line-height:var(--line-height-text-lg, 28px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-primary, #181d27); white-space:nowrap;
+}
+
+/* ── Avatar / User group ── */
+.avatar {
+  width:32px; height:32px;
+  border-radius:var(--radius-full, 9999px);
+  background:var(--brand-100, #e0f2fe);
+  border:2px solid white; flex-shrink:0;
+}
+.user-group { display:flex; align-items:baseline; padding-right:var(--spacing-md, 8px); }
+.user-group .avatar { margin-right:calc(-1 * var(--spacing-md, 8px)); }
+.avatar-sprout {
+  background:var(--bg-sky, #e0f2fe);
+  position:relative; overflow:hidden;
+}
+.avatar-sprout img {
+  position:absolute;
+  inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+}
+
+/* ── Toolbar: Kid home ── */
+.toolbar-kid-home {
+  align-items:center; justify-content:space-between;
+}
+.toolbar-trailing {
+  display:flex; align-items:center; gap:var(--spacing-md, 8px);
+}
+
+/* ── Toolbar: Quest ── */
+.toolbar-quest {
+  align-items:center;
+  background:var(--bg-sky, #e0f2fe);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  gap:var(--spacing-md, 8px);
+}
+.quest-close {
+  display:flex; align-items:center;
+  padding:var(--spacing-xs, 4px);
+  flex-shrink:0; cursor:pointer;
+}
+.quest-close svg { width:40px; height:40px; }
+
+/* ── Progress bar (Quest) ── */
+.progress-track {
+  flex:1; height:16px;
+  background:var(--bg-secondary, #fafafa);
+  border-radius:var(--radius-full, 9999px);
+  overflow:hidden; position:relative;
+}
+.progress-fill {
+  height:100%;
+  background:var(--brand-500, #0ba5ec);
+  border-radius:var(--radius-full, 9999px);
+  min-width:32px;
+  padding:var(--spacing-xs, 4px) var(--spacing-md, 8px);
+  box-sizing:border-box;
+  position:relative;
+  transition:width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.progress-fill::after {
+  content:'';
+  display:block;
+  width:100%; height:4px;
+  background:rgba(255,255,255,0.5);
+  border-radius:var(--radius-full, 9999px);
+}
+
+/* ── Toolbar: Quest - Transparent ── */
+.toolbar-quest-transparent {
+  align-items:center;
+  gap:var(--spacing-md, 8px);
+}
+.toolbar-quest-transparent .progress-track { flex:1; }
+
+/* ── Figma link ── */
+.figma-link {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:13px; font-weight:500;
+  color:var(--brand-600, #0086c9);
+  text-decoration:none; margin-bottom:24px;
+}
+.figma-link:hover { text-decoration:underline; }
+.figma-link svg { width:16px; height:16px; }
+
+/* ── Anatomy diagram ── */
+.anatomy-row {
+  display:flex; align-items:center; gap:0;
+  padding:16px; width:100%;
+  background:var(--bg-secondary, #fafafa);
+  border-radius:var(--radius-xl, 12px);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  position:relative;
+}
+.anatomy-slot {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  padding:8px 12px;
+  border:2px dashed var(--violet-500, #875bf7);
+  border-radius:var(--radius-md, 8px);
+  position:relative;
+}
+.anatomy-slot-label {
+  font-size:10px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.8px;
+  color:var(--violet-500, #875bf7);
+  white-space:nowrap;
+}
+.anatomy-slot-leading { margin-right:auto; }
+.anatomy-slot-center { flex:1; margin:0 12px; }
+.anatomy-slot-trailing { margin-left:auto; }
+
+/* ── Demo overrides ── */
+.demo { flex-wrap:wrap; }
+.demo-col { flex-direction:column; gap:24px; }
+@media(max-width:768px) {
+  .phone-frame { width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Toolbar - Top</div>
+    <div class="sec-desc">The top toolbar provides navigation, context, and actions at the top of every screen. It adapts its layout and content based on where the user is in the app &mdash; browsing, viewing detail, chatting, or completing a quest.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500)">&#10003;</span> Use a toolbar at the top of <strong>every screen</strong> to provide navigation and contextual actions.</li>
+        <li><span style="color:var(--green-500)">&#10003;</span> Choose the style that matches the user&rsquo;s current context &mdash; browsing, detail, quest, or chat.</li>
+        <li><span style="color:var(--red-500)">&#10007;</span> Don&rsquo;t stack multiple toolbars. Use one toolbar per screen.</li>
+        <li><span style="color:var(--red-500)">&#10007;</span> Don&rsquo;t use the Quest toolbar outside of exercise flows &mdash; it&rsquo;s tied to linear progress.</li>
+      </ul>
+    </div>
+  </div>
+
+  <a class="figma-link" href="https://www.figma.com/design/n79cdqJCVoyVCtGbO5iHAd/Pencil-down---Brand?node-id=19947-8909" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2H8.5A3.5 3.5 0 005 5.5 3.5 3.5 0 008.5 9H12V2z" fill="#F24E1E"/><path d="M12 9H8.5A3.5 3.5 0 005 12.5 3.5 3.5 0 008.5 16H12V9z" fill="#A259FF"/><path d="M12 16H8.5A3.5 3.5 0 005 19.5 3.5 3.5 0 008.5 23a3.5 3.5 0 003.5-3.5V16z" fill="#0ACF83"/><path d="M19 5.5A3.5 3.5 0 0015.5 2H12v7h3.5A3.5 3.5 0 0019 5.5z" fill="#FF7262"/><circle cx="15.5" cy="12.5" r="3.5" fill="#1ABCFE"/></svg>
+    View in Figma
+  </a>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Compact Large</span>
+        <div class="toolbar toolbar-compact-large" style="width:340px;">
+          <span class="toolbar-title-display">Explore</span>
+          <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Large Title</span>
+        <div class="toolbar toolbar-large-title" style="width:340px;">
+          <div class="toolbar-controls">
+            <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+            <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+          </div>
+          <div class="toolbar-title-block">
+            <span class="toolbar-title-display">My Family</span>
+            <span class="toolbar-subtitle">Anderson household</span>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Title 2 Line</span>
+        <div class="toolbar toolbar-title-2-line" style="width:340px;">
+          <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
+          <div class="toolbar-center"><span class="toolbar-center-title">Coach Michaela</span><span class="toolbar-center-subtitle">Math &middot; Reading</span></div>
+          <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="toolbar toolbar-default" style="width:340px;position:relative;">
+          <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
+          <span class="toolbar-abs-title">Settings</span>
+          <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Chat</span>
+        <div class="toolbar toolbar-chat" style="width:340px;position:relative;">
+          <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
+          <span class="toolbar-abs-title">Family Chat</span>
+          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Kid Home</span>
+        <div class="toolbar toolbar-kid-home" style="width:340px;background:var(--bg-sky, #e0f2fe);">
+          <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
+          <div class="toolbar-trailing">
+            <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+            <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
+            <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Quest Map</span>
+        <div class="toolbar toolbar-large-title" style="width:340px;">
+          <div class="toolbar-controls">
+            <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
+            <div class="trailing" style="gap:var(--spacing-md, 8px);display:flex;">
+              <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+              <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x26A1;&#xFE0F;</span><span class="btn-util-label">100</span></div>
+              <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F3C5;</span><span class="btn-util-label">100</span></div>
+            </div>
+          </div>
+          <div class="toolbar-title-block">
+            <span class="toolbar-title-display">Title</span>
+            <span class="toolbar-subtitle">Subtitle</span>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Quest</span>
+        <div class="toolbar toolbar-quest" style="width:340px;">
+          <div class="quest-close"><svg viewBox="0 0 40 40" fill="none"><path d="M14 14l12 12M26 14l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+          <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Quest - Transparent</span>
+        <div class="toolbar toolbar-quest-transparent" style="width:340px;">
+          <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+          <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>Every toolbar variant is built from three structural slots. The <strong>Leading</strong> and <strong>Trailing</strong> slots accept <code>Button utility</code> sub-components.</p>
+
+    <div class="demo demo-col">
+      <div class="anatomy-row">
+        <div class="anatomy-slot anatomy-slot-leading">
+          <span class="anatomy-slot-label">Leading (1 btn)</span>
+          <div class="btn-util">
+            <div class="btn-util-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="anatomy-slot anatomy-slot-center">
+          <span class="anatomy-slot-label">Center</span>
+          <span style="font-size:18px;font-weight:600;color:var(--text-primary)">Title</span>
+        </div>
+        <div class="anatomy-slot anatomy-slot-trailing">
+          <span class="anatomy-slot-label">Trailing (1 btn)</span>
+          <div class="btn-util">
+            <div class="btn-util-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-slot anatomy-slot-leading">
+          <span class="anatomy-slot-label">Leading (1 btn)</span>
+          <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
+        </div>
+        <div style="flex:1"></div>
+        <div class="anatomy-slot anatomy-slot-trailing">
+          <span class="anatomy-slot-label">Trailing (3 btns)</span>
+          <div style="display:flex;gap:var(--spacing-md, 8px);align-items:center;">
+            <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+            <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
+            <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Leading</strong> &mdash; Primary navigation (Back, Cancel/X, Shield). Always leftmost. Accepts <strong>1</strong> <code>Button utility</code>.</li>
+        <li><strong>Center</strong> &mdash; Title, title + subtitle, or progress bar. Positioned absolutely (Default, Chat) or in flow (Large Title, Compact Large).</li>
+        <li><strong>Trailing</strong> &mdash; Contextual actions. Always rightmost. Accepts <strong>1&ndash;3</strong> <code>Button utility</code> components with <code>--spacing-md</code> (8px) gap between them.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Toolbar styles ════ -->
+  <div class="doc-section">
+    <h2>Toolbar styles</h2>
+    <p>8 style variants, each designed for a specific navigation context.</p>
+
+    <!-- 1. Compact Large -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Compact Large</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Large bold title with a single trailing action. Used for top-level section headers.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> &mdash; &nbsp;&middot;&nbsp; <strong>Center:</strong> Large title (left-aligned) &nbsp;&middot;&nbsp; <strong>Trailing:</strong> 1 symbol</p>
+    <div class="demo">
+      <div class="phone-frame phone-frame-white">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-compact-large">
+          <span class="toolbar-title-display">Explore</span>
+          <div class="btn-util">
+            <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div>
+          </div>
+        </div>
+        <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
+      </div>
+    </div>
+
+    <!-- 2. Large Title -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Large Title</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Two-row layout: icon controls on top, large title + optional subtitle below. Used at the top of scrollable pages that collapse on scroll.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> 1 symbol &nbsp;&middot;&nbsp; <strong>Center:</strong> Large title + subtitle (below) &nbsp;&middot;&nbsp; <strong>Trailing:</strong> 1 symbol</p>
+    <div class="demo" style="gap:24px;">
+      <div class="phone-frame phone-frame-white" style="height:240px;">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-large-title">
+          <div class="toolbar-controls">
+            <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+            <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+          </div>
+          <div class="toolbar-title-block">
+            <span class="toolbar-title-display">My Family</span>
+            <span class="toolbar-subtitle">Anderson household</span>
+          </div>
+        </div>
+        <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
+      </div>
+    </div>
+
+    <!-- 3. Title 2 Line -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Title 2 Line</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Centered title with optional subtitle, flanked by leading and trailing actions. Used for detail pages with metadata.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Back / icon &nbsp;&middot;&nbsp; <strong>Center:</strong> Centered title + subtitle &nbsp;&middot;&nbsp; <strong>Trailing:</strong> 1 symbol</p>
+    <div class="demo" style="gap:24px;">
+      <div class="phone-frame phone-frame-white">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-title-2-line">
+          <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
+          <div class="toolbar-center"><span class="toolbar-center-title">Coach Michaela</span><span class="toolbar-center-subtitle">Math &middot; Reading</span></div>
+          <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+        </div>
+        <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
+      </div>
+    </div>
+
+    <!-- 4. Default -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Default</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Centered title with leading back button and trailing action. The most common toolbar for drill-in detail screens.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Back &nbsp;&middot;&nbsp; <strong>Center:</strong> Centered title &nbsp;&middot;&nbsp; <strong>Trailing:</strong> 1 symbol</p>
+    <div class="demo">
+      <div class="phone-frame phone-frame-white">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-default">
+          <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
+          <span class="toolbar-abs-title">Settings</span>
+          <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+        </div>
+        <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
+      </div>
+    </div>
+
+    <!-- 5. Chat -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Chat</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Centered title with a back button leading and a user group avatar cluster trailing. Used in messaging threads.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Back &nbsp;&middot;&nbsp; <strong>Center:</strong> Centered title &nbsp;&middot;&nbsp; <strong>Trailing:</strong> User group</p>
+    <div class="demo">
+      <div class="phone-frame phone-frame-white">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-chat">
+          <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
+          <span class="toolbar-abs-title">Family Chat</span>
+          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div></div>
+        </div>
+        <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
+      </div>
+    </div>
+
+    <!-- 6. Kid home -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Kid home</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Gamified toolbar for the kid&rsquo;s main feed. No title &mdash; the world content speaks for itself.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> &#x1F6E1;&#xFE0F; Shield &nbsp;&middot;&nbsp; <strong>Center:</strong> &mdash; &nbsp;&middot;&nbsp; <strong>Trailing:</strong> &#x1F525; Fire (100) + &#x1F48E; Gem (100) + &#x1F600; Avatar</p>
+    <div class="demo">
+      <div class="phone-frame" style="height:220px;">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-kid-home">
+          <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
+          <div class="toolbar-trailing">
+            <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+            <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
+            <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Quest map -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Quest map</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Two-row toolbar for the curriculum lobby. Controls row on top with back arrow and stat counters, large title + optional subtitle below. Shares the same two-row structure as Large Title.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Back &nbsp;&middot;&nbsp; <strong>Center:</strong> Large title + subtitle (below) &nbsp;&middot;&nbsp; <strong>Trailing:</strong> &#x1F525; Fire (100) + &#x26A1;&#xFE0F; Lightning (100) + &#x1F3C5; Medal (100)</p>
+    <div class="demo">
+      <div class="phone-frame" style="height:260px;">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-large-title">
+          <div class="toolbar-controls">
+            <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
+            <div class="trailing" style="gap:var(--spacing-md, 8px);display:flex;">
+              <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+              <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x26A1;&#xFE0F;</span><span class="btn-util-label">100</span></div>
+              <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F3C5;</span><span class="btn-util-label">100</span></div>
+            </div>
+          </div>
+          <div class="toolbar-title-block">
+            <span class="toolbar-title-display">Title</span>
+            <span class="toolbar-subtitle">Subtitle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Quest -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Quest</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Compact, focused toolbar for inside exercises. X close exits the quest, progress bar shows completion. Uses <code>--bg-sky</code> background with bottom shadow to separate from exercise content.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Cancel (X) &nbsp;&middot;&nbsp; <strong>Center:</strong> Progress bar &nbsp;&middot;&nbsp; <strong>Trailing:</strong> &mdash;</p>
+    <div class="demo" style="gap:24px;">
+      <div class="phone-frame" style="height:280px;">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-quest">
+          <div class="quest-close"><svg viewBox="0 0 40 40" fill="none"><path d="M14 14l12 12M26 14l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+          <div class="progress-track"><div class="progress-fill" style="width:25%"></div></div>
+        </div>
+        <div style="padding:16px;">
+          <p style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Translate this sentence</p>
+          <div class="phone-content-line" style="width:70%;height:48px;border-radius:12px;background:var(--gray-100)"></div>
+        </div>
+      </div>
+      <div class="phone-frame" style="height:280px;">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-quest">
+          <div class="quest-close"><svg viewBox="0 0 40 40" fill="none"><path d="M14 14l12 12M26 14l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+          <div class="progress-track"><div class="progress-fill" style="width:75%"></div></div>
+        </div>
+        <div style="padding:16px;">
+          <p style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Match the pairs</p>
+          <div class="phone-content-line" style="width:90%;height:48px;border-radius:12px;background:var(--gray-100)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Quest - Transparent -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Quest - Transparent</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Transparent variant of the quest toolbar. No background or bottom shadow &mdash; the toolbar blends into the page content. Close button is a <code>Button utility</code> pill instead of a bare icon.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Cancel (btn-util) &nbsp;&middot;&nbsp; <strong>Center:</strong> Progress bar &nbsp;&middot;&nbsp; <strong>Trailing:</strong> &mdash;</p>
+    <div class="demo" style="gap:24px;">
+      <div class="phone-frame phone-frame-white" style="height:280px;">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-quest-transparent">
+          <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+          <div class="progress-track"><div class="progress-fill" style="width:25%"></div></div>
+        </div>
+        <div style="padding:16px;">
+          <p style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">What does this word mean?</p>
+          <div class="phone-content-line" style="width:70%;height:48px;border-radius:12px;background:var(--gray-100)"></div>
+        </div>
+      </div>
+      <div class="phone-frame phone-frame-white" style="height:280px;">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-quest-transparent">
+          <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+          <div class="progress-track"><div class="progress-fill" style="width:75%"></div></div>
+        </div>
+        <div style="padding:16px;">
+          <p style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Complete the sentence</p>
+          <div class="phone-content-line" style="width:90%;height:48px;border-radius:12px;background:var(--gray-100)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Scroll behavior ════ -->
+  <div class="doc-section">
+    <h2>Scroll behavior</h2>
+    <p><strong>Large Title</strong> uses an animated collapse on scroll, similar to iOS large title navigation bars. As the user scrolls down, the large title row smoothly shrinks and slides up into the compact inline position. Scrolling back to the top reverses the animation.</p>
+    <p style="color:var(--text-secondary);font-size:14px;margin-top:8px"><strong>Note:</strong> This behavior applies only to <strong>Large Title</strong>. <strong>Quest map</strong> shares the same two-row structure but does <em>not</em> collapse on scroll &mdash; the map content below needs full visible space, and collapsing the title row would not leave enough room.</p>
+
+    <div class="demo" style="gap:24px;">
+      <div class="phone-frame phone-frame-white" style="height:380px;">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <!-- Expanded state -->
+        <div class="toolbar toolbar-large-title" id="scroll-demo-toolbar" style="transition:none;">
+          <div class="toolbar-controls">
+            <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+            <div class="toolbar-title-display scroll-demo-inline-title" style="flex:1;display:none;font-size:18px;line-height:28px;font-weight:600;letter-spacing:0;text-align:center;">My Family</div>
+            <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+          </div>
+          <div class="toolbar-title-block scroll-demo-title-block" style="transition:opacity 0.3s, max-height 0.3s, margin 0.3s;overflow:hidden;">
+            <span class="toolbar-title-display">My Family</span>
+            <span class="toolbar-subtitle">Anderson household</span>
+          </div>
+        </div>
+        <div class="scroll-demo-content" style="flex:1;overflow-y:auto;padding:0 16px 16px;" id="scroll-demo-content">
+          <div style="height:600px;display:flex;flex-direction:column;gap:8px;padding-top:8px;">
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+            <div class="phone-content-line"></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:280px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span style="font-size:20px;line-height:1;">&#x2B06;&#xFE0F;</span>
+          <div>
+            <strong style="font-size:14px;color:var(--text-primary);">Scroll down</strong>
+            <p style="font-size:13px;color:var(--text-secondary);margin:2px 0 0;">Large title fades out and collapses. Title moves inline between leading/trailing buttons &mdash; becoming Compact Large layout.</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span style="font-size:20px;line-height:1;">&#x2B07;&#xFE0F;</span>
+          <div>
+            <strong style="font-size:14px;color:var(--text-primary);">Scroll to top</strong>
+            <p style="font-size:13px;color:var(--text-secondary);margin:2px 0 0;">Inline title fades out. Large title row expands back, restoring the full Large Title layout.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Trigger:</strong> Scroll offset of the page content. Collapse begins immediately on scroll and completes within ~60px of scroll distance.</li>
+        <li><strong>Expanded (top):</strong> Full <strong>Large Title</strong> layout &mdash; two-row with controls above, large title + subtitle below.</li>
+        <li><strong>Collapsed (scrolled):</strong> Single-row <strong>Compact Large</strong> layout &mdash; title moves inline next to the leading/trailing buttons, subtitle hidden.</li>
+        <li><strong>Animation:</strong> The large title row opacity and height animate to 0 while the inline title fades in. Total transition duration: <strong>300ms ease</strong>. Driven by scroll position, not a timed animation &mdash; the transition tracks the user&rsquo;s finger/scroll wheel.</li>
+        <li><strong>Subtitle:</strong> Fades out with the large title row. Not shown in the collapsed state.</li>
+        <li><strong>Elastic overscroll:</strong> On platforms that support rubber-banding (iOS), the large title can stretch slightly larger when pulling past the top. This is native platform behavior and doesn&rsquo;t need custom implementation.</li>
+        <li><strong>Quest map excluded:</strong> Quest map uses the same two-row layout as Large Title but stays fixed &mdash; no collapse on scroll. The map content requires full viewport space.</li>
+      </ul>
+    </div>
+
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Collapse scroll distance</td><td>~60px (content offset)</td></tr>
+        <tr><td>Transition duration</td><td>300ms ease (scroll-driven)</td></tr>
+        <tr><td>Expanded title</td><td>display-md (36/44px), bold, &minus;0.72px tracking</td></tr>
+        <tr><td>Collapsed title</td><td>display-md (36/44px), bold, &minus;0.72px tracking (inline)</td></tr>
+        <tr><td>Subtitle behavior</td><td>Fades out with large title row, hidden when collapsed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Kid Home scroll behavior — Alt background ════ -->
+  <div class="doc-section">
+    <h2>Kid Home scroll behavior &mdash; Alt background</h2>
+    <p>On the <strong>Alt background</strong> (older kid home), everything scrolls together as a single page. The toolbar uses a frosted glass effect that adapts its tint to the content behind it, transitioning through three states: transparent, frosted sky, and frosted grass.</p>
+    <p style="color:var(--text-secondary);font-size:14px;margin-top:8px"><strong>Main background (younger kid):</strong> Grass is pinned at the bottom of the viewport and content scrolls behind it. Because sky is always behind the toolbar, it only uses <strong>transparent</strong> and <strong>frosted sky</strong> states &mdash; frosted grass never triggers.</p>
+    <p style="color:var(--text-secondary);font-size:14px;margin-top:8px"><strong>Note:</strong> The iOS status bar (time, signal, battery) is part of the sticky toolbar group &mdash; it scrolls and sticks together with the toolbar buttons.</p>
+
+    <div class="demo" style="gap:24px;">
+      <div class="phone-frame phone-frame-tall" style="height:380px;padding:0;">
+        <div id="kid-alt-scroll" style="width:100%;height:100%;overflow-y:auto;scrollbar-width:none;background:var(--bg-sky, #e0f2fe);">
+          <!-- Sticky toolbar -->
+          <div id="kid-alt-toolbar" style="position:sticky;top:0;z-index:4;transition:background 0.35s cubic-bezier(0.32, 0.72, 0, 1);">
+            <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg></div></div>
+            <div class="toolbar toolbar-kid-home">
+              <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
+              <div class="toolbar-trailing">
+                <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+                <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
+                <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+              </div>
+            </div>
+          </div>
+          <!-- Sky spacer -->
+          <div style="height:120px;"></div>
+          <!-- Grass edge + fill -->
+          <div id="kid-alt-grass-edge" style="height:18px;background:var(--bg-grass, #86cb3c);border-radius:18px 18px 0 0;"></div>
+          <div style="background:var(--bg-grass, #86cb3c);padding:12px;min-height:500px;">
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="background:white;border-radius:10px;padding:10px;"><div class="phone-content-line" style="margin:0;"></div></div>
+              <div style="background:white;border-radius:10px;padding:10px;"><div class="phone-content-line" style="margin:0;width:80%;"></div></div>
+              <div style="background:white;border-radius:10px;padding:10px;"><div class="phone-content-line" style="margin:0;"></div></div>
+              <div style="background:white;border-radius:10px;padding:10px;"><div class="phone-content-line" style="margin:0;width:60%;"></div></div>
+              <div style="background:white;border-radius:10px;padding:10px;"><div class="phone-content-line" style="margin:0;"></div></div>
+              <div style="background:white;border-radius:10px;padding:10px;"><div class="phone-content-line" style="margin:0;width:70%;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:280px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span style="font-size:20px;line-height:1;">&#x1F7E6;</span>
+          <div>
+            <strong style="font-size:14px;color:var(--text-primary);">At top (transparent)</strong>
+            <p style="font-size:13px;color:var(--text-secondary);margin:2px 0 0;">No background, no blur. Sky is fully visible behind the toolbar.</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span style="font-size:20px;line-height:1;">&#x2B06;&#xFE0F;</span>
+          <div>
+            <strong style="font-size:14px;color:var(--text-primary);">Scroll in sky zone</strong>
+            <p style="font-size:13px;color:var(--text-secondary);margin:2px 0 0;">After ~10px of scroll, toolbar gains a frosted sky tint &mdash; <code style="font-size:12px;">rgba(224,242,254,0.8)</code> with <code style="font-size:12px;">blur(16px)</code>.</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span style="font-size:20px;line-height:1;">&#x1F7E9;</span>
+          <div>
+            <strong style="font-size:14px;color:var(--text-primary);">Scroll past grass edge</strong>
+            <p style="font-size:13px;color:var(--text-secondary);margin:2px 0 0;">When the grass edge passes behind the toolbar, tint switches to frosted grass &mdash; <code style="font-size:12px;">rgba(134,203,60,0.8)</code> with <code style="font-size:12px;">blur(16px)</code>.</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span style="font-size:20px;line-height:1;">&#x2B07;&#xFE0F;</span>
+          <div>
+            <strong style="font-size:14px;color:var(--text-primary);">Scroll back to top</strong>
+            <p style="font-size:13px;color:var(--text-secondary);margin:2px 0 0;">Transitions reverse: grass &rarr; sky &rarr; transparent as the sky comes back into view.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Trigger:</strong> Scroll position of the screen content. Transition thresholds are based on the grass edge position relative to the toolbar bottom.</li>
+        <li><strong>Transparent (top):</strong> No background, no blur. Default state when the user has not scrolled.</li>
+        <li><strong>Frosted sky:</strong> Activates after ~10px of scroll while sky is still behind the toolbar. Background: <code>rgba(224, 242, 254, 0.8)</code> with <code>backdrop-filter: blur(16px)</code>.</li>
+        <li><strong>Frosted grass:</strong> Activates when the grass edge scrolls past the toolbar bottom. Background: <code>rgba(134, 203, 60, 0.8)</code> with <code>backdrop-filter: blur(16px)</code>.</li>
+        <li><strong>Transition:</strong> Background color animates over <strong>350ms</strong> using <code>cubic-bezier(0.32, 0.72, 0, 1)</code> (iOS spring). Driven by scroll position, not a timed animation.</li>
+      </ul>
+    </div>
+
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Scroll threshold (sky)</td><td>~10px scroll offset</td></tr>
+        <tr><td>Scroll threshold (grass)</td><td>Grass edge top &lt; toolbar bottom</td></tr>
+        <tr><td>Frosted sky background</td><td><code>rgba(224, 242, 254, 0.8)</code></td></tr>
+        <tr><td>Frosted grass background</td><td><code>rgba(134, 203, 60, 0.8)</code></td></tr>
+        <tr><td>Backdrop filter</td><td><code>blur(16px)</code></td></tr>
+        <tr><td>Transition duration</td><td>350ms</td></tr>
+        <tr><td>Transition easing</td><td><code>cubic-bezier(0.32, 0.72, 0, 1)</code></td></tr>
+        <tr><td>Sticky position</td><td><code>top: 0</code>, <code>z-index: 4</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Background comparison</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Main (younger)</th><th>Alt (older)</th></tr></thead>
+      <tbody>
+        <tr><td>Scroll model</td><td>Content scrolls behind pinned grass</td><td>Everything scrolls together</td></tr>
+        <tr><td>Toolbar states used</td><td>Transparent, Frosted sky</td><td>Transparent, Frosted sky, Frosted grass</td></tr>
+        <tr><td>Grass position</td><td>Pinned at viewport bottom</td><td>Inline in scroll flow</td></tr>
+        <tr><td>Character</td><td>Pinned above grass edge</td><td>Scrolls with content</td></tr>
+        <tr><td>Bottom padding</td><td>~360px (so content clears grass)</td><td>None needed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Sub-component: Button utility ════ -->
+  <div class="doc-section">
+    <h2>Sub-component: Button utility</h2>
+    <p>Pill-shaped action buttons used in the <strong>Leading</strong> and <strong>Trailing</strong> slots. Hover and click to see interactive states. For full documentation see the dedicated page.</p>
+    <p style="margin-top:8px;"><a href="/design-system/components/button-utility.html" style="color:var(--brand-600, #0086c9);font-weight:600;text-decoration:none;">View Button Utility component page &rarr;</a></p>
+
+    <!-- Types -->
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Types</h3>
+    <div class="state-grid" style="grid-template-columns:repeat(4, 1fr);">
+      <div class="state-cell">
+        <span class="state-cell-label">Back</span>
+        <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Cancel</span>
+        <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">1 symbol</span>
+        <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">1 symbol + Value</span>
+        <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">2 symbol</span>
+        <div class="btn-util btn-util-with-label"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">3 symbol</span>
+        <div class="btn-util btn-util-with-label"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">User group</span>
+        <div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Emoji only</span>
+        <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+      </div>
+    </div>
+
+    <!-- Interactive states -->
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">States</h3>
+    <p style="color:var(--text-tertiary);font-size:13px;margin-bottom:12px;">Hover and click the buttons to see live transitions. Disabled and Pressed are shown statically.</p>
+    <div class="state-grid" style="grid-template-columns:repeat(4, 1fr);">
+      <div class="state-cell">
+        <span class="state-cell-label">Default</span>
+        <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Hover</span>
+        <div class="btn-util" style="background:var(--gray-50, #fafafa);"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Active / Pressed</span>
+        <div class="btn-util btn-util-pressed"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Disabled</span>
+        <div class="btn-util btn-util-disabled"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div>
+      </div>
+    </div>
+
+    <!-- Icon + Value states -->
+    <div class="state-grid" style="grid-template-columns:repeat(4, 1fr);margin-top:16px;">
+      <div class="state-cell">
+        <span class="state-cell-label">Default</span>
+        <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Hover</span>
+        <div class="btn-util btn-util-with-label" style="background:var(--gray-50, #fafafa);"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Active / Pressed</span>
+        <div class="btn-util btn-util-with-label btn-util-pressed"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Disabled</span>
+        <div class="btn-util btn-util-with-label btn-util-disabled"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+      </div>
+    </div>
+
+    <!-- User group states -->
+    <div class="state-grid" style="grid-template-columns:repeat(4, 1fr);margin-top:16px;">
+      <div class="state-cell">
+        <span class="state-cell-label">Default</span>
+        <div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Hover</span>
+        <div class="btn-util btn-util-sm" style="background:var(--gray-50, #fafafa);"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Active / Pressed</span>
+        <div class="btn-util btn-util-sm btn-util-pressed"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Disabled</span>
+        <div class="btn-util btn-util-sm btn-util-disabled"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Common examples -->
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Common examples</h3>
+    <div class="state-grid" style="grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));">
+      <div class="state-cell">
+        <span class="state-cell-label">Fire streak</span>
+        <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Gems</span>
+        <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Shield</span>
+        <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Smiley</span>
+        <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Lightning</span>
+        <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x26A1;&#xFE0F;</span><span class="btn-util-label">100</span></div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Medal</span>
+        <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F3C5;</span><span class="btn-util-label">100</span></div>
+      </div>
+    </div>
+
+    <table class="token-table" style="margin-top:16px;">
+      <thead><tr><th>Type</th><th>Content</th><th>Padding</th><th>Gap</th></tr></thead>
+      <tbody>
+        <tr><td>Back</td><td>arrow-left icon (24px)</td><td><code>--spacing-lg</code> (12px)</td><td>0</td></tr>
+        <tr><td>Cancel</td><td>x-close icon (24px)</td><td><code>--spacing-lg</code> (12px)</td><td>0</td></tr>
+        <tr><td>1 symbol</td><td>Any single icon (24px)</td><td><code>--spacing-lg</code> (12px)</td><td>0</td></tr>
+        <tr><td>1 symbol + Value</td><td>Icon + text-lg label</td><td><code>--spacing-lg</code> (12px)</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>2 symbol</td><td>Two icons (24px each)</td><td><code>--spacing-lg</code> (12px)</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>3 symbol</td><td>Three icons (24px each)</td><td><code>--spacing-lg</code> (12px)</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>User group</td><td>Stacked avatars (32px each)</td><td><code>--spacing-md</code> (8px)</td><td>Overlap &minus;8px</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Sub-component: Progress bar ════ -->
+  <div class="doc-section">
+    <h2>Sub-component: Progress bar</h2>
+    <p>Linear progress indicator used inside the <strong>Quest</strong> toolbar. For full documentation including animation specs, spark effects, and streak messages, see the dedicated page.</p>
+    <p style="margin-top:12px;"><a href="/design-system/components/progress-bar.html" style="color:var(--brand-600, #0086c9);font-weight:600;text-decoration:none;">View Progress Bar component page &rarr;</a></p>
+  </div>
+
+  <!-- ════ Sub-component: Avatar ════ -->
+  <div class="doc-section">
+    <h2>Sub-component: Avatar</h2>
+    <p>Small profile image used in the User group button and Chat toolbar trailing slot.</p>
+
+    <div class="demo">
+      <div class="demo-item"><span class="demo-label">User</span><div class="avatar"></div></div>
+      <div class="demo-item"><span class="demo-label">Sprout</span><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div>
+      <div class="demo-item"><span class="demo-label">User group (3)</span><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div>
+    </div>
+
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Size</td><td>32 &times; 32px</td></tr>
+        <tr><td>Radius</td><td><code>--radius-full</code> (9999px)</td></tr>
+        <tr><td>Border</td><td>2px solid white</td></tr>
+        <tr><td>User background</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
+        <tr><td>Sprout background</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
+        <tr><td>Group overlap</td><td><code>--spacing-md</code> (&minus;8px margin-right per avatar)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Style mapping ════ -->
+  <div class="doc-section">
+    <h2>Style mapping</h2>
+    <p>When to use each toolbar style based on the user&rsquo;s context.</p>
+    <table class="token-table">
+      <thead><tr><th>Style</th><th>Context</th><th>Leading</th><th>Center</th><th>Trailing</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Compact Large</strong></td><td>Top-level sections</td><td>&mdash;</td><td>Large title (left)</td><td>1 symbol</td></tr>
+        <tr><td><strong>Large Title</strong></td><td>Scrollable pages</td><td>1 symbol</td><td>Large title + subtitle</td><td>1 symbol</td></tr>
+        <tr><td><strong>Title 2 Line</strong></td><td>Detail + metadata</td><td>Back / icon</td><td>Title + subtitle (centered)</td><td>1 symbol</td></tr>
+        <tr><td><strong>Default</strong></td><td>Standard drill-in</td><td>Back</td><td>Title (centered)</td><td>1 symbol</td></tr>
+        <tr><td><strong>Chat</strong></td><td>Messaging threads</td><td>Back</td><td>Title (centered)</td><td>User group</td></tr>
+        <tr><td><strong>Kid home</strong></td><td>Kid&rsquo;s main feed</td><td>Shield</td><td>&mdash;</td><td>Stat counters + avatar</td></tr>
+        <tr><td><strong>Quest map</strong></td><td>Curriculum world</td><td>Back</td><td>Large title + subtitle</td><td>Stat counters (3)</td></tr>
+        <tr><td><strong>Quest</strong></td><td>Inside exercise</td><td>Cancel (X)</td><td>Progress bar</td><td>&mdash;</td></tr>
+        <tr><td><strong>Quest - Transparent</strong></td><td>Exercise on variable bg</td><td>Cancel (btn-util)</td><td>Progress bar</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Properties ════ -->
+  <div class="doc-section">
+    <h2>Properties</h2>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Toolbar - Top</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>style</code></td><td>Enum</td><td>Default</td><td>Compact Large, Large Title, Title 2 Line, Default, Chat, Kid home, Quest map, Quest, Quest - Transparent</td></tr>
+        <tr><td><code>showSubtitle</code></td><td>Boolean</td><td>true</td><td>Toggle subtitle visibility (Large Title &amp; Title 2 Line only)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Button utility</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>type</code></td><td>Enum</td><td>Back</td><td>Back, Cancel, 1 symbol, 2 symbol, 3 symbol, User group</td></tr>
+        <tr><td><code>icon</code></td><td>Icon slot</td><td>circle</td><td>Swappable icon content (1/2/3 symbol types)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Avatar</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>type</code></td><td>Enum</td><td>User</td><td>User (photo) or Sprout (character)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Horizontal padding</td><td><code>--spacing-xl</code></td><td>16px</td></tr>
+        <tr><td>Bottom padding</td><td><code>--spacing-md</code></td><td>8px</td></tr>
+        <tr><td>Button background</td><td><code>--bg-primary</code></td><td>#ffffff</td></tr>
+        <tr><td>Button border</td><td><code>--border-secondary</code></td><td>#e9eaeb (2px solid)</td></tr>
+        <tr><td>Button shadow</td><td>shadow-secondary</td><td>0 3px 0 0 <code>--gray-200</code></td></tr>
+        <tr><td>Button radius</td><td><code>--radius-full</code></td><td>9999px</td></tr>
+        <tr><td>Button padding</td><td><code>--spacing-lg</code></td><td>12px</td></tr>
+        <tr><td>Button padding (sm)</td><td><code>--spacing-md</code></td><td>8px</td></tr>
+        <tr><td>Icon size</td><td>&mdash;</td><td>24 &times; 24px</td></tr>
+        <tr><td>Display title</td><td>Heading 1/Bold</td><td>display-md (36/44px), bold, &minus;0.72px</td></tr>
+        <tr><td>Center title</td><td>Text md/Semibold</td><td>text-md (16/24px), semibold</td></tr>
+        <tr><td>Abs title</td><td>Text lg/Semibold</td><td>text-lg (18/28px), semibold</td></tr>
+        <tr><td>Subtitle</td><td>Text xs/Medium</td><td>text-xs (12/18px), <code>--text-secondary</code></td></tr>
+        <tr><td>Stat label</td><td>Text lg/Medium</td><td>text-lg (18/28px), <code>--text-secondary</code></td></tr>
+        <tr><td>Quest background</td><td><code>--bg-sky</code></td><td>#e0f2fe</td></tr>
+        <tr><td>Quest close icon</td><td>&mdash;</td><td>40 &times; 40px, x-close</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Landmark:</strong> Wrap the toolbar in <code>&lt;nav aria-label="Top navigation"&gt;</code>.</li>
+        <li><strong>Back button:</strong> Use <code>aria-label="Go back"</code>.</li>
+        <li><strong>Cancel button:</strong> Use <code>aria-label="Close"</code>.</li>
+        <li><strong>Icon-only buttons:</strong> Every <code>Button utility</code> without visible text needs an <code>aria-label</code>.</li>
+        <li><strong>Progress bar:</strong> Use <code>role="progressbar"</code> with <code>aria-valuenow</code>, <code>aria-valuemin="0"</code>, <code>aria-valuemax="100"</code>.</li>
+        <li><strong>Stat counters:</strong> Pair each emoji with <code>aria-label</code> (e.g., <code>aria-label="Fire: 100"</code>).</li>
+        <li><strong>Title:</strong> Use <code>&lt;h1&gt;</code> or <code>role="heading" aria-level="1"</code> for screen name announcement.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+<script>
+// Scroll-collapse demo for Large Title -> Compact Large
+(function() {
+  var content = document.getElementById('scroll-demo-content');
+  var titleBlock = document.querySelector('.scroll-demo-title-block');
+  var inlineTitle = document.querySelector('.scroll-demo-inline-title');
+  if (!content || !titleBlock || !inlineTitle) return;
+
+  var COLLAPSE_DIST = 60;
+
+  content.addEventListener('scroll', function() {
+    var t = Math.min(content.scrollTop / COLLAPSE_DIST, 1);
+    // Fade out large title block
+    titleBlock.style.opacity = 1 - t;
+    titleBlock.style.maxHeight = ((1 - t) * 68) + 'px';
+    titleBlock.style.marginTop = (t * -4) + 'px';
+    // Fade in inline title
+    inlineTitle.style.display = t > 0.1 ? 'block' : 'none';
+    inlineTitle.style.opacity = t;
+  });
+})();
+
+// Kid Home scroll demo (Alt background — older kid)
+(function() {
+  var scroll = document.getElementById('kid-alt-scroll');
+  var toolbar = document.getElementById('kid-alt-toolbar');
+  var grassEdge = document.getElementById('kid-alt-grass-edge');
+  if (!scroll || !toolbar || !grassEdge) return;
+  var toolbarH = toolbar.offsetHeight;
+
+  scroll.addEventListener('scroll', function() {
+    var scrolled = scroll.scrollTop;
+    var grassOffset = grassEdge.offsetTop - scrolled;
+
+    if (grassOffset < toolbarH) {
+      toolbar.style.background = 'rgba(134, 203, 60, 0.8)';
+      toolbar.style.webkitBackdropFilter = 'blur(16px)';
+      toolbar.style.backdropFilter = 'blur(16px)';
+    } else if (scrolled > 10) {
+      toolbar.style.background = 'rgba(224, 242, 254, 0.8)';
+      toolbar.style.webkitBackdropFilter = 'blur(16px)';
+      toolbar.style.backdropFilter = 'blur(16px)';
+    } else {
+      toolbar.style.background = 'transparent';
+      toolbar.style.webkitBackdropFilter = 'blur(0px)';
+      toolbar.style.backdropFilter = 'blur(0px)';
+    }
+  });
+})();
+</script>
+</body>
+</html>

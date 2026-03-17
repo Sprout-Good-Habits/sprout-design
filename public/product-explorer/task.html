@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer — Tasks</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xl, 16px);
+  margin-top: var(--spacing-3xl, 24px);
+}
+@media (max-width: 800px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .gallery-grid { grid-template-columns: 1fr; } }
+.gallery-card {
+  display: block;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-xl, 12px);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+}
+.gallery-card:hover {
+  border-color: var(--gray-300, #d5d7da);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  text-decoration: none;
+}
+.gallery-thumb {
+  height: 120px;
+  background: var(--bg-secondary, #fafafa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: 'TossFace', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
+  font-size: 40px;
+}
+.gallery-body {
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px) var(--spacing-lg, 12px);
+}
+.gallery-title {
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  line-height: 18px;
+}
+.gallery-desc {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-tertiary, #535862);
+  line-height: 18px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="page-header">
+        <div class="sec-title">Tasks <span class="sec-title-sub">Task types</span></div>
+        <div class="sec-desc">Task-based experiences in Sprout — structured activities that guide kids through engaging, goal-oriented interactions.</div>
+      </div>
+
+      <div class="gallery-grid">
+
+        <a class="gallery-card" href="/product-explorer/task/home.html">
+          <div class="gallery-thumb">🏠</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Home</div>
+            <div class="gallery-desc">Kid home screen with all card states</div>
+          </div>
+        </a>
+
+        <a class="gallery-card" href="/product-explorer/task/home-older.html">
+          <div class="gallery-thumb">📋</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Home (Older)</div>
+            <div class="gallery-desc">Older kid inbox-style task list</div>
+          </div>
+        </a>
+
+        <a class="gallery-card" href="/product-explorer/task/chat.html">
+          <div class="gallery-thumb">💬</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Chat</div>
+            <div class="gallery-desc">Messaging experience for kids and families</div>
+          </div>
+        </a>
+
+        <a class="gallery-card" href="/product-explorer/task/photo.html">
+          <div class="gallery-thumb">📸</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Photo</div>
+            <div class="gallery-desc">Photo capture and sharing experience</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Home',href:'/product-explorer/task/home.html'},{label:'Home (Older)',href:'/product-explorer/task/home-older.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

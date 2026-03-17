@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer — Photo</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+/* ── Prototype viewer ── */
+.proto-viewer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3xl, 24px);
+  margin-top: var(--spacing-5xl, 40px);
+}
+.proto-arrow {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  background: var(--bg-primary, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-tertiary, #535862);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.proto-arrow:hover {
+  border-color: var(--border-primary, #d5d7da);
+  color: var(--text-primary, #181d27);
+}
+.proto-arrow:disabled,
+.proto-arrow.disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+.proto-arrow svg { width: 20px; height: 20px; }
+
+/* ── Device frame ── */
+.device-wrapper {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 32px;
+  padding: 4px;
+  box-shadow:
+    0 12px 16px -4px rgba(10,13,18,0.08),
+    0 4px 6px -2px rgba(10,13,18,0.03),
+    0 2px 2px -1px rgba(10,13,18,0.04);
+}
+.device-inner-shadow {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 28px;
+  padding: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.device-inner-shadow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 6px 2px rgba(10,13,18,0.08),
+    inset 0 0 4px 2px rgba(10,13,18,0.03);
+}
+.device-mockup {
+  background: var(--bg-tertiary, #fafafa);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 24px;
+  overflow: hidden;
+}
+.device-screen {
+  width: 302px;
+  height: 656px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Status bar ── */
+.phone-status {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54px;
+  padding: 14px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #181d27);
+  z-index: 5;
+}
+.phone-status-icons { display: flex; gap: 4px; align-items: center; }
+.phone-status-icons svg { width: 16px; height: 16px; }
+
+/* ── Sky + grass ── */
+.screen-sky {
+  background: var(--bg-sky, #e0f2fe);
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.grass-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+.grass-edge {
+  height: 18px;
+  background: var(--bg-grass, #86cb3c);
+  border-radius: 18px 18px 0 0;
+}
+.grass-fill {
+  background: var(--bg-grass, #86cb3c);
+  width: 100%;
+  height: 32px;
+}
+
+/* ── Rive character ── */
+.rive-canvas {
+  position: absolute;
+  left: 50%;
+  width: 302px;
+  height: 302px;
+  z-index: 3;
+  pointer-events: none;
+  transform: translateX(-50%) scale(1.25);
+  transform-origin: bottom center;
+  bottom: -46px;
+}
+
+/* ── Home indicator ── */
+.home-indicator {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 108px;
+  height: 4px;
+  background: black;
+  border-radius: 100px;
+  z-index: 10;
+}
+
+/* ── Kid Home toolbar ── */
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  position: absolute;
+  top: 54px;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  transform: scale(0.751);
+  transform-origin: top left;
+  width: calc(100% / 0.751);
+}
+.toolbar-kid-home {
+  justify-content: space-between;
+}
+.toolbar-trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+}
+.btn-util {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: var(--spacing-lg, 12px);
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink: 0;
+}
+.btn-util-with-label { gap: var(--spacing-md, 8px); }
+.btn-util-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #414651);
+  white-space: nowrap;
+}
+.tf-icon {
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Prototype screen (content layer) ── */
+.proto-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* ── Screen navigation ── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Task Card Carousel ── */
+.carousel-container {
+  position: absolute;
+  top: 96px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 12px;
+  display: flex;
+  gap: 6px;
+  padding: 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.carousel-container::-webkit-scrollbar { display: none; }
+.carousel-container::after {
+  content: '';
+  flex-shrink: 0;
+  width: 12px;
+}
+.task-card {
+  flex-shrink: 0;
+  width: 278px;
+  height: 315px;
+  border-radius: 24px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  scroll-snap-align: center;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+
+/* Card layout: badges → content → emoji → cta */
+.card-badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  border-radius: 100px;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 400;
+}
+.card-badge .tf-badge {
+  font-family: 'TossFace', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 10px;
+  position: relative;
+  z-index: 2;
+}
+.card-name {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 27px;
+}
+.card-desc {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  opacity: 0.85;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.card-emoji-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+.card-emoji {
+  font-family: 'TossFace', sans-serif;
+  font-size: 120px;
+  line-height: 1;
+}
+
+/* Card CTA — Sprout secondary button (scaled for card) */
+.card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm, 6px);
+  height: 36px;
+  border-radius: var(--radius-2xl, 16px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold, 700);
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.card-cta .tf-cta {
+  font-family: 'TossFace', sans-serif;
+  font-size: 14px;
+  line-height: 1;
+}
+.card-cta-disabled {
+  background: var(--gray-300, #d5d7da);
+  color: var(--text-disabled, #717680);
+  border: 2px solid var(--gray-400, #a4a7ae);
+  box-shadow: 0 3px 0 0 var(--gray-400, #a4a7ae);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Flame: muted for incomplete, full color for completed */
+.flame-muted {
+  filter: grayscale(1) brightness(2);
+}
+
+/* Completed overlay */
+.card-completed-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  border-radius: 24px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Solid utility-500 card colors */
+.card-brand { background: var(--brand-500, #0ba5ec); }
+.card-blue-dark { background: var(--blue-dark-500, #2970ff); }
+.card-violet { background: var(--violet-500, #875bf7); }
+.card-pink { background: var(--pink-500, #ee46bc); }
+.card-red { background: var(--red-500, #f04438); }
+.card-orange { background: var(--orange-500, #ef6820); }
+.card-yellow { background: var(--yellow-500, #eaaa08); }
+.card-green { background: var(--green-500, #17b26a); }
+
+/* Badge utility-200 backgrounds */
+.badge-brand { background: var(--brand-200, #b9e6fe); color: var(--brand-700, #026aa2); }
+.badge-blue-dark { background: var(--blue-dark-200, #b2ccff); color: var(--blue-dark-700, #004eeb); }
+.badge-violet { background: var(--violet-200, #ddd6fe); color: var(--violet-700, #5925dc); }
+.badge-pink { background: var(--pink-200, #fcceee); color: var(--pink-700, #c11574); }
+.badge-red { background: var(--red-200, #fecdca); color: var(--red-700, #b42318); }
+.badge-orange { background: var(--orange-200, #f9dbaf); color: var(--orange-700, #b93815); }
+.badge-yellow { background: var(--yellow-200, #feee95); color: var(--yellow-700, #a15c07); }
+.badge-green { background: var(--green-200, #abefc6); color: var(--green-700, #067647); }
+
+/* ── Gem claim animation ── */
+.gem-particle {
+  position: absolute;
+  font-family: 'TossFace', sans-serif;
+  font-size: 20px;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 20;
+  will-change: transform, opacity;
+}
+@keyframes gem-counter-glow {
+  0% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0.5); }
+  50% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 6px rgba(11,165,236,0.25); }
+  100% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
+}
+.gem-counter-glow {
+  animation: gem-counter-glow 0.35s ease-out;
+}
+.card-claiming .card-cta {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.25s, transform 0.25s;
+}
+.card-claimed-anim .card-completed-overlay {
+  animation: overlay-fade-in 0.4s ease forwards;
+}
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.btn-util-label {
+  font-variant-numeric: tabular-nums;
+  min-width: 2.5ch;
+  text-align: right;
+}
+
+/* ── Screen 2: Task Intro (conversation style) ── */
+.intro-messages {
+  position: absolute;
+  top: 96px;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  z-index: 2;
+}
+.intro-cta {
+  position: absolute;
+  bottom: 22px;
+  left: 12px;
+  right: 12px;
+  z-index: 4;
+}
+.intro-cta .btn-sprout { width: 100%; }
+
+/* ── Primary button ── */
+.btn-sprout {
+  display: flex; align-items: center; justify-content: center;
+  box-sizing: border-box;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-bold, 700);
+  border: none; cursor: pointer;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px);
+  border-radius: var(--radius-2xl, 16px);
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  user-select: none; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-lg { height: 48px; font-size: var(--font-size-text-lg, 18px); line-height: var(--line-height-text-lg, 28px); }
+.btn-md { height: 44px; font-size: var(--font-size-text-md, 16px); line-height: var(--line-height-text-md, 24px); }
+.btn-primary {
+  background: var(--brand-500, #0ba5ec); color: #ffffff;
+  border-bottom: 2px solid var(--brand-600, #0086c9);
+  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-primary:active {
+  background: var(--brand-500, #0ba5ec); border-bottom: none;
+  box-shadow: none; transform: translateY(4px);
+}
+.chat-bubble {
+  max-width: 192px;
+  min-width: 68px;
+  padding: 9px 12px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-primary, #181d27);
+}
+.bubble-sprout {
+  background: var(--bg-primary, #ffffff);
+  align-self: flex-start;
+}
+
+/* ── Quest toolbar (screens 3-5) ── */
+.toolbar-quest {
+  align-items: center;
+  background: transparent;
+  gap: var(--spacing-md, 8px);
+}
+.quest-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.quest-close svg { width: 20px; height: 20px; }
+.progress-track {
+  flex: 1;
+  height: 16px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-full, 9999px);
+  overflow: hidden;
+  position: relative;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--brand-500, #0ba5ec);
+  border-radius: var(--radius-full, 9999px);
+  min-width: 32px;
+  padding: var(--spacing-xs, 4px) var(--spacing-md, 8px);
+  box-sizing: border-box;
+  position: relative;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.progress-fill::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.5);
+  border-radius: var(--radius-full, 9999px);
+}
+
+/* ── Screens 3-5: Photo bg + speech bubble ── */
+.photo-screen {
+  position: relative;
+  height: 100%;
+  background: var(--gray-300, #d5d7da);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+
+/* ── Sprout card + speech bubble row ── */
+.sprout-row {
+  position: absolute;
+  top: 100px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl, 16px);
+  z-index: 2;
+}
+.sprout-card {
+  width: 90px;
+  height: 135px;
+  background: var(--bg-sky, #e0f2fe);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sprout-card canvas {
+  width: 182px;
+  height: 182px;
+  pointer-events: none;
+  transform: translateY(0%);
+}
+
+/* ── Speech bubble (right of Sprout card, vertically centered) ── */
+.speech-bubble {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  background: var(--bg-overlay, rgba(10,13,18,0.2));
+  border-radius: 18px;
+  color: white;
+  font-size: 13.5px;
+  line-height: 21px;
+  font-weight: var(--font-weight-regular, 400);
+  text-align: left;
+}
+
+/* ── Camera bottom controls (screen 3) ── */
+.camera-controls {
+  position: absolute;
+  bottom: 28px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 3;
+}
+.camera-controls .btn-util {
+  padding: 9px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.camera-controls .btn-util:hover { background: var(--gray-50, #fafafa); }
+.camera-controls .btn-util:active { box-shadow: none; transform: translateY(3px); }
+.camera-controls .btn-util svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary, #414651);
+  display: block;
+}
+.camera-controls .btn-util-lg {
+  padding: 15px;
+}
+.camera-controls .btn-util-lg svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* ── Photo review bottom bar (screen 4) ── */
+.photo-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 12px 22px;
+  background: var(--bg-primary, #ffffff);
+  z-index: 3;
+}
+.photo-bottom-bar-title {
+  font-size: 15px;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 22px;
+  color: var(--text-primary, #181d27);
+}
+.photo-btn-row {
+  display: flex;
+  gap: 8px;
+}
+.btn-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+.btn-photo-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.btn-photo-secondary {
+  flex: 1;
+  padding: 0 14px;
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+.btn-photo-secondary:active {
+  box-shadow: none;
+  transform: translateY(3px);
+}
+.btn-photo-primary {
+  flex: 1;
+  padding: 0 14px;
+  background: var(--brand-500, #0ba5ec);
+  color: var(--text-white, #ffffff);
+  border: none;
+  border-bottom: 2px solid var(--brand-600, #0086c9);
+  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-photo-primary:active {
+  box-shadow: none;
+  border-bottom: none;
+  transform: translateY(4px);
+}
+
+/* ── Feedback Banner (screen 5) ── */
+.fb {
+  display: flex; flex-direction: column;
+  gap: var(--spacing-lg, 12px);
+  padding: 16px 12px 22px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+.fb-error { background: var(--bg-error-secondary, #fee4e2); }
+.fb-header { display: flex; align-items: center; gap: 8px; }
+.fb-icon {
+  width: 24px; height: 24px; flex-shrink: 0;
+  font-family: 'TossFace', sans-serif;
+  font-size: 20px; line-height: 24px; text-align: center;
+}
+.fb-title {
+  flex: 1;
+  font-size: 18px;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 24px;
+}
+.fb-error .fb-title { color: var(--text-error-primary, #d92d20); }
+.fb-content {
+  display: flex; flex-direction: column; gap: 1px;
+  font-size: 13px;
+  line-height: 18px;
+}
+.fb-subtitle { font-weight: var(--font-weight-bold, 700); }
+.fb-desc { font-weight: var(--font-weight-regular, 400); }
+.fb-error .fb-content { color: var(--text-error-primary, #d92d20); }
+.fb-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-bold, 700);
+  font-size: 13px;
+  line-height: 18px;
+  border: none; cursor: pointer;
+  border-radius: 12px;
+  padding: 8px;
+  height: 36px;
+  width: 100%; white-space: nowrap;
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+.fb-btn-primary { color: #ffffff; border-bottom: 2px solid transparent; }
+.fb-error .fb-btn-primary {
+  background: var(--red-500, #f04438);
+  border-bottom-color: var(--red-600, #d92d20);
+  box-shadow: 0 4px 0 0 var(--red-600, #d92d20);
+}
+.fb-error .fb-btn-primary:active {
+  box-shadow: none; border-bottom: none; transform: translateY(4px);
+}
+
+/* ── Screen 5: Success ── */
+.success-screen {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  background: var(--bg-sky, #e0f2fe);
+}
+.success-content {
+  padding-top: 80px;
+  text-align: center;
+  z-index: 2;
+}
+.success-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary, #181d27);
+  margin-bottom: 6px;
+}
+.success-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary, #414651);
+}
+.success-bottom-btn {
+  position: absolute;
+  bottom: 22px;
+  left: 12px;
+  right: 12px;
+  height: 38px;
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--brand-500, #0ba5ec);
+  color: var(--text-white, #ffffff);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold, 700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  border: none;
+  border-bottom: 2px solid var(--brand-600, #0086c9);
+  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
+  z-index: 4;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.success-bottom-btn:active {
+  box-shadow: none;
+  border-bottom: none;
+  transform: translateY(4px);
+}
+.rive-canvas-success {
+  position: absolute;
+  left: 50%;
+  width: 302px;
+  height: 302px;
+  z-index: 1;
+  pointer-events: none;
+  transform: translateX(-50%) scale(1.25);
+  transform-origin: bottom center;
+  bottom: -46px;
+}
+
+/* ── Reset button ── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-xl, 16px);
+}
+.page-header-text { flex: 1; }
+.btn-reset {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  background: var(--bg-primary, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-tertiary, #535862);
+  transition: all 0.15s;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.btn-reset:hover {
+  border-color: var(--border-primary, #d5d7da);
+  color: var(--text-primary, #181d27);
+}
+.btn-reset svg { width: 20px; height: 20px; }
+
+/* ── Screen label (below device) ── */
+.screen-label-outer {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-secondary, #414651);
+  text-align: center;
+  margin-top: var(--spacing-xl, 16px);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="page-header">
+        <div class="page-header-text">
+          <div class="sec-title">Photo</div>
+          <div class="sec-desc">Photo-based task completion flow — from task selection through camera capture to parent review.</div>
+        </div>
+        <button class="btn-reset" id="reset-btn" aria-label="Reset prototype">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        </button>
+      </div>
+
+      <div class="proto-viewer">
+        <button class="proto-arrow disabled" id="prev-btn" aria-label="Previous screen">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen">
+                <div class="phone-status">
+                  <span>9:41</span>
+                  <div class="phone-status-icons">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
+                  </div>
+                </div>
+
+                <div class="screen-sky">
+                  <div class="proto-screen" id="proto-screen">
+
+                    <!-- Screen 1: Home Carousel -->
+                    <div class="screen active" data-screen="0">
+                      <div class="toolbar toolbar-kid-home">
+                        <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
+                        <div class="toolbar-trailing">
+                          <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+                          <div class="btn-util btn-util-with-label" id="gem-counter"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label" id="gem-counter-label">100</span></div>
+                          <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+                        </div>
+                      </div>
+                      <div class="carousel-container">
+                        <!-- Card 1: Brush Teeth — Not Started -->
+                        <div class="task-card card-orange">
+                          <div class="card-badges">
+                            <span class="card-badge badge-orange"><span class="tf-badge flame-muted">🔥</span> 5 days</span>
+                            <span class="card-badge badge-orange"><span class="tf-badge">💎</span> 5</span>
+                          </div>
+                          <div class="card-content">
+                            <div class="card-name">Brush Teeth</div>
+                            <div class="card-desc">Take a photo brushing your teeth</div>
+                          </div>
+                          <div class="card-emoji-area"><span class="card-emoji">🫧</span></div>
+                          <div class="card-cta">Start</div>
+                        </div>
+
+                        <!-- Card 2: Make Bed — Rejected -->
+                        <div class="task-card card-blue-dark">
+                          <div class="card-badges">
+                            <span class="card-badge badge-blue-dark"><span class="tf-badge flame-muted">🔥</span> 2 days</span>
+                            <span class="card-badge badge-blue-dark"><span class="tf-badge">💎</span> 10</span>
+                          </div>
+                          <div class="card-content">
+                            <div class="card-name">Make Bed</div>
+                            <div class="card-desc">Make your bed neat and tidy</div>
+                          </div>
+                          <div class="card-emoji-area"><span class="card-emoji">🛏️</span></div>
+                          <div class="card-cta">Try again</div>
+                        </div>
+
+                        <!-- Card 3: Drink Water — Completed (claimable) -->
+                        <div class="task-card card-green">
+                          <div class="card-badges">
+                            <span class="card-badge badge-green"><span class="tf-badge">🔥</span> 10 days</span>
+                            <span class="card-badge badge-green"><span class="tf-badge">💎</span> 5</span>
+                          </div>
+                          <div class="card-content">
+                            <div class="card-name">Drink Water</div>
+                            <div class="card-desc">Drink a full glass of water</div>
+                          </div>
+                          <div class="card-emoji-area"><span class="card-emoji">💧</span></div>
+                          <div class="card-cta" id="claim-cta"><span class="tf-cta">💎</span> Claim</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Screen 2: Task Intro -->
+                    <div class="screen" data-screen="1">
+                      <div class="toolbar toolbar-quest">
+                        <div class="quest-close"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary, #414651)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+                        <div class="progress-track"><div class="progress-fill" style="width:10%"></div></div>
+                      </div>
+                      <div class="intro-messages">
+                        <div class="chat-bubble bubble-sprout">Time to brush your teeth! Take a photo when you're done.</div>
+                      </div>
+                      <div class="intro-cta" id="intro-camera-btn">
+                        <button class="btn-sprout btn-primary btn-md">Get Started</button>
+                      </div>
+                    </div>
+
+                    <!-- Screen 3: Camera View -->
+                    <div class="screen" data-screen="2">
+                      <div class="photo-screen">
+                        <div class="toolbar toolbar-quest">
+                          <div class="quest-close"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary, #414651)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+                          <div class="progress-track"><div class="progress-fill" style="width:15%"></div></div>
+                        </div>
+                        <div class="sprout-row">
+                          <div class="sprout-card">
+                            <canvas id="rive-sprout-card-1" width="240" height="240"></canvas>
+                          </div>
+                          <div class="speech-bubble">Point camera at your completed task</div>
+                        </div>
+                        <div class="camera-controls">
+                          <button class="btn-util" aria-label="Flash off">
+                            <svg viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7L2.09 11.69c-.35.42-.52.63-.53.8a.5.5 0 0 0 .19.4c.14.11.41.11.95.11H10l-1 8 5-6m-.35-6h3.64c.55 0 .82 0 .95.11a.5.5 0 0 1 .19.4c0 .17-.17.38-.53.8l-1.35 1.63M8.57 3.91 11 1l-.6 4.8M19 20 1 2"/></svg>
+                          </button>
+                          <button class="btn-util btn-util-lg" id="camera-btn" aria-label="Take photo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                          </button>
+                          <button class="btn-util" aria-label="Switch camera">
+                            <svg viewBox="0 0 22 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s.12.85 3.64 4.36a9 9 0 0 0 12.73 0A9.03 9.03 0 0 0 19.78 12M1 12v6m0-6h6m14-4s-.12-.85-3.64-4.36a9 9 0 0 0-12.73 0A9.03 9.03 0 0 0 2.22 8M21 8V2m0 6h-6"/></svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Screen 4: Photo Review -->
+                    <div class="screen" data-screen="3">
+                      <div class="photo-screen">
+                        <div class="toolbar toolbar-quest">
+                          <div class="quest-close"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary, #414651)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+                          <div class="progress-track"><div class="progress-fill" style="width:15%"></div></div>
+                        </div>
+                        <div class="sprout-row">
+                          <div class="sprout-card">
+                            <canvas id="rive-sprout-card-2" width="240" height="240"></canvas>
+                          </div>
+                          <div class="speech-bubble">Looking good! Ready to send?</div>
+                        </div>
+                        <div class="photo-bottom-bar">
+                          <div class="photo-bottom-bar-title">Ready to share?</div>
+                          <div class="photo-btn-row">
+                            <div class="btn-photo btn-photo-secondary" id="retake-btn"><svg class="btn-photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Retake</div>
+                            <div class="btn-photo btn-photo-primary" id="send-btn"><svg class="btn-photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Screen 5: Error Feedback -->
+                    <div class="screen" data-screen="4">
+                      <div class="photo-screen">
+                        <div class="toolbar toolbar-quest">
+                          <div class="quest-close"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary, #414651)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+                          <div class="progress-track"><div class="progress-fill" style="width:15%"></div></div>
+                        </div>
+                        <div class="sprout-row">
+                          <div class="sprout-card">
+                            <canvas id="rive-sprout-card-3" width="240" height="240"></canvas>
+                          </div>
+                          <div class="speech-bubble">Photo is unclear, do you want to try again?</div>
+                        </div>
+                        <div style="position:absolute;bottom:0;left:0;right:0;z-index:3;">
+                          <div class="fb fb-error">
+                            <div class="fb-header">
+                              <div class="fb-icon">&#10062;</div>
+                              <div class="fb-title">Try again</div>
+                            </div>
+                            <div class="fb-content">
+                              <div class="fb-subtitle">Photo doesn't match</div>
+                              <div class="fb-desc">Make sure your completed task is clearly visible.</div>
+                            </div>
+                            <button class="fb-btn fb-btn-primary" id="fb-retake-btn"><svg style="width:16px;height:16px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Retake photo</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Screen 6: Success -->
+                    <div class="screen" data-screen="5">
+                      <div class="success-screen">
+                        <div class="success-content">
+                          <div class="success-title">Great job!</div>
+                          <div class="success-subtitle">Sent to your parent to check!</div>
+                        </div>
+                        <canvas id="rive-success" class="rive-canvas-success" width="604" height="604"></canvas>
+                        <div class="grass-container" style="z-index:2">
+                          <div class="grass-edge"></div>
+                          <div class="grass-fill"></div>
+                        </div>
+                        <div class="success-bottom-btn" id="back-to-tasks-btn">Back to tasks</div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <canvas id="rive-character" class="rive-canvas" width="604" height="604"></canvas>
+                  <div class="grass-container">
+                    <div class="grass-edge"></div>
+                    <div class="grass-fill"></div>
+                  </div>
+                </div>
+                <div class="home-indicator"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="proto-arrow" id="next-btn" aria-label="Next screen">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="screen-label-outer" id="screen-label"></div>
+    </div>
+  </div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Home',href:'/product-explorer/task/home.html'},{label:'Home (Older)',href:'/product-explorer/task/home-older.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script src="/product-explorer/shell.js"></script>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script>
+(function() {
+  // Rive characters — home screen + success screen
+  var SM = 'State Machine 1';
+  var celebrationTrigger = null;
+  function riveWithHair(canvas, onReady) {
+    var r = new rive.Rive({
+      src: '/design-system/sprout-character.riv', canvas: canvas, autoplay: true, stateMachines: SM, fit: rive.Fit.Contain,
+      onLoad: function() {
+        try {
+          var inputs = r.stateMachineInputs(SM);
+          if (inputs) {
+            inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
+            if (onReady) onReady(inputs);
+          }
+        } catch(e) {}
+      }
+    });
+    return r;
+  }
+  var canvas1 = document.getElementById('rive-character');
+  if (canvas1 && window.rive) { riveWithHair(canvas1); }
+  var canvas2 = document.getElementById('rive-success');
+  if (canvas2 && window.rive) {
+    riveWithHair(canvas2, function(inputs) {
+      var t = inputs.find(function(i) { return i.name === 'celebration'; });
+      if (t) celebrationTrigger = t;
+    });
+  }
+  var cardCanvas1 = document.getElementById('rive-sprout-card-1');
+  if (cardCanvas1 && window.rive) { riveWithHair(cardCanvas1); }
+  var cardCanvas2 = document.getElementById('rive-sprout-card-2');
+  if (cardCanvas2 && window.rive) { riveWithHair(cardCanvas2); }
+  var cardCanvas3 = document.getElementById('rive-sprout-card-3');
+  if (cardCanvas3 && window.rive) { riveWithHair(cardCanvas3); }
+
+  // Home rive + grass (hide on non-home screens)
+  var homeRive = document.getElementById('rive-character');
+  var homeGrass = homeRive ? homeRive.nextElementSibling : null;
+
+  // Screen navigation
+  var screens = document.querySelectorAll('.screen');
+  var prevBtn = document.getElementById('prev-btn');
+  var nextBtn = document.getElementById('next-btn');
+  var screenLabel = document.getElementById('screen-label');
+  var labels = ['Home — Task Carousel', 'Task Intro', 'Camera', 'Photo Review', 'Error Feedback', 'Success'];
+  var current = 0;
+  var total = screens.length;
+
+  function updateScreen() {
+    screens.forEach(function(s, i) {
+      s.classList.toggle('active', i === current);
+    });
+    prevBtn.classList.toggle('disabled', current === 0);
+    nextBtn.classList.toggle('disabled', current === total - 1);
+    screenLabel.textContent = labels[current] || '';
+    // Show home rive + grass on home and task intro screens
+    var showHomeRive = current <= 1;
+    if (homeRive) {
+      homeRive.style.display = showHomeRive ? '' : 'none';
+      homeRive.style.zIndex = current === 0 ? '3' : '1';
+    }
+    if (homeGrass) homeGrass.style.display = showHomeRive ? '' : 'none';
+    // Fire celebration on success screen
+    if (current === 5 && celebrationTrigger) celebrationTrigger.fire();
+  }
+
+  prevBtn.addEventListener('click', function() {
+    if (current > 0) { current--; updateScreen(); }
+  });
+  nextBtn.addEventListener('click', function() {
+    if (current < total - 1) { current++; updateScreen(); }
+  });
+
+  // Interactive buttons
+  document.getElementById('intro-camera-btn').addEventListener('click', function() {
+    current = 2; // go to camera
+    updateScreen();
+  });
+  document.getElementById('camera-btn').addEventListener('click', function() {
+    current = 3; // go to photo review
+    updateScreen();
+  });
+  document.getElementById('send-btn').addEventListener('click', function() {
+    current = 4; // go to error feedback
+    updateScreen();
+  });
+  document.getElementById('fb-retake-btn').addEventListener('click', function() {
+    current = 2; // back to camera
+    updateScreen();
+  });
+  document.getElementById('retake-btn').addEventListener('click', function() {
+    current = 2; // back to camera
+    updateScreen();
+  });
+  document.getElementById('back-to-tasks-btn').addEventListener('click', function() {
+    current = 0; // back to home
+    updateScreen();
+    var carousel = document.querySelector('.carousel-container');
+    if (carousel) carousel.scrollLeft = 0;
+  });
+
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    current = 0;
+    updateScreen();
+    var carousel = document.querySelector('.carousel-container');
+    if (carousel) carousel.scrollLeft = 0;
+    // Reset claim state
+    gemClaimed = false;
+    var claimCard = claimCta.closest('.task-card');
+    claimCard.classList.remove('card-claiming', 'card-claimed-anim');
+    var overlay = claimCard.querySelector('.card-completed-overlay');
+    if (overlay) overlay.remove();
+    claimCta.style.visibility = '';
+    claimCta.style.opacity = '';
+    claimCta.style.transform = '';
+    gemCounterLabel.textContent = '100';
+  });
+
+  // Quest close (X) buttons → back to home
+  document.querySelectorAll('.quest-close').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      current = 0;
+      updateScreen();
+      var carousel = document.querySelector('.carousel-container');
+      if (carousel) carousel.scrollLeft = 0;
+    });
+  });
+
+  // Card CTA "Start" → next screen
+  var startCta = document.querySelector('.task-card.card-orange .card-cta');
+  if (startCta) {
+    startCta.addEventListener('click', function() {
+      current = 1;
+      updateScreen();
+    });
+  }
+
+  // "Take Photo" button on Task Detail → camera screen
+  var takePhotoBtn = document.querySelector('.btn-task');
+  if (takePhotoBtn) {
+    takePhotoBtn.addEventListener('click', function() {
+      current = 2;
+      updateScreen();
+    });
+  }
+
+  // Tap on screen: right half → next, left half → prev
+  var deviceScreen = document.querySelector('.device-screen');
+  deviceScreen.addEventListener('click', function(e) {
+    // Ignore clicks on interactive elements
+    if (e.target.closest('.card-cta, .btn-task, .btn-photo, .fb-btn, .success-bottom-btn, .btn-util, .quest-close, .intro-cta')) return;
+    var rect = deviceScreen.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    if (x > rect.width / 2) {
+      if (current < total - 1) { current++; updateScreen(); }
+    } else {
+      if (current > 0) { current--; updateScreen(); }
+    }
+  });
+
+  updateScreen();
+
+  // ── Gem claim animation ──
+  var claimCta = document.getElementById('claim-cta');
+  var gemCounter = document.getElementById('gem-counter');
+  var gemCounterLabel = document.getElementById('gem-counter-label');
+  var deviceScreen = document.querySelector('.device-screen');
+  var gemClaimed = false;
+
+  function getRelPos(el) {
+    var elRect = el.getBoundingClientRect();
+    var screenRect = deviceScreen.getBoundingClientRect();
+    return {
+      x: elRect.left - screenRect.left + elRect.width / 2,
+      y: elRect.top - screenRect.top + elRect.height / 2
+    };
+  }
+
+  if (claimCta) {
+    claimCta.addEventListener('click', function() {
+      if (gemClaimed) return;
+      gemClaimed = true;
+      var claimCard = claimCta.closest('.task-card');
+      claimCard.classList.add('card-claiming');
+      var from = getRelPos(claimCta);
+      var to = getRelPos(gemCounter);
+      var gemCount = 8;
+      var gemReward = 5;
+      var landed = 0;
+
+      for (var i = 0; i < gemCount; i++) {
+        (function(index) {
+          var gem = document.createElement('span');
+          gem.className = 'gem-particle';
+          gem.textContent = '\uD83D\uDC8E';
+          gem.style.left = from.x + 'px';
+          gem.style.top = from.y + 'px';
+          gem.style.opacity = '0';
+          deviceScreen.appendChild(gem);
+          var delay = index * 60 + Math.random() * 40;
+          var duration = 500 + Math.random() * 200;
+          var spreadX = (Math.random() - 0.5) * 60;
+          var spreadY = (Math.random() - 0.5) * 30;
+          var midX = (from.x + to.x) / 2 + (Math.random() - 0.5) * 80;
+          var midY = Math.min(from.y, to.y) - 30 - Math.random() * 40;
+          var startTime = null;
+          function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+          function animate(ts) {
+            if (!startTime) startTime = ts;
+            var elapsed = ts - startTime - delay;
+            if (elapsed < 0) { requestAnimationFrame(animate); return; }
+            var t = Math.min(elapsed / duration, 1);
+            var e = easeOutCubic(t);
+            var sx = from.x + spreadX * (1 - e);
+            var sy = from.y + spreadY * (1 - e);
+            var bx = (1 - e) * (1 - e) * sx + 2 * (1 - e) * e * midX + e * e * to.x;
+            var by = (1 - e) * (1 - e) * sy + 2 * (1 - e) * e * midY + e * e * to.y;
+            var scale = 1.2 - 0.6 * e;
+            gem.style.transform = 'translate(-50%, -50%) translate(' + (bx - from.x) + 'px,' + (by - from.y) + 'px) scale(' + scale + ')';
+            gem.style.opacity = t < 0.1 ? (t / 0.1) : (t > 0.85 ? Math.max(0, 1 - (t - 0.85) / 0.15) : 1);
+            if (t < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              gem.remove();
+              landed++;
+              gemCounter.classList.remove('gem-counter-glow');
+              void gemCounter.offsetWidth;
+              gemCounter.classList.add('gem-counter-glow');
+              gemCounter.addEventListener('animationend', function handler() {
+                gemCounter.classList.remove('gem-counter-glow');
+                gemCounter.removeEventListener('animationend', handler);
+              });
+              if (landed === gemCount) {
+                var currentVal = parseInt(gemCounterLabel.textContent, 10);
+                gemCounterLabel.textContent = currentVal + gemReward;
+                setTimeout(function() {
+                  var overlay = document.createElement('div');
+                  overlay.className = 'card-completed-overlay';
+                  claimCard.appendChild(overlay);
+                  claimCard.classList.add('card-claimed-anim');
+                  claimCta.style.visibility = 'hidden';
+                }, 150);
+              }
+            }
+          }
+          requestAnimationFrame(animate);
+        })(i);
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

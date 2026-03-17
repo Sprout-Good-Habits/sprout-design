@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Loading Indicator</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "LoadingIndicator",
+  "slug": "loading",
+  "intent": {
+    "purpose": "Tell users that content or an action is being processed to reduce perceived wait time",
+    "taskContext": ["page-load", "data-fetch", "action-processing"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["spinner"],
+    "allows": ["supporting-text"],
+    "forbids": ["button", "image"]
+  },
+  "variants": [
+    { "name": "Full-screen", "useWhen": "Initial page load or major transitions", "pairWith": [] },
+    { "name": "Inline Primary", "useWhen": "Loading content on light backgrounds", "pairWith": [] },
+    { "name": "Inline Muted", "useWhen": "Loading content on dark or colored backgrounds", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Large", "useWhen": "Prominent loading states — 28px spinner" },
+    { "name": "Medium", "useWhen": "Standard inline loading — 24px spinner" },
+    { "name": "Small", "useWhen": "Compact spaces, button loading — 20px spinner" }
+  ],
+  "context": {
+    "density": ["default", "compact"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["full-screen", "inline", "inside-button"]
+  },
+  "relationships": {
+    "related": ["ProgressBar"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Button"]
+  },
+  "states": ["spinning"],
+  "accessibility": {
+    "role": "status",
+    "keyboard": [],
+    "ariaAttributes": ["aria-live", "aria-label", "aria-busy"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Spinner ── */
+.spinner-circle {
+  display:inline-block;
+  flex-shrink:0;
+  animation:spinner-rotate 0.8s linear infinite;
+}
+@keyframes spinner-rotate { to { transform:rotate(360deg); } }
+
+/* Sizes */
+.spinner-lg { width:28px; height:28px; }
+.spinner-md { width:24px; height:24px; }
+.spinner-sm { width:20px; height:20px; }
+
+/* ── Inline loading indicator ── */
+.loading-inline {
+  display:flex; flex-direction:column; align-items:center;
+  gap:var(--spacing-xl, 16px);
+}
+.loading-inline .loading-text {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-lg, 18px);
+  line-height:var(--line-height-text-lg, 28px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651);
+  text-align:center;
+}
+
+/* ── Full-screen loading preview ── */
+.fullscreen-preview {
+  width:200px; height:434px;
+  border-radius:var(--radius-xl, 12px);
+  overflow:hidden;
+  position:relative;
+  background:var(--bg-sky, #e0f2fe);
+  border:1px solid var(--border-secondary, #e9eaeb);
+}
+.fullscreen-preview .fs-loading {
+  position:absolute;
+  top:calc(50% - 70px);
+  left:50%; transform:translate(-50%, -50%);
+  display:flex; flex-direction:column; align-items:center;
+  gap:12px; z-index:2;
+}
+.fullscreen-preview .fs-loading-text {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:10px; line-height:14px;
+  color:var(--text-secondary, #414651);
+}
+.fullscreen-preview .fs-rive {
+  position:absolute;
+  top:96px; left:50%;
+  transform:translateX(-50%) scale(0.28);
+  width:912px; height:972px;
+  z-index:1;
+}
+.fullscreen-preview .fs-grass {
+  position:absolute;
+  bottom:0; left:0; width:100%;
+  z-index:0;
+}
+.fullscreen-preview .fs-grass-edge {
+  height:24px; background:var(--bg-grass, #86cb3c);
+  border-radius:var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+}
+.fullscreen-preview .fs-grass-fill {
+  background:var(--bg-grass, #86cb3c);
+  height:17px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="sec-title">Loading Indicator</div>
+    <div class="sec-desc">Loading indicators tell users that content or an action is being processed. They reduce perceived wait time and reassure that the app is working. Sprout uses two variants: full-screen and inline.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>full-screen</strong> during app launch, screen transitions, or when the entire view is loading.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>inline</strong> inside buttons, cards, or sections that are loading independently.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use a loading indicator for actions that complete in under 300ms &mdash; it will feel like a flash.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use multiple full-screen indicators &mdash; only one per screen transition.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Full-screen text</span>
+        <div class="loading-inline">
+          <svg class="spinner-circle spinner-lg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" stroke="var(--border-primary, #d5d7da)" stroke-width="3" stroke-linecap="round"/><path d="M14 3a11 11 0 0 1 11 11" stroke="var(--fg-brand-primary, #0ba5ec)" stroke-width="3" stroke-linecap="round"/></svg>
+          <span class="loading-text">Loading...</span>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Inline Primary</span>
+        <svg class="spinner-circle spinner-md" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.5" stroke="var(--border-primary, #d5d7da)" stroke-width="2.5" stroke-linecap="round"/><path d="M12 2.5a9.5 9.5 0 0 1 9.5 9.5" stroke="var(--fg-brand-primary, #0ba5ec)" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="demo-item" style="background:var(--brand-500, #0ba5ec);border-radius:var(--radius-md, 8px);padding:16px;">
+        <span class="demo-label" style="color:#fff">Inline Muted</span>
+        <svg class="spinner-circle spinner-md" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.5" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/><path d="M12 2.5a9.5 9.5 0 0 1 9.5 9.5" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-screen -->
+  <div class="doc-section">
+    <h2>Full-screen</h2>
+    <p>The full-screen loading state uses the Main Background with a centered spinner and &ldquo;Loading...&rdquo; text. The Sprout character sits on the grass below, adding personality to the wait.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Full-screen loading</span>
+        <div class="fullscreen-preview">
+          <div class="fs-loading">
+            <img src="/design-system/brand/assets/loading-circle.svg" alt="Loading" width="14" height="14" class="spinner-circle" style="border:none">
+            <span class="fs-loading-text">Loading...</span>
+          </div>
+          <canvas id="rive-fs-loading" class="fs-rive" width="912" height="972"></canvas>
+          <div class="fs-grass">
+            <div class="fs-grass-edge"></div>
+            <div class="fs-grass-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Background:</strong> <code>--bg-sky</code> (#e0f2fe) full bleed</li>
+        <li><strong>Spinner:</strong> Primary, large (24px), centered horizontally, offset above vertical center</li>
+        <li><strong>Text:</strong> &ldquo;Loading...&rdquo; in text-lg regular, <code>--text-secondary</code>, 16px below spinner</li>
+        <li><strong>Character:</strong> Rive Sprout character on grass at the bottom (same as Main Background)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Inline variants -->
+  <div class="doc-section">
+    <h2>Inline variants</h2>
+    <p>Inline spinners are used inside components &mdash; buttons, cards, list items &mdash; to show localised loading. They come in two hierarchies and two sizes.</p>
+
+    <div class="state-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="state-cell">
+        <span class="state-cell-label">Primary &middot; Large (28px)</span>
+        <div class="loading-inline">
+          <svg class="spinner-circle spinner-lg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" stroke="var(--border-primary, #d5d7da)" stroke-width="3" stroke-linecap="round"/><path d="M14 3a11 11 0 0 1 11 11" stroke="var(--fg-brand-primary, #0ba5ec)" stroke-width="3" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="state-cell" style="background:var(--brand-500, #0ba5ec);border-radius:var(--radius-md, 8px)">
+        <span class="state-cell-label" style="color:#fff">Muted &middot; Large (28px)</span>
+        <div class="loading-inline">
+          <svg class="spinner-circle spinner-lg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" stroke="rgba(255,255,255,0.5)" stroke-width="3" stroke-linecap="round"/><path d="M14 3a11 11 0 0 1 11 11" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Primary &middot; Medium (24px)</span>
+        <div class="loading-inline">
+          <svg class="spinner-circle spinner-md" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.5" stroke="var(--border-primary, #d5d7da)" stroke-width="2.5" stroke-linecap="round"/><path d="M12 2.5a9.5 9.5 0 0 1 9.5 9.5" stroke="var(--fg-brand-primary, #0ba5ec)" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="state-cell" style="background:var(--brand-500, #0ba5ec);border-radius:var(--radius-md, 8px)">
+        <span class="state-cell-label" style="color:#fff">Muted &middot; Medium (24px)</span>
+        <div class="loading-inline">
+          <svg class="spinner-circle spinner-md" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.5" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/><path d="M12 2.5a9.5 9.5 0 0 1 9.5 9.5" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Primary &middot; Small (20px)</span>
+        <div class="loading-inline">
+          <svg class="spinner-circle spinner-sm" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="var(--border-primary, #d5d7da)" stroke-width="2" stroke-linecap="round"/><path d="M10 2a8 8 0 0 1 8 8" stroke="var(--fg-brand-primary, #0ba5ec)" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="state-cell" style="background:var(--brand-500, #0ba5ec);border-radius:var(--radius-md, 8px)">
+        <span class="state-cell-label" style="color:#fff">Muted &middot; Small (20px)</span>
+        <div class="loading-inline">
+          <svg class="spinner-circle spinner-sm" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/><path d="M10 2a8 8 0 0 1 8 8" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Hierarchy</h3>
+    <p><strong>Primary</strong> uses the brand blue arc (<code>--fg-brand-primary</code>) on a <code>--border-primary</code> ring. Use this as the default.</p>
+    <p><strong>Muted</strong> uses a white arc on a white 50% opacity ring. Use this on colored or dark backgrounds where the spinner needs to stay subtle.</p>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Size</h3>
+    <p><strong>Large (28px)</strong> for standalone loading indicators and full-screen loading.</p>
+    <p><strong>Medium (24px)</strong> for use inside cards, sections, and inline loading states.</p>
+    <p><strong>Small (20px)</strong> for use inside buttons and compact components.</p>
+  </div>
+
+  <!-- With supporting text -->
+  <div class="doc-section">
+    <h2>With supporting text</h2>
+    <p>An optional label below the spinner provides context about what is loading.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">With text</span>
+        <div class="loading-inline">
+          <svg class="spinner-circle spinner-lg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" stroke="var(--border-primary, #d5d7da)" stroke-width="3" stroke-linecap="round"/><path d="M14 3a11 11 0 0 1 11 11" stroke="var(--fg-brand-primary, #0ba5ec)" stroke-width="3" stroke-linecap="round"/></svg>
+          <span class="loading-text">Loading...</span>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Spinner only</span>
+        <div class="loading-inline">
+          <svg class="spinner-circle spinner-lg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" stroke="var(--border-primary, #d5d7da)" stroke-width="3" stroke-linecap="round"/><path d="M14 3a11 11 0 0 1 11 11" stroke="var(--fg-brand-primary, #0ba5ec)" stroke-width="3" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anatomy -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Ring</strong> (required) &mdash; A circular track. Primary uses <code>--border-primary</code> (#d5d7da), muted uses white at 50% opacity.</li>
+        <li><strong>Arc</strong> (required) &mdash; A quarter-circle segment that rotates continuously. Primary uses <code>--fg-brand-primary</code> (#0ba5ec), muted uses white (#ffffff).</li>
+        <li><strong>Text</strong> (optional) &mdash; Regular text-lg in <code>--text-secondary</code>. Centered below the spinner with 16px gap.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content guidelines -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Keep text short: &ldquo;Loading...&rdquo;, &ldquo;Saving...&rdquo;, &ldquo;Checking...&rdquo;</li>
+        <li>Use an ellipsis (...) to suggest ongoing progress</li>
+        <li>Don&rsquo;t use vague text like &ldquo;Please wait&rdquo; &mdash; describe the action</li>
+        <li>Omit text inside buttons &mdash; the spinner alone is sufficient</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Token Reference -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Primary</th><th>Muted</th></tr></thead>
+      <tbody>
+        <tr><td>Ring color</td><td><code>--border-primary</code> (#d5d7da)</td><td>white 50% (#ffffff80)</td></tr>
+        <tr><td>Arc color</td><td><code>--fg-brand-primary</code> (#0ba5ec)</td><td>white (#ffffff)</td></tr>
+        <tr><td>Stroke width (lg)</td><td colspan="2">3px</td></tr>
+        <tr><td>Stroke width (md)</td><td colspan="2">2.5px</td></tr>
+        <tr><td>Stroke width (sm)</td><td colspan="2">2px</td></tr>
+        <tr><td>Size (lg)</td><td colspan="2">28px</td></tr>
+        <tr><td>Size (md)</td><td colspan="2">24px</td></tr>
+        <tr><td>Size (sm)</td><td colspan="2">20px</td></tr>
+        <tr><td>Stroke caps</td><td colspan="2">Round</td></tr>
+        <tr><td>Animation</td><td colspan="2">Rotate 360deg, 0.8s linear infinite</td></tr>
+        <tr><td>Text</td><td colspan="2">text-lg regular (18px/28px), <code>--text-secondary</code></td></tr>
+        <tr><td>Text gap</td><td colspan="2"><code>--spacing-xl</code> (16px)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Full-screen tokens</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
+        <tr><td>Spinner</td><td>Primary, large (24px)</td></tr>
+        <tr><td>Text</td><td>&ldquo;Loading...&rdquo;, text-lg regular, <code>--text-secondary</code></td></tr>
+        <tr><td>Position</td><td>Centered horizontally, offset above vertical center</td></tr>
+        <tr><td>Grass</td><td><code>--bg-grass</code> (#86cb3c), 24px rounded edge + fill</td></tr>
+        <tr><td>Character</td><td>Rive <code>sprot2.5.riv</code>, positioned on grass</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Use <code>role="status"</code> on the loading container with <code>aria-live="polite"</code> so screen readers announce the loading state.</li>
+        <li><strong>Label:</strong> If there is no visible text, add <code>aria-label="Loading"</code> to the spinner element.</li>
+        <li><strong>Buttons:</strong> When a button enters a loading state, set <code>aria-busy="true"</code> and <code>aria-disabled="true"</code>.</li>
+        <li><strong>Motion:</strong> The spinning animation should respect <code>prefers-reduced-motion</code>. Replace with a static icon or pulsing opacity for users who prefer reduced motion.</li>
+        <li><strong>Timing:</strong> If loading takes more than 10 seconds, provide a progress update or fallback message.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+<script>
+// Initialize Rive character in full-screen preview
+(function() {
+  var canvas = document.getElementById('rive-fs-loading');
+  if (!canvas || typeof rive === 'undefined') return;
+  try {
+    var r = new rive.Rive({
+      src: '/brand/assets/sprot2.5.riv',
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: 'State Machine 1',
+      fit: rive.Fit.Cover,
+      alignment: rive.Alignment.Center,
+      onLoad: function() {
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs('State Machine 1');
+          if (inputs) {
+            inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
+            inputs.forEach(function(inp) { if (inp.name === 'looking') inp.value = 0; });
+          }
+        } catch(e) {}
+      }
+    });
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>

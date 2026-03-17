@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+.hero { margin-bottom: var(--spacing-6xl, 48px); }
+.overview-content {
+  max-width: 640px;
+}
+.overview-content p {
+  font-size: var(--font-size-text-md, 16px);
+  color: var(--text-secondary, #414651);
+  line-height: var(--line-height-text-md, 24px);
+  margin-bottom: var(--spacing-xl, 16px);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="hero">
+        <div class="sec-title">Product Explorer</div>
+        <div class="sec-desc">Explore Sprout's product screens, user flows, and interaction patterns across the app experience.</div>
+      </div>
+
+      <div class="overview-content">
+        <p>This space documents the key screens and flows that make up the Sprout product experience. Use it to understand how components come together in context, review user journeys, and reference real implementation patterns.</p>
+        <p>More content coming soon.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Home',href:'/product-explorer/task/home.html'},{label:'Home (Older)',href:'/product-explorer/task/home-older.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

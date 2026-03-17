@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Card States — Comparison</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<style>
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-primary, #ffffff);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  padding: 48px;
+}
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary, #181d27);
+  margin-bottom: 8px;
+}
+.page-desc {
+  font-size: 14px;
+  color: var(--text-tertiary, #535862);
+  margin-bottom: 40px;
+}
+.comparison {
+  display: flex;
+  gap: 48px;
+}
+.column {
+  flex: 1;
+  min-width: 0;
+}
+.column-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary, #181d27);
+  margin-bottom: 4px;
+}
+.column-desc {
+  font-size: 12px;
+  color: var(--text-tertiary, #535862);
+  margin-bottom: 20px;
+}
+.state-row {
+  margin-bottom: 20px;
+}
+.state-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-quaternary, #717680);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+/* ===== YOUNGER KID CARDS ===== */
+.kid-card {
+  width: 280px;
+  height: 315px;
+  border-radius: 24px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+.kid-card-badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+.kid-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  border-radius: 100px;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 400;
+}
+.kid-badge .tf-b {
+  font-family: 'TossFace', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+}
+.kid-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 10px;
+  position: relative;
+  z-index: 2;
+}
+.kid-card-name {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 27px;
+}
+.kid-card-desc {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+.kid-card-emoji {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+.kid-card-emoji span {
+  font-family: 'TossFace', sans-serif;
+  font-size: 120px;
+  line-height: 1;
+}
+.kid-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+.kid-cta .tf-c {
+  font-family: 'TossFace', sans-serif;
+  font-size: 14px;
+  line-height: 1;
+}
+.kid-cta-disabled {
+  background: var(--gray-300, #d5d7da);
+  color: var(--text-disabled, #717680);
+  border: 2px solid var(--gray-400, #a4a7ae);
+  box-shadow: 0 3px 0 0 var(--gray-400, #a4a7ae);
+}
+.kid-completed-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  border-radius: 24px;
+  pointer-events: none;
+  z-index: 1;
+}
+.flame-muted { filter: grayscale(1) brightness(2); }
+
+/* Kid card colors */
+.kc-brand { background: var(--brand-500, #0ba5ec); }
+.kc-orange { background: var(--orange-500, #ef6820); }
+.kc-violet { background: var(--violet-500, #875bf7); }
+.kc-green { background: var(--green-500, #17b26a); }
+.kc-blue-dark { background: var(--blue-dark-500, #2970ff); }
+/* Kid badge colors */
+.kb-brand { background: var(--brand-200, #b9e6fe); color: var(--brand-700, #026aa2); }
+.kb-orange { background: var(--orange-200, #f9dbaf); color: var(--orange-700, #b93815); }
+.kb-violet { background: var(--violet-200, #ddd6fe); color: var(--violet-700, #5925dc); }
+.kb-green { background: var(--green-200, #abefc6); color: var(--green-700, #067647); }
+.kb-blue-dark { background: var(--blue-dark-200, #b2ccff); color: var(--blue-dark-700, #004eeb); }
+
+/* ===== OLDER KID ROWS ===== */
+.older-container {
+  width: 280px;
+}
+.older-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.older-emoji-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.older-emoji-box .tf-e {
+  font-family: 'TossFace', sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+.oe-brand { background: var(--brand-500, #0ba5ec); }
+.oe-orange { background: var(--orange-500, #ef6820); }
+.oe-violet { background: var(--violet-500, #875bf7); }
+.oe-green { background: var(--green-500, #17b26a); }
+.oe-blue-dark { background: var(--blue-dark-500, #2970ff); }
+
+.older-info { flex: 1; min-width: 0; }
+.older-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary, #181d27);
+  line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.older-desc {
+  font-size: 10px;
+  color: var(--text-tertiary, #535862);
+  line-height: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.older-trailing {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.older-badges {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.older-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text-quaternary, #717680);
+  line-height: 1;
+}
+.older-badge .tf-ob {
+  font-family: 'TossFace', sans-serif;
+  font-size: 10px;
+  line-height: 1;
+}
+.older-chevron {
+  color: var(--gray-400, #a4a7ae);
+  display: flex;
+  align-items: center;
+}
+.older-chevron svg { width: 12px; height: 12px; }
+
+/* Older card wrappers */
+.older-card {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.older-card .older-row { border-radius: 0; }
+.older-cta-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  background: var(--bg-secondary, #fafafa);
+  border-radius: 0 0 10px 10px;
+}
+.older-cta-label {
+  font-size: 10px;
+  color: var(--text-secondary, #414651);
+  line-height: 14px;
+  text-align: center;
+}
+.older-cta-label strong {
+  color: var(--text-primary, #181d27);
+  font-weight: 700;
+}
+
+/* btn-sprout system */
+.btn-sprout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  user-select: none;
+  white-space: nowrap;
+}
+.btn-sm { height: 32px; font-size: 11px; }
+.btn-primary {
+  background: var(--brand-500, #0ba5ec);
+  color: #fff;
+  border-bottom: 2px solid var(--brand-600, #0086c9);
+  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-warning {
+  background: var(--orange-500, #ef6820);
+  color: #fff;
+  border-bottom: 2px solid var(--orange-600, #e04f16);
+  box-shadow: 0 4px 0 0 var(--orange-600, #e04f16);
+}
+.btn-sprout .tf-cl {
+  font-family: 'TossFace', sans-serif;
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* Claimed state */
+.older-row-claimed {
+  opacity: 0.5;
+}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+
+<div class="page-title">Task Card States — Comparison</div>
+<div class="page-desc">All 5 task states for younger kids (cards) and older kids (notification rows), side by side.</div>
+
+<div class="comparison">
+
+  <!-- YOUNGER KIDS COLUMN -->
+  <div class="column">
+    <div class="column-title">Younger Kids</div>
+    <div class="column-desc">Full-bleed color cards in a horizontal carousel</div>
+
+    <!-- 1. Not Started -->
+    <div class="state-row">
+      <div class="state-label">Not Started</div>
+      <div class="kid-card kc-brand">
+        <div class="kid-card-badges">
+          <span class="kid-badge kb-brand"><span class="tf-b flame-muted">&#x1F525;</span> 3 days</span>
+          <span class="kid-badge kb-brand"><span class="tf-b">&#x1F48E;</span> 10</span>
+        </div>
+        <div class="kid-card-content">
+          <div class="kid-card-name">Talk to Sprout</div>
+          <div class="kid-card-desc">Chat with Sprout about your day</div>
+        </div>
+        <div class="kid-card-emoji"><span>&#x1F4AC;</span></div>
+        <div class="kid-cta">Start</div>
+      </div>
+    </div>
+
+    <!-- 2. Rejected -->
+    <div class="state-row">
+      <div class="state-label">Rejected</div>
+      <div class="kid-card kc-orange">
+        <div class="kid-card-badges">
+          <span class="kid-badge kb-orange"><span class="tf-b flame-muted">&#x1F525;</span> 5 days</span>
+          <span class="kid-badge kb-orange"><span class="tf-b">&#x1F48E;</span> 5</span>
+        </div>
+        <div class="kid-card-content">
+          <div class="kid-card-name">Brush Teeth</div>
+          <div class="kid-card-desc">Take a photo brushing your teeth</div>
+        </div>
+        <div class="kid-card-emoji"><span>&#x1FAE7;</span></div>
+        <div class="kid-cta">Try again</div>
+      </div>
+    </div>
+
+    <!-- 3. Reviewing -->
+    <div class="state-row">
+      <div class="state-label">Reviewing</div>
+      <div class="kid-card kc-violet">
+        <div class="kid-card-badges">
+          <span class="kid-badge kb-violet"><span class="tf-b">&#x1F525;</span> 7 days</span>
+          <span class="kid-badge kb-violet"><span class="tf-b">&#x1F48E;</span> 15</span>
+        </div>
+        <div class="kid-card-content">
+          <div class="kid-card-name">Read for 20 min</div>
+          <div class="kid-card-desc">Read a book and share what you liked</div>
+        </div>
+        <div class="kid-card-emoji"><span>&#x1F4D6;</span></div>
+        <div class="kid-cta kid-cta-disabled">Reviewing...</div>
+      </div>
+    </div>
+
+    <!-- 4. Claimable -->
+    <div class="state-row">
+      <div class="state-label">Claimable</div>
+      <div class="kid-card kc-green">
+        <div class="kid-card-badges">
+          <span class="kid-badge kb-green"><span class="tf-b">&#x1F525;</span> 10 days</span>
+          <span class="kid-badge kb-green"><span class="tf-b">&#x1F48E;</span> 5</span>
+        </div>
+        <div class="kid-card-content">
+          <div class="kid-card-name">Drink Water</div>
+          <div class="kid-card-desc">Drink a full glass of water</div>
+        </div>
+        <div class="kid-card-emoji"><span>&#x1F4A7;</span></div>
+        <div class="kid-cta"><span class="tf-c">&#x1F48E;</span> Claim</div>
+      </div>
+    </div>
+
+    <!-- 5. Claimed -->
+    <div class="state-row">
+      <div class="state-label">Claimed</div>
+      <div class="kid-card kc-blue-dark">
+        <div class="kid-completed-overlay"></div>
+        <div class="kid-card-badges">
+          <span class="kid-badge kb-blue-dark"><span class="tf-b">&#x1F525;</span> 12 days</span>
+          <span class="kid-badge kb-blue-dark"><span class="tf-b">&#x1F48E;</span> 20</span>
+        </div>
+        <div class="kid-card-content">
+          <div class="kid-card-name">Practice Piano</div>
+          <div class="kid-card-desc">Practice your piano for 15 minutes</div>
+        </div>
+        <div class="kid-card-emoji"><span>&#x1F3B9;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OLDER KIDS COLUMN -->
+  <div class="column">
+    <div class="column-title">Older Kids</div>
+    <div class="column-desc">Notification-style rows with Live Activity expanded cards</div>
+
+    <!-- 1. Not Started -->
+    <div class="state-row">
+      <div class="state-label">Not Started</div>
+      <div class="older-container">
+        <div class="older-row">
+          <div class="older-emoji-box oe-brand"><span class="tf-e">&#x1F4AC;</span></div>
+          <div class="older-info">
+            <div class="older-name">Talk to Sprout</div>
+            <div class="older-desc">Chat with Sprout about your day</div>
+          </div>
+          <div class="older-trailing">
+            <div class="older-badges">
+              <span class="older-badge"><span class="tf-ob flame-muted">&#x1F525;</span>3</span>
+              <span class="older-badge"><span class="tf-ob">&#x1F48E;</span>10</span>
+            </div>
+            <span class="older-chevron"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"/></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Rejected -->
+    <div class="state-row">
+      <div class="state-label">Rejected</div>
+      <div class="older-container">
+        <div class="older-card">
+          <div class="older-row">
+            <div class="older-emoji-box oe-orange"><span class="tf-e">&#x1FAE7;</span></div>
+            <div class="older-info">
+              <div class="older-name">Brush Teeth</div>
+              <div class="older-desc">Photo wasn't clear enough</div>
+            </div>
+            <div class="older-trailing">
+              <div class="older-badges">
+                <span class="older-badge"><span class="tf-ob flame-muted">&#x1F525;</span>5</span>
+                <span class="older-badge"><span class="tf-ob">&#x1F48E;</span>5</span>
+              </div>
+            </div>
+          </div>
+          <div class="older-cta-area">
+            <span class="older-cta-label">Take a new photo to complete this task</span>
+            <button class="btn-sprout btn-warning btn-sm">Try Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Reviewing -->
+    <div class="state-row">
+      <div class="state-label">Reviewing</div>
+      <div class="older-container">
+        <div class="older-row">
+          <div class="older-emoji-box oe-violet"><span class="tf-e">&#x1F4D6;</span></div>
+          <div class="older-info">
+            <div class="older-name">Read for 20 min</div>
+            <div class="older-desc">Reviewing...</div>
+          </div>
+          <div class="older-trailing">
+            <div class="older-badges">
+              <span class="older-badge"><span class="tf-ob">&#x1F525;</span>7</span>
+              <span class="older-badge"><span class="tf-ob">&#x1F48E;</span>15</span>
+            </div>
+            <span class="older-chevron"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"/></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Claimable -->
+    <div class="state-row">
+      <div class="state-label">Claimable</div>
+      <div class="older-container">
+        <div class="older-card" style="box-shadow: 0 2px 8px rgba(10,13,18,0.06);">
+          <div class="older-row">
+            <div class="older-emoji-box oe-green"><span class="tf-e">&#x1F4A7;</span></div>
+            <div class="older-info">
+              <div class="older-name">Drink Water</div>
+              <div class="older-desc">Completed — ready to claim!</div>
+            </div>
+            <div class="older-trailing">
+              <div class="older-badges">
+                <span class="older-badge"><span class="tf-ob">&#x1F525;</span>10</span>
+                <span class="older-badge"><span class="tf-ob">&#x1F48E;</span>5</span>
+              </div>
+            </div>
+          </div>
+          <div class="older-cta-area">
+            <span class="older-cta-label">You earned <strong>5 gems</strong></span>
+            <button class="btn-sprout btn-primary btn-sm"><span class="tf-cl">&#x1F48E;</span> Claim</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Claimed -->
+    <div class="state-row">
+      <div class="state-label">Claimed</div>
+      <div class="older-container">
+        <div class="older-row older-row-claimed">
+          <div class="older-emoji-box oe-blue-dark"><span class="tf-e">&#x1F3B9;</span></div>
+          <div class="older-info">
+            <div class="older-name">Practice Piano</div>
+            <div class="older-desc">Practice piano for 15 minutes</div>
+          </div>
+          <div class="older-trailing">
+            <div class="older-badges">
+              <span class="older-badge"><span class="tf-ob">&#x1F525;</span>12</span>
+              <span class="older-badge"><span class="tf-ob">&#x1F48E;</span>20</span>
+            </div>
+            <span class="older-chevron"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"/></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

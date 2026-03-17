@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Typography</title>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+.type-sample {
+  padding: var(--spacing-xl) 0;
+  border-bottom: 1px solid var(--border-secondary);
+}
+.type-sample:last-child { border-bottom: none; }
+.type-sample-text {
+  font-family: var(--font-family-body);
+  color: var(--text-primary);
+}
+.type-sample-meta {
+  display: flex;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-text-xs);
+  line-height: var(--line-height-text-xs);
+  color: var(--text-tertiary);
+}
+.type-sample-meta code {
+  font-size: 11px;
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+}
+.type-list {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl) var(--spacing-3xl);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.weight-sample {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-3xl);
+  padding: var(--spacing-xl) 0;
+  border-bottom: 1px solid var(--border-secondary);
+}
+.weight-sample:last-child { border-bottom: none; }
+.weight-sample-text {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-display-xs);
+  line-height: var(--line-height-display-xs);
+  letter-spacing: var(--letter-spacing-display);
+  color: var(--text-primary);
+  flex: 1;
+}
+.weight-sample-label {
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  color: var(--text-tertiary);
+  min-width: 120px;
+  flex-shrink: 0;
+}
+.weight-sample-label code {
+  font-size: 12px;
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+}
+.pairing-demo {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-3xl);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.pairing-block {
+  margin-bottom: var(--spacing-3xl);
+  padding-bottom: var(--spacing-3xl);
+  border-bottom: 1px solid var(--border-secondary);
+}
+.pairing-block:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.pairing-label {
+  font-size: var(--font-size-text-xs);
+  line-height: var(--line-height-text-xs);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-lg);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Typography</div>
+    <div class="sec-desc">The Sprout type scale, font weights, and pairing rules &mdash; built on Inter with two distinct scales for display and body text.</div>
+  </div>
+
+  <!-- Display Scale -->
+  <div class="doc-section">
+    <h2>Display Scale</h2>
+    <p>Display sizes are used for hero text, page titles, and section headers. All display sizes use <code>letter-spacing: -0.02em</code>.</p>
+    <div class="type-list">
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-display-2xl);line-height:var(--line-height-display-2xl);letter-spacing:var(--letter-spacing-display);font-weight:var(--font-weight-bold)">Display 2XL</div>
+        <div class="type-sample-meta">
+          <code>--font-size-display-2xl</code>
+          <span>72px / 90px</span>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-display-xl);line-height:var(--line-height-display-xl);letter-spacing:var(--letter-spacing-display);font-weight:var(--font-weight-bold)">Display XL</div>
+        <div class="type-sample-meta">
+          <code>--font-size-display-xl</code>
+          <span>60px / 72px</span>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-display-lg);line-height:var(--line-height-display-lg);letter-spacing:var(--letter-spacing-display);font-weight:var(--font-weight-bold)">Display LG</div>
+        <div class="type-sample-meta">
+          <code>--font-size-display-lg</code>
+          <span>48px / 60px</span>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-display-md);line-height:var(--line-height-display-md);letter-spacing:var(--letter-spacing-display);font-weight:var(--font-weight-bold)">Display MD</div>
+        <div class="type-sample-meta">
+          <code>--font-size-display-md</code>
+          <span>36px / 44px</span>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-display-sm);line-height:var(--line-height-display-sm);letter-spacing:var(--letter-spacing-display);font-weight:var(--font-weight-bold)">Display SM</div>
+        <div class="type-sample-meta">
+          <code>--font-size-display-sm</code>
+          <span>30px / 38px</span>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-display-xs);line-height:var(--line-height-display-xs);letter-spacing:var(--letter-spacing-display);font-weight:var(--font-weight-bold)">Display XS</div>
+        <div class="type-sample-meta">
+          <code>--font-size-display-xs</code>
+          <span>24px / 32px</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Text Scale -->
+  <div class="doc-section">
+    <h2>Text Scale</h2>
+    <p>Text sizes are used for body copy, labels, captions, and UI elements. Text sizes use <code>letter-spacing: 0</code>.</p>
+    <div class="type-list">
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-text-xl);line-height:var(--line-height-text-xl);font-weight:var(--font-weight-regular)">The quick brown fox jumps over the lazy dog.</div>
+        <div class="type-sample-meta">
+          <code>--font-size-text-xl</code>
+          <span>20px / 30px</span>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-text-lg);line-height:var(--line-height-text-lg);font-weight:var(--font-weight-regular)">The quick brown fox jumps over the lazy dog.</div>
+        <div class="type-sample-meta">
+          <code>--font-size-text-lg</code>
+          <span>18px / 28px</span>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);font-weight:var(--font-weight-regular)">The quick brown fox jumps over the lazy dog.</div>
+        <div class="type-sample-meta">
+          <code>--font-size-text-md</code>
+          <span>16px / 24px</span>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-regular)">The quick brown fox jumps over the lazy dog.</div>
+        <div class="type-sample-meta">
+          <code>--font-size-text-sm</code>
+          <span>14px / 20px</span>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-sample-text" style="font-size:var(--font-size-text-xs);line-height:var(--line-height-text-xs);font-weight:var(--font-weight-regular)">The quick brown fox jumps over the lazy dog.</div>
+        <div class="type-sample-meta">
+          <code>--font-size-text-xs</code>
+          <span>12px / 16px</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Font Weights -->
+  <div class="doc-section">
+    <h2>Font Weights</h2>
+    <p>Four weights are available across the type system, all rendered in Inter.</p>
+    <div class="type-list">
+
+      <div class="weight-sample">
+        <div class="weight-sample-text" style="font-weight:var(--font-weight-regular)">Regular</div>
+        <div class="weight-sample-label"><code>--font-weight-regular</code> &middot; 400</div>
+      </div>
+
+      <div class="weight-sample">
+        <div class="weight-sample-text" style="font-weight:var(--font-weight-medium)">Medium</div>
+        <div class="weight-sample-label"><code>--font-weight-medium</code> &middot; 500</div>
+      </div>
+
+      <div class="weight-sample">
+        <div class="weight-sample-text" style="font-weight:var(--font-weight-semibold)">Semibold</div>
+        <div class="weight-sample-label"><code>--font-weight-semibold</code> &middot; 600</div>
+      </div>
+
+      <div class="weight-sample">
+        <div class="weight-sample-text" style="font-weight:var(--font-weight-bold)">Bold</div>
+        <div class="weight-sample-label"><code>--font-weight-bold</code> &middot; 700</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pairing Rules -->
+  <div class="doc-section">
+    <h2>Pairing Rules</h2>
+    <p>Every font size must be paired with its matching line height. Never mix sizes and line heights across scales.</p>
+    <table class="token-table">
+      <thead>
+        <tr><th>Size Token</th><th>Value</th><th>Line Height Token</th><th>Value</th><th>Letter Spacing</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>--font-size-display-2xl</code></td><td>72px</td><td><code>--line-height-display-2xl</code></td><td>90px</td><td>-0.02em</td></tr>
+        <tr><td><code>--font-size-display-xl</code></td><td>60px</td><td><code>--line-height-display-xl</code></td><td>72px</td><td>-0.02em</td></tr>
+        <tr><td><code>--font-size-display-lg</code></td><td>48px</td><td><code>--line-height-display-lg</code></td><td>60px</td><td>-0.02em</td></tr>
+        <tr><td><code>--font-size-display-md</code></td><td>36px</td><td><code>--line-height-display-md</code></td><td>44px</td><td>-0.02em</td></tr>
+        <tr><td><code>--font-size-display-sm</code></td><td>30px</td><td><code>--line-height-display-sm</code></td><td>38px</td><td>-0.02em</td></tr>
+        <tr><td><code>--font-size-display-xs</code></td><td>24px</td><td><code>--line-height-display-xs</code></td><td>32px</td><td>-0.02em</td></tr>
+        <tr><td><code>--font-size-text-xl</code></td><td>20px</td><td><code>--line-height-text-xl</code></td><td>30px</td><td>0</td></tr>
+        <tr><td><code>--font-size-text-lg</code></td><td>18px</td><td><code>--line-height-text-lg</code></td><td>28px</td><td>0</td></tr>
+        <tr><td><code>--font-size-text-md</code></td><td>16px</td><td><code>--line-height-text-md</code></td><td>24px</td><td>0</td></tr>
+        <tr><td><code>--font-size-text-sm</code></td><td>14px</td><td><code>--line-height-text-sm</code></td><td>20px</td><td>0</td></tr>
+        <tr><td><code>--font-size-text-xs</code></td><td>12px</td><td><code>--line-height-text-xs</code></td><td>16px</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Live Pairing Demo -->
+  <div class="doc-section">
+    <h2>Live Pairing Demo</h2>
+    <p>Common heading + body combinations used throughout Sprout.</p>
+    <div class="pairing-demo">
+
+      <div class="pairing-block">
+        <div class="pairing-label">Hero &mdash; display-lg + text-xl</div>
+        <div style="font-family:var(--font-family-body);font-size:var(--font-size-display-lg);line-height:var(--line-height-display-lg);letter-spacing:var(--letter-spacing-display);font-weight:var(--font-weight-bold);color:var(--text-primary);margin-bottom:var(--spacing-lg)">Welcome to Sprout</div>
+        <div style="font-family:var(--font-family-body);font-size:var(--font-size-text-xl);line-height:var(--line-height-text-xl);font-weight:var(--font-weight-regular);color:var(--text-secondary);max-width:600px">A safe, playful space where kids learn, create, and explore &mdash; with parents always in the loop.</div>
+      </div>
+
+      <div class="pairing-block">
+        <div class="pairing-label">Page Title &mdash; display-md + text-md</div>
+        <div style="font-family:var(--font-family-body);font-size:var(--font-size-display-md);line-height:var(--line-height-display-md);letter-spacing:var(--letter-spacing-display);font-weight:var(--font-weight-bold);color:var(--text-primary);margin-bottom:var(--spacing-md)">My Collections</div>
+        <div style="font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);font-weight:var(--font-weight-regular);color:var(--text-secondary);max-width:600px">Browse and organize everything you&rsquo;ve saved. Tap a collection to see what&rsquo;s inside.</div>
+      </div>
+
+      <div class="pairing-block">
+        <div class="pairing-label">Section Header &mdash; display-xs + text-sm</div>
+        <div style="font-family:var(--font-family-body);font-size:var(--font-size-display-xs);line-height:var(--line-height-display-xs);letter-spacing:var(--letter-spacing-display);font-weight:var(--font-weight-bold);color:var(--text-primary);margin-bottom:var(--spacing-md)">Today&rsquo;s Challenges</div>
+        <div style="font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-regular);color:var(--text-secondary);max-width:600px">Complete three challenges to earn your daily badge. Each one takes about five minutes.</div>
+      </div>
+
+      <div class="pairing-block">
+        <div class="pairing-label">Card Title &mdash; text-lg bold + text-sm</div>
+        <div style="font-family:var(--font-family-body);font-size:var(--font-size-text-lg);line-height:var(--line-height-text-lg);font-weight:var(--font-weight-bold);color:var(--text-primary);margin-bottom:var(--spacing-xs)">Animal Kingdom Quiz</div>
+        <div style="font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-regular);color:var(--text-secondary)">Test your knowledge of mammals, reptiles, and birds in this 10-question quiz.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Figma Workflow</title>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Flow diagram ── */
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+  overflow-x: auto;
+}
+.flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 88px;
+  text-align: center;
+}
+.flow-num {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--brand-50);
+  border: 2px solid var(--brand-200);
+  color: var(--brand-700);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-text-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.flow-label {
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  line-height: 14px;
+  max-width: 96px;
+}
+.flow-arrow {
+  color: var(--gray-300);
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: -20px;
+}
+
+/* ── Tool cards ── */
+.tool-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.tool-card:hover {
+  border-color: var(--gray-300);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.tool-card h3 {
+  font-size: 14px;
+  font-weight: var(--font-weight-bold);
+  color: var(--brand-700);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  margin-bottom: var(--spacing-sm);
+}
+.tool-card p {
+  font-size: var(--font-size-text-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm);
+}
+
+/* ── Translation rule cards ── */
+.rule-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+}
+.rule-card h3 {
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+  line-height: var(--line-height-text-sm);
+}
+.rule-card p {
+  font-size: var(--font-size-text-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm);
+}
+.rule-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  margin-bottom: var(--spacing-md);
+}
+.rule-tag-blue { background: var(--brand-50); color: var(--brand-700); }
+.rule-tag-orange { background: var(--orange-50); color: var(--orange-700); }
+.rule-tag-red { background: var(--red-50); color: var(--red-700); }
+
+/* ── Checklist grid ── */
+.check-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+}
+.check-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--green-50);
+  color: var(--green-600);
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.check-text {
+  font-size: var(--font-size-text-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .flow-diagram { flex-wrap: wrap; justify-content: center; }
+  .card-grid-2, .card-grid-3, .check-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Figma Workflow</div>
+    <div class="sec-desc">The step-by-step process for translating Figma designs into production code using the MCP integration. Follow every step in order &mdash; skipping steps leads to token drift and visual inconsistencies.</div>
+  </div>
+
+  <!-- ── MCP Flow Diagram ── -->
+  <div class="doc-section">
+    <h2>MCP Implementation Flow</h2>
+    <p>Run these seven steps in sequence for every Figma-driven implementation.</p>
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-label">get_design_context</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-label">get_metadata (if large)</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-label">get_screenshot</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-label">get_variable_defs</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="flow-num">5</div>
+        <div class="flow-label">Download assets</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="flow-num">6</div>
+        <div class="flow-label">Implement</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="flow-num">7</div>
+        <div class="flow-label">Validate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MCP Tools ── -->
+  <div class="doc-section">
+    <h2>MCP Tools</h2>
+    <p>Four tools from the Figma MCP server power the design-to-code pipeline.</p>
+    <div class="card-grid card-grid-2" style="margin-top:var(--spacing-xl)">
+      <div class="tool-card">
+        <h3>get_design_context</h3>
+        <p>Fetches the structured representation of a Figma node &mdash; layout, styles, children, and auto-layout properties. Always run this first to understand the component structure.</p>
+      </div>
+      <div class="tool-card">
+        <h3>get_metadata</h3>
+        <p>Returns a high-level node map of a Figma file or page. Use this when <code>get_design_context</code> returns a response that is too large or truncated, then re-fetch specific nodes.</p>
+      </div>
+      <div class="tool-card">
+        <h3>get_screenshot</h3>
+        <p>Captures a pixel-accurate screenshot of a Figma node. Use as the visual reference to validate your implementation against &mdash; aim for 1:1 fidelity.</p>
+      </div>
+      <div class="tool-card">
+        <h3>get_variable_defs</h3>
+        <p>Returns exact token names and resolved color values from the Figma file. Never guess colors from screenshots &mdash; always verify with this tool before implementing.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Translation Rules ── -->
+  <div class="doc-section">
+    <h2>Translation Rules</h2>
+    <p>The MCP server outputs React + Tailwind code. These rules govern how to convert that output into production code for Sprout.</p>
+    <div class="card-grid card-grid-3" style="margin-top:var(--spacing-xl)">
+      <div class="rule-card">
+        <div class="rule-tag rule-tag-blue">Code</div>
+        <h3>Output is reference, not final code</h3>
+        <p>Treat Figma MCP output as design intent. Convert React + Tailwind to semantic HTML + CSS custom properties from <code>tokens.css</code>. Map every color, size, and spacing value to the nearest Sprout token.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-tag rule-tag-orange">Inspect</div>
+        <h3>What to look for</h3>
+        <p>Check for Code Connect mappings, developer annotations, token references, and raw values. Reuse existing component patterns before inventing new ones. Verify tokens with <code>get_variable_defs</code>.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-tag rule-tag-red">Assets</div>
+        <h3>Character assets</h3>
+        <p>Never attempt to assemble multi-part SVG characters (body, hair, eyes). Ask the designer to export a single composite SVG from Figma and store it in <code>/brand/assets/</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Verification Checklist ── -->
+  <div class="doc-section">
+    <h2>Verification Checklist</h2>
+    <p>Before marking an implementation complete, confirm every item in this checklist.</p>
+    <div class="check-grid">
+      <div class="check-item">
+        <div class="check-icon">&check;</div>
+        <div class="check-text">Visual fidelity &mdash; implementation matches the Figma screenshot at 1:1 accuracy</div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">&check;</div>
+        <div class="check-text">Token mapping &mdash; every color, size, and spacing uses <code>var(--token)</code>, no hardcoded values</div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">&check;</div>
+        <div class="check-text">Component reuse &mdash; existing patterns are used before creating new ones</div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">&check;</div>
+        <div class="check-text">Assets by reference &mdash; SVGs and images use <code>&lt;img src="..."&gt;</code>, not inline markup</div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">&check;</div>
+        <div class="check-text">Responsive &mdash; layout adapts gracefully at 1024px and 768px breakpoints</div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">&check;</div>
+        <div class="check-text">Accessibility &mdash; semantic HTML, keyboard support, proper contrast, and ARIA labels</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Figma Source ── -->
+  <div class="doc-section">
+    <h2>Figma Source</h2>
+    <p>The single source of truth for all Sprout design tokens and component specifications.</p>
+    <table class="token-table">
+      <thead>
+        <tr><th>Property</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>File name</td><td>Pencil down &mdash; Brand</td></tr>
+        <tr><td>File key</td><td><code>n79cdqJCVoyVCtGbO5iHAd</code></td></tr>
+        <tr><td>CSS tokens</td><td><code>/tokens.css</code></td></tr>
+        <tr><td>JSON tokens</td><td><code>/tokens.json</code></td></tr>
+        <tr><td>Token path (colors)</td><td><code>Variables &rarr; Primitives &rarr; Colors</code></td></tr>
+        <tr><td>Token path (semantic)</td><td><code>Variables &rarr; Tokens &rarr; Light mode</code></td></tr>
+        <tr><td>Token path (typography)</td><td><code>Variables &rarr; Primitives &rarr; Typography</code></td></tr>
+        <tr><td>Token path (spacing)</td><td><code>Variables &rarr; Primitives &rarr; Spacing</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

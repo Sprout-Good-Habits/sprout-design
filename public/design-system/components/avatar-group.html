@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Avatar Group</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "AvatarGroup",
+  "slug": "avatar-group",
+  "intent": {
+    "purpose": "Display overlapping circular avatars representing users and characters in a shared context",
+    "taskContext": ["participant-display", "conversation-context"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["avatar-circles"],
+    "allows": ["sprout-avatar", "user-initials"],
+    "forbids": ["button", "text-label"]
+  },
+  "variants": [
+    { "name": "Users only", "useWhen": "Showing human participants", "pairWith": [] },
+    { "name": "Users + Sprout", "useWhen": "Showing human participants plus Sprout character", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 32px circles" }
+  ],
+  "context": {
+    "density": ["compact"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inside-button-utility"]
+  },
+  "relationships": {
+    "related": ["ButtonUtility", "Toolbar"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["ButtonUtility", "Toolbar"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "img",
+    "keyboard": [],
+    "ariaAttributes": ["aria-label"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Avatar ── */
+.avatar {
+  width:32px; height:32px;
+  border-radius:var(--radius-full, 9999px);
+  background:var(--bg-sky, #e0f2fe);
+  border:2px solid white; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  font-weight:var(--font-weight-medium, 500);
+  color:var(--text-brand-secondary, #026aa2);
+  line-height:1;
+}
+
+.avatar-sprout {
+  background:var(--bg-sky, #e0f2fe);
+  position:relative; overflow:hidden;
+}
+.avatar-sprout img {
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover;
+}
+
+/* ── User Group (stacked avatars) ── */
+.user-group {
+  display:flex; align-items:center;
+  padding-right:var(--spacing-md, 8px);
+}
+.user-group .avatar {
+  margin-right:calc(-1 * var(--spacing-md, 8px));
+}
+
+/* ── Button Utility (for in-context demo) ── */
+.btn-util {
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:0;
+  padding:var(--spacing-lg, 12px);
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-full, 9999px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink:0; overflow:hidden; cursor:pointer;
+  transition:background 0.15s, box-shadow 0.15s, transform 0.1s, border-color 0.15s;
+}
+.btn-util:hover { background:var(--gray-50, #fafafa); }
+.btn-util:active { box-shadow:none; transform:translateY(2px); }
+.btn-util-sm { padding:var(--spacing-md, 8px); }
+
+/* ── Anatomy diagram ── */
+.anatomy-diagram {
+  display:flex; align-items:center; gap:32px;
+  padding:24px; justify-content:center;
+}
+.anatomy-callout {
+  display:flex; flex-direction:column; gap:8px;
+}
+.anatomy-callout-item {
+  display:flex; align-items:center; gap:8px;
+  font-size:var(--font-size-text-sm, 14px);
+  color:var(--text-secondary, #414651);
+}
+.anatomy-callout-dot {
+  width:8px; height:8px; border-radius:var(--radius-full, 9999px);
+  flex-shrink:0;
+}
+
+/* ── Blocker banner ── */
+.blocker-banner {
+  display:flex; align-items:flex-start; gap:var(--spacing-lg, 12px);
+  padding:var(--spacing-xl, 16px);
+  background:var(--yellow-50, #fefbe8);
+  border:1px solid var(--yellow-300, #fec84b);
+  border-radius:var(--radius-md, 8px);
+  margin-bottom:24px;
+}
+.blocker-banner-icon {
+  font-size:20px; line-height:1; flex-shrink:0;
+}
+.blocker-banner-text {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  color:var(--text-secondary, #414651);
+}
+.blocker-banner-text a {
+  color:var(--brand-600, #0086c9);
+  font-weight:var(--font-weight-semibold, 600);
+  text-decoration:none;
+}
+.blocker-banner-text a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Avatar Group</div>
+    <div class="sec-desc">Avatar groups display a cluster of overlapping circular avatars representing users and characters in a conversation or shared context. They are used inside a <a href="/design-system/components/button-utility.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">Button Utility</a> in the <a href="/design-system/components/toolbar.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">Toolbar</a> trailing slot.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use in the <strong>Chat toolbar</strong> trailing slot to show who is in the conversation.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use inside a <strong>Button Utility</strong> so users can tap the group to see participant details.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Always include the <strong>Sprout character avatar</strong> when Sprout is present in the chat.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use avatars standalone outside of their Button Utility container.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t define a max count yet &mdash; the limit will be set once village characters are available.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Users only</span>
+        <div class="user-group"><div class="avatar">M</div><div class="avatar">D</div></div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Users + Sprout</span>
+        <div class="user-group"><div class="avatar">M</div><div class="avatar">D</div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blocker banner -->
+  <div class="blocker-banner">
+    <span class="blocker-banner-icon">&#9888;&#65039;</span>
+    <div class="blocker-banner-text">
+      <strong>Partially documented.</strong> Avatar groups currently use placeholder circles because the village character system is still in progress. User-specific avatars will replace placeholders once the character set is finalized.<br>
+      <a href="https://www.notion.so/Village-character-set-is-designed-illustrated-and-animated-311bd68b404181b0b6dbc8c69102c232" target="_blank">Track progress: Village character set &rarr;</a>
+    </div>
+  </div>
+
+  <!-- ════ Variants ════ -->
+  <div class="doc-section">
+    <h2>Variants</h2>
+    <p>The avatar group supports different compositions depending on who is in the conversation.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Single avatar</span>
+        <div class="avatar">M</div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Sprout avatar</span>
+        <div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Group (2 users)</span>
+        <div class="user-group"><div class="avatar">M</div><div class="avatar">D</div></div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Group (2 users + Sprout)</span>
+        <div class="user-group"><div class="avatar">M</div><div class="avatar">D</div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ In context ════ -->
+  <div class="doc-section">
+    <h2>In context</h2>
+    <p>Avatar groups always appear inside a <strong>Button Utility (small)</strong> in the toolbar trailing slot.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Inside Button Utility</span>
+        <div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar">M</div><div class="avatar">D</div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:14px;color:var(--text-tertiary);">See the <a href="/design-system/components/toolbar.html" style="color:var(--brand-600);font-weight:600;text-decoration:none;">Toolbar &rarr; Chat variant</a> for the full in-context layout.</p>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="anatomy-diagram">
+      <div class="user-group" style="transform:scale(1.5);transform-origin:center;">
+        <div class="avatar" style="outline:2px dashed var(--brand-300);outline-offset:2px;">M</div>
+        <div class="avatar" style="outline:2px dashed var(--violet-300);outline-offset:2px;">D</div>
+        <div class="avatar avatar-sprout" style="outline:2px dashed var(--green-400);outline-offset:2px;"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div>
+      </div>
+      <div class="anatomy-callout">
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--brand-300);"></div> User avatar (placeholder)</div>
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--violet-300);"></div> User avatar (placeholder)</div>
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--green-400);"></div> Sprout character avatar</div>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Avatar circle</strong> &mdash; 32&times;32px circle with 2px white border, stacked with &minus;8px overlap.</li>
+        <li><strong>User avatar</strong> &mdash; Displays the user&rsquo;s first-name initial in <code>--text-brand-secondary</code>, text-md medium, on a <code>--bg-sky</code> background. Will be replaced by the user&rsquo;s village character once the character system is complete.</li>
+        <li><strong>Sprout avatar</strong> &mdash; Displays the Sprout mascot using <code>character-sprout-avatar.svg</code>.</li>
+        <li><strong>Container</strong> &mdash; Flex row with <code>align-items: baseline</code> and right padding for visual balance inside the Button Utility.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Avatar</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Size</td><td>32 &times; 32px</td></tr>
+        <tr><td>Border radius</td><td><code>--radius-full</code> (9999px)</td></tr>
+        <tr><td>Border</td><td>2px solid white</td></tr>
+        <tr><td>User background</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
+        <tr><td>Initial color</td><td><code>--text-brand-secondary</code> (#026aa2)</td></tr>
+        <tr><td>Initial font</td><td><code>--font-size-text-sm</code> (14px), <code>--font-weight-medium</code> (500)</td></tr>
+        <tr><td>Sprout background</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Group layout</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Direction</td><td>Horizontal (flex row)</td></tr>
+        <tr><td>Alignment</td><td><code>baseline</code></td></tr>
+        <tr><td>Overlap</td><td><code>--spacing-md</code> (&minus;8px margin-right per avatar)</td></tr>
+        <tr><td>Right padding</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Max visible</td><td>TBD &mdash; to be defined once village characters are available</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Button Utility container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Size variant</td><td><code>.btn-util-sm</code></td></tr>
+        <tr><td>Padding</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Border</td><td>2px solid <code>--border-secondary</code></td></tr>
+        <tr><td>Shadow</td><td>0 3px 0 0 <code>--gray-200</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Future: Village characters ════ -->
+  <div class="doc-section">
+    <h2>Future: Village characters</h2>
+    <p>User avatars are currently placeholders. Once the village character system is complete, each user will have a unique character avatar assembled from:</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Base character</strong> &mdash; The foundational body and shape.</li>
+        <li><strong>Hairstyles</strong> &mdash; Selectable hair options for personalization.</li>
+        <li><strong>Accessories</strong> &mdash; Decorative items earned or chosen by the user.</li>
+      </ul>
+    </div>
+    <p style="margin-top:12px;">These character avatars will render as composite SVGs (or Rive assets) at 32&times;32px within the same avatar circle. The placeholder <code>--bg-sky</code> background will be replaced by the rendered character.</p>
+    <p style="margin-top:12px;"><a href="https://www.notion.so/Village-character-set-is-designed-illustrated-and-animated-311bd68b404181b0b6dbc8c69102c232" target="_blank" style="color:var(--brand-600, #0086c9);font-weight:600;text-decoration:none;">Track progress: Village character set in Notion &rarr;</a></p>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>The Sprout avatar <code>&lt;img&gt;</code> must always have <code>alt="Sprout"</code>.</li>
+        <li>User placeholder avatars should have <code>aria-label</code> describing the user (e.g., <code>aria-label="Mom"</code>) once character identities are assigned.</li>
+        <li>The wrapping Button Utility must have an <code>aria-label</code> like <code>"View participants"</code> to describe the tap action.</li>
+        <li>The avatar group itself is decorative &mdash; interaction comes from the Button Utility container.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

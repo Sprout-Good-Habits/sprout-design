@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Feedback Banner</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "FeedbackBanner",
+  "slug": "feedback-banner",
+  "intent": {
+    "purpose": "Provide contextual feedback after an action with a prominent banner at the bottom of the screen",
+    "taskContext": ["quiz-result", "form-submission", "task-completion", "error-feedback", "warning-notice"],
+    "sentiment": ["positive", "neutral", "destructive", "warning"]
+  },
+  "composition": {
+    "requires": ["title", "primary-button"],
+    "allows": ["icon", "subtitle", "description", "secondary-button"],
+    "forbids": ["nested-banner", "image", "badge"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Neutral feedback or informational messages", "pairWith": [], "sentiment": "neutral" },
+    { "name": "Success", "useWhen": "Positive outcomes like correct answers or completed tasks", "pairWith": [], "sentiment": "positive" },
+    { "name": "Warning", "useWhen": "Cautionary messages requiring acknowledgement", "pairWith": [], "sentiment": "warning" },
+    { "name": "Error", "useWhen": "Incorrect answers or failed actions needing correction", "pairWith": [], "sentiment": "destructive" }
+  ],
+  "sizes": [],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["pinned-bottom"]
+  },
+  "relationships": {
+    "related": ["Toast", "ActionPrompt", "Sheet"],
+    "escalatesTo": [],
+    "degradesTo": ["Toast"],
+    "groupsWith": ["Buttons"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "region",
+    "keyboard": ["Enter", "Space", "Tab"],
+    "ariaAttributes": ["aria-live", "aria-label"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Feedback Banner base ── */
+.fb {
+  display:flex; flex-direction:column;
+  gap:var(--spacing-xl, 16px);
+  padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);
+  width:358px;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+}
+
+/* ── Hierarchy backgrounds ── */
+.fb-default { background:var(--bg-primary, #ffffff); }
+.fb-success { background:var(--bg-success-secondary, #dcfae6); }
+.fb-warning { background:var(--bg-warning-secondary, #fef7c3); }
+.fb-error   { background:var(--bg-error-secondary, #fee4e2); }
+
+/* ── Top border (dual CTA only) ── */
+.fb-bordered { border-top:1px solid var(--border-primary, #d5d7da); }
+
+/* ── Header: icon + title ── */
+.fb-header {
+  display:flex; align-items:center; gap:12px;
+}
+.fb-icon {
+  width:32px; height:32px; flex-shrink:0;
+  font-family:'TossFace', sans-serif;
+  font-size:28px; line-height:32px;
+  text-align:center;
+}
+.fb-title {
+  flex:1;
+  font-size:var(--font-size-display-xs, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  line-height:var(--line-height-display-xs, 32px);
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+}
+.fb-default .fb-title { color:var(--text-primary, #181d27); }
+.fb-success .fb-title { color:var(--text-success-primary, #079455); }
+.fb-warning .fb-title { color:var(--text-warning-primary, #ca8504); }
+.fb-error   .fb-title { color:var(--text-error-primary, #d92d20); }
+
+/* ── Content: subtitle + description ── */
+.fb-content {
+  display:flex; flex-direction:column; gap:var(--spacing-xxs, 2px);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+}
+.fb-subtitle { font-weight:var(--font-weight-bold, 700); }
+.fb-desc     { font-weight:var(--font-weight-regular, 400); }
+
+.fb-default .fb-content { color:var(--text-primary, #181d27); }
+.fb-success .fb-content { color:var(--text-success-primary, #079455); }
+.fb-warning .fb-content { color:var(--text-warning-primary, #ca8504); }
+.fb-error   .fb-content { color:var(--text-error-primary, #d92d20); }
+
+/* ── Buttons ── */
+.fb-btn {
+  display:flex; align-items:center; justify-content:center;
+  box-sizing:border-box;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-weight:var(--font-weight-bold, 700);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  border:none; cursor:pointer;
+  border-radius:var(--radius-2xl, 16px);
+  padding:var(--spacing-lg, 12px);
+  width:100%;
+  white-space:nowrap;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* Primary CTA per hierarchy */
+.fb-btn-primary {
+  color:var(--text-white, #ffffff);
+  border-bottom:2px solid transparent;
+}
+.fb-default .fb-btn-primary {
+  background:var(--fg-brand-primary, #0ba5ec);
+  border-bottom-color:var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+}
+.fb-success .fb-btn-primary {
+  background:var(--green-500, #17b26a);
+  border-bottom-color:var(--green-600, #079455);
+  box-shadow:0 4px 0 0 var(--green-600, #079455);
+}
+.fb-warning .fb-btn-primary {
+  background:var(--yellow-500, #eaaa08);
+  border-bottom-color:var(--yellow-600, #ca8504);
+  box-shadow:0 4px 0 0 var(--yellow-600, #ca8504);
+}
+.fb-error .fb-btn-primary {
+  background:var(--red-500, #f04438);
+  border-bottom-color:var(--red-600, #d92d20);
+  box-shadow:0 4px 0 0 var(--red-600, #d92d20);
+}
+
+/* Secondary CTA */
+.fb-btn-secondary {
+  background:var(--bg-primary, #ffffff);
+  color:var(--text-secondary, #414651);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+
+/* Button row (dual CTA) */
+.fb-btn-row {
+  display:flex; gap:10px; width:100%;
+}
+.fb-btn-row .fb-btn { flex:1; }
+
+/* ── Sentiment tags ── */
+.sentiment-tag {
+  display:inline-block;
+  font-size:var(--font-size-text-xs, 12px);
+  font-weight:var(--font-weight-medium, 500);
+  line-height:var(--line-height-text-xs, 18px);
+  padding:2px 8px;
+  border-radius:var(--radius-full, 9999px);
+  vertical-align:middle;
+  margin-left:8px;
+}
+.sentiment-positive { background:var(--green-50, #ecfdf3); color:var(--green-700, #067647); }
+.sentiment-neutral { background:var(--gray-50, #fafafa); color:var(--text-secondary, #414651); border:1px solid var(--border-secondary, #e9eaeb); }
+.sentiment-destructive { background:var(--red-50, #fef3f2); color:var(--red-700, #b42318); }
+.sentiment-warning { background:var(--yellow-50, #fefbe8); color:var(--yellow-700, #a15c07); }
+
+/* ── State cell overrides ── */
+.state-cell .fb { width:100%; }
+
+/* ── Phone frame for placement ── */
+.phone-frame {
+  width:366px; height:680px;
+  border-radius:36px; overflow:hidden;
+  position:relative;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  display:flex; flex-direction:column;
+  background:var(--bg-primary, #ffffff);
+}
+.phone-screen-content {
+  flex:1; overflow:hidden;
+  display:flex; flex-direction:column;
+  gap:var(--spacing-lg, 12px);
+  padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);
+}
+.phone-placeholder {
+  background:var(--gray-100, #f5f5f5);
+  border:1px dashed var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-md, 8px);
+  height:48px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-quaternary, #717680);
+}
+.phone-placeholder-lg { height:120px; }
+.phone-placeholder-xl { flex:1; }
+.phone-pinned-footer .fb {
+  width:100%;
+}
+
+@media(max-width:768px) {
+  .fb { width:100%; }
+  .phone-frame { width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Feedback Banner</div>
+    <div class="sec-desc">A bottom-anchored banner that delivers contextual feedback after an action &mdash; quiz results, task completions, warnings, or errors &mdash; with a prominent CTA to move forward.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a feedback banner when the user needs immediate, full-width feedback tied to an action they just took.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use to present a clear next step (continue, retry, dismiss) after the outcome is shown.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for passive notifications or alerts that don&rsquo;t require a user action &mdash; use <a href="/design-system/components/toast.html">Toast</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for prompts that need additional context or choices &mdash; use <a href="/design-system/components/action-prompt.html">Action Prompt</a> or <a href="/design-system/components/sheet.html">Sheet</a> instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="fb fb-default">
+          <div class="fb-header">
+            <div class="fb-icon">&#10024;</div>
+            <div class="fb-title">Title</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Subtitle</div>
+            <div class="fb-desc">Description</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Primary</button>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Success</span>
+        <div class="fb fb-success">
+          <div class="fb-header">
+            <div class="fb-icon">&#9989;</div>
+            <div class="fb-title">Title</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Subtitle</div>
+            <div class="fb-desc">Description</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Primary</button>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Warning</span>
+        <div class="fb fb-warning">
+          <div class="fb-header">
+            <div class="fb-icon">&#9888;</div>
+            <div class="fb-title">Title</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Subtitle</div>
+            <div class="fb-desc">Description</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Primary</button>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Error</span>
+        <div class="fb fb-error">
+          <div class="fb-header">
+            <div class="fb-icon">&#10062;</div>
+            <div class="fb-title">Title</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Subtitle</div>
+            <div class="fb-desc">Description</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Primary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Hierarchy ════ -->
+  <div class="doc-section">
+    <h2>Hierarchy</h2>
+    <p>The hierarchy sets the visual tone of the feedback to match the outcome. Each variant uses a tinted background and matching text color to reinforce the message at a glance.</p>
+
+    <h3>Default <span class="sentiment-tag sentiment-neutral">Neutral</span></h3>
+    <p>Use for neutral or informational feedback that doesn&rsquo;t carry a positive or negative sentiment. White background with brand-colored CTA.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Primary only</span>
+        <div class="fb fb-default">
+          <div class="fb-header">
+            <div class="fb-icon">&#10024;</div>
+            <div class="fb-title">New skill unlocked</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Congratulations!</div>
+            <div class="fb-desc">You can now access advanced lessons.</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Continue</button>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Primary + Secondary</span>
+        <div class="fb fb-default fb-bordered">
+          <div class="fb-header">
+            <div class="fb-icon">&#10024;</div>
+            <div class="fb-title">New skill unlocked</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Congratulations!</div>
+            <div class="fb-desc">You can now access advanced lessons.</div>
+          </div>
+          <div class="fb-btn-row">
+            <button class="fb-btn fb-btn-secondary">Go back</button>
+            <button class="fb-btn fb-btn-primary">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Success <span class="sentiment-tag sentiment-positive">Positive</span></h3>
+    <p>Use for positive outcomes like correct answers, completed tasks, or earned rewards. Green-tinted background reinforces achievement.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Primary only</span>
+        <div class="fb fb-success">
+          <div class="fb-header">
+            <div class="fb-icon">&#9989;</div>
+            <div class="fb-title">Great job!</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">You got it right</div>
+            <div class="fb-desc">Keep up the great work.</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Continue</button>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Primary + Secondary</span>
+        <div class="fb fb-success fb-bordered">
+          <div class="fb-header">
+            <div class="fb-icon">&#9989;</div>
+            <div class="fb-title">Great job!</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">You got it right</div>
+            <div class="fb-desc">Keep up the great work.</div>
+          </div>
+          <div class="fb-btn-row">
+            <button class="fb-btn fb-btn-secondary">Review</button>
+            <button class="fb-btn fb-btn-primary">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Warning <span class="sentiment-tag sentiment-warning">Warning</span></h3>
+    <p>Use for cautionary messages that the user should acknowledge before proceeding. Yellow-tinted background signals attention needed.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Primary only</span>
+        <div class="fb fb-warning">
+          <div class="fb-header">
+            <div class="fb-icon">&#9888;</div>
+            <div class="fb-title">Almost there</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Time is running out</div>
+            <div class="fb-desc">You have 2 minutes remaining.</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Got it</button>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Primary + Secondary</span>
+        <div class="fb fb-warning fb-bordered">
+          <div class="fb-header">
+            <div class="fb-icon">&#9888;</div>
+            <div class="fb-title">Almost there</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Time is running out</div>
+            <div class="fb-desc">You have 2 minutes remaining.</div>
+          </div>
+          <div class="fb-btn-row">
+            <button class="fb-btn fb-btn-secondary">Skip</button>
+            <button class="fb-btn fb-btn-primary">Got it</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Error <span class="sentiment-tag sentiment-destructive">Destructive</span></h3>
+    <p>Use for negative outcomes like incorrect answers or failed actions. Red-tinted background clearly communicates the error state.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Primary only</span>
+        <div class="fb fb-error">
+          <div class="fb-header">
+            <div class="fb-icon">&#10062;</div>
+            <div class="fb-title">Incorrect</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Correct answer:</div>
+            <div class="fb-desc">The capital of France is Paris.</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Got it</button>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Primary + Secondary</span>
+        <div class="fb fb-error fb-bordered">
+          <div class="fb-header">
+            <div class="fb-icon">&#10062;</div>
+            <div class="fb-title">Incorrect</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Correct answer:</div>
+            <div class="fb-desc">The capital of France is Paris.</div>
+          </div>
+          <div class="fb-btn-row">
+            <button class="fb-btn fb-btn-secondary">Report</button>
+            <button class="fb-btn fb-btn-primary">Got it</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ CTA Options ════ -->
+  <div class="doc-section">
+    <h2>CTA Options</h2>
+    <p>The feedback banner supports two CTA configurations. Choose the one that best fits the user&rsquo;s decision context.</p>
+
+    <h3>Primary only</h3>
+    <p>Use when there is a single clear next step. The full-width primary button makes the path forward obvious.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use primary only when the action is unambiguous &mdash; &ldquo;Continue&rdquo;, &ldquo;Got it&rdquo;, &ldquo;Try again&rdquo;.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use primary only when the user needs to choose between two meaningful options.</li>
+      </ul>
+    </div>
+
+    <h3>Primary + Secondary</h3>
+    <p>Use when the user has two distinct paths. The secondary button sits left, the primary right. A top border separates the banner from content above.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Place the secondary action (dismiss, skip, go back) on the left and primary (continue, confirm) on the right.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t reverse the button order &mdash; primary always goes on the right.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Icon</strong> (optional) &mdash; 32&times;32px TossFace emoji. Reinforces the feedback sentiment at a glance.</li>
+        <li><strong>Title</strong> (required) &mdash; Display-xs (24px) bold heading. Communicates the outcome immediately.</li>
+        <li><strong>Subtitle</strong> (optional) &mdash; Text-md (16px) bold. Adds a secondary label like &ldquo;Correct answer:&rdquo;.</li>
+        <li><strong>Description</strong> (optional) &mdash; Text-md (16px) regular. Provides additional context or explanation.</li>
+        <li><strong>Primary button</strong> (required) &mdash; Full-width CTA with hierarchy-matched color and 4px raised shadow.</li>
+        <li><strong>Secondary button</strong> (optional) &mdash; White button with border, paired left of primary in a row.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Content composition ════ -->
+  <div class="doc-section">
+    <h2>Content Composition</h2>
+    <p>The banner adapts to different content needs. All elements except title and primary button are optional.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Title + button only</span>
+        <div class="fb fb-success">
+          <div class="fb-header">
+            <div class="fb-title">Great job!</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Continue</button>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Icon + title + button</span>
+        <div class="fb fb-success">
+          <div class="fb-header">
+            <div class="fb-icon">&#9989;</div>
+            <div class="fb-title">Great job!</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Continue</button>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Full content</span>
+        <div class="fb fb-error">
+          <div class="fb-header">
+            <div class="fb-icon">&#10062;</div>
+            <div class="fb-title">Incorrect</div>
+          </div>
+          <div class="fb-content">
+            <div class="fb-subtitle">Correct answer:</div>
+            <div class="fb-desc">ant</div>
+          </div>
+          <button class="fb-btn fb-btn-primary">Got it</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Placement ════ -->
+  <div class="doc-section">
+    <h2>Placement</h2>
+    <p>The feedback banner is always pinned to the bottom of the screen, overlaying content below. It should appear after the user completes an action like answering a question or submitting a form.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Pin the banner to the bottom of the viewport so it&rsquo;s always visible.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Animate the banner sliding up from the bottom on appearance.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t place the banner inline within scrolling content &mdash; it must anchor to the bottom.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Success &middot; Primary only</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen" style="height:580px;display:flex;flex-direction:column;">
+                <div style="flex:1;display:flex;flex-direction:column;gap:var(--spacing-lg, 12px);padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);padding-bottom:0;">
+                  <div class="phone-placeholder">Header</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Question content</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Answer options</div>
+                </div>
+                <div class="phone-pinned-footer" style="padding:0;border-top:none;">
+                  <div class="fb fb-success" style="width:100%;">
+                    <div class="fb-header">
+                      <div class="fb-icon">&#9989;</div>
+                      <div class="fb-title">Great job!</div>
+                    </div>
+                    <button class="fb-btn fb-btn-primary">Continue</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Error &middot; Primary + Secondary</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen" style="height:580px;display:flex;flex-direction:column;">
+                <div style="flex:1;display:flex;flex-direction:column;gap:var(--spacing-lg, 12px);padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);padding-bottom:0;">
+                  <div class="phone-placeholder">Header</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Question content</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Answer options</div>
+                </div>
+                <div class="phone-pinned-footer" style="padding:0;border-top:none;">
+                  <div class="fb fb-error fb-bordered" style="width:100%;">
+                    <div class="fb-header">
+                      <div class="fb-icon">&#10062;</div>
+                      <div class="fb-title">Incorrect</div>
+                    </div>
+                    <div class="fb-content">
+                      <div class="fb-subtitle">Correct answer:</div>
+                      <div class="fb-desc">The capital of France is Paris.</div>
+                    </div>
+                    <div class="fb-btn-row">
+                      <button class="fb-btn fb-btn-secondary">Report</button>
+                      <button class="fb-btn fb-btn-primary">Got it</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Content guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content</h2>
+    <p>Feedback banner copy should:</p>
+    <div class="prose">
+      <ul>
+        <li>Lead with the outcome in the title &mdash; &ldquo;Great job!&rdquo;, &ldquo;Incorrect&rdquo;, &ldquo;Almost there&rdquo;</li>
+        <li>Be encouraging and supportive, especially for error states &mdash; kids should feel motivated to try again</li>
+        <li>Use the subtitle for structured labels like &ldquo;Correct answer:&rdquo;</li>
+        <li>Keep descriptions short &mdash; one line is ideal, two lines maximum</li>
+        <li>Use clear, actionable button labels &mdash; &ldquo;Continue&rdquo;, &ldquo;Got it&rdquo;, &ldquo;Try again&rdquo;</li>
+        <li>Avoid jargon or blame language in error states</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token Reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All feedback banner styles map to Sprout design tokens. This table shows the exact token used for each property across hierarchies.</p>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Default</th><th>Success</th><th>Warning</th><th>Error</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>--bg-primary</code></td><td><code>--bg-success-secondary</code></td><td><code>--bg-warning-secondary</code></td><td><code>--bg-error-secondary</code></td></tr>
+        <tr><td>Title color</td><td><code>--text-primary</code></td><td><code>--text-success-primary</code></td><td><code>--text-warning-primary</code></td><td><code>--text-error-primary</code></td></tr>
+        <tr><td>Content color</td><td><code>--text-primary</code></td><td><code>--text-success-primary</code></td><td><code>--text-warning-primary</code></td><td><code>--text-error-primary</code></td></tr>
+        <tr><td>Primary btn bg</td><td><code>--fg-brand-primary</code></td><td><code>--green-500</code></td><td><code>--yellow-500</code></td><td><code>--red-500</code></td></tr>
+        <tr><td>Primary btn shadow</td><td><code>--brand-600</code></td><td><code>--green-600</code></td><td><code>--yellow-600</code></td><td><code>--red-600</code></td></tr>
+        <tr><td>Secondary btn bg</td><td colspan="4"><code>--bg-primary</code> with <code>--border-secondary</code> border</td></tr>
+        <tr><td>Secondary btn shadow</td><td colspan="4"><code>0 3px 0 --gray-200</code></td></tr>
+      </tbody>
+    </table>
+
+    <table class="token-table" style="margin-top:var(--spacing-3xl, 24px);">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Container padding</td><td><code>--spacing-3xl</code> (24px) vertical, <code>--spacing-xl</code> (16px) horizontal</td></tr>
+        <tr><td>Content gap</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Subtitle/desc gap</td><td><code>--spacing-xxs</code> (2px)</td></tr>
+        <tr><td>Title font</td><td><code>--font-size-display-xs</code> (24px) / <code>--line-height-display-xs</code> (32px) / bold</td></tr>
+        <tr><td>Subtitle font</td><td><code>--font-size-text-md</code> (16px) / <code>--line-height-text-md</code> (24px) / bold</td></tr>
+        <tr><td>Description font</td><td><code>--font-size-text-md</code> (16px) / <code>--line-height-text-md</code> (24px) / regular</td></tr>
+        <tr><td>Icon size</td><td>32&times;32px (TossFace 28px)</td></tr>
+        <tr><td>Button radius</td><td><code>--radius-2xl</code> (16px)</td></tr>
+        <tr><td>Button font</td><td><code>--font-size-text-md</code> (16px) / bold</td></tr>
+        <tr><td>Button shadow</td><td>4px primary, 3px secondary</td></tr>
+        <tr><td>Button row gap</td><td>10px</td></tr>
+        <tr><td>Top border (dual CTA)</td><td>1px solid <code>--border-primary</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Live region:</strong> The feedback banner should use <code>aria-live="assertive"</code> so screen readers announce the outcome immediately when it appears.</li>
+        <li><strong>Role:</strong> Wrap the banner in <code>role="region"</code> with an <code>aria-label</code> describing the feedback type, e.g. &ldquo;Quiz result&rdquo;.</li>
+        <li><strong>Focus management:</strong> When the banner appears, move focus to the title or primary button so keyboard users can act immediately.</li>
+        <li><strong>Keyboard:</strong> All buttons are focusable and activated with <kbd>Enter</kbd> or <kbd>Space</kbd>. Tab order should go: secondary button (if present), then primary button.</li>
+        <li><strong>Contrast:</strong> All hierarchy variants use dark text on light tinted backgrounds, exceeding WCAG AA contrast ratios. Button text (white on solid fills) passes AA for large text.</li>
+        <li><strong>Touch targets:</strong> Buttons meet the 44&times;44px minimum touch target guideline.</li>
+        <li><strong>Motion:</strong> If using a slide-up animation, respect <code>prefers-reduced-motion</code> by disabling the transition.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

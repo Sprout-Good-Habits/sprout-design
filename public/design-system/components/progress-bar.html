@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Progress Bar</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "ProgressBar",
+  "slug": "progress-bar",
+  "intent": {
+    "purpose": "Show how far through an exercise set the user has progressed with animated feedback",
+    "taskContext": ["quest-progress", "exercise-tracking"],
+    "sentiment": ["positive"]
+  },
+  "composition": {
+    "requires": ["track", "fill"],
+    "allows": ["inner-highlight", "message", "spark-particles"],
+    "forbids": ["button", "icon"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Standard progress display", "pairWith": [] },
+    { "name": "With message", "useWhen": "Streak feedback (3/5/10 in a row)", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 16px track height" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["toolbar-center"]
+  },
+  "relationships": {
+    "related": ["LoadingIndicator", "Toolbar"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Toolbar"]
+  },
+  "states": ["empty", "partial", "complete", "animating"],
+  "accessibility": {
+    "role": "progressbar",
+    "keyboard": [],
+    "ariaAttributes": ["aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-label"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Phone frame ── */
+.phone-frame {
+  width:402px; height:200px;
+  background:var(--bg-sky, #e0f2fe);
+  border-radius:36px; overflow:hidden;
+  position:relative;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  display:flex; flex-direction:column;
+}
+.phone-frame-white { background:var(--bg-primary, #ffffff); }
+.phone-status {
+  height:54px; padding:14px 24px 0;
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:15px; font-weight:600;
+  color:var(--text-primary, #181d27);
+}
+.phone-status-icons { display:flex; gap:4px; align-items:center; }
+.phone-status-icons svg { width:16px; height:16px; }
+.phone-content { padding:16px; }
+.phone-content-line {
+  height:12px; background:var(--gray-100, #f5f5f5);
+  border-radius:6px; margin-bottom:8px;
+}
+.phone-content-line:nth-child(2) { width:80%; }
+.phone-content-line:nth-child(3) { width:60%; }
+
+/* ── Quest toolbar (context shell for demos) ── */
+.toolbar-quest {
+  display:flex; align-items:flex-start;
+  padding:0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  background:var(--bg-sky, #e0f2fe);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  gap:var(--spacing-md, 8px);
+  width:100%; box-sizing:border-box;
+}
+.quest-close {
+  display:flex; align-items:center;
+  padding:var(--spacing-xs, 4px);
+  flex-shrink:0; cursor:pointer;
+}
+.quest-close svg { width:40px; height:40px; }
+
+/* ── Progress bar — matches Figma node 19948:7302 exactly ── */
+.progress-bar {
+  display:flex; flex-direction:column;
+  gap:0px;
+  height:34px; width:100%;
+  align-items:flex-start;
+  justify-content:flex-end;
+  padding:0;
+  position:relative;
+  background:none;
+  border-radius:0;
+  overflow:visible;
+}
+
+/* Message — Figma: w-full, text-xs bold, brand-500 */
+.progress-message {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:var(--line-height-text-xs, 16px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--brand-500, #0ba5ec);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  width:100%;
+  position:relative;
+  flex-shrink:0;
+}
+/* Hidden state for animated demos */
+.progress-message:empty,
+.progress-message.hidden {
+  display:none;
+}
+
+/* Track — Figma: bg-secondary, 16px, radius-full, flex-col */
+.progress-track {
+  width:100%; height:16px;
+  background:var(--bg-secondary, #fafafa);
+  border-radius:var(--radius-full, 9999px);
+  position:relative;
+  flex-shrink:0;
+  display:flex; flex-direction:column;
+  align-items:flex-start;
+}
+
+/* Fill — Figma: flex:1 0 0, brand-500, radius-full, py-xs px-md */
+.progress-fill {
+  flex:1 0 0;
+  height:auto;
+  background:var(--brand-500, #0ba5ec);
+  border-radius:var(--radius-full, 9999px);
+  min-width:32px; min-height:1px;
+  padding:var(--spacing-xs, 4px) var(--spacing-md, 8px);
+  box-sizing:border-box;
+  position:relative;
+  transition:width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  display:flex; flex-direction:column;
+  align-items:flex-start;
+}
+
+/* Inner highlight — Figma: white 50%, 4px, radius-full */
+.progress-fill::after {
+  content:'';
+  display:block;
+  width:100%; height:4px;
+  background:rgba(255,255,255,0.5);
+  border-radius:var(--radius-full, 9999px);
+  flex-shrink:0;
+}
+
+/* ── Sparkle confetti animation ── */
+@keyframes sparkle-pop {
+  0%   { opacity:0; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(0); }
+  30%  { opacity:1; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(1); }
+  70%  { opacity:1; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(1); }
+  100% { opacity:0; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(0.5); }
+}
+
+/* Shimmer trail on the fill surface */
+@keyframes sparkle-shimmer {
+  0%   { opacity:0; transform:translateX(-100%); }
+  20%  { opacity:0.6; }
+  100% { opacity:0; transform:translateX(20px); }
+}
+
+.spark-overlay {
+  position:absolute; top:0; left:0; right:0; bottom:0;
+  pointer-events:none; z-index:10;
+  overflow:visible;
+}
+
+/* Diamond confetti particle — the Figma Sparkle shape */
+.sparkle {
+  position:absolute;
+  width:var(--sz, 6px); height:var(--sz, 6px);
+  border-radius:1px;
+  background:var(--c, var(--brand-500, #0ba5ec));
+  transform:rotate(45deg);
+  animation:sparkle-pop var(--dur, 0.55s) cubic-bezier(0.22,1,0.36,1) forwards;
+  animation-delay:var(--d, 0s);
+}
+
+/* Shimmer — horizontal light streak across the fill */
+.sparkle-shimmer {
+  position:absolute;
+  width:24px; height:100%;
+  top:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+  border-radius:var(--radius-full, 9999px);
+  animation:sparkle-shimmer 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+  pointer-events:none;
+}
+
+/* ── Interactive demo ── */
+.demo-controls {
+  display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+}
+.demo-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 16px;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:white;
+  background:var(--brand-500, #0ba5ec);
+  border:none; border-radius:var(--radius-sm, 6px);
+  cursor:pointer;
+  transition:background 0.15s;
+}
+.demo-btn:hover { background:var(--brand-600, #0086c9); }
+.demo-btn-secondary {
+  background:var(--bg-primary, #fff);
+  color:var(--text-secondary, #414651);
+  border:1px solid var(--border-primary, #d5d7da);
+}
+.demo-btn-secondary:hover { background:var(--bg-secondary, #fafafa); }
+.demo-step-label {
+  font-size:13px; color:var(--text-tertiary, #535862);
+  font-weight:500; min-width:80px;
+}
+
+/* ── Anatomy ── */
+.anatomy-bar {
+  display:flex; flex-direction:column; gap:8px;
+  padding:24px; width:100%;
+  background:var(--bg-secondary, #fafafa);
+  border-radius:var(--radius-xl, 12px);
+  border:1px solid var(--border-secondary, #e9eaeb);
+}
+.anatomy-label {
+  font-size:10px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.8px;
+  color:var(--violet-500, #875bf7);
+  background:var(--violet-50, #f5f3ff);
+  padding:2px 6px; border-radius:3px;
+  white-space:nowrap; display:inline-block;
+}
+.anatomy-track-wrap {
+  position:relative; width:100%;
+}
+.anatomy-pointer {
+  position:absolute; display:flex; flex-direction:column;
+  align-items:center; gap:4px;
+}
+.anatomy-pointer-line {
+  width:1px; height:20px;
+  border-left:2px dashed var(--violet-500, #875bf7);
+}
+
+/* ── Figma link ── */
+.figma-link {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:13px; font-weight:500;
+  color:var(--brand-600, #0086c9);
+  text-decoration:none; margin-bottom:24px;
+}
+.figma-link:hover { text-decoration:underline; }
+.figma-link svg { width:16px; height:16px; }
+
+/* ── Demo overrides ── */
+.demo { flex-wrap:wrap; }
+.demo-col { flex-direction:column; gap:24px; }
+.demo.demo-transparent {
+  background:none; border:none; padding:0;
+  align-items:stretch;
+}
+@media(max-width:768px) {
+  .phone-frame { width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="sec-title">Progress Bar</div>
+    <div class="sec-desc">Linear progress indicator used inside the Quest toolbar. Shows how far through an exercise set the kid has progressed. Supports animated fill transitions, streak messages, and spark effects on correct answers.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500)">&#10003;</span> Use inside the <strong>Quest toolbar</strong> to show exercise completion progress.</li>
+        <li><span style="color:var(--green-500)">&#10003;</span> Use when the total number of steps is known and progress is linear.</li>
+        <li><span style="color:var(--red-500)">&#10007;</span> Don&rsquo;t use for indeterminate loading &mdash; use the <a href="/design-system/components/loading.html" style="color:var(--brand-600)">Loading spinner</a> instead.</li>
+        <li><span style="color:var(--red-500)">&#10007;</span> Don&rsquo;t use outside of exercise/quest flows. Other progress indicators (e.g., profile completion) should use a different pattern.</li>
+      </ul>
+    </div>
+  </div>
+
+  <a class="figma-link" href="https://www.figma.com/design/n79cdqJCVoyVCtGbO5iHAd/Pencil-down---Brand?node-id=19948-7381" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2H8.5A3.5 3.5 0 005 5.5 3.5 3.5 0 008.5 9H12V2z" fill="#F24E1E"/><path d="M12 9H8.5A3.5 3.5 0 005 12.5 3.5 3.5 0 008.5 16H12V9z" fill="#A259FF"/><path d="M12 16H8.5A3.5 3.5 0 005 19.5 3.5 3.5 0 008.5 23a3.5 3.5 0 003.5-3.5V16z" fill="#0ACF83"/><path d="M19 5.5A3.5 3.5 0 0015.5 2H12v7h3.5A3.5 3.5 0 0019 5.5z" fill="#FF7262"/><circle cx="15.5" cy="12.5" r="3.5" fill="#1ABCFE"/></svg>
+    View in Figma
+  </a>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="progress-bar" style="width:323px;"><div class="progress-track"><div class="progress-fill" style="width:50%;transition:none;"></div></div></div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">With message</span>
+        <div class="progress-bar" style="width:323px;">
+          <div class="progress-message">3 IN A ROW</div>
+          <div class="progress-track"><div class="progress-fill" style="width:50%;transition:none;"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anatomy -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>The progress bar is composed of four elements, all contained within the Quest toolbar context.</p>
+
+    <div class="demo demo-col">
+      <div class="anatomy-bar">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;">
+          <span class="anatomy-label">Message (optional)</span>
+          <span style="font-size:12px;font-weight:700;color:var(--brand-500, #0ba5ec);">3 in a row!</span>
+        </div>
+        <div class="anatomy-track-wrap">
+          <div class="progress-track" style="position:relative;">
+            <div class="progress-fill" style="width:45%;transition:none;position:relative;">
+              <div style="position:absolute;top:-28px;left:0;"><span class="anatomy-label">Inner highlight</span></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;">
+            <span class="anatomy-label">Track</span>
+            <span class="anatomy-label">Fill (progression)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Track</strong> (required) &mdash; 16px tall pill. Background: <code>--bg-secondary</code>. Full width of the toolbar center slot.</li>
+        <li><strong>Fill / Progression</strong> (required) &mdash; Animated fill inside the track. Background: <code>--brand-500</code>. Min-width: 32px. Padding: 4px vertical, 8px horizontal.</li>
+        <li><strong>Inner highlight</strong> (required) &mdash; 4px tall white 50% opacity bar inside the fill, creating a glossy/3D effect.</li>
+        <li><strong>Message</strong> (optional) &mdash; Bold text-xs label above the bar in <code>--brand-500</code> (#0ba5ec). Used for streak callouts like &ldquo;3 in a row!&rdquo;</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Progress states -->
+  <div class="doc-section">
+    <h2>Progress states</h2>
+    <p>The fill width represents percentage completion of the exercise set.</p>
+
+    <div class="demo demo-col demo-transparent" style="gap:16px;max-width:323px;">
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">10%</p>
+        <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:10%;transition:none;"></div></div></div>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">25%</p>
+        <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:25%;transition:none;"></div></div></div>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">50%</p>
+        <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:50%;transition:none;"></div></div></div>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">75%</p>
+        <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:75%;transition:none;"></div></div></div>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">100%</p>
+        <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:100%;transition:none;"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- With message -->
+  <div class="doc-section">
+    <h2>With message</h2>
+    <p>An optional message label sits above the track for streak callouts. Text is uppercase bold text-xs in <code>--brand-500</code>, centered horizontally over the progression when possible. The message has no background of its own.</p>
+
+    <div class="demo demo-transparent" style="gap:24px;">
+      <div style="width:323px;">
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">30% &mdash; centered over fill</p>
+        <div class="progress-bar" id="msg-bar-1">
+          <div class="progress-message" id="msg-label-1">3 IN A ROW</div>
+          <div class="progress-track"><div class="progress-fill" id="msg-fill-1" style="width:30%;transition:none;"></div></div>
+        </div>
+      </div>
+      <div style="width:323px;">
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">60% &mdash; centered over fill</p>
+        <div class="progress-bar" id="msg-bar-2">
+          <div class="progress-message" id="msg-label-2">5 IN A ROW</div>
+          <div class="progress-track"><div class="progress-fill" id="msg-fill-2" style="width:60%;transition:none;"></div></div>
+        </div>
+      </div>
+      <div style="width:323px;">
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">90% &mdash; clamped at right edge</p>
+        <div class="progress-bar" id="msg-bar-3">
+          <div class="progress-message" id="msg-label-3">10 IN A ROW</div>
+          <div class="progress-track"><div class="progress-fill" id="msg-fill-3" style="width:90%;transition:none;"></div></div>
+        </div>
+      </div>
+      <div style="width:323px;">
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">Without message</p>
+        <div class="progress-bar">
+          <div class="progress-track"><div class="progress-fill" style="width:60%;transition:none;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Default:</strong> Message text-align centers over the midpoint of the fill width.</li>
+        <li><strong>Left clamp:</strong> If the fill is too narrow, the message left-aligns to stay readable.</li>
+        <li><strong>Right clamp:</strong> If centering would push past the track edge, it snaps to the right edge.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Animation: Fill -->
+  <div class="doc-section">
+    <h2>Animation: Fill transition</h2>
+    <p>When progress advances, the fill width animates smoothly with <code>cubic-bezier(0.22, 1, 0.36, 1)</code> over <strong>400ms</strong>. The animation is triggered by updating the fill&rsquo;s width value.</p>
+
+    <div class="demo demo-col demo-transparent" style="gap:16px;">
+      <div style="width:323px;">
+        <div class="progress-bar" id="demo-bar">
+          <div class="progress-message hidden" id="demo-message"></div>
+          <div class="progress-track"><div class="progress-fill" id="demo-fill" style="width:10%;"></div></div>
+        </div>
+      </div>
+      <div class="demo-controls">
+        <button class="demo-btn" id="demo-next-btn" onclick="demoAdvance()">Correct answer &rarr;</button>
+        <button class="demo-btn demo-btn-secondary" onclick="demoReset()">Reset</button>
+        <span class="demo-step-label" id="demo-step-label">Step 1 / 10</span>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Duration:</strong> 400ms</li>
+        <li><strong>Easing:</strong> <code>cubic-bezier(0.22, 1, 0.36, 1)</code> &mdash; fast snap followed by smooth deceleration (spring-like feel)</li>
+        <li><strong>Trigger:</strong> On correct answer / exercise step completion</li>
+        <li><strong>Direction:</strong> Always left-to-right. Progress never decreases during a quest session.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Animation: Spark -->
+  <div class="doc-section">
+    <h2>Animation: Spark effect</h2>
+    <p>A diamond-shaped confetti burst appears at the leading edge of the progress fill each time it advances. Tiny sparkle particles &mdash; rotated squares matching the Figma &ldquo;Sparkle&rdquo; shape &mdash; fly outward like celebration confetti. This micro-animation provides pure delight on correct answers.</p>
+
+    <div class="demo demo-col demo-transparent" style="gap:16px;">
+      <div style="width:323px;">
+        <div class="progress-bar" id="spark-demo-bar">
+          <div class="progress-track">
+            <div class="progress-fill" id="spark-demo-fill" style="width:50%;transition:none;"></div>
+          </div>
+        </div>
+      </div>
+      <button class="demo-btn" style="align-self:flex-start;" onclick="triggerSpark()">Play spark</button>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Shape:</strong> Diamond-shaped confetti particles &mdash; 5&ndash;8px rounded squares rotated 45&deg;, matching the Figma &ldquo;Sparkle&rdquo; shape (1px border-radius).</li>
+        <li><strong>Count:</strong> 5 diamond particles per burst.</li>
+        <li><strong>Position:</strong> Particles appear scattered around the right edge of the progress fill. The overlay sits on <code>.progress-bar</code> (not inside the track) to avoid <code>overflow:hidden</code> clipping.</li>
+        <li><strong>Behavior:</strong> Each particle pops into place at a random offset around the fill edge, holds briefly, then fades out. No outward flight &mdash; they appear in position like a momentary sparkle.</li>
+        <li><strong>Colors:</strong> Particles randomly pick from <code>--brand-500</code>, <code>--brand-200</code>, <code>--brand-300</code>, and white.</li>
+        <li><strong>Duration:</strong> 400&ndash;600ms with 30ms stagger between particles.</li>
+        <li><strong>Easing:</strong> <code>cubic-bezier(0.22, 1, 0.36, 1)</code> &mdash; same spring-snap feel as the fill.</li>
+        <li><strong>Timing:</strong> Spark fires at the <em>end</em> of the fill animation (after the 400ms width transition completes).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Animation: Message -->
+  <div class="doc-section">
+    <h2>Animation: Streak message</h2>
+    <p>Streak messages appear above the progress bar at milestone moments, centered over the fill when possible. They fade in, hold, then fade out.</p>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Fade in:</strong> 300ms ease &mdash; opacity 0 &rarr; 1, max-height 0 &rarr; 20px</li>
+        <li><strong>Hold:</strong> ~2 seconds visible</li>
+        <li><strong>Fade out:</strong> 300ms ease &mdash; opacity 1 &rarr; 0, max-height 20px &rarr; 0</li>
+        <li><strong>Text style:</strong> Uppercase, bold, <code>--brand-500</code>. Centered over the fill (see positioning rules above).</li>
+        <li><strong>Trigger conditions:</strong>
+          <ul>
+            <li><strong>3 in a row</strong> &mdash; &ldquo;3 IN A ROW&rdquo;</li>
+            <li><strong>5 in a row</strong> &mdash; &ldquo;5 IN A ROW&rdquo;</li>
+            <li><strong>10 in a row</strong> &mdash; &ldquo;10 IN A ROW&rdquo;</li>
+          </ul>
+        </li>
+        <li><strong>Pairing:</strong> Always accompanied by the spark effect.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Combined interactive demo -->
+  <div class="doc-section">
+    <h2>Full interactive demo</h2>
+    <p>Click &ldquo;Correct answer&rdquo; repeatedly to see the fill transition, spark effects, and streak messages working together. The demo simulates a 10-question exercise.</p>
+
+    <div class="demo demo-col" style="gap:16px;">
+      <div class="phone-frame" style="height:300px;" id="full-demo-frame">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar-quest">
+          <div class="quest-close"><svg viewBox="0 0 40 40" fill="none"><path d="M14 14l12 12M26 14l-12 12" stroke="var(--gray-500)" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+          <div class="progress-bar" id="full-bar">
+            <div class="progress-message hidden" id="full-message"></div>
+            <div class="progress-track"><div class="progress-fill" id="full-fill" style="width:10%;"></div></div>
+          </div>
+        </div>
+        <div style="padding:16px;">
+          <p style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;" id="full-question">Question 1 of 10</p>
+          <div class="phone-content-line" style="width:80%;height:48px;border-radius:12px;background:var(--gray-100);margin-bottom:12px;"></div>
+          <div class="phone-content-line" style="width:60%;height:36px;border-radius:8px;background:var(--gray-100);"></div>
+        </div>
+      </div>
+      <div class="demo-controls">
+        <button class="demo-btn" id="full-next-btn" onclick="fullDemoAdvance()">Correct answer &rarr;</button>
+        <button class="demo-btn demo-btn-secondary" onclick="fullDemoReset()">Reset</button>
+        <span class="demo-step-label" id="full-step-label">Step 1 / 10</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Token reference -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Track height</td><td>&mdash;</td><td>16px</td></tr>
+        <tr><td>Track color</td><td><code>--bg-secondary</code></td><td>#fafafa</td></tr>
+        <tr><td>Track radius</td><td><code>--radius-full</code></td><td>9999px</td></tr>
+        <tr><td>Fill color</td><td><code>--brand-500</code></td><td>#0ba5ec</td></tr>
+        <tr><td>Fill min-width</td><td>&mdash;</td><td>32px</td></tr>
+        <tr><td>Fill padding</td><td><code>--spacing-xs</code> / <code>--spacing-md</code></td><td>4px top/bottom, 8px left/right</td></tr>
+        <tr><td>Fill radius</td><td><code>--radius-full</code></td><td>9999px</td></tr>
+        <tr><td>Inner highlight</td><td>&mdash;</td><td>4px tall, white 50% opacity, full radius</td></tr>
+        <tr><td>Fill transition</td><td>&mdash;</td><td>400ms cubic-bezier(0.22, 1, 0.36, 1)</td></tr>
+        <tr><td>Spark duration</td><td>&mdash;</td><td>500&ndash;600ms with staggered particles</td></tr>
+        <tr><td>Message font</td><td>text-xs / bold</td><td>12px / 16px, 700</td></tr>
+        <tr><td>Message color</td><td><code>--brand-500</code></td><td>#0ba5ec</td></tr>
+        <tr><td>Message fade</td><td>&mdash;</td><td>300ms ease in/out, 2s hold</td></tr>
+        <tr><td>Container height</td><td>&mdash;</td><td>34px (with message space)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Properties -->
+  <div class="doc-section">
+    <h2>Properties</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>progress</code></td><td>Number (0&ndash;100)</td><td>0</td><td>Percentage fill width of the bar</td></tr>
+        <tr><td><code>showMessage</code></td><td>Boolean</td><td>false</td><td>Toggle streak message visibility</td></tr>
+        <tr><td><code>messageText</code></td><td>String</td><td>&ldquo;MESSAGE&rdquo;</td><td>Content of the streak message label</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Use <code>role="progressbar"</code> on the track element.</li>
+        <li><strong>Values:</strong> Set <code>aria-valuenow</code> to the current percentage, <code>aria-valuemin="0"</code>, <code>aria-valuemax="100"</code>.</li>
+        <li><strong>Label:</strong> Add <code>aria-label="Exercise progress"</code> to describe the bar&rsquo;s purpose.</li>
+        <li><strong>Updates:</strong> Use <code>aria-live="polite"</code> on the message element so screen readers announce streak milestones.</li>
+        <li><strong>Motion:</strong> Respect <code>prefers-reduced-motion</code> &mdash; disable spark particles and use instant width changes instead of animated transitions.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+<script>
+// ── Message centering — position text over the fill ──
+function centerMessage(msgEl, fillPct) {
+  if (!msgEl) return;
+  var el = msgEl.parentElement;
+  if (!el) return;
+  var trackEl = el.querySelector('.progress-track');
+  if (!trackEl) return;
+  var trackW = trackEl.offsetWidth;
+  var fillW = trackW * (fillPct / 100);
+  var span = document.createElement('span');
+  span.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;font:' + getComputedStyle(msgEl).font + ';letter-spacing:' + getComputedStyle(msgEl).letterSpacing;
+  span.textContent = msgEl.textContent;
+  document.body.appendChild(span);
+  var textW = span.offsetWidth;
+  span.remove();
+  var left = (fillW / 2) - (textW / 2);
+  left = Math.max(0, Math.min(left, trackW - textW));
+  msgEl.style.paddingLeft = left + 'px';
+}
+
+function showMessage(msgEl, text, fillPct) {
+  msgEl.textContent = text;
+  msgEl.classList.remove('hidden');
+  centerMessage(msgEl, fillPct);
+}
+function hideMessage(msgEl) {
+  msgEl.classList.add('hidden');
+  msgEl.textContent = '';
+  msgEl.style.paddingLeft = '';
+}
+
+// Center static message demos on load
+window.addEventListener('load', function() {
+  centerMessage(document.getElementById('msg-label-1'), 30);
+  centerMessage(document.getElementById('msg-label-2'), 60);
+  centerMessage(document.getElementById('msg-label-3'), 90);
+});
+
+// ── Sparkle confetti helper ──
+var COLORS = ['var(--brand-500,#0ba5ec)', 'var(--brand-200,#b9e6fe)', 'white', 'var(--brand-300,#7cd4fd)'];
+
+function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+function createConfetti(count) {
+  var html = '<div class="spark-overlay">';
+  for (var i = 0; i < count; i++) {
+    var tx = randomBetween(-14, 22) + 'px';
+    var ty = randomBetween(-24, 18) + 'px';
+    var sz = randomBetween(5, 8) + 'px';
+    var rot = Math.round(randomBetween(120, 340)) + 'deg';
+    var d = (i * 0.03) + 's';
+    var dur = randomBetween(0.4, 0.6) + 's';
+    var c = COLORS[Math.floor(Math.random() * COLORS.length)];
+    html += '<div class="sparkle" style="--tx:'+tx+';--ty:'+ty+';--sz:'+sz+';--rot:'+rot+';--d:'+d+';--dur:'+dur+';--c:'+c+';"></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function fireSpark(barEl, fillEl) {
+  var old = barEl.querySelector('.spark-overlay');
+  if (old) old.remove();
+
+  var barRect = barEl.getBoundingClientRect();
+  var fillRect = fillEl.getBoundingClientRect();
+  var sparkX = fillRect.right - barRect.left;
+  var sparkY = fillRect.top + fillRect.height / 2 - barRect.top;
+
+  barEl.insertAdjacentHTML('beforeend', createConfetti(5));
+  var overlay = barEl.querySelector('.spark-overlay');
+
+  var children = overlay.children;
+  for (var i = 0; i < children.length; i++) {
+    children[i].style.left = sparkX + 'px';
+    children[i].style.top = sparkY + 'px';
+  }
+
+  var shimmer = document.createElement('div');
+  shimmer.className = 'sparkle-shimmer';
+  shimmer.style.left = (fillRect.width - 30) + 'px';
+  fillEl.appendChild(shimmer);
+  setTimeout(function() { if (shimmer.parentNode) shimmer.remove(); }, 600);
+
+  setTimeout(function() {
+    if (overlay && overlay.parentNode) overlay.remove();
+  }, 750);
+}
+
+// ── Spark demo button ──
+function triggerSpark() {
+  var barEl = document.getElementById('spark-demo-bar');
+  var fillEl = document.getElementById('spark-demo-fill');
+  fireSpark(barEl, fillEl);
+}
+
+// ── Simple fill demo ──
+var demoStep = 1;
+var TOTAL = 10;
+function demoAdvance() {
+  if (demoStep >= TOTAL) return;
+  demoStep++;
+  var pct = Math.round((demoStep / TOTAL) * 100);
+  var fill = document.getElementById('demo-fill');
+  fill.style.width = pct + '%';
+  document.getElementById('demo-step-label').textContent = 'Step ' + demoStep + ' / ' + TOTAL;
+}
+function demoReset() {
+  demoStep = 1;
+  document.getElementById('demo-fill').style.width = '10%';
+  document.getElementById('demo-step-label').textContent = 'Step 1 / ' + TOTAL;
+}
+
+// ── Full interactive demo ──
+var fullStep = 1;
+var fullStreak = 0;
+var STREAKS = {3:'3 IN A ROW', 5:'5 IN A ROW', 10:'10 IN A ROW'};
+
+function fullDemoAdvance() {
+  if (fullStep >= TOTAL) return;
+  fullStep++;
+  fullStreak++;
+  var pct = Math.round((fullStep / TOTAL) * 100);
+  var fill = document.getElementById('full-fill');
+  var bar = document.getElementById('full-bar');
+  var msg = document.getElementById('full-message');
+  fill.style.width = pct + '%';
+  document.getElementById('full-step-label').textContent = 'Step ' + fullStep + ' / ' + TOTAL;
+  document.getElementById('full-question').textContent = 'Question ' + fullStep + ' of ' + TOTAL;
+
+  var isStreak = STREAKS[fullStreak];
+  setTimeout(function() {
+    fireSpark(bar, fill);
+  }, 420);
+
+  if (isStreak) {
+    setTimeout(function() {
+      showMessage(msg, isStreak, pct);
+    }, 430);
+    setTimeout(function() { hideMessage(msg); }, 2500);
+  }
+
+  if (fullStep >= TOTAL) {
+    document.getElementById('full-next-btn').textContent = 'Complete!';
+    document.getElementById('full-next-btn').disabled = true;
+  }
+}
+
+function fullDemoReset() {
+  fullStep = 1;
+  fullStreak = 0;
+  document.getElementById('full-fill').style.width = '10%';
+  document.getElementById('full-step-label').textContent = 'Step 1 / ' + TOTAL;
+  document.getElementById('full-question').textContent = 'Question 1 of ' + TOTAL;
+  hideMessage(document.getElementById('full-message'));
+  document.getElementById('full-next-btn').textContent = 'Correct answer \u2192';
+  document.getElementById('full-next-btn').disabled = false;
+}
+</script>
+</body>
+</html>

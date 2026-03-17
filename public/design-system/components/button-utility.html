@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Button Utility</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "ButtonUtility",
+  "slug": "button-utility",
+  "intent": {
+    "purpose": "Pill-shaped utility buttons for toolbar navigation, actions, stat counters, and avatar groups",
+    "taskContext": ["toolbar-action", "navigation", "stat-display"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["icon-or-content"],
+    "allows": ["value-label", "avatar-group", "second-icon", "third-icon"],
+    "forbids": ["nested-button", "image"]
+  },
+  "variants": [
+    { "name": "Back", "useWhen": "Return to previous screen", "pairWith": [] },
+    { "name": "Cancel", "useWhen": "Dismiss current flow with text label", "pairWith": [] },
+    { "name": "1 symbol", "useWhen": "Single icon action (settings, profile)", "pairWith": [] },
+    { "name": "1 symbol + value", "useWhen": "Stat counter display (fire streak, gems)", "pairWith": [] },
+    { "name": "2 symbol", "useWhen": "Dual icon display", "pairWith": [] },
+    { "name": "3 symbol", "useWhen": "Triple icon display", "pairWith": [] },
+    { "name": "User group", "useWhen": "Avatar cluster showing participants", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Standard", "useWhen": "Default — 12px padding" },
+    { "name": "Small", "useWhen": "User group variant — 8px padding" }
+  ],
+  "context": {
+    "density": ["default", "compact"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["toolbar-leading", "toolbar-trailing"]
+  },
+  "relationships": {
+    "related": ["Button", "AvatarGroup"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Toolbar"]
+  },
+  "states": ["default", "hover", "active", "disabled"],
+  "accessibility": {
+    "role": "button",
+    "keyboard": ["Enter", "Space"],
+    "ariaAttributes": ["aria-label", "aria-disabled"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+.tf-icon {
+  font-family:'TossFace', sans-serif;
+  font-size:24px; line-height:1;
+}
+
+/* ── Button Utility base ── */
+.btn-util {
+  display:inline-flex;
+  align-items:center; justify-content:center;
+  gap:0px;
+  padding:var(--spacing-lg, 12px);
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-full, 9999px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  overflow:hidden;
+  cursor:pointer;
+  box-sizing:border-box;
+  transition:background 0.15s, box-shadow 0.15s, border-color 0.15s;
+  flex-shrink:0;
+}
+.btn-util:hover {
+  background:var(--gray-50, #fafafa);
+}
+.btn-util:active {
+  box-shadow:none;
+  transform:translateY(2px);
+}
+
+/* ── With gap (multi-symbol, icon+value) ── */
+.btn-util-gap { gap:var(--spacing-md, 8px); }
+
+/* ── Small padding for User group ── */
+.btn-util-sm { padding:var(--spacing-md, 8px); }
+
+/* ── Disabled state ── */
+.btn-util-disabled {
+  background:var(--gray-300, #d5d7da);
+  border-color:var(--gray-400, #a4a7ae);
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);
+  cursor:not-allowed;
+  pointer-events:none;
+}
+
+/* ── Pressed state (for demo) ── */
+.btn-util-pressed {
+  box-shadow:none;
+  transform:translateY(2px);
+}
+
+/* ── Icon slot ── */
+.btn-util-icon {
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  overflow:hidden;
+}
+.btn-util-icon svg {
+  width:24px; height:24px;
+}
+
+/* ── Value label ── */
+.btn-util-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-lg, 18px);
+  font-weight:var(--font-weight-medium, 500);
+  line-height:var(--line-height-text-lg, 28px);
+  color:var(--text-secondary, #414651);
+  white-space:nowrap;
+}
+
+/* ── Avatar / User group ── */
+.avatar {
+  width:32px; height:32px;
+  border-radius:var(--radius-full, 9999px);
+  background:var(--bg-sky, #e0f2fe);
+  border:2px solid white; flex-shrink:0;
+}
+.user-group { display:flex; align-items:baseline; padding-right:var(--spacing-md, 8px); }
+.user-group .avatar { margin-right:calc(-1 * var(--spacing-md, 8px)); }
+
+/* ── Anatomy diagram ── */
+.anatomy-wrap {
+  display:flex; align-items:center; justify-content:center;
+  padding:var(--spacing-5xl, 40px);
+  background:var(--bg-secondary, #fafafa);
+  border-radius:var(--radius-xl, 12px);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  margin:16px 0 24px;
+}
+.anatomy-item {
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+.anatomy-label {
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-tertiary, #535862);
+  text-align:center;
+}
+.anatomy-pointer {
+  width:1px; height:20px;
+  background:var(--border-primary, #d5d7da);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Button Utility</div>
+    <div class="sec-desc">Pill-shaped utility buttons used in toolbars for navigation, actions, stat counters, and avatar groups. They sit in the leading and trailing slots of toolbar variants.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for toolbar navigation (Back, Cancel).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for displaying gamified stat counters (fire streak, gems).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for showing avatar groups in chat headers.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for icon-only actions within toolbars (settings, profile).</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use as a primary action button &mdash; use <a href="/design-system/components/buttons.html" style="color:var(--brand-600)">Buttons</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use outside of toolbars or navigation contexts.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Back</span>
+        <div class="btn-util">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">1 symbol + Value</span>
+        <div class="btn-util btn-util-gap">
+          <span class="tf-icon">&#x1F525;</span>
+          <span class="btn-util-label">100</span>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">User group</span>
+        <div class="btn-util btn-util-sm">
+          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ANATOMY                                     -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>A pill-shaped container with a playful 3px bottom shadow. Content slots hold icons, emoji symbols, value labels, or avatar groups.</p>
+
+    <div class="anatomy-wrap" style="gap:48px;">
+      <div class="anatomy-item">
+        <div class="btn-util">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+        </div>
+        <div class="anatomy-pointer"></div>
+        <span class="anatomy-label">Container<br>+ Icon</span>
+      </div>
+      <div class="anatomy-item">
+        <div class="btn-util btn-util-gap">
+          <span class="tf-icon">&#x1F525;</span>
+          <span class="btn-util-label">100</span>
+        </div>
+        <div class="anatomy-pointer"></div>
+        <span class="anatomy-label">Icon<br>+ Value</span>
+      </div>
+      <div class="anatomy-item">
+        <div class="btn-util btn-util-sm">
+          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+        </div>
+        <div class="anatomy-pointer"></div>
+        <span class="anatomy-label">User<br>group</span>
+      </div>
+    </div>
+
+    <table class="token-table">
+      <thead><tr><th>Part</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Container</td><td>Pill shape (<code>radius-full</code>) with white fill, secondary border, and 3px bottom shadow</td></tr>
+        <tr><td>Icon slot</td><td>24 &times; 24px &mdash; holds SVG icons or emoji symbols</td></tr>
+        <tr><td>Value label</td><td>Text lg / Medium (<code>--text-secondary</code>) &mdash; appears in &ldquo;1 symbol + Value&rdquo; type</td></tr>
+        <tr><td>Avatar group</td><td>Stacked 32px avatar circles with &minus;8px overlap</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TYPES                                       -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Types</h2>
+    <p>The utility button comes in seven content configurations. All share the same container, shadow, and state behavior.</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));">
+      <!-- Back -->
+      <div class="state-cell">
+        <span class="state-cell-label">Back</span>
+        <div class="btn-util">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+        </div>
+      </div>
+      <!-- Cancel -->
+      <div class="state-cell">
+        <span class="state-cell-label">Cancel</span>
+        <div class="btn-util">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        </div>
+      </div>
+      <!-- 1 symbol -->
+      <div class="state-cell">
+        <span class="state-cell-label">1 symbol</span>
+        <div class="btn-util">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div>
+        </div>
+      </div>
+      <!-- 1 symbol + Value -->
+      <div class="state-cell">
+        <span class="state-cell-label">1 symbol + Value</span>
+        <div class="btn-util btn-util-gap">
+          <span class="tf-icon">&#x1F525;</span>
+          <span class="btn-util-label">100</span>
+        </div>
+      </div>
+      <!-- 2 symbol -->
+      <div class="state-cell">
+        <span class="state-cell-label">2 symbol</span>
+        <div class="btn-util btn-util-gap">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div>
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div>
+        </div>
+      </div>
+      <!-- 3 symbol -->
+      <div class="state-cell">
+        <span class="state-cell-label">3 symbol</span>
+        <div class="btn-util btn-util-gap">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div>
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div>
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div>
+        </div>
+      </div>
+      <!-- User group -->
+      <div class="state-cell">
+        <span class="state-cell-label">User group</span>
+        <div class="btn-util btn-util-sm">
+          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- STATES                                      -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>All types share the same four interactive states. The shadow provides a tactile, &ldquo;pressable&rdquo; feel aligned with Sprout&rsquo;s playful UI language.</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(4, 1fr);">
+      <div class="state-cell"><span class="state-cell-label">Default</span></div>
+      <div class="state-cell"><span class="state-cell-label">Hover</span></div>
+      <div class="state-cell"><span class="state-cell-label">Active / Pressed</span></div>
+      <div class="state-cell"><span class="state-cell-label">Disabled</span></div>
+
+      <div class="state-cell">
+        <div class="btn-util">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util" style="background:var(--gray-50, #fafafa);">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-pressed">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-disabled">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+        </div>
+      </div>
+
+      <div class="state-cell">
+        <div class="btn-util btn-util-gap">
+          <span class="tf-icon">&#x1F525;</span>
+          <span class="btn-util-label">100</span>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-gap" style="background:var(--gray-50, #fafafa);">
+          <span class="tf-icon">&#x1F525;</span>
+          <span class="btn-util-label">100</span>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-gap btn-util-pressed">
+          <span class="tf-icon">&#x1F525;</span>
+          <span class="btn-util-label">100</span>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-gap btn-util-disabled">
+          <span class="tf-icon">&#x1F525;</span>
+          <span class="btn-util-label">100</span>
+        </div>
+      </div>
+
+      <div class="state-cell">
+        <div class="btn-util btn-util-sm">
+          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-sm" style="background:var(--gray-50, #fafafa);">
+          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-sm btn-util-pressed">
+          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-sm btn-util-disabled">
+          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- COMMON EXAMPLES                             -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Common examples</h2>
+    <p>Real-world usage as seen across Sprout toolbar variants.</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));">
+      <div class="state-cell">
+        <span class="state-cell-label">Back (arrow)</span>
+        <div class="btn-util">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Cancel (close)</span>
+        <div class="btn-util">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Fire streak</span>
+        <div class="btn-util btn-util-gap">
+          <span class="tf-icon">&#x1F525;</span>
+          <span class="btn-util-label">100</span>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Gems</span>
+        <div class="btn-util btn-util-gap">
+          <span class="tf-icon">&#x1F48E;</span>
+          <span class="btn-util-label">100</span>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Shield (parent)</span>
+        <div class="btn-util">
+          <span class="tf-icon">&#x1F6E1;&#xFE0F;</span>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Smiley (profile)</span>
+        <div class="btn-util">
+          <span class="tf-icon">&#x1F600;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOOLBAR CONTEXT                             -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Toolbar context</h2>
+    <p>The utility button is the primary interactive element inside the Toolbar. It fills the <strong>Leading</strong> and <strong>Trailing</strong> slots of each toolbar variant.</p>
+    <table class="token-table">
+      <thead><tr><th>Toolbar style</th><th>Leading</th><th>Trailing</th></tr></thead>
+      <tbody>
+        <tr><td>Compact Large</td><td>&mdash;</td><td>1 symbol</td></tr>
+        <tr><td>Large Title</td><td>1 symbol</td><td>1 symbol</td></tr>
+        <tr><td>Title 2 Line</td><td>1 symbol</td><td>1 symbol</td></tr>
+        <tr><td>Default</td><td>1 symbol</td><td>1 symbol</td></tr>
+        <tr><td>Chat</td><td>Back</td><td>User group</td></tr>
+        <tr><td>Kid home</td><td>Shield emoji</td><td>Fire + Gems + Smiley</td></tr>
+        <tr><td>Quest</td><td>Cancel</td><td>&mdash;</td></tr>
+        <tr><td>Quest - Transparent</td><td>Cancel</td><td>&mdash;</td></tr>
+        <tr><td>Quest map</td><td>Back</td><td>Fire + Lightning + Medal</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOKEN REFERENCE                             -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Background (default)</td><td><code>--bg-primary</code> (white)</td></tr>
+        <tr><td>Background (hover)</td><td><code>--bg-primary-hover</code> (#fafafa)</td></tr>
+        <tr><td>Background (disabled)</td><td><code>--fg-disabled-subtle</code> (#d5d7da)</td></tr>
+        <tr><td>Border</td><td>2px solid <code>--border-secondary</code> (#e9eaeb)</td></tr>
+        <tr><td>Border (disabled)</td><td>2px solid <code>--gray-400</code> (#a4a7ae)</td></tr>
+        <tr><td>Radius</td><td><code>--radius-full</code> (9999px)</td></tr>
+        <tr><td>Padding (icon-only, Back, Cancel)</td><td><code>--spacing-lg</code> (12px)</td></tr>
+        <tr><td>Padding (multi-symbol, icon+value)</td><td><code>--spacing-lg</code> (12px), gap <code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Padding (user group)</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Shadow (default)</td><td>0 3px 0 0 <code>--gray-200</code> (#e9eaeb)</td></tr>
+        <tr><td>Shadow (disabled)</td><td>0 4px 0 0 <code>--gray-400</code> (#a4a7ae)</td></tr>
+        <tr><td>Shadow (pressed)</td><td>none</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Content</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Icon size</td><td>24 &times; 24px</td></tr>
+        <tr><td>Value font</td><td>Text lg / Medium (18px / 28px)</td></tr>
+        <tr><td>Value color</td><td><code>--text-secondary</code> (#414651)</td></tr>
+        <tr><td>Avatar size</td><td>32 &times; 32px, <code>--radius-full</code></td></tr>
+        <tr><td>Avatar border</td><td>2px solid white</td></tr>
+        <tr><td>Avatar overlap</td><td>&minus;8px (<code>--spacing-md</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PROPERTIES                                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Properties</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Options</th><th>Default</th></tr></thead>
+      <tbody>
+        <tr><td><strong>type</strong></td><td>Back · Cancel · 1 symbol · 2 symbol · 3 symbol · User group · 1 symbol + Value</td><td>Back</td></tr>
+        <tr><td><strong>state</strong></td><td>Default · Hover · Active/Pressed · Disabled</td><td>Default</td></tr>
+        <tr><td>1 symbol</td><td>Any 24px icon or emoji</td><td>circle placeholder</td></tr>
+        <tr><td>2 symbol</td><td>Second icon/emoji slot</td><td>circle placeholder</td></tr>
+        <tr><td>3 symbol</td><td>Third icon/emoji slot</td><td>circle placeholder</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ACCESSIBILITY                               -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>Use <code>&lt;button&gt;</code> elements, not <code>&lt;div&gt;</code>, so they are focusable and activatable via keyboard.</li>
+        <li>Add <code>aria-label</code> to icon-only buttons (e.g., <code>aria-label="Go back"</code>, <code>aria-label="Close"</code>).</li>
+        <li>Disabled buttons should include <code>aria-disabled="true"</code> and <code>tabindex="-1"</code>.</li>
+        <li>Stat counters (icon + value) should include <code>aria-label</code> describing the stat (e.g., <code>aria-label="Fire streak: 100"</code>).</li>
+        <li>The pressed state must shift down visually to provide tactile feedback, matching the shadow removal.</li>
+        <li>Ensure minimum 44 &times; 44px touch target for mobile (the 12px padding achieves 48px for icon-only variants).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

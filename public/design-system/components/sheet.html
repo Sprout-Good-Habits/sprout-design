@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Sheet</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Sheet",
+  "slug": "sheet",
+  "intent": {
+    "purpose": "Present focused content or actions in a bottom-sliding overlay without navigating away",
+    "taskContext": ["confirmation", "selection", "detail-view", "action-menu"],
+    "sentiment": ["neutral", "destructive"]
+  },
+  "composition": {
+    "requires": ["handle", "title"],
+    "allows": ["description", "close-button", "body-content", "footer", "empty-state"],
+    "forbids": ["nested-sheet"]
+  },
+  "variants": [
+    { "name": "Short content", "useWhen": "Content fits without scrolling, inline button", "pairWith": [] },
+    { "name": "Scrollable", "useWhen": "Content overflows, sticky footer with buttons", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — max 90% viewport height" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["bottom-overlay"]
+  },
+  "relationships": {
+    "related": ["ActionPrompt", "Toast"],
+    "escalatesTo": [],
+    "degradesTo": ["ActionPrompt"],
+    "groupsWith": ["Button", "ListItem", "EmptyStates"]
+  },
+  "states": ["entering", "open", "scrolling", "exiting"],
+  "accessibility": {
+    "role": "dialog",
+    "keyboard": ["Escape", "Tab"],
+    "ariaAttributes": ["aria-modal", "aria-labelledby"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ══════════════════════════════════════
+   Sheet component
+   ══════════════════════════════════════ */
+
+/* Phone frame for in-context demos */
+.phone-frame {
+  width:366px; height:780px;
+  background:var(--bg-sky, #e0f2fe);
+  border-radius:36px; overflow:hidden;
+  position:relative;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+}
+
+/* Scrim / backdrop */
+.sheet-scrim {
+  position:absolute; inset:0;
+  background:var(--bg-overlay, rgba(10,13,18,0.2));
+  display:flex; align-items:flex-end;
+}
+
+/* ── Sheet container ── */
+.sheet {
+  background:var(--bg-primary, #ffffff);
+  border-radius:var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+  width:100%;
+  display:flex; flex-direction:column;
+  max-height:90%;
+}
+
+/* Sheet top: handle + header */
+.sheet-top {
+  padding:var(--spacing-xl, 16px);
+  flex-shrink:0;
+  display:flex; flex-direction:column;
+  gap:16px; align-items:center;
+}
+
+/* Grabber handle */
+.sheet-handle {
+  width:36px; height:4px;
+  background:var(--gray-300, #d5d7da);
+  border-radius:2px;
+}
+
+/* Header row */
+.sheet-header {
+  display:flex; align-items:center;
+  gap:var(--spacing-md, 8px);
+  width:100%;
+}
+.sheet-header-content {
+  flex:1; min-width:0;
+  display:flex; flex-direction:column;
+  gap:var(--spacing-xxs, 2px);
+}
+.sheet-title {
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+  font-size:var(--font-size-display-md, 36px);
+  line-height:var(--line-height-display-md, 44px);
+  font-weight:var(--font-weight-bold, 700);
+  letter-spacing:var(--letter-spacing-display, -0.02em);
+  color:var(--text-primary, #181d27);
+  margin:0;
+}
+.sheet-description {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-quaternary, #717680);
+}
+
+/* Close button — 24px icon, 44px tap target */
+.sheet-close {
+  width:44px; height:44px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  color:var(--gray-400, #a4a7ae);
+}
+.sheet-close svg { width:24px; height:24px; }
+
+/* Scrollable body */
+.sheet-body {
+  flex:1; min-height:0;
+  overflow-y:auto;
+  padding:0 var(--spacing-xl, 16px);
+  -webkit-overflow-scrolling:touch;
+}
+
+/* Sticky footer — with border */
+.sheet-footer {
+  flex-shrink:0;
+  padding:var(--spacing-xl, 16px);
+  padding-bottom:var(--spacing-2xl, 20px);
+  border-top:1px solid var(--border-secondary, #e9eaeb);
+  background:var(--bg-primary, #ffffff);
+}
+.sheet-footer.no-border { border-top:none; }
+
+/* ── Button base (from documented Buttons component) ── */
+.btn-sprout {
+  display:flex; align-items:center; justify-content:center;
+  box-sizing:border-box;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-weight:var(--font-weight-bold, 700);
+  letter-spacing:0;
+  border:none; cursor:pointer;
+  padding:var(--spacing-lg, 12px);
+  border-radius:16px;
+  user-select:none; white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-lg { height:50px; font-size:var(--font-size-text-lg, 18px); line-height:var(--line-height-text-lg, 28px); }
+.btn-md { height:46px; font-size:var(--font-size-text-md, 16px); line-height:var(--line-height-text-md, 24px); }
+.btn-primary {
+  background:var(--brand-500, #0ba5ec); color:var(--text-white, #ffffff);
+  border-bottom:2px solid var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-primary.state-disabled {
+  background:var(--gray-300, #d5d7da); color:var(--text-disabled, #717680);
+  border-bottom:2px solid var(--gray-400, #a4a7ae);
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae); cursor:not-allowed; pointer-events:none;
+}
+.btn-secondary {
+  background:var(--bg-primary, #ffffff); color:var(--brand-500, #0ba5ec);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+.btn-secondary.btn-lg { height:54px; }
+.btn-secondary.btn-md { height:50px; }
+.btn-destructive {
+  background:var(--fg-destructive-primary, #f04438); color:var(--text-white, #ffffff);
+  border-bottom:2px solid var(--red-600, #d92d20);
+  box-shadow:0 4px 0 0 var(--red-600, #d92d20);
+}
+.btn-destructive.btn-lg { height:50px; }
+.btn-destructive.btn-md { height:46px; }
+
+/* Full-width buttons inside sheet */
+.sheet-footer .btn-sprout,
+.sheet-body .btn-sprout { width:100%; }
+.sheet-body .btn-sprout { margin-top:var(--spacing-xl, 16px); }
+
+/* ── Empty state ── */
+.sheet-empty {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:var(--spacing-lg, 12px);
+  padding:var(--spacing-5xl, 40px) 0;
+  text-align:center;
+}
+.sheet-empty-icon {
+  font-family:'TossFace', sans-serif;
+  font-size:48px; line-height:1;
+}
+.sheet-empty-text {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  color:var(--text-quaternary, #717680);
+}
+
+/* ── List items for demos ── */
+.list-item {
+  display:flex; align-items:center; gap:16px;
+  width:100%; padding:16px 20px;
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-xl, 12px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor:pointer; user-select:none;
+}
+.list-item.checked {
+  background:var(--bg-brand-secondary, #e0f2fe);
+  border-color:var(--brand-300, #7cd4fd);
+  box-shadow:0 3px 0 0 var(--brand-300, #7cd4fd);
+}
+.list-item-content { flex:1; min-width:0; }
+.list-item-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+}
+.list-item-desc {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651);
+}
+.list-item-radio {
+  width:24px; height:24px; flex-shrink:0;
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-full, 9999px);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg-primary, #ffffff);
+}
+.checked .list-item-radio {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-500, #0ba5ec);
+}
+.list-item-radio-dot {
+  display:none; width:8px; height:8px;
+  border-radius:var(--radius-full, 9999px);
+  background:#ffffff;
+}
+.checked .list-item-radio-dot { display:block; }
+.option-list {
+  display:flex; flex-direction:column;
+  gap:var(--spacing-md, 8px);
+}
+
+/* ── Anatomy diagram ── */
+.anatomy-sheet {
+  width:366px;
+  border:1px solid var(--border-secondary, #e9eaeb);
+  box-shadow:0 8px 30px rgba(0,0,0,0.08);
+}
+
+/* Let demos be wider */
+.demo { flex-wrap:wrap; }
+.demo-item { min-width:366px; }
+
+@media(max-width:768px) {
+  .phone-frame { width:100%; height:auto; min-height:600px; }
+  .demo-item { min-width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Sheet</div>
+    <div class="sec-desc">A sheet slides up from the bottom of the screen to present focused content or actions without navigating away from the current view.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For focused choices that don&rsquo;t need a full screen (e.g. selecting a duration, picking an app).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For confirmation actions before spending currency or making changes.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When the user should remain aware of the screen behind them.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for complex multi-step flows &mdash; navigate to a full screen instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for passive information that doesn&rsquo;t require action &mdash; use a toast or banner.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Short content</span>
+        <div class="sheet" style="width:280px;max-height:none;border-radius:var(--radius-4xl, 24px);border:1px solid var(--border-secondary, #e9eaeb);box-shadow:0 8px 30px rgba(0,0,0,0.08);">
+          <div class="sheet-top" style="padding:12px 12px 8px;">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+              <div class="sheet-header-content">
+                <h1 class="sheet-title" style="font-size:20px;line-height:28px;">Unlock time</h1>
+              </div>
+              <div class="sheet-close">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="sheet-body" style="overflow:visible;padding:0 12px 12px;">
+            <div style="background:var(--bg-secondary, #fafafa);border-radius:var(--radius-xl, 12px);padding:24px;text-align:center;font-size:13px;color:var(--text-quaternary, #717680)">Content</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Scrollable</span>
+        <div class="sheet" style="width:280px;max-height:none;border-radius:var(--radius-4xl, 24px);border:1px solid var(--border-secondary, #e9eaeb);box-shadow:0 8px 30px rgba(0,0,0,0.08);">
+          <div class="sheet-top" style="padding:12px 12px 8px;">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+              <div class="sheet-header-content">
+                <h1 class="sheet-title" style="font-size:20px;line-height:28px;">Choose app</h1>
+              </div>
+              <div class="sheet-close">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="sheet-body" style="overflow:visible;padding:0 12px;">
+            <div style="background:var(--bg-secondary, #fafafa);border-radius:var(--radius-xl, 12px);padding:24px;text-align:center;font-size:13px;color:var(--text-quaternary, #717680)">Scrollable content</div>
+          </div>
+          <div class="sheet-footer" style="padding:12px;">
+            <button class="btn-sprout btn-primary btn-md" style="width:100%;height:40px;font-size:14px;">Unlock</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Title content ════ -->
+  <div class="doc-section">
+    <h2>Title content</h2>
+    <p>Title copy should:</p>
+    <div class="prose">
+      <ul>
+        <li>Be just a few words</li>
+        <li>Put the most important words first</li>
+        <li>Summarise or introduce the content it relates to (imagine the user only reads the title)</li>
+        <li>Be a statement rather than a question (unless the content is asking the user something)</li>
+        <li>Be in sentence case (only capitalise the first letter of the first word)</li>
+        <li>Have no full stop</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>A sheet has three structural zones. The <strong>top</strong> and <strong>footer</strong> stay pinned while the <strong>body</strong> scrolls when content overflows.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Structure</span>
+        <div class="sheet anatomy-sheet" style="max-height:none;border-radius:var(--radius-4xl, 24px)">
+          <div class="sheet-top">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+              <div class="sheet-header-content">
+                <h1 class="sheet-title" style="font-size:24px;line-height:32px">Title</h1>
+                <div class="sheet-description">Optional description</div>
+              </div>
+              <div class="sheet-close">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="sheet-body" style="overflow:visible">
+            <div style="background:var(--bg-secondary, #fafafa);border-radius:var(--radius-xl, 12px);padding:40px;text-align:center;font-size:14px;color:var(--text-quaternary, #717680)">
+              Content area (scrollable)
+            </div>
+          </div>
+          <div class="sheet-footer">
+            <button class="btn-sprout btn-primary btn-lg">Primary action</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Handle</strong> &mdash; 36&times;4px grabber bar. Visual affordance for swipe-to-dismiss.</li>
+        <li><strong>Title</strong> (required) &mdash; <code>display-md</code> (36px/44px bold, -0.02em tracking). Always an <code>&lt;h1&gt;</code>.</li>
+        <li><strong>Description</strong> (optional) &mdash; <code>text-sm</code> (14px/20px regular), <code>--text-quaternary</code>.</li>
+        <li><strong>Close button</strong> (required) &mdash; 24px icon inside a 44px tap target. Always present.</li>
+        <li><strong>Body</strong> &mdash; Scrollable content area. Can contain list items, forms, text, or any component.</li>
+        <li><strong>Footer</strong> &mdash; Sticky action bar. Shows a <code>border-top</code> divider when the body is scrollable. Hidden or borderless when content fits.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variants ════ -->
+  <div class="doc-section">
+    <h2>Variants</h2>
+    <p>Sheets come in two layout variants depending on content length.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Short content &mdash; inline button</span>
+        <div class="phone-frame">
+          <div style="flex:1"></div>
+          <div class="sheet-scrim">
+            <div class="sheet" style="max-height:none">
+              <div class="sheet-top">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                  <div class="sheet-header-content">
+                    <h1 class="sheet-title">Unlock time</h1>
+                  </div>
+                  <div class="sheet-close">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="sheet-body" style="overflow:visible;padding-bottom:var(--spacing-2xl, 20px)">
+                <div class="option-list">
+                  <div class="list-item">
+                    <div class="list-item-content"><div class="list-item-label">15 minutes</div></div>
+                    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                  </div>
+                  <div class="list-item checked">
+                    <div class="list-item-content">
+                      <div class="list-item-label">30 minutes</div>
+                      <div class="list-item-desc">Most popular</div>
+                    </div>
+                    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                  </div>
+                  <div class="list-item">
+                    <div class="list-item-content"><div class="list-item-label">1 hour</div></div>
+                    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                  </div>
+                </div>
+                <button class="btn-sprout btn-primary btn-lg">Confirm</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">Scrollable &mdash; sticky footer</span>
+        <div class="phone-frame">
+          <div style="flex:1"></div>
+          <div class="sheet-scrim">
+            <div class="sheet">
+              <div class="sheet-top">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                  <div class="sheet-header-content">
+                    <h1 class="sheet-title">Choose app</h1>
+                  </div>
+                  <div class="sheet-close">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="sheet-body">
+                <div class="option-list">
+                  <div class="list-item">
+                    <div class="list-item-content">
+                      <div class="list-item-label">YouTube Kids</div>
+                      <div class="list-item-desc">Watch videos and shows</div>
+                    </div>
+                    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                  </div>
+                  <div class="list-item checked">
+                    <div class="list-item-content">
+                      <div class="list-item-label">Minecraft</div>
+                      <div class="list-item-desc">Build and explore worlds</div>
+                    </div>
+                    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                  </div>
+                  <div class="list-item">
+                    <div class="list-item-content">
+                      <div class="list-item-label">Roblox</div>
+                      <div class="list-item-desc">Play games with friends</div>
+                    </div>
+                    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                  </div>
+                  <div class="list-item">
+                    <div class="list-item-content">
+                      <div class="list-item-label">Khan Academy Kids</div>
+                      <div class="list-item-desc">Learn and practice skills</div>
+                    </div>
+                    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                  </div>
+                  <div class="list-item">
+                    <div class="list-item-content">
+                      <div class="list-item-label">Duolingo</div>
+                      <div class="list-item-desc">Learn a new language</div>
+                    </div>
+                    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                  </div>
+                  <div class="list-item">
+                    <div class="list-item-content">
+                      <div class="list-item-label">Toca Boca World</div>
+                      <div class="list-item-desc">Creative play and stories</div>
+                    </div>
+                    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="sheet-footer">
+                <button class="btn-sprout btn-primary btn-lg">Unlock</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use the <strong>inline button</strong> variant when all content fits without scrolling.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use the <strong>sticky footer</strong> when the body needs to scroll &mdash; the <code>border-top</code> divider signals that there&rsquo;s content above or below.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix both patterns &mdash; decide based on content length.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Scrolling the content ════ -->
+  <div class="doc-section">
+    <h2>Scrolling the content</h2>
+    <p>The height of the bottom sheet automatically adjusts to the content inside it. But if the content is longer than the maximum height that the bottom sheet can expand to, the content will overflow and become scrollable.</p>
+  </div>
+
+  <!-- ════ Footer variations ════ -->
+  <div class="doc-section">
+    <h2>Footer variations</h2>
+    <p>The footer supports several patterns depending on the action type.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Primary</span>
+        <div style="width:366px;background:var(--bg-primary);border:1px solid var(--border-secondary);border-radius:var(--radius-xl, 12px);overflow:hidden">
+          <div style="border-top:1px solid var(--border-secondary, #e9eaeb);padding:var(--spacing-xl, 16px)">
+            <button class="btn-sprout btn-primary btn-lg" style="width:100%">Confirm</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Primary + Secondary</span>
+        <div style="width:366px;background:var(--bg-primary);border:1px solid var(--border-secondary);border-radius:var(--radius-xl, 12px);overflow:hidden">
+          <div style="border-top:1px solid var(--border-secondary, #e9eaeb);padding:var(--spacing-xl, 16px);display:flex;flex-direction:column;gap:var(--spacing-md, 8px)">
+            <button class="btn-sprout btn-primary btn-lg" style="width:100%">Confirm</button>
+            <button class="btn-sprout btn-secondary btn-lg" style="width:100%">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Destructive</span>
+        <div style="width:366px;background:var(--bg-primary);border:1px solid var(--border-secondary);border-radius:var(--radius-xl, 12px);overflow:hidden">
+          <div style="border-top:1px solid var(--border-secondary, #e9eaeb);padding:var(--spacing-xl, 16px)">
+            <button class="btn-sprout btn-destructive btn-lg" style="width:100%">Delete</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Destructive + Secondary</span>
+        <div style="width:366px;background:var(--bg-primary);border:1px solid var(--border-secondary);border-radius:var(--radius-xl, 12px);overflow:hidden">
+          <div style="border-top:1px solid var(--border-secondary, #e9eaeb);padding:var(--spacing-xl, 16px);display:flex;flex-direction:column;gap:var(--spacing-md, 8px)">
+            <button class="btn-sprout btn-destructive btn-lg" style="width:100%">Delete account</button>
+            <button class="btn-sprout btn-secondary btn-lg" style="width:100%">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Primary</strong> &mdash; the default. Single full-width primary button.</li>
+        <li><strong>Primary + Secondary</strong> &mdash; primary on top, secondary below. Use when there&rsquo;s a clear alternative action (e.g. &ldquo;Confirm&rdquo; / &ldquo;Cancel&rdquo;).</li>
+        <li><strong>Destructive</strong> &mdash; single full-width destructive button. Use for irreversible actions like deleting data.</li>
+        <li><strong>Destructive + Secondary</strong> &mdash; destructive on top, secondary below. Gives the user a safe way out before committing to a destructive action.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Empty state ════ -->
+  <div class="doc-section">
+    <h2>Empty state</h2>
+    <p>When a sheet has no content to display, show a Toss Face icon with a short message. The CTA should be disabled or hidden.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Empty</span>
+        <div class="sheet anatomy-sheet" style="max-height:none;border-radius:var(--radius-4xl, 24px)">
+          <div class="sheet-top">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+              <div class="sheet-header-content">
+                <h1 class="sheet-title" style="font-size:24px;line-height:32px">Choose app</h1>
+              </div>
+              <div class="sheet-close">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="sheet-body" style="overflow:visible">
+            <div class="sheet-empty">
+              <div class="sheet-empty-icon">&#129399;</div>
+              <div class="sheet-empty-text">Nothing here yet</div>
+            </div>
+          </div>
+          <div class="sheet-footer no-border">
+            <button class="btn-sprout btn-primary btn-lg state-disabled">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Stacking ════ -->
+  <div class="doc-section">
+    <h2>Stacking</h2>
+    <p>Sheets can stack. A sheet may open another sheet on top of itself. The previous sheet stays visible underneath with an additional scrim layer.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Limit stacking to <strong>two levels deep</strong> &mdash; more than that is confusing.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Dismissing the top sheet reveals the one below. Dismissing both returns to the original screen.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t stack sheets for sequential steps &mdash; navigate to a new screen instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Dismissing a bottom sheet ════ -->
+  <div class="doc-section">
+    <h2>Dismissing a bottom sheet</h2>
+    <p>Users can dismiss the bottom sheet by:</p>
+    <div class="prose">
+      <ul>
+        <li>Tapping or clicking the close button</li>
+        <li>Taking an action within the bottom sheet content</li>
+        <li>Dragging or swiping the bottom sheet down</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Animation ════ -->
+  <div class="doc-section">
+    <h2>Animation</h2>
+    <p>Sheets animate in and out to maintain spatial awareness.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Entry</strong> &mdash; slide up from the bottom over <strong>300ms ease-out</strong>. The scrim fades in simultaneously.</li>
+        <li><strong>Exit</strong> &mdash; slide down over <strong>250ms ease-in</strong>. Slightly faster for a snappier feel.</li>
+        <li><strong>Snap points</strong> &mdash; none. The sheet is either open or closed. No intermediate half-height positions.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Layout rules ════ -->
+  <div class="doc-section">
+    <h2>Layout rules</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Max height</td><td>90% of screen</td></tr>
+        <tr><td>Min height</td><td>None &mdash; shrink-wraps to content</td></tr>
+        <tr><td>Corner radius</td><td><code>--radius-4xl</code> (24px) top-left and top-right</td></tr>
+        <tr><td>Scrim</td><td><code>--bg-overlay</code> rgba(10, 13, 18, 0.2)</td></tr>
+        <tr><td>Safe area</td><td>34px bottom padding for iOS home indicator</td></tr>
+        <tr><td>Keyboard</td><td>Sheet pushes up; max-height shrinks to accommodate keyboard</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>--bg-primary</code> (#ffffff)</td></tr>
+        <tr><td>Corner radius</td><td><code>--radius-4xl</code> (24px)</td></tr>
+        <tr><td>Padding (top area)</td><td><code>--spacing-xl</code> (16px) all sides</td></tr>
+        <tr><td>Padding (body)</td><td><code>0 --spacing-xl</code> (0 16px)</td></tr>
+        <tr><td>Padding (footer)</td><td><code>--spacing-xl</code> (16px) top/sides, <code>--spacing-2xl</code> (20px) bottom</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Handle</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Size</td><td>36 &times; 4px</td></tr>
+        <tr><td>Color</td><td><code>--gray-300</code> (#d5d7da)</td></tr>
+        <tr><td>Radius</td><td>2px</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Header</h3>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Style</th></tr></thead>
+      <tbody>
+        <tr><td>Title</td><td><code>display-md</code> bold (36px/44px), <code>--text-primary</code>, letter-spacing -0.02em</td></tr>
+        <tr><td>Description</td><td><code>text-sm</code> regular (14px/20px), <code>--text-quaternary</code></td></tr>
+        <tr><td>Close icon</td><td>24px, <code>--gray-400</code>, inside 44px tap target</td></tr>
+        <tr><td>Gap (title &harr; close)</td><td><code>--spacing-md</code> (8px)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Footer</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Border top</td><td>1px solid <code>--border-secondary</code> (only when scrollable)</td></tr>
+        <tr><td>Padding</td><td><code>--spacing-xl</code> (16px) top/sides, <code>--spacing-2xl</code> (20px) bottom</td></tr>
+        <tr><td>Button</td><td>Uses <code>btn-sprout btn-primary btn-lg</code> &mdash; see <a href="/design-system/components/buttons.html" style="color:var(--brand-500)">Buttons</a> for full specs</td></tr>
+        <tr><td>Button width</td><td>Full width (100%)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Use <code>role="dialog"</code> with <code>aria-modal="true"</code> on the sheet container.</li>
+        <li><strong>Label:</strong> Set <code>aria-labelledby</code> pointing to the title&rsquo;s <code>id</code>.</li>
+        <li><strong>Focus trap:</strong> Keyboard focus must stay within the sheet while open. Tab should cycle through interactive elements.</li>
+        <li><strong>Escape:</strong> Pressing <kbd>Esc</kbd> dismisses the sheet and returns focus to the trigger element.</li>
+        <li><strong>Close button:</strong> Must have <code>aria-label="Close"</code>.</li>
+        <li><strong>Scrim:</strong> Assistive tech should not be able to interact with content behind the scrim.</li>
+        <li><strong>Touch target:</strong> Close button has a 44&times;44px tap target, meeting accessibility guidelines.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

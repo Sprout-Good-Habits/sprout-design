@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Action Prompt</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "ActionPrompt",
+  "slug": "action-prompt",
+  "intent": {
+    "purpose": "Surface contextual messages requiring active user decision-making with clear calls-to-action",
+    "taskContext": ["confirmation", "destructive-action", "permission-request"],
+    "sentiment": ["neutral", "destructive"]
+  },
+  "composition": {
+    "requires": ["label", "primary-button"],
+    "allows": ["description", "close-button", "secondary-button", "leading-emoji", "leading-avatar", "leading-avatar-badge"],
+    "forbids": ["nested-prompt", "image"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Standard prompts with brand-blue primary action", "pairWith": ["Secondary"], "sentiment": "neutral" },
+    { "name": "Destructive", "useWhen": "Irreversible or high-risk actions", "pairWith": ["Secondary"], "sentiment": "destructive" }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 370px width" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["overlay", "inline"]
+  },
+  "relationships": {
+    "related": ["Sheet", "Toast"],
+    "escalatesTo": [],
+    "degradesTo": ["Toast"],
+    "groupsWith": ["Button"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "alert",
+    "keyboard": ["Enter", "Space", "Tab"],
+    "ariaAttributes": ["aria-label"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* -- Toss Face emoji font -- */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ==============================
+   Action Prompt component
+   ============================== */
+
+/* -- Container -- */
+.action-prompt {
+  display:flex; flex-direction:column;
+  gap:var(--spacing-xl, 16px);
+  background:var(--bg-primary, #ffffff);
+  border-radius:var(--radius-xl, 12px);
+  padding:var(--spacing-xl, 16px);
+  box-shadow:
+    0 2px 2px -1px rgba(10,13,18,0.04),
+    0 4px 6px -2px rgba(10,13,18,0.03),
+    0 12px 16px -4px rgba(10,13,18,0.08);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  width:370px;
+}
+
+/* -- Content row: leading + text + close -- */
+.ap-content {
+  display:flex; align-items:flex-start; gap:var(--spacing-md, 8px);
+}
+
+/* -- Leading element -- */
+.ap-leading {
+  flex-shrink:0;
+  width:46px; height:46px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* Emoji leading */
+.ap-leading-emoji {
+  font-family:'TossFace', sans-serif;
+  font-size:36px; line-height:1;
+}
+
+/* Avatar leading */
+.ap-leading-avatar {
+  width:46px; height:46px;
+  border-radius:var(--radius-full, 9999px);
+  overflow:hidden;
+  position:relative;
+}
+.ap-leading-avatar img {
+  width:100%; height:100%; object-fit:cover;
+}
+.ap-avatar-initials {
+  width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-text-sm, 14px);
+  font-weight:var(--font-weight-medium, 500);
+  background:var(--bg-sky, #e0f2fe);
+  color:var(--text-brand-secondary, #026aa2);
+}
+
+/* Avatar + badge leading */
+.ap-leading-badge-wrap {
+  position:relative;
+  width:46px; height:46px;
+}
+.ap-leading-badge-wrap .ap-leading-avatar {
+  width:46px; height:46px;
+}
+.ap-badge {
+  position:absolute;
+  bottom:-2px; right:-2px;
+  width:20px; height:20px;
+  border-radius:var(--radius-full, 9999px);
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--bg-primary, #ffffff);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.ap-badge-emoji {
+  font-family:'TossFace', sans-serif;
+  font-size:12px; line-height:1;
+}
+
+/* -- Text -- */
+.ap-text {
+  flex:1; min-width:0;
+  display:flex; flex-direction:column;
+  gap:var(--spacing-xxs, 2px);
+  justify-content:center;
+}
+.ap-label {
+  font-size:var(--font-size-text-md, 16px);
+  font-weight:var(--font-weight-bold, 700);
+  line-height:var(--line-height-text-md, 24px);
+  color:var(--text-primary, #181d27);
+}
+.ap-desc {
+  font-size:var(--font-size-text-sm, 14px);
+  font-weight:var(--font-weight-regular, 400);
+  line-height:var(--line-height-text-sm, 20px);
+  color:var(--text-secondary, #414651);
+}
+
+/* -- Close button -- */
+.ap-close {
+  width:24px; height:24px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  color:var(--gray-500, #717680);
+}
+.ap-close svg { width:12px; height:12px; }
+
+/* -- Actions row -- */
+.ap-actions {
+  display:flex; gap:var(--spacing-xl, 16px);
+  width:100%;
+}
+
+/* -- Primary button (Default) -- */
+.ap-btn-primary {
+  display:flex; align-items:center; justify-content:center;
+  flex:1;
+  height:50px;
+  background:var(--fg-brand-primary, #0ba5ec);
+  color:var(--text-white, #ffffff);
+  border:none;
+  border-bottom:2px solid var(--brand-600, #0086c9);
+  border-radius:var(--radius-2xl, 16px);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  font-weight:var(--font-weight-bold, 700);
+  line-height:var(--line-height-text-md, 24px);
+  padding:var(--spacing-lg, 12px);
+  cursor:pointer;
+  transition:background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.ap-btn-primary:active {
+  box-shadow:none; transform:translateY(4px); border-bottom:none;
+}
+
+/* -- Primary button (Destructive) -- */
+.ap-btn-destructive {
+  display:flex; align-items:center; justify-content:center;
+  flex:1;
+  height:50px;
+  background:var(--fg-destructive-primary, #f04438);
+  color:var(--text-white, #ffffff);
+  border:none;
+  border-bottom:2px solid var(--red-600, #d92d20);
+  border-radius:var(--radius-2xl, 16px);
+  box-shadow:0 4px 0 0 var(--red-600, #d92d20);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  font-weight:var(--font-weight-bold, 700);
+  line-height:var(--line-height-text-md, 24px);
+  padding:var(--spacing-lg, 12px);
+  cursor:pointer;
+  transition:background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.ap-btn-destructive:active {
+  box-shadow:none; transform:translateY(4px); border-bottom:none;
+}
+
+/* -- Secondary / Dismiss button -- */
+.ap-btn-secondary {
+  display:flex; align-items:center; justify-content:center;
+  flex:1;
+  height:50px;
+  background:var(--bg-primary, #ffffff);
+  color:var(--brand-500, #0ba5ec);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-2xl, 16px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  font-weight:var(--font-weight-bold, 700);
+  line-height:var(--line-height-text-md, 24px);
+  padding:var(--spacing-lg, 12px);
+  cursor:pointer;
+  transition:background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.ap-btn-secondary:active {
+  box-shadow:none; transform:translateY(3px);
+}
+
+/* -- Phone frame for demos -- */
+.phone-frame-ap {
+  width:402px; height:280px;
+  background:var(--bg-primary, #ffffff);
+  border-radius:36px;
+  overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  display:flex; flex-direction:column;
+  padding:var(--spacing-xl, 16px);
+  gap:var(--spacing-xl, 16px);
+}
+.phone-frame-ap-content {
+  flex:1;
+  display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-quaternary, #717680);
+  border:1px dashed var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-md, 8px);
+}
+
+/* -- Demo overrides -- */
+.demo { flex-wrap:wrap; }
+.demo-item { min-width:370px; }
+
+@media(max-width:768px) {
+  .action-prompt { width:100%; }
+  .phone-frame-ap { width:100%; }
+  .demo-item { min-width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Action Prompt</div>
+    <div class="sec-desc">Action prompts require active user decision-making. They surface contextual messages with clear calls-to-action that drive toward a resolution &mdash; not passive information.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When the user needs to make a decision that moves the experience forward.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For contextual messages tied to a specific event &mdash; a completed quest, friend request, or expired timer.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When the message should persist until the user acts or explicitly dismisses it.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for passive, read-only information &mdash; use a toast or inline text instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for complex decisions with more than two options &mdash; use a sheet.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for transient confirmations &mdash; use a toast.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading"><span class="ap-leading-emoji">&#127881;</span></div>
+            <div class="ap-text">
+              <div class="ap-label">Quest complete!</div>
+              <div class="ap-desc">You earned 25 gems.</div>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-secondary">Dismiss</button>
+            <button class="ap-btn-primary">Claim gems</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Destructive</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading"><span class="ap-leading-emoji">&#128683;</span></div>
+            <div class="ap-text">
+              <div class="ap-label">Remove family member?</div>
+              <div class="ap-desc">This will revoke all shared access.</div>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-secondary">Dismiss</button>
+            <button class="ap-btn-destructive">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anatomy -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>An action prompt is a white elevated card with a leading element, text content, an optional close button, and full-width action buttons.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Full anatomy</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading">
+              <span class="ap-leading-emoji">&#9898;&#65039;</span>
+            </div>
+            <div class="ap-text">
+              <div class="ap-label">Label</div>
+              <div class="ap-desc">Description</div>
+            </div>
+            <div class="ap-close">
+              <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-secondary">Dismiss</button>
+            <button class="ap-btn-primary">Primary</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Leading element</strong> (required) &mdash; 46&times;46px container. Supports TossFace emoji, avatar, or avatar&nbsp;+&nbsp;badge.</li>
+        <li><strong>Label</strong> (required) &mdash; <code>text-md</code> bold (16px/24px). Frontloads the key information &mdash; names, amounts, events.</li>
+        <li><strong>Description</strong> (optional) &mdash; <code>text-sm</code> regular (14px/20px). Adds context or explains what happens next.</li>
+        <li><strong>Close button</strong> (optional) &mdash; 12px icon inside 24px tap area. Only shown with single-CTA prompts.</li>
+        <li><strong>Primary button</strong> (required) &mdash; Full-width Sprout primary button. Action verb label &mdash; never generic &ldquo;OK&rdquo;.</li>
+        <li><strong>Secondary button</strong> (optional) &mdash; Dismiss / secondary action. Always paired with primary (never alone).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Leading element types -->
+  <div class="doc-section">
+    <h2>Leading elements</h2>
+    <p>The leading element reinforces context at a glance. Choose the type that best matches the message source.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">TossFace emoji</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading">
+              <span class="ap-leading-emoji">&#9200;</span>
+            </div>
+            <div class="ap-text">
+              <div class="ap-label">5 minutes left</div>
+              <div class="ap-desc">Screen time is almost up.</div>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-primary">Save progress</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">Avatar</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading">
+              <div class="ap-leading-avatar">
+                <div class="ap-avatar-initials">B</div>
+              </div>
+            </div>
+            <div class="ap-text">
+              <div class="ap-label">Ben submitted a proof</div>
+              <div class="ap-desc">Exercise proof waiting for review.</div>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-secondary">Dismiss</button>
+            <button class="ap-btn-primary">Review</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">Avatar + badge</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading">
+              <div class="ap-leading-badge-wrap">
+                <div class="ap-leading-avatar">
+                  <div class="ap-avatar-initials">S</div>
+                </div>
+                <div class="ap-badge">
+                  <span class="ap-badge-emoji">&#127939;</span>
+                </div>
+              </div>
+            </div>
+            <div class="ap-text">
+              <div class="ap-label">Simon completed a run</div>
+              <div class="ap-desc">5K run logged as exercise proof.</div>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-secondary">Later</button>
+            <button class="ap-btn-primary">Approve</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Emoji</strong> &mdash; 36px TossFace in 46&times;46 container. Use for system events, timers, achievements, and general prompts.</li>
+        <li><strong>Avatar</strong> &mdash; 46&times;46px circle. Use when the prompt is about a specific person (friend requests, submissions, messages).</li>
+        <li><strong>Avatar + badge</strong> &mdash; 46px avatar with 20px badge at bottom-right. Use when both person and activity type matter (e.g. exercise proof type).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Types -->
+  <div class="doc-section">
+    <h2>Types</h2>
+    <p>Action prompts come in two types based on the nature of the action.</p>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Default</h3>
+    <p>For standard actions &mdash; reviewing submissions, accepting requests, claiming rewards, saving progress. Uses the brand-blue primary button.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default &mdash; single CTA</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading">
+              <span class="ap-leading-emoji">&#127881;</span>
+            </div>
+            <div class="ap-text">
+              <div class="ap-label">Quest complete!</div>
+              <div class="ap-desc">You earned 25 gems.</div>
+            </div>
+            <div class="ap-close">
+              <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-primary">Claim gems</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Default &mdash; dual CTA</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading">
+              <div class="ap-leading-avatar">
+                <div class="ap-avatar-initials">M</div>
+              </div>
+            </div>
+            <div class="ap-text">
+              <div class="ap-label">Maya wants to be friends</div>
+              <div class="ap-desc">Maya sent you a friend request.</div>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-secondary">Dismiss</button>
+            <button class="ap-btn-primary">Accept</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Destructive</h3>
+    <p>For irreversible or high-stakes actions &mdash; removing a family member, deleting content, revoking permissions. Uses the red destructive button.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Destructive &mdash; single CTA</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading">
+              <span class="ap-leading-emoji">&#9888;&#65039;</span>
+            </div>
+            <div class="ap-text">
+              <div class="ap-label">Timer expired</div>
+              <div class="ap-desc">Daily screen time budget reached.</div>
+            </div>
+            <div class="ap-close">
+              <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-destructive">Destructive</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Destructive &mdash; dual CTA</span>
+        <div class="action-prompt">
+          <div class="ap-content">
+            <div class="ap-leading">
+              <span class="ap-leading-emoji">&#128683;</span>
+            </div>
+            <div class="ap-text">
+              <div class="ap-label">Remove family member?</div>
+              <div class="ap-desc">This will revoke all shared access.</div>
+            </div>
+          </div>
+          <div class="ap-actions">
+            <button class="ap-btn-secondary">Dismiss</button>
+            <button class="ap-btn-destructive">Destructive</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action configurations -->
+  <div class="doc-section">
+    <h2>Action configurations</h2>
+    <p>Buttons always span the full width of the prompt. Choose the configuration based on how the user should respond.</p>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Single CTA</strong> &mdash; One full-width button. Include a close button so the user can dismiss without acting.</li>
+        <li><strong>Dual CTA</strong> &mdash; Secondary (dismiss) on the left, primary on the right, each taking equal width (16px gap). No close button needed &mdash; the secondary button handles dismissal.</li>
+      </ul>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> CTA labels should start with an action verb: &ldquo;Claim gems&rdquo;, &ldquo;Review&rdquo;, &ldquo;Accept&rdquo;.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use &ldquo;Dismiss&rdquo; as the default secondary label. Use a specific verb when appropriate (&ldquo;Decline&rdquo;, &ldquo;Later&rdquo;).</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use generic labels like &ldquo;OK&rdquo; or &ldquo;Got it&rdquo;.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t show a close button alongside dual CTAs &mdash; it creates three dismissal paths.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Placement -->
+  <div class="doc-section">
+    <h2>Placement</h2>
+    <p>Position action prompts where they are most relevant to the user&rsquo;s current activity. They appear inline within content, never pinned to the top of the screen.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Inline — in context</span>
+        <div class="phone-frame-ap">
+          <div class="action-prompt" style="width:100%;box-shadow:0 2px 2px -1px rgba(10,13,18,0.04),0 4px 6px -2px rgba(10,13,18,0.03),0 12px 16px -4px rgba(10,13,18,0.08)">
+            <div class="ap-content">
+              <div class="ap-leading">
+                <span class="ap-leading-emoji">&#128276;</span>
+              </div>
+              <div class="ap-text">
+                <div class="ap-label">Bedtime in 10 minutes</div>
+                <div class="ap-desc">Your schedule starts soon.</div>
+              </div>
+            </div>
+            <div class="ap-actions">
+              <button class="ap-btn-secondary">Snooze</button>
+              <button class="ap-btn-primary">Save progress</button>
+            </div>
+          </div>
+          <div class="phone-frame-ap-content">Screen content</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Place on the screen where the related activity is happening (cards page, submissions list, activity feed).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Stack multiple prompts vertically if several require attention.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t pin to the top of the viewport &mdash; that pattern is reserved for system-level toasts.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content guidelines -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Label:</strong> Frontload key information &mdash; names, amounts, dates. Keep to one line. Use sentence case, no full stop.</li>
+        <li><strong>Description:</strong> Full sentence with a period. Explains context or what happens next. Keep to 1&ndash;2 sentences max.</li>
+        <li><strong>Tone:</strong> Direct for errors, preventative for warnings, straightforward for everyday tasks, warm for successes.</li>
+      </ul>
+    </div>
+    <div class="prose" style="margin-top:12px">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Be specific: &ldquo;Ben submitted an exercise proof&rdquo; not &ldquo;You have a new submission&rdquo;.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Match the leading element to the message source, not just the severity.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use technical jargon &mdash; language should work for both parents and kids.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Dismissal -->
+  <div class="doc-section">
+    <h2>Dismissing a prompt</h2>
+    <p>Action prompts can be dismissed in three ways:</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Close button</strong> &mdash; tapping the X icon removes the prompt without acting (single-CTA only).</li>
+        <li><strong>Secondary button</strong> &mdash; tapping Dismiss / Decline / Later removes the prompt (dual-CTA).</li>
+        <li><strong>Primary action</strong> &mdash; completing the action resolves and removes the prompt.</li>
+      </ul>
+    </div>
+    <p>Every prompt must have a dismissal path. Never force the user to act.</p>
+  </div>
+
+  <!-- Token reference -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>--bg-primary</code> (#ffffff)</td></tr>
+        <tr><td>Border radius</td><td><code>--radius-xl</code> (12px)</td></tr>
+        <tr><td>Padding</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Content &harr; actions gap</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Shadow</td><td><code>shadow-lg</code> (multi-layer: 2px, 6px, 16px blur)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Content row</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Leading &harr; text gap</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Label &harr; description gap</td><td><code>--spacing-xxs</code> (2px)</td></tr>
+        <tr><td>Leading element</td><td>46&times;46px container</td></tr>
+        <tr><td>Emoji</td><td>36px TossFace</td></tr>
+        <tr><td>Avatar</td><td>46px circle, <code>--radius-full</code></td></tr>
+        <tr><td>Badge</td><td>20px circle, 2px white border, bottom-right</td></tr>
+        <tr><td>Close icon</td><td>12px icon in 24px tap area, <code>--gray-500</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Typography</h3>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Style</th></tr></thead>
+      <tbody>
+        <tr><td>Label</td><td><code>text-md</code> bold (16px/24px, 700) &mdash; <code>--text-primary</code></td></tr>
+        <tr><td>Description</td><td><code>text-sm</code> regular (14px/20px, 400) &mdash; <code>--text-secondary</code></td></tr>
+        <tr><td>Button text</td><td><code>text-md</code> bold (16px/24px, 700)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Buttons</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Default (Primary)</th><th>Destructive</th><th>Secondary</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>--fg-brand-primary</code> (#0ba5ec)</td><td><code>--fg-destructive-primary</code> (#f04438)</td><td><code>--bg-primary</code> (#ffffff)</td></tr>
+        <tr><td>Text</td><td><code>--text-white</code></td><td><code>--text-white</code></td><td><code>--brand-500</code> (#0ba5ec)</td></tr>
+        <tr><td>Border-bottom</td><td>2px <code>--brand-600</code></td><td>2px <code>--red-600</code></td><td>2px <code>--border-secondary</code></td></tr>
+        <tr><td>Box shadow</td><td>0 4px 0 <code>--brand-600</code></td><td>0 4px 0 <code>--red-600</code></td><td>0 3px 0 <code>--gray-200</code></td></tr>
+        <tr><td>Height</td><td>50px</td><td>50px</td><td>50px</td></tr>
+        <tr><td>Radius</td><td><code>--radius-2xl</code> (16px)</td><td><code>--radius-2xl</code> (16px)</td><td><code>--radius-2xl</code> (16px)</td></tr>
+        <tr><td>Dual gap</td><td colspan="3"><code>--spacing-xl</code> (16px)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Use <code>role="alert"</code> for destructive prompts. Use <code>role="status"</code> for default prompts.</li>
+        <li><strong>Close button:</strong> Must have <code>aria-label="Dismiss"</code> and be keyboard accessible.</li>
+        <li><strong>Action buttons:</strong> Use semantic <code>&lt;button&gt;</code> elements. Primary button should receive focus when prompt appears.</li>
+        <li><strong>Focus management:</strong> When a prompt is dismissed, return focus to the triggering element or the next logical focus target.</li>
+        <li><strong>Contrast:</strong> <code>--text-primary</code> on <code>--bg-primary</code> exceeds 4.5:1. White text on brand-500 and red-500 meets WCAG AA.</li>
+        <li><strong>Motion:</strong> If animating entry/exit, respect <code>prefers-reduced-motion</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Color</title>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Color Scale Grid ── */
+.scale-section { margin-top: var(--spacing-3xl, 24px); }
+.scale-section h3 {
+  font-size: var(--font-size-text-lg, 18px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg, 12px);
+}
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: var(--spacing-md, 8px);
+  margin-bottom: var(--spacing-3xl, 24px);
+}
+.swatch {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  border: 1px solid var(--border-secondary);
+}
+.swatch-color {
+  height: 56px;
+  width: 100%;
+}
+.swatch-info {
+  padding: var(--spacing-sm, 6px) var(--spacing-md, 8px);
+  background: var(--bg-primary);
+}
+.swatch-step {
+  display: block;
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary);
+  line-height: 16px;
+}
+.swatch-hex {
+  display: block;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  line-height: 16px;
+}
+
+/* ── Semantic Token Rows ── */
+.semantic-group { margin-top: var(--spacing-3xl, 24px); }
+.semantic-group h3 {
+  font-size: var(--font-size-text-lg, 18px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg, 12px);
+}
+.semantic-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-text-sm, 14px);
+  margin-bottom: var(--spacing-3xl, 24px);
+}
+.semantic-table th {
+  text-align: left;
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-bottom: 2px solid var(--border-primary);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary);
+}
+.semantic-table td {
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-bottom: 1px solid var(--border-secondary);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+.semantic-table code {
+  font-size: 12px;
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs, 4px);
+}
+.color-preview {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--border-secondary);
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.preview-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Color</div>
+    <div class="sec-desc">Sprout&rsquo;s color system provides 10 full scales for expressive UI, plus semantic tokens for backgrounds, text, borders, and foreground elements. Always prefer semantic tokens for standard UI; use raw scales only when semantic tokens don&rsquo;t apply.</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- COLOR SCALES                            -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Color Scales</h2>
+    <p>Each scale runs from 25 (lightest) to 950 (darkest). Swatches use live <code>var()</code> references so they always match the token file.</p>
+
+    <!-- Sprout Green -->
+    <div class="scale-section">
+      <h3>Sprout Green</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#fafdf7</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#f5fbee</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#e6f4d7</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#ceeab0</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#acdc79</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#86cb3c</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#669f2a</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#4f7a21</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#3f621a</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#335015</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#2b4212</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--sprout-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#1a280b</span></div></div>
+      </div>
+    </div>
+
+    <!-- Brand Blue -->
+    <div class="scale-section">
+      <h3>Brand Blue</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#f5fbff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#f0f9ff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#e0f2fe</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#b9e6fe</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#7cd4fd</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#36bffa</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#0ba5ec</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#0086c9</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#026aa2</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#065986</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#0b4a6f</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--brand-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#062c41</span></div></div>
+      </div>
+    </div>
+
+    <!-- Gray -->
+    <div class="scale-section">
+      <h3>Gray</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#fdfdfd</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#fafafa</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#f5f5f5</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#e9eaeb</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#d5d7da</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#a4a7ae</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#717680</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#535862</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#414651</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#252b37</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#181d27</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--gray-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#0a0d12</span></div></div>
+      </div>
+    </div>
+
+    <!-- Red -->
+    <div class="scale-section">
+      <h3>Red</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#fffbfa</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#fef3f2</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#fee4e2</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#fecdca</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#fda29b</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#f97066</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#f04438</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#d92d20</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#b42318</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#912018</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#7a271a</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--red-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#55160c</span></div></div>
+      </div>
+    </div>
+
+    <!-- Green -->
+    <div class="scale-section">
+      <h3>Green</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#f6fef9</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#ecfdf3</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#dcfae6</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#abefc6</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#75e0a7</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#47cd89</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#17b26a</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#079455</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#067647</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#085d3a</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#074d31</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--green-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#053321</span></div></div>
+      </div>
+    </div>
+
+    <!-- Yellow -->
+    <div class="scale-section">
+      <h3>Yellow</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#fefdf0</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#fefbe8</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#fef7c3</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#feee95</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#fde272</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#fac515</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#eaaa08</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#ca8504</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#a15c07</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#854a0e</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#713b12</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--yellow-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#542c0d</span></div></div>
+      </div>
+    </div>
+
+    <!-- Orange -->
+    <div class="scale-section">
+      <h3>Orange</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#fefaf5</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#fef6ee</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#fdead7</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#f9dbaf</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#f7b27a</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#f38744</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#ef6820</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#e04f16</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#b93815</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#932f19</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#772917</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--orange-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#511c10</span></div></div>
+      </div>
+    </div>
+
+    <!-- Violet -->
+    <div class="scale-section">
+      <h3>Violet</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#fbfaff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#f5f3ff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#ece9fe</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#ddd6fe</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#c3b5fd</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#a48afb</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#875bf7</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#7839ee</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#6927da</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#5720b7</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#491c96</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--violet-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#2e125e</span></div></div>
+      </div>
+    </div>
+
+    <!-- Pink -->
+    <div class="scale-section">
+      <h3>Pink</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#fef6fb</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#fdf2fa</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#fce7f6</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#fcceee</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#faa7e0</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#f670c7</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#ee46bc</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#dd2590</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#c11574</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#9e165f</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#851651</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--pink-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#4e0d30</span></div></div>
+      </div>
+    </div>
+
+    <!-- Blue Dark -->
+    <div class="scale-section">
+      <h3>Blue Dark</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-25)"></div><div class="swatch-info"><span class="swatch-step">25</span><span class="swatch-hex">#f5f8ff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-50)"></div><div class="swatch-info"><span class="swatch-step">50</span><span class="swatch-hex">#eff4ff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-100)"></div><div class="swatch-info"><span class="swatch-step">100</span><span class="swatch-hex">#d1e0ff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-200)"></div><div class="swatch-info"><span class="swatch-step">200</span><span class="swatch-hex">#b2ccff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-300)"></div><div class="swatch-info"><span class="swatch-step">300</span><span class="swatch-hex">#84adff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-400)"></div><div class="swatch-info"><span class="swatch-step">400</span><span class="swatch-hex">#528bff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-500)"></div><div class="swatch-info"><span class="swatch-step">500</span><span class="swatch-hex">#2970ff</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-600)"></div><div class="swatch-info"><span class="swatch-step">600</span><span class="swatch-hex">#155eef</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-700)"></div><div class="swatch-info"><span class="swatch-step">700</span><span class="swatch-hex">#004eeb</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-800)"></div><div class="swatch-info"><span class="swatch-step">800</span><span class="swatch-hex">#0040c1</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-900)"></div><div class="swatch-info"><span class="swatch-step">900</span><span class="swatch-hex">#00359e</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--blue-dark-950)"></div><div class="swatch-info"><span class="swatch-step">950</span><span class="swatch-hex">#002266</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SEMANTIC TOKENS                         -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Semantic Tokens</h2>
+    <p>Semantic tokens map raw color scales to specific UI roles. Always prefer these over raw scale values for standard interface elements.</p>
+
+    <!-- Backgrounds -->
+    <div class="semantic-group">
+      <h3>Backgrounds</h3>
+      <table class="semantic-table">
+        <thead><tr><th>Preview</th><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-primary)"></div></div></td><td><code>--bg-primary</code></td><td>#ffffff</td><td>Default page/card background</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-secondary)"></div></div></td><td><code>--bg-secondary</code></td><td>#fafafa</td><td>Alternate card/section background</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-tertiary)"></div></div></td><td><code>--bg-tertiary</code></td><td>#f5f5f5</td><td>Subtle surface background</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-sky)"></div></div></td><td><code>--bg-sky</code></td><td>#e0f2fe</td><td>App canvas / page background</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-grass)"></div></div></td><td><code>--bg-grass</code></td><td>#86cb3c</td><td>Sprout-branded accent fill</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-brand-solid)"></div></div></td><td><code>--bg-brand-solid</code></td><td>#0086c9</td><td>Brand-blue solid fill</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-brand-secondary)"></div></div></td><td><code>--bg-brand-secondary</code></td><td>#e0f2fe</td><td>Selected/checked item background</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-brand-primary)"></div></div></td><td><code>--bg-brand-primary</code></td><td>#f0f9ff</td><td>Brand tint background</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-error-primary)"></div></div></td><td><code>--bg-error-primary</code></td><td>#fef3f2</td><td>Error state background</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-error-solid)"></div></div></td><td><code>--bg-error-solid</code></td><td>#d92d20</td><td>Error solid fill</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-success-primary)"></div></div></td><td><code>--bg-success-primary</code></td><td>#ecfdf3</td><td>Success state background</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-success-solid)"></div></div></td><td><code>--bg-success-solid</code></td><td>#079455</td><td>Success solid fill</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-warning-primary)"></div></div></td><td><code>--bg-warning-primary</code></td><td>#fefbe8</td><td>Warning state background</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--bg-warning-solid)"></div></div></td><td><code>--bg-warning-solid</code></td><td>#ca8504</td><td>Warning solid fill</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Text -->
+    <div class="semantic-group">
+      <h3>Text</h3>
+      <table class="semantic-table">
+        <thead><tr><th>Preview</th><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-primary)"></div></div></td><td><code>--text-primary</code></td><td>#181d27</td><td>Headings, body text</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-secondary)"></div></div></td><td><code>--text-secondary</code></td><td>#414651</td><td>Supporting text</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-tertiary)"></div></div></td><td><code>--text-tertiary</code></td><td>#535862</td><td>Muted / caption text</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-quaternary)"></div></div></td><td><code>--text-quaternary</code></td><td>#717680</td><td>Placeholder text</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-white);border-color:var(--gray-300)"></div></div></td><td><code>--text-white</code></td><td>#ffffff</td><td>Text on dark/solid backgrounds</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-disabled)"></div></div></td><td><code>--text-disabled</code></td><td>#717680</td><td>Disabled state text</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-brand-primary)"></div></div></td><td><code>--text-brand-primary</code></td><td>#0b4a6f</td><td>Brand primary text</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-brand-secondary)"></div></div></td><td><code>--text-brand-secondary</code></td><td>#026aa2</td><td>Brand secondary text</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-error)"></div></div></td><td><code>--text-error</code></td><td>#d92d20</td><td>Error message text</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-success)"></div></div></td><td><code>--text-success</code></td><td>#079455</td><td>Success message text</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--text-warning)"></div></div></td><td><code>--text-warning</code></td><td>#ca8504</td><td>Warning message text</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Borders -->
+    <div class="semantic-group">
+      <h3>Borders</h3>
+      <table class="semantic-table">
+        <thead><tr><th>Preview</th><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--border-primary)"></div></div></td><td><code>--border-primary</code></td><td>#d5d7da</td><td>Default borders</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--border-secondary)"></div></div></td><td><code>--border-secondary</code></td><td>#e9eaeb</td><td>Subtle borders</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--border-brand)"></div></div></td><td><code>--border-brand</code></td><td>#0ba5ec</td><td>Focus-state borders</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--border-error)"></div></div></td><td><code>--border-error</code></td><td>#f04438</td><td>Error-state borders</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Foreground -->
+    <div class="semantic-group">
+      <h3>Foreground</h3>
+      <table class="semantic-table">
+        <thead><tr><th>Preview</th><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-primary)"></div></div></td><td><code>--fg-primary</code></td><td>#181d27</td><td>Primary icons / foreground</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-secondary)"></div></div></td><td><code>--fg-secondary</code></td><td>#414651</td><td>Secondary icons</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-tertiary)"></div></div></td><td><code>--fg-tertiary</code></td><td>#535862</td><td>Tertiary icons</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-quaternary)"></div></div></td><td><code>--fg-quaternary</code></td><td>#a4a7ae</td><td>Quaternary / disabled icons</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-white);border-color:var(--gray-300)"></div></div></td><td><code>--fg-white</code></td><td>#ffffff</td><td>Icons on dark backgrounds</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-brand-primary)"></div></div></td><td><code>--fg-brand-primary</code></td><td>#0ba5ec</td><td>Active indicators, spinners</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-brand-secondary)"></div></div></td><td><code>--fg-brand-secondary</code></td><td>#0086c9</td><td>Brand secondary foreground</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-error)"></div></div></td><td><code>--fg-error</code></td><td>#d92d20</td><td>Error icons</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-error-primary)"></div></div></td><td><code>--fg-error-primary</code></td><td>#f04438</td><td>Error primary foreground</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-error-secondary)"></div></div></td><td><code>--fg-error-secondary</code></td><td>#d92d20</td><td>Error secondary foreground</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-success)"></div></div></td><td><code>--fg-success</code></td><td>#079455</td><td>Success icons</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-success-primary)"></div></div></td><td><code>--fg-success-primary</code></td><td>#17b26a</td><td>Success primary foreground</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-success-secondary)"></div></div></td><td><code>--fg-success-secondary</code></td><td>#079455</td><td>Success secondary foreground</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-warning)"></div></div></td><td><code>--fg-warning</code></td><td>#ca8504</td><td>Warning icons</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-warning-primary)"></div></div></td><td><code>--fg-warning-primary</code></td><td>#eaaa08</td><td>Warning primary foreground</td></tr>
+          <tr><td><div class="preview-cell"><div class="color-preview" style="background:var(--fg-warning-secondary)"></div></div></td><td><code>--fg-warning-secondary</code></td><td>#ca8504</td><td>Warning secondary foreground</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

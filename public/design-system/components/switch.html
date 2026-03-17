@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Switch</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Switch",
+  "slug": "switch",
+  "intent": {
+    "purpose": "Toggle a single setting on or off with immediate effect",
+    "taskContext": ["settings", "preferences", "feature-toggle"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["track", "thumb", "label"],
+    "allows": ["description"],
+    "forbids": ["icon", "image"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Standard toggle with label", "pairWith": [] },
+    { "name": "With description", "useWhen": "Additional context needed below label", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 44x24px track" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline"]
+  },
+  "relationships": {
+    "related": ["Checkbox"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": []
+  },
+  "states": ["off", "on", "hover", "disabled"],
+  "accessibility": {
+    "role": "switch",
+    "keyboard": ["Space", "Enter"],
+    "ariaAttributes": ["aria-checked"],
+    "minTouchTarget": "44x24px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Switch ── */
+.switch {
+  display:flex; align-items:center;
+  width:44px; height:24px;
+  padding:var(--spacing-xxs, 2px);
+  border-radius:var(--radius-full, 9999px);
+  background:var(--bg-secondary, #fafafa);
+  cursor:pointer;
+  transition:background 0.2s, justify-content 0.2s;
+  box-sizing:border-box;
+  flex-shrink:0;
+}
+.switch .switch-thumb {
+  width:20px; height:20px;
+  border-radius:var(--radius-full, 9999px);
+  background:var(--fg-white, #ffffff);
+  transition:transform 0.2s;
+}
+.switch.checked {
+  background:var(--brand-500, #0ba5ec);
+  justify-content:flex-end;
+}
+
+/* ── Hover ── */
+.switch.state-hover,
+.switch:hover:not(.disabled) { cursor:pointer; }
+.switch.checked.state-hover,
+.switch.checked:hover:not(.disabled) {
+  background:var(--fg-brand-primary-hover, #36bffa);
+}
+
+/* ── Disabled ── */
+.switch.disabled {
+  background:var(--bg-disabled, #f5f5f5);
+  cursor:not-allowed;
+}
+.switch.disabled .switch-thumb {
+  background:#fafafa;
+}
+
+/* ── Switch row (with label) ── */
+.switch-row {
+  display:flex; gap:var(--spacing-md, 8px); align-items:flex-start;
+  max-width:370px; width:100%;
+}
+.switch-row .switch-content {
+  flex:1; min-width:0;
+  display:flex; flex-direction:column; gap:var(--spacing-xxs, 2px);
+}
+.switch-row .switch-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-primary, #181d27);
+}
+.switch-row .switch-desc {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Switch</div>
+    <div class="sec-desc">Switches toggle a single setting on or off. They provide immediate feedback and are used when the effect of the change is instantaneous.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For on/off settings like notifications, screen time, or privacy controls.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When the effect is immediate and doesn't require a separate save action.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use a switch when the user is selecting from multiple options &mdash; use radio buttons or a list item instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use a switch when the change requires confirmation &mdash; use a checkbox with a submit button.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="switch-row">
+          <div class="switch">
+            <div class="switch-thumb"></div>
+          </div>
+          <div class="switch-content">
+            <span class="switch-label">Notifications</span>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">With description</span>
+        <div class="switch-row">
+          <div class="switch checked">
+            <div class="switch-thumb"></div>
+          </div>
+          <div class="switch-content">
+            <span class="switch-label">Screen time alerts</span>
+            <span class="switch-desc">Get notified when your child reaches their daily limit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- States -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>The switch base component has six states &mdash; <strong>default</strong>, <strong>hover</strong>, and <strong>disabled</strong> for both <strong>off</strong> and <strong>on</strong>.</p>
+
+    <div class="state-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="state-cell">
+        <span class="state-cell-label">Off &mdash; default</span>
+        <div class="switch-row">
+          <div class="switch" onclick="this.classList.toggle('checked')">
+            <div class="switch-thumb"></div>
+          </div>
+          <div class="switch-content">
+            <span class="switch-label">Notifications</span>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">On &mdash; default</span>
+        <div class="switch-row">
+          <div class="switch checked" onclick="this.classList.toggle('checked')">
+            <div class="switch-thumb"></div>
+          </div>
+          <div class="switch-content">
+            <span class="switch-label">Notifications</span>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Off &mdash; hover</span>
+        <div class="switch-row">
+          <div class="switch state-hover">
+            <div class="switch-thumb"></div>
+          </div>
+          <div class="switch-content">
+            <span class="switch-label">Notifications</span>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">On &mdash; hover</span>
+        <div class="switch-row">
+          <div class="switch checked state-hover">
+            <div class="switch-thumb"></div>
+          </div>
+          <div class="switch-content">
+            <span class="switch-label">Notifications</span>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Off &mdash; disabled</span>
+        <div class="switch-row">
+          <div class="switch disabled">
+            <div class="switch-thumb"></div>
+          </div>
+          <div class="switch-content">
+            <span class="switch-label">Notifications</span>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">On &mdash; disabled</span>
+        <div class="switch-row">
+          <div class="switch checked disabled">
+            <div class="switch-thumb"></div>
+          </div>
+          <div class="switch-content">
+            <span class="switch-label">Notifications</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- With description -->
+  <div class="doc-section">
+    <h2>With description</h2>
+    <p>An optional description can appear below the label for additional context.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">With description</span>
+        <div class="switch-row">
+          <div class="switch checked" onclick="this.classList.toggle('checked')">
+            <div class="switch-thumb"></div>
+          </div>
+          <div class="switch-content">
+            <span class="switch-label">Screen time alerts</span>
+            <span class="switch-desc">Get notified when your child reaches their daily limit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anatomy -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Track</strong> (required) &mdash; 44&times;24px pill. Off: <code>--bg-secondary</code>. On: <code>--brand-500</code>.</li>
+        <li><strong>Thumb</strong> (required) &mdash; 20px white circle that slides between left (off) and right (on).</li>
+        <li><strong>Label</strong> (required) &mdash; Regular text-md in <code>--text-primary</code>. Placed to the right of the track.</li>
+        <li><strong>Description</strong> (optional) &mdash; Regular text-sm in <code>--text-secondary</code>. Below the label.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content guidelines -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Labels should describe what happens when the switch is on, not the current state</li>
+        <li>Keep labels short &mdash; 1&ndash;3 words</li>
+        <li>Don't include "on/off" or "enable/disable" in the label &mdash; the switch visual communicates that</li>
+        <li>Descriptions should explain the consequence of the setting, not repeat the label</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Token Reference -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Track size</td><td>44&times;24px</td></tr>
+        <tr><td>Thumb size</td><td>20px circle</td></tr>
+        <tr><td>Track radius</td><td><code>--radius-full</code> (9999px)</td></tr>
+        <tr><td>Track padding</td><td><code>--spacing-xxs</code> (2px)</td></tr>
+        <tr><td>Track bg (off)</td><td><code>--bg-secondary</code> (#fafafa)</td></tr>
+        <tr><td>Track bg (on)</td><td><code>--brand-500</code> (#0ba5ec)</td></tr>
+        <tr><td>Track bg (on hover)</td><td><code>--fg-brand-primary-hover</code> (#36bffa)</td></tr>
+        <tr><td>Track bg (disabled)</td><td><code>--bg-disabled</code> (#f5f5f5)</td></tr>
+        <tr><td>Thumb color</td><td><code>--fg-white</code> (#ffffff)</td></tr>
+        <tr><td>Thumb color (disabled)</td><td>#fafafa</td></tr>
+        <tr><td>Row gap</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Demo width</td><td>370px (production: fluid / parent width)</td></tr>
+        <tr><td>Label</td><td>text-md regular (16px/24px), <code>--text-primary</code></td></tr>
+        <tr><td>Description</td><td>text-sm regular (14px/20px), <code>--text-secondary</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Use <code>role="switch"</code> with <code>aria-checked="true|false"</code>. Do not use <code>role="checkbox"</code>.</li>
+        <li><strong>Labels:</strong> Associate a visible label via <code>aria-labelledby</code> or <code>aria-label</code>.</li>
+        <li><strong>Keyboard:</strong> Toggle with <kbd>Space</kbd> or <kbd>Enter</kbd>. Must be focusable with <kbd>Tab</kbd>.</li>
+        <li><strong>Contrast:</strong> The brand-500 on-state track and white thumb meet WCAG AA. The off-state track (<code>--bg-secondary</code>) should have a visible border in high-contrast mode.</li>
+        <li><strong>Touch targets:</strong> The 44&times;24px track meets the minimum 44px width. Ensure the tap area extends to include the label row.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

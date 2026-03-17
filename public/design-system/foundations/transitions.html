@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Transitions</title>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Timing table ── */
+.timing-use { font-weight: var(--font-weight-semibold, 600); color: var(--text-primary, #181d27); }
+
+/* ── Easing cards ── */
+.easing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl, 16px);
+  margin: var(--spacing-xl, 16px) 0 var(--spacing-3xl, 24px);
+}
+.easing-card {
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  padding: var(--spacing-2xl, 20px);
+  cursor: default;
+  overflow: hidden;
+}
+.easing-card-label {
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  margin-bottom: var(--spacing-xs, 4px);
+}
+.easing-card-value {
+  font-size: 12px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--text-tertiary, #535862);
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.easing-track {
+  height: 4px;
+  background: var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  position: relative;
+  margin-top: var(--spacing-md, 8px);
+}
+.easing-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--fg-brand-primary, #0ba5ec);
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  transition-property: left;
+  transition-duration: 0.5s;
+}
+.easing-dot[data-ease="ease-out"]   { transition-timing-function: ease-out; }
+.easing-dot[data-ease="ease-in"]    { transition-timing-function: ease-in; }
+.easing-dot[data-ease="linear"]     { transition-timing-function: linear; }
+.easing-dot[data-ease="spring"]     { transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+.easing-card:hover .easing-dot { left: calc(100% - 14px); }
+
+/* ── Spinner demos ── */
+.spinner-grid {
+  display: flex;
+  gap: var(--spacing-4xl, 32px);
+  align-items: flex-end;
+  margin: var(--spacing-xl, 16px) 0 var(--spacing-3xl, 24px);
+}
+.spinner-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+}
+.spinner-demo-label {
+  font-size: 12px;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-tertiary, #535862);
+}
+.spinner {
+  border-radius: var(--radius-full, 9999px);
+  border-style: solid;
+  border-width: 3px;
+  animation: spin 0.8s linear infinite;
+}
+.spinner-lg { width: 28px; height: 28px; }
+.spinner-md { width: 24px; height: 24px; }
+.spinner-sm { width: 20px; height: 20px; }
+.spinner-primary {
+  border-color: var(--border-primary, #d5d7da);
+  border-top-color: var(--fg-brand-primary, #0ba5ec);
+}
+.spinner-muted {
+  border-color: rgba(255, 255, 255, 0.5);
+  border-top-color: #ffffff;
+}
+.dark-bg-row {
+  display: flex;
+  gap: var(--spacing-4xl, 32px);
+  align-items: flex-end;
+  background: var(--gray-800, #1f242f);
+  padding: var(--spacing-2xl, 20px) var(--spacing-3xl, 24px);
+  border-radius: var(--radius-xl, 12px);
+  margin: var(--spacing-xl, 16px) 0 var(--spacing-3xl, 24px);
+}
+.dark-bg-row .spinner-demo-label { color: var(--gray-300, #d5d7da); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Guideline cards ── */
+.guideline-card {
+  display: flex;
+  gap: var(--spacing-xl, 16px);
+  padding: var(--spacing-xl, 16px);
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  margin-bottom: var(--spacing-lg, 12px);
+}
+.guideline-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--yellow-50, #fefbe8);
+  color: var(--yellow-600, #ca8504);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-bold, 700);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.guideline-text h4 {
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  margin-bottom: var(--spacing-xs, 4px);
+}
+.guideline-text p {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-secondary, #414651);
+  line-height: var(--line-height-text-sm, 20px);
+}
+.guideline-text code {
+  font-size: 12px;
+  background: var(--bg-tertiary, #f5f5f5);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs, 4px);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Transitions</div>
+    <div class="sec-desc">Timing reference, easing curves, loading spinners, and motion guidelines for consistent, purposeful transitions across Sprout.</div>
+  </div>
+
+  <!-- ── Timing Reference ── -->
+  <div class="doc-section">
+    <h2>Timing Reference</h2>
+    <p>Standard durations used across the system. Use these values consistently &mdash; never invent custom timings.</p>
+    <table class="token-table">
+      <thead><tr><th>Use</th><th>Duration</th><th>Easing</th></tr></thead>
+      <tbody>
+        <tr><td class="timing-use">Fast feedback</td><td><code>0.15s</code></td><td>Default (ease)</td></tr>
+        <tr><td class="timing-use">Switch toggle</td><td><code>0.2s</code></td><td>Default (ease)</td></tr>
+        <tr><td class="timing-use">Sheet enter</td><td><code>300ms</code></td><td><code>ease-out</code></td></tr>
+        <tr><td class="timing-use">Sheet exit</td><td><code>250ms</code></td><td><code>ease-in</code></td></tr>
+        <tr><td class="timing-use">Progress bar</td><td><code>0.4s</code></td><td><code>cubic-bezier(0.22, 1, 0.36, 1)</code> (spring)</td></tr>
+        <tr><td class="timing-use">Loading spinner</td><td><code>0.8s</code></td><td><code>linear infinite</code></td></tr>
+        <tr><td class="timing-use">Delight</td><td><code>0.55s</code></td><td><code>cubic-bezier(0.22, 1, 0.36, 1)</code> (spring)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Easing Curves ── -->
+  <div class="doc-section">
+    <h2>Easing Curves</h2>
+    <p>Hover each card to see the easing in action. The dot slides from left to right using the given timing function.</p>
+    <div class="easing-grid">
+      <div class="easing-card">
+        <div class="easing-card-label">ease-out</div>
+        <div class="easing-card-value">cubic-bezier(0, 0, 0.58, 1)</div>
+        <div class="easing-track"><div class="easing-dot" data-ease="ease-out"></div></div>
+      </div>
+      <div class="easing-card">
+        <div class="easing-card-label">ease-in</div>
+        <div class="easing-card-value">cubic-bezier(0.42, 0, 1, 1)</div>
+        <div class="easing-track"><div class="easing-dot" data-ease="ease-in"></div></div>
+      </div>
+      <div class="easing-card">
+        <div class="easing-card-label">linear</div>
+        <div class="easing-card-value">cubic-bezier(0, 0, 1, 1)</div>
+        <div class="easing-track"><div class="easing-dot" data-ease="linear"></div></div>
+      </div>
+      <div class="easing-card">
+        <div class="easing-card-label">spring</div>
+        <div class="easing-card-value">cubic-bezier(0.22, 1, 0.36, 1)</div>
+        <div class="easing-track"><div class="easing-dot" data-ease="spring"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Loading Spinner ── -->
+  <div class="doc-section">
+    <h2>Loading Spinner</h2>
+    <p>Three sizes with two color variants. The spinner uses <code>@keyframes spin</code> at <code>0.8s linear infinite</code>.</p>
+
+    <h3 style="font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary,#181d27);margin:var(--spacing-xl,16px) 0 var(--spacing-md,8px);">Primary</h3>
+    <div class="spinner-grid">
+      <div class="spinner-demo">
+        <div class="spinner spinner-lg spinner-primary"></div>
+        <span class="spinner-demo-label">lg &middot; 28px</span>
+      </div>
+      <div class="spinner-demo">
+        <div class="spinner spinner-md spinner-primary"></div>
+        <span class="spinner-demo-label">md &middot; 24px</span>
+      </div>
+      <div class="spinner-demo">
+        <div class="spinner spinner-sm spinner-primary"></div>
+        <span class="spinner-demo-label">sm &middot; 20px</span>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary,#181d27);margin:var(--spacing-xl,16px) 0 var(--spacing-md,8px);">Muted (dark backgrounds)</h3>
+    <div class="dark-bg-row">
+      <div class="spinner-demo">
+        <div class="spinner spinner-lg spinner-muted"></div>
+        <span class="spinner-demo-label">lg &middot; 28px</span>
+      </div>
+      <div class="spinner-demo">
+        <div class="spinner spinner-md spinner-muted"></div>
+        <span class="spinner-demo-label">md &middot; 24px</span>
+      </div>
+      <div class="spinner-demo">
+        <div class="spinner spinner-sm spinner-muted"></div>
+        <span class="spinner-demo-label">sm &middot; 20px</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Spinner Token Table ── -->
+  <div class="doc-section">
+    <h2>Spinner Tokens</h2>
+    <table class="token-table">
+      <thead><tr><th>Variant</th><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="2"><strong>Primary</strong></td><td>Ring</td><td><code>var(--border-primary)</code> &mdash; #d5d7da</td></tr>
+        <tr><td>Arc</td><td><code>var(--fg-brand-primary)</code> &mdash; #0ba5ec</td></tr>
+        <tr><td rowspan="2"><strong>Muted</strong></td><td>Ring</td><td><code>rgba(255,255,255,0.5)</code> &mdash; white 50%</td></tr>
+        <tr><td>Arc</td><td><code>#ffffff</code> &mdash; white</td></tr>
+        <tr><td colspan="2"><strong>Sizes</strong></td><td>lg = 28px, md = 24px, sm = 20px</td></tr>
+        <tr><td colspan="2"><strong>Border width</strong></td><td>3px</td></tr>
+        <tr><td colspan="2"><strong>Animation</strong></td><td><code>0.8s linear infinite</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Guidelines ── -->
+  <div class="doc-section">
+    <h2>Guidelines</h2>
+    <p>Guiding principles for motion in Sprout.</p>
+
+    <div class="guideline-card">
+      <div class="guideline-icon">1</div>
+      <div class="guideline-text">
+        <h4>Transitions must be functional</h4>
+        <p>Every transition should serve a purpose &mdash; guide attention, confirm an action, or show state change. Avoid decorative motion that adds no information.</p>
+      </div>
+    </div>
+
+    <div class="guideline-card">
+      <div class="guideline-icon">2</div>
+      <div class="guideline-text">
+        <h4>Respect reduced motion</h4>
+        <p>Wrap non-essential transitions in <code>@media (prefers-reduced-motion: no-preference)</code>. Essential state indicators (spinners, progress) should remain but may reduce intensity.</p>
+      </div>
+    </div>
+
+    <div class="guideline-card">
+      <div class="guideline-icon">3</div>
+      <div class="guideline-text">
+        <h4>Active state pattern</h4>
+        <p>Pressed/active states always use <code>box-shadow: none; transform: translateY(Npx)</code> where N matches the resting shadow offset. This creates a physical &ldquo;push&rdquo; feel.</p>
+      </div>
+    </div>
+
+    <div class="guideline-card">
+      <div class="guideline-icon">4</div>
+      <div class="guideline-text">
+        <h4>Enter/exit asymmetry</h4>
+        <p>Elements enter with <code>ease-out</code> (fast start, gentle land) and exit with <code>ease-in</code> (gentle start, fast departure). Exits are slightly shorter than enters &mdash; e.g., sheet enter 300ms vs. exit 250ms.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

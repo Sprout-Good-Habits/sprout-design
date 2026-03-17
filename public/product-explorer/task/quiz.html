@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer — Quiz</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+.variant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--spacing-3xl, 24px);
+  margin-top: var(--spacing-5xl, 40px);
+}
+.variant-card {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  padding: var(--spacing-3xl, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg, 12px);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.variant-card:hover {
+  border-color: var(--border-primary, #d5d7da);
+  box-shadow: 0 4px 12px rgba(10,13,18,0.06);
+}
+.variant-emoji {
+  font-family: 'TossFace', sans-serif;
+  font-size: 40px;
+  line-height: 1;
+}
+.variant-name {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+}
+.variant-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.variant-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--fg-brand-primary, #0ba5ec);
+  text-decoration: none;
+  margin-top: auto;
+}
+.variant-link:hover { text-decoration: underline; }
+.variant-link svg { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="sec-title">Quiz</div>
+      <div class="sec-desc">Quiz-based task flow with three variant directions for team feedback — each shows all 4 questions in a different format.</div>
+
+      <div class="variant-grid">
+        <div class="variant-card">
+          <div class="variant-emoji">📋</div>
+          <div class="variant-name">Classic</div>
+          <div class="variant-desc">Standard quiz format — questions with answer options, no character guidance.</div>
+          <a class="variant-link" href="/product-explorer/task/quiz-classic.html">View prototype <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
+        </div>
+
+        <div class="variant-card">
+          <div class="variant-emoji">🌱</div>
+          <div class="variant-name">Guided</div>
+          <div class="variant-desc">Sprout coaches kids through each question with hints and encouragement.</div>
+          <a class="variant-link" href="/product-explorer/task/quiz-guided.html">View prototype <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
+        </div>
+
+        <div class="variant-card">
+          <div class="variant-emoji">💬</div>
+          <div class="variant-name">Conversational</div>
+          <div class="variant-desc">Chat-style quiz where Sprout asks questions and kids reply within the conversation.</div>
+          <a class="variant-link" href="/product-explorer/task/quiz-conversational.html">View prototype <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Home',href:'/product-explorer/task/home.html'},{label:'Home (Older)',href:'/product-explorer/task/home-older.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

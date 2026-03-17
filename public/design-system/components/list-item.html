@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — List Item</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "ListItem",
+  "slug": "list-item",
+  "intent": {
+    "purpose": "Let users review or select options from a dynamic list",
+    "taskContext": ["selection", "navigation", "settings"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["label"],
+    "allows": ["icon", "description", "chevron", "radio-indicator", "checkbox-indicator"],
+    "forbids": ["button", "nested-list-item"]
+  },
+  "variants": [
+    { "name": "Navigation", "useWhen": "Navigating to a sub-screen, shows chevron", "pairWith": [] },
+    { "name": "Radio", "useWhen": "Single-select from a list, shows radio indicator", "pairWith": [] },
+    { "name": "Checkbox", "useWhen": "Multi-select from a list, shows checkbox indicator", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 56px height minimum" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline", "inside-sheet"]
+  },
+  "relationships": {
+    "related": ["Checkbox", "Radio", "Sheet"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Sheet"]
+  },
+  "states": ["unchecked", "checked", "hover"],
+  "accessibility": {
+    "role": "option",
+    "keyboard": ["Enter", "Space", "ArrowUp", "ArrowDown"],
+    "ariaAttributes": ["aria-selected", "aria-checked"],
+    "minTouchTarget": "56x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── List Item component ── */
+.list-item {
+  display:flex; align-items:center; gap:16px;
+  box-sizing:border-box;
+  width:354px;
+  padding:16px 20px;
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-xl, 12px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor:pointer;
+  transition:background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.list-item:hover {
+  border-color:var(--gray-300, #d5d7da);
+}
+.list-item.checked {
+  background:var(--bg-brand-secondary, #e0f2fe);
+  border-color:var(--brand-300, #7cd4fd);
+  box-shadow:0 3px 0 0 var(--brand-300, #7cd4fd);
+}
+
+/* Icon (Toss Face emoji) */
+.list-item-icon {
+  width:44px; height:44px;
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'TossFace', sans-serif;
+  font-size:36px; line-height:1;
+}
+
+/* Content */
+.list-item-content { flex:1; min-width:0; }
+.list-item-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+}
+.list-item-desc {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651);
+}
+
+/* ── Trailing indicators ── */
+
+/* Checkbox (rounded square) */
+.list-item-checkbox {
+  width:24px; height:24px; flex-shrink:0;
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-sm, 6px);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg-primary, #ffffff);
+  transition:background 0.15s, border-color 0.15s;
+}
+.checked .list-item-checkbox {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-500, #0ba5ec);
+}
+.list-item-check-icon {
+  display:none; width:14px; height:14px;
+  stroke:#ffffff; stroke-width:2.5; fill:none;
+}
+.checked .list-item-check-icon { display:block; }
+
+/* Radio (circle) */
+.list-item-radio {
+  width:24px; height:24px; flex-shrink:0;
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-full, 9999px);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg-primary, #ffffff);
+  transition:background 0.15s, border-color 0.15s;
+}
+.checked .list-item-radio {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-500, #0ba5ec);
+}
+.list-item-radio-dot {
+  display:none; width:8px; height:8px;
+  border-radius:var(--radius-full, 9999px);
+  background:#ffffff;
+}
+.checked .list-item-radio-dot { display:block; }
+
+/* Navigation (chevron) */
+.list-item-chevron {
+  width:24px; height:24px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text-tertiary, #535862);
+}
+.checked .list-item-chevron {
+  color:var(--brand-500, #0ba5ec);
+}
+.list-item-chevron svg {
+  width:12px; height:12px; stroke:currentColor;
+  stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round;
+}
+
+/* ── State grid: let list items fill cells ── */
+.state-cell .list-item { width:100%; }
+
+@media(max-width:768px) {
+  .list-item { width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">List Item</div>
+    <div class="sec-desc">List items let users review or select options from a dynamic list, adaptable to different use cases.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a list item when you want to display different options grouped as a list.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Navigation</span>
+        <div class="list-item">
+          <div class="list-item-icon">&#128218;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Reading corner</div>
+          </div>
+          <div class="list-item-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Radio</span>
+        <div class="list-item">
+          <div class="list-item-icon">&#127793;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Plant a garden</div>
+          </div>
+          <div class="list-item-radio">
+            <div class="list-item-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Checkbox</span>
+        <div class="list-item">
+          <div class="list-item-icon">&#127912;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Draw and paint</div>
+          </div>
+          <div class="list-item-checkbox">
+            <svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Types ════ -->
+  <div class="doc-section">
+    <h2>Types</h2>
+    <p>There are three ways to use a list item &mdash; <strong>Navigation</strong>, <strong>Radio</strong>, and <strong>Checkbox</strong>.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Navigation</span>
+        <div class="list-item">
+          <div class="list-item-icon">&#128218;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Reading corner</div>
+          </div>
+          <div class="list-item-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Radio</span>
+        <div class="list-item">
+          <div class="list-item-icon">&#127793;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Plant a garden</div>
+          </div>
+          <div class="list-item-radio">
+            <div class="list-item-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Checkbox</span>
+        <div class="list-item">
+          <div class="list-item-icon">&#127912;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Draw and paint</div>
+          </div>
+          <div class="list-item-checkbox">
+            <svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use section headers to separate lists with different accessory types on the same page.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix different accessory types in the same list.</li>
+      </ul>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Navigation item</h3>
+    <p>Navigation item gives users a rich way to choose between options and navigate to another screen or step in a flow.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> If you want to give the user a rich way to make a choice and navigate to another screen or step in a flow.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> If making a choice is the primary action on the screen.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> If there are multiple options that the user can choose from.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> If some extra context, such as an icon, would help the user understand where they&rsquo;ll navigate to if they select that option.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> To ask the user to choose options within a form &mdash; use radio or checkbox instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> When there is just one primary option, and perhaps an alternative secondary option &mdash; use a button instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> When the user needs to complete all the options on a screen, rather than choose one.</li>
+      </ul>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Checkbox item</h3>
+    <p>Checkbox item allows users to select multiple items from a mutually exclusive list of options.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Within a select input.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When a user needs to choose within a list of more than 3 options.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Directly in a form, unless used as a full screen.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> As a standalone or in place of a switch.</li>
+      </ul>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Radio item</h3>
+    <p>Radio item allows users to select a single item from a mutually exclusive list of options.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> To select a single option within a list of options.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Within a select input.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When a user needs to choose within a list of more than 3 options.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> In a radio group.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Directly in a form, unless used as a full screen.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> As a standalone or in place of a switch.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Icons ════ -->
+  <div class="doc-section">
+    <h2>Icons</h2>
+    <p>Icons are optional and are used as a visual aid to the list item.</p>
+
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a relevant Toss Face icon to support content.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use an illustration in place of the icon.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>A list item is composed of up to four parts. Only the <strong>label</strong> is required; the icon, description, and trailing indicator are all optional.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Full anatomy</span>
+        <div class="list-item">
+          <div class="list-item-icon">&#127912;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Draw and paint</div>
+            <div class="list-item-desc">Express yourself with colors</div>
+          </div>
+          <div class="list-item-checkbox">
+            <svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Label only</span>
+        <div class="list-item">
+          <div class="list-item-content">
+            <div class="list-item-label">Draw and paint</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Icon</strong> (optional) &mdash; 44px Toss Face emoji. Adds personality and helps kids scan options quickly.</li>
+        <li><strong>Label</strong> (required) &mdash; Bold, text-md (16px/24px). The primary option name.</li>
+        <li><strong>Description</strong> (optional) &mdash; Regular, text-sm (14px/20px). Extra context when the label alone isn&rsquo;t enough.</li>
+        <li><strong>Trailing indicator</strong> (optional) &mdash; 24px. Checkbox, radio, or chevron depending on the type.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>Each type has two states &mdash; <strong>unchecked</strong> (default) and <strong>checked</strong> (selected). The checked state uses the brand blue palette to clearly indicate selection.</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(2, 1fr);">
+      <div class="state-cell"><span class="state-cell-label">Unchecked</span></div>
+      <div class="state-cell"><span class="state-cell-label">Checked</span></div>
+
+      <div class="state-cell">
+        <div class="list-item">
+          <div class="list-item-icon">&#127912;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Draw and paint</div>
+            <div class="list-item-desc">Express yourself with colors</div>
+          </div>
+          <div class="list-item-checkbox">
+            <svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="list-item checked">
+          <div class="list-item-icon">&#127912;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Draw and paint</div>
+            <div class="list-item-desc">Express yourself with colors</div>
+          </div>
+          <div class="list-item-checkbox">
+            <svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-cell">
+        <div class="list-item">
+          <div class="list-item-icon">&#127793;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Plant a garden</div>
+            <div class="list-item-desc">Grow your own vegetables</div>
+          </div>
+          <div class="list-item-radio">
+            <div class="list-item-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="list-item checked">
+          <div class="list-item-icon">&#127793;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Plant a garden</div>
+            <div class="list-item-desc">Grow your own vegetables</div>
+          </div>
+          <div class="list-item-radio">
+            <div class="list-item-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-cell">
+        <div class="list-item">
+          <div class="list-item-icon">&#128218;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Reading corner</div>
+            <div class="list-item-desc">Stories and adventures</div>
+          </div>
+          <div class="list-item-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="list-item checked">
+          <div class="list-item-icon">&#128218;</div>
+          <div class="list-item-content">
+            <div class="list-item-label">Reading corner</div>
+            <div class="list-item-desc">Stories and adventures</div>
+          </div>
+          <div class="list-item-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Content guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <p>List item copy should:</p>
+    <div class="prose">
+      <ul>
+        <li>Keep labels short &mdash; ideally 2&ndash;4 words</li>
+        <li>Start with a verb or noun that names the option</li>
+        <li>Use sentence case (only capitalise the first letter of the first word)</li>
+        <li>Use the description for extra context only when the label isn&rsquo;t self-explanatory</li>
+        <li>Avoid ending labels or descriptions with a period</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All list item styles map to Sprout design tokens. The container is identical across all three types &mdash; only the trailing indicator differs.</p>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Unchecked (default)</th><th>Checked (selected)</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>--bg-primary</code></td><td><code>--bg-brand-secondary</code> (#e0f2fe)</td></tr>
+        <tr><td>Border</td><td><code>2px solid --border-secondary</code></td><td><code>2px solid --brand-300</code> (#7cd4fd)</td></tr>
+        <tr><td>Shadow</td><td><code>0 3px 0 --gray-200</code></td><td><code>0 3px 0 --brand-300</code></td></tr>
+        <tr><td>Border radius</td><td colspan="2"><code>--radius-xl</code> (12px)</td></tr>
+        <tr><td>Padding</td><td colspan="2">16px vertical, 20px horizontal</td></tr>
+        <tr><td>Gap</td><td colspan="2">16px (icon / content / indicator)</td></tr>
+        <tr><td>Width</td><td colspan="2">354px</td></tr>
+        <tr><td>Label</td><td colspan="2">text-md bold (16px/24px), <code>--text-primary</code></td></tr>
+        <tr><td>Description</td><td colspan="2">text-sm regular (14px/20px), <code>--text-secondary</code></td></tr>
+        <tr><td>Icon</td><td colspan="2">44px Toss Face emoji</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Trailing indicators</h3>
+    <table class="token-table">
+      <thead><tr><th>Type</th><th>Size</th><th>Radius</th><th>Unchecked</th><th>Checked</th></tr></thead>
+      <tbody>
+        <tr><td>Checkbox</td><td>24px</td><td><code>--radius-sm</code> (6px)</td><td>Border <code>--border-secondary</code></td><td>Filled <code>--brand-500</code>, white check icon</td></tr>
+        <tr><td>Radio</td><td>24px</td><td><code>--radius-full</code> (9999px)</td><td>Border <code>--border-secondary</code></td><td>Filled <code>--brand-500</code>, 8px white dot</td></tr>
+        <tr><td>Navigation</td><td>24px</td><td>&mdash;</td><td>Chevron in <code>--text-tertiary</code></td><td>Chevron in <code>--brand-500</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <p>List items are interactive selection controls. They must be usable by all input methods.</p>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Checkbox type &rarr; use <code>role="option"</code> in a <code>role="listbox"</code>, or native <code>&lt;input type="checkbox"&gt;</code>. Radio type &rarr; use <code>role="radio"</code> in a <code>role="radiogroup"</code>, or native <code>&lt;input type="radio"&gt;</code>. Navigation type &rarr; use <code>&lt;a&gt;</code> or <code>role="link"</code>.</li>
+        <li><strong>Keyboard:</strong> Items must be selectable with <kbd>Enter</kbd> or <kbd>Space</kbd>. Arrow keys should move focus between items.</li>
+        <li><strong>Focus ring:</strong> A visible <code>2px</code> focus ring appears on keyboard navigation. Do not remove <code>:focus-visible</code> outlines.</li>
+        <li><strong>ARIA state:</strong> Use <code>aria-selected="true"</code> for checked items and <code>aria-selected="false"</code> for unchecked. Radio groups should use <code>aria-checked</code>.</li>
+        <li><strong>Contrast:</strong> Labels (<code>--text-primary</code> on <code>--bg-primary</code>) and descriptions (<code>--text-secondary</code> on <code>--bg-primary</code>) both pass WCAG AA.</li>
+        <li><strong>Touch targets:</strong> The entire row (minimum 56px tall) is the tap target, exceeding the 44&times;44px guideline.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

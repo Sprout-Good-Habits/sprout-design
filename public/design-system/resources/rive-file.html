@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Rive File</title>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+.download-card {
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--gray-200, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  padding: var(--spacing-3xl, 24px);
+  margin-top: var(--spacing-3xl, 24px);
+}
+.download-card h3 {
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs, 4px);
+}
+.download-card p {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm, 20px);
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
+  background: var(--brand-500, #0ba5ec);
+  color: white;
+  border-radius: var(--radius-sm, 6px);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.download-btn:hover { background: var(--brand-600, #0086c9); text-decoration: none; color: white; }
+.info-note {
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid var(--brand-200, #b9e6fe);
+  border-radius: var(--radius-md, 8px);
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm, 20px);
+  margin: var(--spacing-xl, 16px) 0;
+}
+.info-note strong { color: var(--brand-700, #026aa2); }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Rive File</div>
+    <div class="sec-desc">The Sprout character animation file for use in apps, prototypes, and marketing materials.</div>
+  </div>
+
+  <div class="download-card">
+    <h3>sprout-character.riv</h3>
+    <p>Rive animation file containing the Sprout character with interactive states and transitions. Use with the Rive runtime for web, iOS, or Android.</p>
+    <a class="download-btn" href="/design-system/sprout-character.riv" download>Download .riv file</a>
+  </div>
+
+  <div class="doc-section">
+    <h2>About</h2>
+    <p>The Sprout character is the brand mascot used across the app for onboarding, empty states, celebrations, and loading screens. This Rive file contains the latest version (v2.5) with all animation states.</p>
+
+    <div class="info-note">
+      <strong>Tip:</strong> Open the .riv file in <a href="https://rive.app" target="_blank">rive.app</a> to preview animations and explore state machines before integrating.
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

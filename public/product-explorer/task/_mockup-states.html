@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer — Task Row State Mockups</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+/* ── Device frame ── */
+.device-wrapper {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 32px;
+  padding: 4px;
+  box-shadow:
+    0 12px 16px -4px rgba(10,13,18,0.08),
+    0 4px 6px -2px rgba(10,13,18,0.03),
+    0 2px 2px -1px rgba(10,13,18,0.04);
+}
+.device-inner-shadow {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 28px;
+  padding: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.device-inner-shadow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 6px 2px rgba(10,13,18,0.08),
+    inset 0 0 4px 2px rgba(10,13,18,0.03);
+  z-index: 6;
+}
+.device-mockup {
+  background: var(--bg-tertiary, #fafafa);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 24px;
+  overflow: hidden;
+}
+.device-screen {
+  width: 302px;
+  height: 656px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Status bar ── */
+.phone-status {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 44px;
+  padding: 14px 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary, #181d27);
+  z-index: 5;
+}
+.phone-status-icons { display: flex; gap: 3px; align-items: center; }
+.phone-status-icons svg { width: 12px; height: 12px; }
+
+/* ── Screen scroll ── */
+.screen-scroll {
+  width: 100%; height: 100%;
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.screen-scroll::-webkit-scrollbar { display: none; }
+
+/* ── Sky background ── */
+.screen-sky-alt {
+  background: var(--bg-sky, #e0f2fe);
+  width: 100%;
+  min-height: 100%;
+}
+
+/* ── Toolbar ── */
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 44px 10px 6px;
+  position: relative;
+  z-index: 3;
+}
+.toolbar-trailing { display: flex; align-items: center; gap: 4px; }
+.btn-util {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 7px;
+  background: var(--bg-primary, #ffffff);
+  border: 1.5px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink: 0;
+}
+.btn-util-with-label { gap: 4px; padding-right: 10px; }
+.btn-util-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 12px; line-height: 1;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-secondary, #414651);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.tf-icon {
+  font-family: 'TossFace', sans-serif;
+  font-size: 16px; line-height: 1;
+  width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Grass + character ── */
+.grass-container { width: 100%; position: relative; }
+.grass-edge {
+  height: 18px;
+  background: var(--bg-grass, #86cb3c);
+  border-radius: 18px 18px 0 0;
+}
+.grass-fill {
+  background: var(--bg-grass, #86cb3c);
+  width: 100%;
+  padding-bottom: 24px;
+}
+.rive-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -40px;
+  margin-bottom: -20px;
+  position: relative;
+  z-index: 2;
+}
+.rive-canvas { width: 200px; height: 200px; pointer-events: none; }
+
+/* ── Progress section ── */
+.progress-section { padding: 0 12px; position: relative; z-index: 3; }
+.progress-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.progress-title {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 14px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  line-height: 20px;
+}
+.progress-controls { display: flex; gap: 4px; }
+.btn-util-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 8px;
+  background: var(--bg-primary, #ffffff);
+  border: 1.5px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 1.5px 0 0 var(--gray-200, #e9eaeb);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-secondary, #414651);
+  flex-shrink: 0;
+}
+.btn-util-sm .tf-sm {
+  font-family: 'TossFace', sans-serif;
+  font-size: 11px; line-height: 1;
+}
+
+/* ── Task list ── */
+.task-list { padding: 0 12px 32px; position: relative; z-index: 3; }
+
+/* Section headers */
+.section-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 9px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-tertiary, #535862);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 0 4px;
+}
+
+/* ── Task row ── */
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.task-row:active { background: var(--gray-50, #fafafa); }
+.task-emoji-box {
+  width: 36px; height: 36px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.task-emoji-box .tf-task {
+  font-family: 'TossFace', sans-serif;
+  font-size: 20px; line-height: 1;
+}
+
+/* Emoji box colors */
+.emoji-brand { background: var(--brand-500, #0ba5ec); }
+.emoji-orange { background: var(--orange-500, #ef6820); }
+.emoji-violet { background: var(--violet-500, #875bf7); }
+.emoji-green { background: var(--green-500, #17b26a); }
+.emoji-blue-dark { background: var(--blue-dark-500, #2970ff); }
+/* ── Emoji box status badge overlay ── */
+.task-emoji-box {
+  position: relative;
+}
+.emoji-status-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 16px;
+  height: 16px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.task-info { flex: 1; min-width: 0; }
+.task-name {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  line-height: 16px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.task-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 10px;
+  color: var(--text-tertiary, #535862);
+  line-height: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Right side: badges */
+.task-trailing {
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+.task-badges { display: flex; align-items: center; gap: 5px; }
+.task-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 9px;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-quaternary, #717680);
+  line-height: 1;
+}
+.task-badge .tf-badge {
+  font-family: 'TossFace', sans-serif;
+  font-size: 10px; line-height: 1;
+}
+
+/* ── Row state modifiers ── */
+.task-row-reviewing { cursor: default; }
+.task-row-reviewing:active { background: var(--bg-primary, #ffffff); }
+.task-row-claimed { cursor: default; }
+.task-row-claimed:active { background: var(--bg-primary, #ffffff); }
+
+/* ── Cards ── */
+.task-card-rejected {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 10px;
+  margin-bottom: 5px;
+  overflow: hidden;
+}
+.task-card-rejected .task-row { margin-bottom: 0; border: none; border-radius: 0; cursor: default; }
+.task-card-rejected .task-row:active { background: var(--bg-primary, #ffffff); }
+
+.task-card-claim {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 10px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(10,13,18,0.06);
+}
+.task-card-claim .task-row { margin-bottom: 0; border: none; border-radius: 0; cursor: default; }
+.task-card-claim .task-row:active { background: var(--bg-primary, #ffffff); }
+
+/* ── Task action area ── */
+.task-action-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  background: var(--bg-secondary, #fafafa);
+  border-radius: 0 0 10px 10px;
+}
+.action-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 10px;
+  color: var(--text-secondary, #414651);
+  line-height: 14px;
+  text-align: center;
+}
+.action-label strong {
+  color: var(--text-primary, #181d27);
+}
+
+/* ── btn-sprout system ── */
+.btn-sprout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-bold, 700);
+  border: none;
+  cursor: pointer;
+  gap: var(--spacing-sm, 6px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-radius: var(--radius-2xl, 16px);
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  user-select: none;
+  white-space: nowrap;
+}
+.btn-sm { height: 32px; font-size: 11px; }
+.btn-secondary {
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+.btn-secondary:active {
+  box-shadow: none;
+  transform: translateY(3px);
+}
+.btn-sprout .tf-claim {
+  font-family: 'TossFace', sans-serif;
+  font-size: 11px; line-height: 1;
+}
+
+.flame-muted { filter: grayscale(1) brightness(2); }
+
+/* ── Home indicator ── */
+.home-indicator {
+  position: absolute;
+  bottom: 6px; left: 50%;
+  transform: translateX(-50%);
+  width: 108px; height: 4px;
+  background: black;
+  border-radius: 100px;
+  z-index: 10;
+}
+
+/* ══════════════════════════════════════════ */
+/* MOCKUP-SPECIFIC: badge fix + shadow       */
+/* ══════════════════════════════════════════ */
+
+/* Badge fix: number span reserves 3-digit width */
+.with-badge-fix .badge-num {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  min-width: 18px;
+  text-align: left;
+}
+
+/* XS shadow on task row inside cards */
+.with-card-shadow .task-card-rejected .task-row,
+.with-card-shadow .task-card-claim .task-row {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
+}
+
+/* ══════════════════════════════════════════ */
+/* PAGE LAYOUT                                */
+/* ══════════════════════════════════════════ */
+.viewer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 40px;
+  margin-top: var(--spacing-5xl, 40px);
+  flex-wrap: wrap;
+}
+.device-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.device-col-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 13px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  text-align: center;
+}
+.device-col-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 11px;
+  color: var(--text-tertiary, #535862);
+  text-align: center;
+  max-width: 300px;
+  line-height: 16px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="sec-title">Task Row State Mockups</div>
+      <div class="sec-desc">Side-by-side comparison in context. Both have: emoji status badges (dots for reviewing, check for claimed) + btn-secondary. Differences are badge alignment and card shadow.</div>
+
+      <div class="viewer">
+
+        <!-- ═══════════ LEFT: CURRENT (no badge fix, no shadow) ═══════════ -->
+        <div class="device-col">
+          <div class="device-col-label">Current</div>
+          <div class="device-col-desc">No badge fix, no card shadow</div>
+          <div class="device-wrapper">
+            <div class="device-inner-shadow">
+              <div class="device-mockup">
+                <div class="device-screen">
+                  <div class="phone-status">
+                    <span>9:41</span>
+                    <div class="phone-status-icons">
+                      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
+                    </div>
+                  </div>
+                  <div class="screen-scroll">
+                    <div class="screen-sky-alt">
+                      <div class="toolbar">
+                        <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
+                        <div class="toolbar-trailing">
+                          <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+                          <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
+                          <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+                        </div>
+                      </div>
+                      <div class="grass-container">
+                        <div class="grass-edge"></div>
+                        <div class="grass-fill">
+                          <div class="rive-wrap">
+                            <canvas class="rive-canvas" width="400" height="400"></canvas>
+                          </div>
+                          <div class="progress-section">
+                            <div class="progress-header">
+                              <span class="progress-title">5 tasks left today!</span>
+                              <div class="progress-controls">
+                                <div class="btn-util-sm"><span class="tf-sm">&#x1F50D;</span></div>
+                                <div class="btn-util-sm"><span class="tf-sm">&#x2B50;</span> Sort</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="task-list">
+                            <div class="section-label">Earlier Today</div>
+                            <!-- Not Started -->
+                            <div class="task-row">
+                              <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F4AC;</span></div>
+                              <div class="task-info">
+                                <div class="task-name">Talk to Sprout</div>
+                                <div class="task-desc">Chat with Sprout about your day</div>
+                              </div>
+                              <div class="task-trailing">
+                                <div class="task-badges">
+                                  <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span>3</span>
+                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span>10</span>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Rejected -->
+                            <div class="task-card-rejected">
+                              <div class="task-row">
+                                <div class="task-emoji-box emoji-orange">
+                                  <span class="tf-task">&#x1FAE7;</span>
+                                  <span class="emoji-status-badge">&#x274E;</span>
+                                </div>
+                                <div class="task-info">
+                                  <div class="task-name">Brush Teeth</div>
+                                  <div class="task-desc">Photo wasn't clear enough</div>
+                                </div>
+                                <div class="task-trailing">
+                                  <div class="task-badges">
+                                    <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span>5</span>
+                                    <span class="task-badge"><span class="tf-badge">&#x1F48E;</span>5</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="task-action-area">
+                                <span class="action-label">Take a new photo to complete this task</span>
+                                <button class="btn-sprout btn-secondary btn-sm">Try Again</button>
+                              </div>
+                            </div>
+                            <div class="section-label">Up Next</div>
+                            <!-- Reviewing — status badge overlay -->
+                            <div class="task-row task-row-reviewing">
+                              <div class="task-emoji-box emoji-violet">
+                                <span class="tf-task">&#x1F4D6;</span>
+                                <span class="emoji-status-badge">&#x1F504;</span>
+                              </div>
+                              <div class="task-info">
+                                <div class="task-name">Read for 20 min</div>
+                                <div class="task-desc">Reviewing...</div>
+                              </div>
+                              <div class="task-trailing">
+                                <div class="task-badges">
+                                  <span class="task-badge"><span class="tf-badge">&#x1F525;</span>7</span>
+                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span>15</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="section-label">Anytime</div>
+                            <!-- Claimable -->
+                            <div class="task-card-claim">
+                              <div class="task-row">
+                                <div class="task-emoji-box emoji-green">
+                                  <span class="tf-task">&#x1F4A7;</span>
+                                  <span class="emoji-status-badge">&#x2705;</span>
+                                </div>
+                                <div class="task-info">
+                                  <div class="task-name">Drink Water</div>
+                                  <div class="task-desc">Completed, ready to claim!</div>
+                                </div>
+                                <div class="task-trailing">
+                                  <div class="task-badges">
+                                    <span class="task-badge"><span class="tf-badge">&#x1F525;</span>10</span>
+                                    <span class="task-badge"><span class="tf-badge">&#x1F48E;</span>5</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="task-action-area">
+                                <span class="action-label">Task complete, claim your reward!</span>
+                                <button class="btn-sprout btn-secondary btn-sm"><span class="tf-claim">&#x1F48E;</span> Claim</button>
+                              </div>
+                            </div>
+                            <!-- Claimed — green check badge -->
+                            <div class="task-row task-row-claimed">
+                              <div class="task-emoji-box emoji-blue-dark">
+                                <span class="tf-task">&#x1F3B9;</span>
+                                <span class="emoji-status-badge">&#x2705;</span>
+                              </div>
+                              <div class="task-info">
+                                <div class="task-name">Practice Piano</div>
+                                <div class="task-desc">Practice piano for 15 minutes</div>
+                              </div>
+                              <div class="task-trailing">
+                                <div class="task-badges">
+                                  <span class="task-badge"><span class="tf-badge">&#x1F525;</span>12</span>
+                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span>20</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="home-indicator"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════ RIGHT: WITH FIXES (badge fix + XS shadow) ═══════════ -->
+        <div class="device-col">
+          <div class="device-col-label">With Fixes</div>
+          <div class="device-col-desc">3-digit badge min-width + XS card shadow</div>
+          <div class="device-wrapper">
+            <div class="device-inner-shadow">
+              <div class="device-mockup">
+                <div class="device-screen with-badge-fix with-card-shadow">
+                  <div class="phone-status">
+                    <span>9:41</span>
+                    <div class="phone-status-icons">
+                      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
+                    </div>
+                  </div>
+                  <div class="screen-scroll">
+                    <div class="screen-sky-alt">
+                      <div class="toolbar">
+                        <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
+                        <div class="toolbar-trailing">
+                          <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+                          <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
+                          <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+                        </div>
+                      </div>
+                      <div class="grass-container">
+                        <div class="grass-edge"></div>
+                        <div class="grass-fill">
+                          <div class="rive-wrap">
+                            <canvas class="rive-canvas" width="400" height="400"></canvas>
+                          </div>
+                          <div class="progress-section">
+                            <div class="progress-header">
+                              <span class="progress-title">5 tasks left today!</span>
+                              <div class="progress-controls">
+                                <div class="btn-util-sm"><span class="tf-sm">&#x1F50D;</span></div>
+                                <div class="btn-util-sm"><span class="tf-sm">&#x2B50;</span> Sort</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="task-list">
+                            <div class="section-label">Earlier Today</div>
+                            <!-- Not Started -->
+                            <div class="task-row">
+                              <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F4AC;</span></div>
+                              <div class="task-info">
+                                <div class="task-name">Talk to Sprout</div>
+                                <div class="task-desc">Chat with Sprout about your day</div>
+                              </div>
+                              <div class="task-trailing">
+                                <div class="task-badges">
+                                  <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
+                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Rejected -->
+                            <div class="task-card-rejected">
+                              <div class="task-row">
+                                <div class="task-emoji-box emoji-orange">
+                                  <span class="tf-task">&#x1FAE7;</span>
+                                  <span class="emoji-status-badge">&#x274E;</span>
+                                </div>
+                                <div class="task-info">
+                                  <div class="task-name">Brush Teeth</div>
+                                  <div class="task-desc">Photo wasn't clear enough</div>
+                                </div>
+                                <div class="task-trailing">
+                                  <div class="task-badges">
+                                    <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">5</span></span>
+                                    <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="task-action-area">
+                                <span class="action-label">Take a new photo to complete this task</span>
+                                <button class="btn-sprout btn-secondary btn-sm">Try Again</button>
+                              </div>
+                            </div>
+                            <div class="section-label">Up Next</div>
+                            <!-- Reviewing — status badge overlay -->
+                            <div class="task-row task-row-reviewing">
+                              <div class="task-emoji-box emoji-violet">
+                                <span class="tf-task">&#x1F4D6;</span>
+                                <span class="emoji-status-badge">&#x1F504;</span>
+                              </div>
+                              <div class="task-info">
+                                <div class="task-name">Read for 20 min</div>
+                                <div class="task-desc">Reviewing...</div>
+                              </div>
+                              <div class="task-trailing">
+                                <div class="task-badges">
+                                  <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">7</span></span>
+                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="section-label">Anytime</div>
+                            <!-- Claimable -->
+                            <div class="task-card-claim">
+                              <div class="task-row">
+                                <div class="task-emoji-box emoji-green">
+                                  <span class="tf-task">&#x1F4A7;</span>
+                                  <span class="emoji-status-badge">&#x2705;</span>
+                                </div>
+                                <div class="task-info">
+                                  <div class="task-name">Drink Water</div>
+                                  <div class="task-desc">Completed, ready to claim!</div>
+                                </div>
+                                <div class="task-trailing">
+                                  <div class="task-badges">
+                                    <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">10</span></span>
+                                    <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="task-action-area">
+                                <span class="action-label">Task complete, claim your reward!</span>
+                                <button class="btn-sprout btn-secondary btn-sm"><span class="tf-claim">&#x1F48E;</span> Claim</button>
+                              </div>
+                            </div>
+                            <!-- Claimed — green check badge -->
+                            <div class="task-row task-row-claimed">
+                              <div class="task-emoji-box emoji-blue-dark">
+                                <span class="tf-task">&#x1F3B9;</span>
+                                <span class="emoji-status-badge">&#x2705;</span>
+                              </div>
+                              <div class="task-info">
+                                <div class="task-name">Practice Piano</div>
+                                <div class="task-desc">Practice piano for 15 minutes</div>
+                              </div>
+                              <div class="task-trailing">
+                                <div class="task-badges">
+                                  <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
+                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="home-indicator"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /viewer -->
+
+    </div>
+  </div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Home',href:'/product-explorer/task/home.html'},{label:'Home (Older)',href:'/product-explorer/task/home-older.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

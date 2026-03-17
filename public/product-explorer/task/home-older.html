@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer — Home (Older)</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+/* ── Device frame ── */
+.device-wrapper {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 32px;
+  padding: 4px;
+  box-shadow:
+    0 12px 16px -4px rgba(10,13,18,0.08),
+    0 4px 6px -2px rgba(10,13,18,0.03),
+    0 2px 2px -1px rgba(10,13,18,0.04);
+}
+.device-inner-shadow {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 28px;
+  padding: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.device-inner-shadow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 6px 2px rgba(10,13,18,0.08),
+    inset 0 0 4px 2px rgba(10,13,18,0.03);
+  z-index: 6;
+}
+.device-mockup {
+  background: var(--bg-tertiary, #fafafa);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 24px;
+  clip-path: inset(0 round 24px);
+  position: relative;
+}
+.device-screen {
+  width: 302px;
+  height: 656px;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.device-screen::-webkit-scrollbar { display: none; }
+
+/* ── Status bar ── */
+.phone-status {
+  height: 44px;
+  padding: 14px 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary, #181d27);
+}
+.phone-status-icons { display: flex; gap: 3px; align-items: center; }
+.phone-status-icons svg { width: 12px; height: 12px; }
+
+/* ── Sky background ── */
+.screen-sky-alt {
+  background: var(--bg-sky, #e0f2fe);
+  width: 100%;
+  min-height: 100%;
+}
+
+/* ── Toolbar ── */
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+.toolbar-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  transition:
+    background 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  -webkit-backdrop-filter: blur(0px);
+  backdrop-filter: blur(0px);
+}
+.toolbar-wrap.toolbar-sky,
+.toolbar-wrap.toolbar-grass {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+.toolbar-wrap.toolbar-sky {
+  background: rgba(224, 242, 254, 0.8);
+}
+.toolbar-wrap.toolbar-grass {
+  background: rgba(134, 203, 60, 0.8);
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px 6px;
+}
+.toolbar-trailing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-util {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 7px;
+  background: var(--bg-primary, #ffffff);
+  border: 1.5px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink: 0;
+}
+.btn-util-with-label { gap: 4px; padding-right: 10px; }
+.btn-util-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-secondary, #414651);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.tf-icon {
+  font-family: 'TossFace', sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Grass (absolute, pinned to bottom of scroll content) ── */
+.grass-container {
+  width: 100%;
+}
+.grass-edge {
+  height: 18px;
+  background: var(--bg-grass, #86cb3c);
+  border-radius: 18px 18px 0 0;
+}
+.grass-fill {
+  background: var(--bg-grass, #86cb3c);
+  width: 100%;
+  padding-bottom: 0;
+}
+/* ── Character (absolute, feet on grass edge) ── */
+.rive-wrap {
+  position: absolute;
+  left: 50%;
+  width: 302px;
+  height: 302px;
+  z-index: 2;
+  pointer-events: none;
+  transform: translateX(-50%) scale(1.25);
+  transform-origin: bottom center;
+}
+.rive-canvas {
+  width: 302px;
+  height: 302px;
+}
+
+/* ── Progress section ── */
+.progress-section {
+  padding: 48px 12px 0;
+  position: relative;
+  z-index: 3;
+}
+.progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.progress-title {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 14px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  line-height: 20px;
+}
+.progress-controls {
+  display: flex;
+  gap: 4px;
+}
+.btn-util-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 8px;
+  background: var(--bg-primary, #ffffff);
+  border: 1.5px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 1.5px 0 0 var(--gray-200, #e9eaeb);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-secondary, #414651);
+  flex-shrink: 0;
+}
+.btn-util-sm .tf-sm {
+  font-family: 'TossFace', sans-serif;
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* ── Task list ── */
+.task-list {
+  padding: 0 12px 32px;
+  position: relative;
+  z-index: 3;
+}
+
+/* Section headers */
+.section-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 9px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-tertiary, #535862);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 0 4px;
+}
+
+/* ── Task row (notification style — tappable, no action buttons) ── */
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.task-row:active {
+  background: var(--gray-50, #fafafa);
+}
+.task-emoji-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+/* Emoji status badge overlay */
+.emoji-status-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 16px;
+  height: 16px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+}
+.task-emoji-box .tf-task {
+  font-family: 'TossFace', sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Emoji box color variants — match kids card solids */
+.emoji-brand { background: var(--brand-500, #0ba5ec); }
+.emoji-orange { background: var(--orange-500, #ef6820); }
+.emoji-violet { background: var(--violet-500, #875bf7); }
+.emoji-green { background: var(--green-500, #17b26a); }
+.emoji-blue-dark { background: var(--blue-dark-500, #2970ff); }
+
+.task-info {
+  flex: 1;
+  min-width: 0;
+}
+.task-name {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-time {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 9px;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-quaternary, #717680);
+  line-height: 12px;
+}
+.task-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 10px;
+  color: var(--text-tertiary, #535862);
+  line-height: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right side: badges + inline status */
+.task-trailing {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.task-badges {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.task-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 9px;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-quaternary, #717680);
+  line-height: 1;
+}
+.badge-num {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  min-width: 18px;
+  text-align: left;
+}
+.task-badge .tf-badge {
+  font-family: 'TossFace', sans-serif;
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* Row state modifiers */
+.task-row-reviewing {
+  cursor: default;
+}
+.task-row-reviewing:active {
+  background: var(--bg-primary, #ffffff);
+}
+.task-row-claimed {
+  cursor: default;
+}
+.task-row-claimed:active {
+  background: var(--bg-primary, #ffffff);
+}
+
+/* ── Rejected card — iOS Live Activity style ── */
+.task-card-rejected {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 10px;
+  margin-bottom: 5px;
+  overflow: hidden;
+}
+.task-card-rejected .task-row {
+  margin-bottom: 0;
+  border: none;
+  border-radius: 0;
+  cursor: default;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
+}
+.task-card-rejected .task-row:active {
+  background: var(--bg-primary, #ffffff);
+}
+/* ── Task action area (unified component) ── */
+.task-action-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  background: var(--bg-secondary, #fafafa);
+  border-radius: 0 0 10px 10px;
+}
+.action-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 10px;
+  color: var(--text-secondary, #414651);
+  line-height: 14px;
+  text-align: center;
+}
+/* ── btn-sprout system ── */
+.btn-sprout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-bold, 700);
+  border: none;
+  cursor: pointer;
+  gap: var(--spacing-sm, 6px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-radius: var(--radius-2xl, 16px);
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  user-select: none;
+  white-space: nowrap;
+}
+.btn-sm { height: 32px; font-size: 11px; }
+.btn-secondary {
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+.btn-secondary:active {
+  box-shadow: none;
+  transform: translateY(3px);
+}
+
+/* ── Claimable card — iOS Live Activity style ── */
+.task-card-claim {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 10px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(10,13,18,0.06);
+}
+.task-card-claim .task-row {
+  margin-bottom: 0;
+  border: none;
+  border-radius: 0;
+  cursor: default;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
+}
+.task-card-claim .task-row:active {
+  background: var(--bg-primary, #ffffff);
+}
+.action-label strong {
+  color: var(--text-primary, #181d27);
+  line-height: 14px;
+  text-align: center;
+}
+.btn-sprout .tf-claim {
+  font-family: 'TossFace', sans-serif;
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* Claimed transition for the card */
+.task-card-claimed .task-action-area {
+  padding: 10px;
+}
+.task-card-claimed .action-label {
+  color: var(--green-600, #079455);
+  font-weight: var(--font-weight-semibold, 600);
+}
+.task-card-claimed {
+  opacity: 1;
+}
+
+/* ── Done stack (iOS notification style) ── */
+.done-stack {
+  position: relative;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+.done-stack-items {
+  position: relative;
+}
+/* All cards share transition */
+.done-stack-items .task-row {
+  transition:
+    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+    margin-bottom 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  margin-bottom: 0;
+}
+/* Collapsed: thin strips peeking below */
+.done-stack.collapsed .done-stack-items {
+  padding-bottom: 0;
+}
+.done-stack.collapsed .done-stack-items .task-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.done-stack.collapsed .done-stack-items .task-row:nth-child(1) {
+  position: relative;
+  pointer-events: auto;
+  z-index: 3;
+  border-radius: 10px;
+  margin-bottom: 0;
+}
+.done-stack.collapsed .done-stack-items .task-row:nth-child(2) {
+  top: 100%;
+  bottom: auto;
+  z-index: 2;
+  height: 5px;
+  min-height: 0;
+  padding: 0;
+  transform: translateY(0);
+  margin-left: 6px;
+  margin-right: 6px;
+  border-radius: 0 0 8px 8px;
+  opacity: 0.7;
+}
+.done-stack.collapsed .done-stack-items .task-row:nth-child(3) {
+  top: 100%;
+  bottom: auto;
+  z-index: 1;
+  height: 5px;
+  min-height: 0;
+  padding: 0;
+  transform: translateY(5px);
+  margin-left: 12px;
+  margin-right: 12px;
+  border-radius: 0 0 6px 6px;
+  opacity: 0.45;
+}
+.done-stack.collapsed .done-stack-items .task-row:nth-child(n+4) {
+  opacity: 0;
+  transform: translateY(calc(100% + 5px));
+}
+.done-stack.collapsed .done-stack-items .task-row:nth-child(2) *,
+.done-stack.collapsed .done-stack-items .task-row:nth-child(3) * {
+  visibility: hidden;
+}
+/* Expanded: normal flow */
+.done-stack.expanded .done-stack-items {
+  padding-bottom: 0;
+}
+.done-stack.expanded .done-stack-items .task-row {
+  position: relative;
+  pointer-events: auto;
+  transform: none;
+  opacity: 1;
+  z-index: auto;
+  margin-bottom: 5px;
+  height: auto;
+  min-height: 0;
+  padding: 8px 10px;
+  margin-left: 0;
+  margin-right: 0;
+  border-radius: 10px;
+  overflow: visible;
+}
+.done-stack.expanded .done-stack-items .task-row * {
+  visibility: visible;
+}
+/* Chevron toggle */
+.done-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.done-toggle-chevron {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  color: var(--text-tertiary, #535862);
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.done-toggle-chevron.expanded {
+  transform: rotate(180deg);
+}
+
+/* Flame muted for non-active streaks */
+.flame-muted {
+  filter: grayscale(1) brightness(2);
+}
+
+/* ── Home indicator ── */
+.home-indicator {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 108px;
+  height: 4px;
+  background: black;
+  border-radius: 100px;
+  z-index: 10;
+}
+
+/* ── Layout ── */
+.viewer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--spacing-5xl, 40px);
+}
+
+/* ── Legend ── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg, 12px) var(--spacing-3xl, 24px);
+  justify-content: center;
+  margin-top: var(--spacing-xl, 16px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full, 9999px);
+  flex-shrink: 0;
+}
+
+/* ── Reset button ── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-xl, 16px);
+}
+.page-header-text { flex: 1; }
+.btn-reset {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  background: var(--bg-primary, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-tertiary, #535862);
+  transition: all 0.15s;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.btn-reset:hover {
+  border-color: var(--border-primary, #d5d7da);
+  color: var(--text-primary, #181d27);
+}
+.btn-reset svg { width: 20px; height: 20px; }
+
+/* ── Gem claim animation ── */
+.gem-particle {
+  position: absolute;
+  font-family: 'TossFace', sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 20;
+  will-change: transform, opacity;
+}
+
+@keyframes gem-counter-glow {
+  0% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0.5); }
+  50% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 5px rgba(11,165,236,0.25); }
+  100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
+}
+.gem-counter-glow {
+  animation: gem-counter-glow 0.35s ease-out;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="page-header">
+        <div class="page-header-text">
+          <div class="sec-title">Home (Older)</div>
+          <div class="sec-desc">Older kid home screen — inbox-style task list with grouped sections, streak and gem badges, and colored emoji containers.</div>
+        </div>
+        <button class="btn-reset" id="reset-btn" aria-label="Reset prototype">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        </button>
+      </div>
+
+      <div class="viewer">
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen">
+                <div class="screen-sky-alt">
+
+                    <!-- Toolbar -->
+                    <div class="toolbar-wrap" id="toolbar-wrap">
+                      <div class="phone-status">
+                        <span>9:41</span>
+                        <div class="phone-status-icons">
+                          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
+                          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
+                          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
+                        </div>
+                      </div>
+                      <div class="toolbar">
+                        <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
+                        <div class="toolbar-trailing">
+                          <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+                          <div class="btn-util btn-util-with-label" id="gem-counter"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label" id="gem-counter-label">100</span></div>
+                          <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Grass with character -->
+                    <div class="grass-container" style="position: relative;">
+                      <!-- Sky spacer (pushes grass down to show sky) -->
+                      <div class="sky-spacer" style="height: 192px; position: relative;">
+                        <!-- Character — absolute, feet on grass edge -->
+                        <div class="rive-wrap" style="position: absolute; bottom: -112px;">
+                          <canvas id="rive-character" class="rive-canvas" width="302" height="302"></canvas>
+                        </div>
+                      </div>
+
+                      <div class="grass-edge"></div>
+                      <div class="grass-fill">
+
+                        <!-- Progress section -->
+                        <div class="progress-section">
+                          <div class="progress-header">
+                            <span class="progress-title">8 tasks left today!</span>
+                          </div>
+                        </div>
+
+                        <!-- Task list -->
+                        <div class="task-list">
+
+                          <!-- ── EARLIER TODAY ── -->
+                          <div class="section-label">Earlier Today</div>
+
+                          <!-- 3: Read for 20 min — Reviewing (Violet) 3:30 PM -->
+                          <div class="task-row task-row-reviewing">
+                            <div class="task-emoji-box emoji-violet">
+                              <span class="tf-task">&#x1F4D6;</span>
+                              <span class="emoji-status-badge">&#x1F504;</span>
+                            </div>
+                            <div class="task-info">
+                              <div class="task-time">3:30 PM</div>
+                              <div class="task-name">Read for 20 min</div>
+                              <div class="task-desc">Reviewing...</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">7</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- 4: Homework — Rejected (Blue Dark) 4:00 PM -->
+                          <div class="task-card-rejected" id="task-2">
+                            <div class="task-row">
+                              <div class="task-emoji-box emoji-blue-dark">
+                                <span class="tf-task">&#x1F4DD;</span>
+                                <span class="emoji-status-badge">&#x274E;</span>
+                              </div>
+                              <div class="task-info">
+                                <div class="task-time">4:00 PM</div>
+                                <div class="task-name">Homework</div>
+                                <div class="task-desc">Photo wasn't clear enough</div>
+                              </div>
+                              <div class="task-trailing">
+                                <div class="task-badges">
+                                  <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">5</span></span>
+                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="task-action-area">
+                              <span class="action-label">Take a new photo to complete this task</span>
+                              <button class="btn-sprout btn-secondary btn-sm">Try Again</button>
+                            </div>
+                          </div>
+
+                          <!-- 5: Practice Piano — Claimable (Brand) 4:30 PM -->
+                          <div class="task-card-claim" id="task-4">
+                            <div class="task-row">
+                              <div class="task-emoji-box emoji-brand">
+                                <span class="tf-task">&#x1F3B9;</span>
+                                <span class="emoji-status-badge">&#x2705;</span>
+                              </div>
+                              <div class="task-info">
+                                <div class="task-time">4:30 PM</div>
+                                <div class="task-name">Practice Piano</div>
+                                <div class="task-desc">Completed, ready to claim!</div>
+                              </div>
+                              <div class="task-trailing">
+                                <div class="task-badges">
+                                  <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
+                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="task-action-area" id="claim-area">
+                              <span class="action-label">Task complete, claim your reward!</span>
+                              <button class="btn-sprout btn-secondary btn-sm" id="claim-btn"><span class="tf-claim">&#x1F48E;</span> Claim</button>
+                            </div>
+                          </div>
+
+                          <!-- ── NOW ── -->
+                          <div class="section-label">Now</div>
+
+                          <!-- 6: Talk to Sprout — Not Started (Brand) 5:00 PM -->
+                          <div class="task-row" id="task-1">
+                            <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F4AC;</span></div>
+                            <div class="task-info">
+                              <div class="task-time">5:00 PM</div>
+                              <div class="task-name">Talk to Sprout</div>
+                              <div class="task-desc">Chat with Sprout about your day</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- ── UP NEXT ── -->
+                          <div class="section-label">Up Next</div>
+
+                          <!-- 7: Brush Teeth (PM) — Not Started (Orange) 8:00 PM -->
+                          <div class="task-row">
+                            <div class="task-emoji-box emoji-orange"><span class="tf-task">&#x1FAE7;</span></div>
+                            <div class="task-info">
+                              <div class="task-time">8:00 PM</div>
+                              <div class="task-name">Brush Teeth</div>
+                              <div class="task-desc">Evening brushing before bed</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">8</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- 8: Pack Backpack — Not Started (Violet) 8:30 PM -->
+                          <div class="task-row">
+                            <div class="task-emoji-box emoji-violet"><span class="tf-task">&#x1F392;</span></div>
+                            <div class="task-info">
+                              <div class="task-time">8:30 PM</div>
+                              <div class="task-name">Pack Backpack</div>
+                              <div class="task-desc">Get ready for tomorrow</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">2</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- ── ANYTIME ── -->
+                          <div class="section-label">Anytime</div>
+
+                          <!-- 9: Drink Water — Not Started (Green) -->
+                          <div class="task-row">
+                            <div class="task-emoji-box emoji-green"><span class="tf-task">&#x1F4A7;</span></div>
+                            <div class="task-info">
+                              <div class="task-name">Drink Water</div>
+                              <div class="task-desc">Drink 4 glasses today</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">10</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- 10: Tidy Room — Not Started (Green) -->
+                          <div class="task-row">
+                            <div class="task-emoji-box emoji-green"><span class="tf-task">&#x1F9F9;</span></div>
+                            <div class="task-info">
+                              <div class="task-name">Tidy Room</div>
+                              <div class="task-desc">Pick up clothes and toys</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">4</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- 11: Go Outside — Reviewing (Brand) -->
+                          <div class="task-row task-row-reviewing">
+                            <div class="task-emoji-box emoji-brand">
+                              <span class="tf-task">&#x1F3DE;&#xFE0F;</span>
+                              <span class="emoji-status-badge">&#x1F504;</span>
+                            </div>
+                            <div class="task-info">
+                              <div class="task-name">Go Outside</div>
+                              <div class="task-desc">Reviewing...</div>
+                            </div>
+                            <div class="task-trailing">
+                              <div class="task-badges">
+                                <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">6</span></span>
+                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- 12: Draw Something — Claimable (Violet) -->
+                          <div class="task-card-claim">
+                            <div class="task-row">
+                              <div class="task-emoji-box emoji-violet">
+                                <span class="tf-task">&#x1F3A8;</span>
+                                <span class="emoji-status-badge">&#x2705;</span>
+                              </div>
+                              <div class="task-info">
+                                <div class="task-name">Draw Something</div>
+                                <div class="task-desc">Completed, ready to claim!</div>
+                              </div>
+                              <div class="task-trailing">
+                                <div class="task-badges">
+                                  <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">3</span></span>
+                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="task-action-area">
+                              <span class="action-label">Task complete, claim your reward!</span>
+                              <button class="btn-sprout btn-secondary btn-sm"><span class="tf-claim">&#x1F48E;</span> Claim</button>
+                            </div>
+                          </div>
+
+                          <!-- ── DONE (stacked, bottom) ── -->
+                          <div class="section-label done-toggle" id="done-toggle">Done <svg class="done-toggle-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5l3 3 3-3"/></svg></div>
+
+                          <div class="done-stack collapsed" id="done-stack">
+                            <div class="done-stack-items">
+                              <!-- Most recent on top -->
+                              <div class="task-row task-row-claimed">
+                                <div class="task-emoji-box emoji-brand">
+                                  <span class="tf-task">&#x1F4D6;</span>
+                                  <span class="emoji-status-badge">&#x2705;</span>
+                                </div>
+                                <div class="task-info">
+                                  <div class="task-time">8:00 AM</div>
+                                  <div class="task-name">Morning Reading</div>
+                                  <div class="task-desc">Read for 15 minutes</div>
+                                </div>
+                                <div class="task-trailing">
+                                  <div class="task-badges">
+                                    <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">7</span></span>
+                                    <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="task-row task-row-claimed">
+                                <div class="task-emoji-box emoji-orange">
+                                  <span class="tf-task">&#x1FAE7;</span>
+                                  <span class="emoji-status-badge">&#x2705;</span>
+                                </div>
+                                <div class="task-info">
+                                  <div class="task-time">7:15 AM</div>
+                                  <div class="task-name">Brush Teeth</div>
+                                  <div class="task-desc">Morning brushing</div>
+                                </div>
+                                <div class="task-trailing">
+                                  <div class="task-badges">
+                                    <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">8</span></span>
+                                    <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="task-row task-row-claimed">
+                                <div class="task-emoji-box emoji-green">
+                                  <span class="tf-task">&#x1F6CF;&#xFE0F;</span>
+                                  <span class="emoji-status-badge">&#x2705;</span>
+                                </div>
+                                <div class="task-info">
+                                  <div class="task-time">7:00 AM</div>
+                                  <div class="task-name">Make Bed</div>
+                                  <div class="task-desc">Tidy up your bed before school</div>
+                                </div>
+                                <div class="task-trailing">
+                                  <div class="task-badges">
+                                    <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">15</span></span>
+                                    <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div><!-- /task-list -->
+                      </div><!-- /grass-fill -->
+                    </div><!-- /grass-container -->
+                  </div><!-- /screen-sky-alt -->
+              </div>
+              <div class="home-indicator"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:var(--green-500)"></span> Not Started</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--orange-500)"></span> Rejected</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--violet-500)"></span> Submitted</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--brand-500)"></span> Claimable</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--blue-dark-500)"></span> Claimed</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Home',href:'/product-explorer/task/home.html'},{label:'Home (Tabs)',href:'/product-explorer/task/home-tabs.html'},{label:'Home (Older)',href:'/product-explorer/task/home-older.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script src="/product-explorer/shell.js"></script>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script>
+(function() {
+  var canvas = document.getElementById('rive-character');
+  if (canvas && window.rive) {
+    var r = new rive.Rive({
+      src: '/design-system/sprout-character.riv',
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: 'State Machine 1',
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.BottomCenter,
+      onLoad: function() {
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs('State Machine 1');
+          if (inputs) inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
+        } catch(e) {}
+      }
+    });
+  }
+
+  // ── Shared helpers ──
+  var gemCounter = document.getElementById('gem-counter');
+  var gemLabel = document.getElementById('gem-counter-label');
+  var deviceScreen = document.querySelector('.device-screen');
+  var doneStack = document.getElementById('done-stack');
+  var doneItems = doneStack ? doneStack.querySelector('.done-stack-items') : null;
+  var ios = 'cubic-bezier(0.32, 0.72, 0, 1)';
+
+  function getRelPos(el) {
+    var r = el.getBoundingClientRect(), s = deviceScreen.getBoundingClientRect();
+    return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height / 2 };
+  }
+
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+  // ── Gem fly animation ──
+  function flyGems(fromEl, reward, onDone) {
+    var from = getRelPos(fromEl), to = getRelPos(gemCounter);
+    var count = Math.min(reward, 8), landed = 0;
+    for (var i = 0; i < count; i++) {
+      (function(idx) {
+        var gem = document.createElement('span');
+        gem.className = 'gem-particle';
+        gem.textContent = '\uD83D\uDC8E';
+        gem.style.left = from.x + 'px';
+        gem.style.top = from.y + 'px';
+        gem.style.opacity = '0';
+        deviceScreen.appendChild(gem);
+        var delay = idx * 60 + Math.random() * 40;
+        var dur = 500 + Math.random() * 200;
+        var sx = (Math.random() - 0.5) * 50, sy = (Math.random() - 0.5) * 25;
+        var mx = (from.x + to.x) / 2 + (Math.random() - 0.5) * 60;
+        var my = Math.min(from.y, to.y) - 20 - Math.random() * 30;
+        var start = null;
+        function tick(ts) {
+          if (!start) start = ts;
+          var el = ts - start - delay;
+          if (el < 0) { requestAnimationFrame(tick); return; }
+          var t = Math.min(el / dur, 1), e = easeOutCubic(t);
+          var fx = from.x + sx * (1 - e), fy = from.y + sy * (1 - e);
+          var bx = (1-e)*(1-e)*fx + 2*(1-e)*e*mx + e*e*to.x;
+          var by = (1-e)*(1-e)*fy + 2*(1-e)*e*my + e*e*to.y;
+          gem.style.transform = 'translate(-50%,-50%) translate('+(bx-from.x)+'px,'+(by-from.y)+'px) scale('+(1-0.4*e)+')';
+          gem.style.opacity = t < 0.1 ? t/0.1 : t > 0.85 ? Math.max(0,1-(t-0.85)/0.15) : 1;
+          if (t < 1) { requestAnimationFrame(tick); }
+          else {
+            gem.remove(); landed++;
+            gemCounter.classList.remove('gem-counter-glow');
+            void gemCounter.offsetWidth;
+            gemCounter.classList.add('gem-counter-glow');
+            if (landed === count) {
+              var cur = parseInt(gemLabel.textContent, 10);
+              gemLabel.textContent = cur + reward;
+              if (onDone) onDone();
+            }
+          }
+        }
+        requestAnimationFrame(tick);
+      })(i);
+    }
+  }
+
+  // ── Claim handler (works for any claim card) ──
+  function handleClaim(card, btn) {
+    var reward = parseInt(btn.textContent.replace(/\D/g,''), 10) || 5;
+    // Get reward from badge
+    var badges = card.querySelectorAll('.badge-num');
+    if (badges.length >= 2) reward = parseInt(badges[1].textContent, 10) || 5;
+
+    flyGems(btn, reward, function() {
+      setTimeout(function() {
+        var actionArea = card.querySelector('.task-action-area');
+        var row = card.querySelector('.task-row');
+        // Collapse action area
+        actionArea.style.transition = 'max-height 0.35s '+ios+', padding 0.35s '+ios+', opacity 0.15s '+ios;
+        actionArea.style.maxHeight = actionArea.offsetHeight + 'px';
+        actionArea.style.overflow = 'hidden';
+        void actionArea.offsetWidth;
+        actionArea.style.opacity = '0';
+        actionArea.style.maxHeight = '0';
+        actionArea.style.padding = '0 10px';
+        // Add check badge
+        var emojiBox = card.querySelector('.task-emoji-box');
+        if (!emojiBox.querySelector('.emoji-status-badge')) {
+          var b = document.createElement('span');
+          b.className = 'emoji-status-badge';
+          b.textContent = '\u2705';
+          emojiBox.appendChild(b);
+        }
+        // Fade shadow
+        row.style.transition = 'box-shadow 0.35s '+ios;
+        row.style.boxShadow = 'none';
+        row.style.cursor = 'default';
+        // After collapse, move to done stack
+        setTimeout(function() {
+          var clonedRow = row.cloneNode(true);
+          clonedRow.classList.add('task-row-claimed');
+          clonedRow.style.marginBottom = '5px';
+          clonedRow.style.borderRadius = '10px';
+          card.remove();
+          // Prepend to done stack
+          if (doneItems) {
+            doneItems.insertBefore(clonedRow, doneItems.firstChild);
+          }
+        }, 370);
+      }, 150);
+    });
+  }
+
+  // ── Attach claim to all claim buttons via delegation ──
+  document.querySelector('.task-list').addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn-sprout');
+    if (!btn) return;
+    var card = btn.closest('.task-card-claim');
+    if (!card || card.dataset.claimed) return;
+    card.dataset.claimed = '1';
+    handleClaim(card, btn);
+  });
+
+  // ── Done stack toggle ──
+  var doneToggle = document.getElementById('done-toggle');
+  var chevron = doneToggle ? doneToggle.querySelector('.done-toggle-chevron') : null;
+  if (doneStack && doneToggle) {
+    function toggleDone() {
+      var isCollapsed = doneStack.classList.contains('collapsed');
+      doneStack.classList.toggle('collapsed', !isCollapsed);
+      doneStack.classList.toggle('expanded', isCollapsed);
+      if (chevron) chevron.classList.toggle('expanded', isCollapsed);
+    }
+    doneToggle.addEventListener('click', toggleDone);
+    doneStack.addEventListener('click', function() {
+      if (doneStack.classList.contains('collapsed')) toggleDone();
+    });
+  }
+
+  // ── Toolbar scroll effect ──
+  var toolbarWrap = document.getElementById('toolbar-wrap');
+  var scrollContainer = document.querySelector('.device-screen');
+  var grassEdge = document.querySelector('.grass-edge');
+  var toolbarH = 56;
+  if (toolbarWrap && scrollContainer && grassEdge) {
+    scrollContainer.addEventListener('scroll', function() {
+      var scrolled = scrollContainer.scrollTop;
+      var grassOffset = grassEdge.offsetTop - scrolled;
+
+      if (grassOffset < toolbarH - 56) {
+        toolbarWrap.classList.remove('toolbar-sky');
+        toolbarWrap.classList.add('toolbar-grass');
+      } else if (scrolled > 10) {
+        toolbarWrap.classList.add('toolbar-sky');
+        toolbarWrap.classList.remove('toolbar-grass');
+      } else {
+        toolbarWrap.classList.remove('toolbar-sky');
+        toolbarWrap.classList.remove('toolbar-grass');
+      }
+    });
+  }
+
+  // ── Reset ──
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

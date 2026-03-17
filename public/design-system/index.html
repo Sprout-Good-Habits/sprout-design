@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System</title>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+.hero { margin-bottom: var(--spacing-6xl, 48px); }
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-2xl, 20px);
+  margin-top: var(--spacing-3xl, 24px);
+}
+.section-card {
+  display: block;
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid var(--gray-200, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  padding: var(--spacing-3xl, 24px);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.section-card:hover {
+  border-color: var(--gray-300, #d5d7da);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  text-decoration: none;
+}
+.section-card-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md, 8px);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.section-card h2 {
+  font-size: var(--font-size-text-lg, 18px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-text-lg, 28px);
+  color: var(--text-primary); margin-bottom: var(--spacing-xs, 4px);
+}
+.section-card p {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-secondary); line-height: var(--line-height-text-sm, 20px);
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.section-card-count {
+  font-size: 12px; font-weight: var(--font-weight-medium, 500);
+  color: var(--text-tertiary);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="hero">
+        <div class="sec-title">Sprout Design System</div>
+        <div class="sec-desc">Design tokens, component patterns, and guidelines for building consistent, playful, and accessible Sprout experiences.</div>
+      </div>
+
+      <div class="section-grid">
+        <a class="section-card" href="/design-system/foundations.html">
+          <div class="section-card-icon" style="background:var(--brand-50);color:var(--brand-600)">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M3 10h14M10 3v14"/></svg>
+          </div>
+          <h2>Foundations</h2>
+          <p>The visual building blocks &mdash; color, typography, spacing, icons, radius, transitions, and logo.</p>
+          <span class="section-card-count">8 items</span>
+        </a>
+        <a class="section-card" href="/design-system/components.html">
+          <div class="section-card-icon" style="background:var(--sprout-50);color:var(--sprout-600)">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/><rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/></svg>
+          </div>
+          <h2>Components</h2>
+          <p>Reusable UI elements &mdash; buttons, inputs, sheets, toasts, and more.</p>
+          <span class="section-card-count">Coming soon</span>
+        </a>
+        <a class="section-card" href="/design-system/patterns.html">
+          <div class="section-card-icon" style="background:var(--violet-50);color:var(--violet-600)">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12v12H4z"/><path d="M4 9h12M9 4v12"/></svg>
+          </div>
+          <h2>Patterns</h2>
+          <p>Common interaction and layout patterns &mdash; accessibility, principles, and more.</p>
+          <span class="section-card-count">Coming soon</span>
+        </a>
+        <a class="section-card" href="/design-system/resources.html">
+          <div class="section-card-icon" style="background:var(--orange-50);color:var(--orange-600)">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 012-2h8a2 2 0 012 2v14"/><path d="M2 19h16"/><path d="M8 7h4"/></svg>
+          </div>
+          <h2>Resources</h2>
+          <p>Getting started guides, Figma workflows, and developer tools.</p>
+          <span class="section-card-count">Coming soon</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

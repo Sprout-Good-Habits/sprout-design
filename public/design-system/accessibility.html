@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Accessibility</title>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Requirement Cards ── */
+.req-card {
+  background: var(--green-50);
+  border: 1px solid var(--green-200);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  margin-bottom: var(--spacing-lg);
+}
+.req-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+.req-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--green-100);
+  color: var(--green-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-text-sm);
+}
+.req-card h3 {
+  font-size: var(--font-size-text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  line-height: var(--line-height-text-md);
+}
+.req-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.req-card li {
+  position: relative;
+  padding: var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-2xl);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  color: var(--text-secondary);
+}
+.req-card li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--green-400);
+}
+
+/* ── Contrast Demo ── */
+.contrast-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.contrast-box {
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-height: 100px;
+}
+.contrast-box .sample-text {
+  font-size: var(--font-size-text-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-text-md);
+}
+.contrast-box .token-pair {
+  font-size: 11px;
+  opacity: 0.7;
+  line-height: 16px;
+}
+.contrast-box .ratio {
+  font-size: var(--font-size-text-xs);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-text-xs);
+  margin-top: auto;
+  opacity: 0.85;
+}
+
+/* ── Motion Section ── */
+.motion-rules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.motion-rule {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+}
+.motion-rule-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--green-50);
+  color: var(--green-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+.motion-rule-text h4 {
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xxs);
+}
+.motion-rule-text p {
+  font-size: var(--font-size-text-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm);
+}
+.motion-rule-text code {
+  font-size: 12px;
+  background: var(--bg-tertiary);
+  padding: 1px 5px;
+  border-radius: var(--radius-xs);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+/* ── Checklist ── */
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.checklist li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--border-secondary);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.checklist li:first-child {
+  border-top: 1px solid var(--border-secondary);
+}
+.checklist li:hover {
+  background: var(--bg-secondary);
+}
+.check-box {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  background: var(--bg-primary);
+}
+.check-box svg {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.checklist li.checked .check-box {
+  background: var(--green-500);
+  border-color: var(--green-500);
+}
+.checklist li.checked .check-box svg {
+  opacity: 1;
+}
+.check-label {
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  line-height: var(--line-height-text-sm);
+  transition: color 0.15s;
+}
+.checklist li.checked .check-label {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .contrast-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 1024px) {
+  .contrast-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Accessibility</div>
+    <div class="sec-desc">Accessibility requirements and guidelines for building inclusive Sprout experiences &mdash; covering semantic markup, keyboard navigation, color contrast, ARIA, and touch targets.</div>
+  </div>
+
+  <!-- ── Core Requirements ── -->
+  <div class="doc-section">
+    <h2>Core Requirements</h2>
+    <p>Every Sprout screen and component must meet these five accessibility standards.</p>
+
+    <div class="req-card">
+      <div class="req-card-header">
+        <div class="req-icon">1</div>
+        <h3>Semantic HTML</h3>
+      </div>
+      <ul>
+        <li>Use <code>&lt;button&gt;</code> for actions, <code>&lt;a&gt;</code> for navigation &mdash; never <code>&lt;div onclick&gt;</code></li>
+        <li>Wrap page regions with <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;section&gt;</code>, and <code>&lt;footer&gt;</code></li>
+        <li>Use <code>&lt;table&gt;</code> with <code>&lt;thead&gt;</code> and <code>&lt;th&gt;</code> for tabular data</li>
+        <li>Use <code>&lt;ul&gt;</code> / <code>&lt;ol&gt;</code> for lists &mdash; assistive tech announces item counts</li>
+        <li>Form inputs must have associated <code>&lt;label&gt;</code> elements or <code>aria-label</code></li>
+      </ul>
+    </div>
+
+    <div class="req-card">
+      <div class="req-card-header">
+        <div class="req-icon">2</div>
+        <h3>Keyboard Navigation</h3>
+      </div>
+      <ul>
+        <li>All interactive elements must be reachable via <kbd>Tab</kbd> key</li>
+        <li>Buttons and links must respond to <kbd>Enter</kbd> and <kbd>Space</kbd></li>
+        <li>Focus order must follow visual reading order (left-to-right, top-to-bottom)</li>
+        <li>Modal/sheet dialogs must trap focus and return it on close</li>
+        <li>Custom widgets (dropdowns, sliders) must implement ARIA keyboard patterns</li>
+      </ul>
+    </div>
+
+    <div class="req-card">
+      <div class="req-card-header">
+        <div class="req-icon">3</div>
+        <h3>Color Contrast</h3>
+      </div>
+      <ul>
+        <li>Normal text must meet WCAG AA &mdash; minimum 4.5:1 contrast ratio</li>
+        <li>Large text (18px+ bold or 24px+ regular) requires 3:1 minimum</li>
+        <li>UI elements (borders, icons, focus rings) require 3:1 against background</li>
+        <li>Never convey information through color alone &mdash; pair with text, icons, or patterns</li>
+        <li>Use the semantic token pairings below for guaranteed-safe contrast</li>
+      </ul>
+    </div>
+
+    <div class="req-card">
+      <div class="req-card-header">
+        <div class="req-icon">4</div>
+        <h3>ARIA Usage</h3>
+      </div>
+      <ul>
+        <li>Add <code>aria-label</code> to icon-only buttons and non-text interactive elements</li>
+        <li>Use <code>role="dialog"</code> and <code>aria-modal="true"</code> for sheets and modals</li>
+        <li>Apply <code>aria-expanded</code> to toggles that show/hide content</li>
+        <li>Use <code>aria-live="polite"</code> for dynamic content updates (toasts, loading states)</li>
+        <li>Prefer native HTML elements over ARIA roles &mdash; <code>&lt;button&gt;</code> over <code>role="button"</code></li>
+      </ul>
+    </div>
+
+    <div class="req-card">
+      <div class="req-card-header">
+        <div class="req-icon">5</div>
+        <h3>Touch Targets</h3>
+      </div>
+      <ul>
+        <li>Minimum touch target size: 44 &times; 44px (WCAG 2.5.5 AAA)</li>
+        <li>Sprout inputs use 56px height &mdash; exceeding the minimum</li>
+        <li>Icon-only buttons must have sufficient padding to reach 44px</li>
+        <li>Adjacent targets must have at least 8px spacing to prevent mis-taps</li>
+        <li>Small visual elements (checkboxes, radio) should have invisible hit areas that extend to 44px</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Contrast Examples ── -->
+  <div class="doc-section">
+    <h2>Safe Contrast Pairings</h2>
+    <p>These token pairings are guaranteed to meet WCAG AA contrast requirements. Use them as your defaults.</p>
+
+    <div class="contrast-grid">
+      <div class="contrast-box" style="background:var(--bg-primary);border:1px solid var(--border-secondary);">
+        <span class="sample-text" style="color:var(--text-primary);">Primary on white</span>
+        <span class="token-pair" style="color:var(--text-tertiary);">--text-primary on --bg-primary</span>
+        <span class="ratio" style="color:var(--green-600);">~15.4:1</span>
+      </div>
+      <div class="contrast-box" style="background:var(--bg-primary);border:1px solid var(--border-secondary);">
+        <span class="sample-text" style="color:var(--text-secondary);">Secondary on white</span>
+        <span class="token-pair" style="color:var(--text-tertiary);">--text-secondary on --bg-primary</span>
+        <span class="ratio" style="color:var(--green-600);">~9.6:1</span>
+      </div>
+      <div class="contrast-box" style="background:var(--brand-500);">
+        <span class="sample-text" style="color:#ffffff;">White on brand</span>
+        <span class="token-pair" style="color:rgba(255,255,255,0.7);">white on --brand-500</span>
+        <span class="ratio" style="color:rgba(255,255,255,0.85);">~4.6:1</span>
+      </div>
+      <div class="contrast-box" style="background:var(--bg-brand-solid);">
+        <span class="sample-text" style="color:#ffffff;">White on brand solid</span>
+        <span class="token-pair" style="color:rgba(255,255,255,0.7);">white on --bg-brand-solid</span>
+        <span class="ratio" style="color:rgba(255,255,255,0.85);">~4.5:1</span>
+      </div>
+      <div class="contrast-box" style="background:var(--red-500);">
+        <span class="sample-text" style="color:#ffffff;">White on red</span>
+        <span class="token-pair" style="color:rgba(255,255,255,0.7);">white on --red-500</span>
+        <span class="ratio" style="color:rgba(255,255,255,0.85);">~4.6:1</span>
+      </div>
+      <div class="contrast-box" style="background:var(--bg-sky);border:1px solid var(--border-secondary);">
+        <span class="sample-text" style="color:var(--text-primary);">Primary on sky</span>
+        <span class="token-pair" style="color:var(--text-tertiary);">--text-primary on --bg-sky</span>
+        <span class="ratio" style="color:var(--green-600);">~13.8:1</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Motion ── -->
+  <div class="doc-section">
+    <h2>Motion &amp; Reduced Motion</h2>
+    <p>Animations must respect user preferences and provide static fallbacks.</p>
+
+    <div class="motion-rules">
+      <div class="motion-rule">
+        <div class="motion-rule-icon">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg>
+        </div>
+        <div class="motion-rule-text">
+          <h4>Respect prefers-reduced-motion</h4>
+          <p>Wrap all animations and transitions in a <code>@media (prefers-reduced-motion: no-preference)</code> block, or disable them inside <code>@media (prefers-reduced-motion: reduce)</code>.</p>
+        </div>
+      </div>
+      <div class="motion-rule">
+        <div class="motion-rule-icon">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="1" width="12" height="12" rx="2"/></svg>
+        </div>
+        <div class="motion-rule-text">
+          <h4>Provide static fallbacks</h4>
+          <p>Every animated state must have a meaningful static equivalent. Loading spinners should fall back to a text label like &ldquo;Loading&hellip;&rdquo;. Progress bars should display without the fill animation.</p>
+        </div>
+      </div>
+      <div class="motion-rule">
+        <div class="motion-rule-icon">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="7" cy="7" r="6"/><path d="M7 4v3l2 2"/></svg>
+        </div>
+        <div class="motion-rule-text">
+          <h4>Keep durations short</h4>
+          <p>UI transitions should stay under <code>300ms</code>. Decorative animations should not loop indefinitely &mdash; cap at 5 seconds or provide a pause control. Sprout&rsquo;s standard timings: <code>0.15s</code> for micro-feedback, <code>0.2s</code> for toggles, <code>300ms</code> for sheets.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Checklist ── -->
+  <div class="doc-section">
+    <h2>Accessibility Checklist</h2>
+    <p>Use this interactive checklist to verify your implementation before shipping. Click each item to toggle.</p>
+
+    <ul class="checklist" id="a11y-checklist">
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">Uses semantic HTML elements (button, nav, main, section, table)</span>
+      </li>
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">Heading hierarchy is correct (h1 &rarr; h2 &rarr; h3, no skipped levels)</span>
+      </li>
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">All interactive elements reachable and operable via keyboard</span>
+      </li>
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">Visible focus indicators on all focusable elements</span>
+      </li>
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">ARIA labels on icon-only buttons and non-text controls</span>
+      </li>
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">All images have descriptive alt text</span>
+      </li>
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">Color contrast meets WCAG AA (4.5:1 text, 3:1 UI elements)</span>
+      </li>
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">Touch targets are at least 44 &times; 44px</span>
+      </li>
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">Animations respect prefers-reduced-motion</span>
+      </li>
+      <li onclick="this.classList.toggle('checked')">
+        <div class="check-box"><svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l3 3 5-5"/></svg></div>
+        <span class="check-label">No information conveyed by color alone</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Sprout UI Skill</title>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+.download-card {
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--gray-200, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  padding: var(--spacing-3xl, 24px);
+  margin-top: var(--spacing-3xl, 24px);
+}
+.download-card h3 {
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs, 4px);
+}
+.download-card p {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm, 20px);
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
+  background: var(--brand-500, #0ba5ec);
+  color: white;
+  border-radius: var(--radius-sm, 6px);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.download-btn:hover { background: var(--brand-600, #0086c9); text-decoration: none; color: white; }
+.info-note {
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid var(--brand-200, #b9e6fe);
+  border-radius: var(--radius-md, 8px);
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm, 20px);
+  margin: var(--spacing-xl, 16px) 0;
+}
+.info-note strong { color: var(--brand-700, #026aa2); }
+.info-note code {
+  background: var(--bg-secondary, #fafafa);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs, 4px);
+  font-size: 12px;
+}
+.version-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--sprout-100, #d3f8df);
+  color: var(--sprout-700, #2b8c3e);
+  border-radius: var(--radius-full, 9999px);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  margin-left: var(--spacing-md, 8px);
+  vertical-align: middle;
+}
+.feature-list {
+  margin: var(--spacing-xl, 16px) 0;
+  padding-left: var(--spacing-3xl, 24px);
+}
+.feature-list li {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm, 20px);
+  margin-bottom: var(--spacing-sm, 6px);
+}
+.feature-list li strong { color: var(--text-primary); }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Sprout UI Skill <span class="version-badge">v1.0</span></div>
+    <div class="sec-desc">Claude Code skill for building Sprout product screens using the design system. Gives AI the full context of components, tokens, layout patterns, and accessibility rules.</div>
+  </div>
+
+  <div class="download-card">
+    <h3>sprout-ui-skill.md</h3>
+    <p>Markdown skill file containing the complete Sprout design system reference for Claude Code. Includes component CSS, composition rules, token mappings, and golden rules for building product screens.</p>
+    <a class="download-btn" href="/design-system/resources/sprout-ui-skill.md" download>Download skill file</a>
+  </div>
+
+  <div class="doc-section">
+    <h2>What it does</h2>
+    <p>The Sprout UI skill teaches Claude Code how to build product screens that look and feel like the real Sprout app. Instead of writing generic UI, it uses the documented design system &mdash; correct tokens, components, patterns, and accessibility rules.</p>
+
+    <ul class="feature-list">
+      <li><strong>Component CSS</strong> &mdash; Full implementations for Button, ButtonUtility, Input, Sheet, ListItem, Toast, ActionPrompt, Switch, Checkbox, Radio, PasscodeInput, ProgressBar, LoadingIndicator, AvatarGroup, Toolbar, and Social Buttons</li>
+      <li><strong>Background system</strong> &mdash; Main and Alt variants with correct scroll behavior, grass, and Rive character positioning</li>
+      <li><strong>Token reference</strong> &mdash; Colors, typography, spacing, radius, and shadows mapped to CSS variables</li>
+      <li><strong>Component lookup</strong> &mdash; Guides AI to pick the right component for the job (e.g. use ListItem for selections inside Sheets, not custom chips)</li>
+      <li><strong>Composition rules</strong> &mdash; What each component allows and forbids as children</li>
+      <li><strong>Accessibility</strong> &mdash; Touch targets, ARIA attributes, focus management, and contrast requirements</li>
+      <li><strong>Figma integration</strong> &mdash; Steps for translating Figma designs into design-system-compliant code</li>
+    </ul>
+  </div>
+
+  <div class="doc-section">
+    <h2>Setup</h2>
+    <p>Place the skill file in your project&rsquo;s Claude Code skills directory:</p>
+
+    <div class="info-note">
+      <strong>Path:</strong> <code>.claude/skills/sprout-ui/skill.md</code><br><br>
+      Once installed, invoke with <code>/sprout-ui</code> followed by what you want to build. For example:<br>
+      <code>/sprout-ui build a settings screen</code>
+    </div>
+  </div>
+
+  <div class="doc-section">
+    <h2>Requirements</h2>
+    <ul class="feature-list">
+      <li><strong>Claude Code</strong> &mdash; CLI tool from Anthropic &mdash; <a href="https://docs.anthropic.com/en/docs/claude-code/overview" target="_blank">docs.anthropic.com</a></li>
+      <li><strong>tokens.css</strong> &mdash; Sprout design tokens &mdash; <a href="/design-system/resources/tokens-css.html">download here</a></li>
+      <li><strong>Rive runtime</strong> &mdash; For the Sprout character animation &mdash; <a href="https://unpkg.com/@rive-app/canvas@2.35.2" target="_blank">unpkg.com/@rive-app/canvas</a></li>
+      <li><strong>Inter font</strong> &mdash; Via Google Fonts &mdash; <a href="https://fonts.google.com/specimen/Inter" target="_blank">fonts.google.com/specimen/Inter</a></li>
+    </ul>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

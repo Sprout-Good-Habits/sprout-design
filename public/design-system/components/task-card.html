@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Task Card</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "TaskCard",
+  "slug": "task-card",
+  "intent": {
+    "purpose": "Represent a daily task or habit on the kid home screen carousel",
+    "taskContext": ["kid-home", "task-tracking", "daily-tasks"],
+    "sentiment": ["playful", "motivational"]
+  },
+  "composition": {
+    "requires": ["background-color", "emoji", "title", "cta"],
+    "allows": ["badges", "description", "completed-overlay"],
+    "forbids": ["nested-interactive"]
+  },
+  "variants": [
+    { "name": "Brand", "useWhen": "Default / primary task", "pairWith": [] },
+    { "name": "Blue Dark", "useWhen": "Alternate color", "pairWith": [] },
+    { "name": "Violet", "useWhen": "Alternate color", "pairWith": [] },
+    { "name": "Pink", "useWhen": "Alternate color", "pairWith": [] },
+    { "name": "Red", "useWhen": "Alternate color", "pairWith": [] },
+    { "name": "Orange", "useWhen": "Alternate color", "pairWith": [] },
+    { "name": "Yellow", "useWhen": "Alternate color", "pairWith": [] },
+    { "name": "Green", "useWhen": "Alternate color", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 278×315px card" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile"],
+    "placement": ["carousel"]
+  },
+  "relationships": {
+    "related": ["Buttons", "Toolbar", "Progress Bar"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": []
+  },
+  "states": ["not-started", "rejected", "submitted", "claimable", "claimed"],
+  "accessibility": {
+    "role": "article",
+    "keyboard": ["Tab", "Enter"],
+    "ariaAttributes": ["aria-label"],
+    "minTouchTarget": "278×315px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Task Card ── */
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+}
+
+.task-card {
+  flex-shrink: 0;
+  width: 278px;
+  height: 315px;
+  border-radius: 24px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+
+.card-badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  border-radius: 100px;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 400;
+}
+
+.card-badge .tf-badge {
+  font-family: 'TossFace', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.card-name {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 27px;
+}
+
+.card-desc {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  opacity: 0.85;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card-emoji-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.card-emoji {
+  font-family: 'TossFace', sans-serif;
+  font-size: 120px;
+  line-height: 1;
+}
+
+.card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm, 6px);
+  height: 36px;
+  border-radius: var(--radius-2xl, 16px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold, 700);
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.card-cta:active:not(.card-cta-disabled) {
+  box-shadow: none;
+  transform: translateY(3px);
+}
+
+.card-cta .tf-cta {
+  font-family: 'TossFace', sans-serif;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.card-cta-disabled {
+  background: var(--gray-300, #d5d7da);
+  color: var(--text-disabled, #717680);
+  border: 2px solid var(--gray-400, #a4a7ae);
+  box-shadow: 0 3px 0 0 var(--gray-400, #a4a7ae);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.flame-muted {
+  filter: grayscale(1) brightness(2);
+}
+
+.card-completed-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  border-radius: 24px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Card color variants ── */
+.card-brand { background: var(--brand-500, #0ba5ec); }
+.card-blue-dark { background: var(--blue-dark-500, #2970ff); }
+.card-violet { background: var(--violet-500, #875bf7); }
+.card-pink { background: var(--pink-500, #ee46bc); }
+.card-red { background: var(--red-500, #f04438); }
+.card-orange { background: var(--orange-500, #ef6820); }
+.card-yellow { background: var(--yellow-500, #eaaa08); }
+.card-green { background: var(--green-500, #17b26a); }
+
+/* ── Badge color variants ── */
+.badge-brand { background: var(--brand-200, #b9e6fe); color: var(--brand-700, #026aa2); }
+.badge-blue-dark { background: var(--blue-dark-200, #b2ccff); color: var(--blue-dark-700, #004eeb); }
+.badge-violet { background: var(--violet-200, #ddd6fe); color: var(--violet-700, #5925dc); }
+.badge-pink { background: var(--pink-200, #fcceee); color: var(--pink-700, #c11574); }
+.badge-red { background: var(--red-200, #fecdca); color: var(--red-700, #b42318); }
+.badge-orange { background: var(--orange-200, #f9dbaf); color: var(--orange-700, #b93815); }
+.badge-yellow { background: var(--yellow-200, #feee95); color: var(--yellow-700, #a15c07); }
+.badge-green { background: var(--green-200, #abefc6); color: var(--green-700, #067647); }
+
+/* ── Demo layout helpers ── */
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.card-grid-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-tertiary, #535862);
+  text-align: center;
+  margin-top: 8px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Task Card</div>
+    <div class="sec-desc">Colourful cards that represent daily tasks and habits in the kid home screen carousel. Each card shows a task with its emoji, streak, gem reward, and a CTA to begin or continue.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For recurring daily tasks kids complete on their home screen, like &ldquo;Talk to Sprout&rdquo; or &ldquo;Read for 20 min&rdquo;.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When you need a visual, swipeable overview of everything a kid can do today.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use task cards for one-off actions or navigation &mdash; use <a href="/design-system/components/list-item.html" style="color:var(--brand-600)">List Item</a> or <a href="/design-system/components/buttons.html" style="color:var(--brand-600)">Buttons</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t place interactive elements inside the card other than the CTA &mdash; use a <a href="/design-system/components/sheet.html" style="color:var(--brand-600)">Sheet</a> for additional actions.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Variant Overview -->
+  <div class="variant-overview">
+    <div class="demo" style="background:var(--bg-sky, #e0f2fe); overflow-x:auto;">
+      <div class="card-grid" style="flex-wrap:nowrap;">
+        <!-- Not Started -->
+        <div>
+          <div class="task-card card-brand">
+            <div class="card-badges">
+              <div class="card-badge badge-brand"><span class="tf-badge flame-muted">🔥</span> 3 days</div>
+              <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+            </div>
+            <div class="card-content">
+              <div class="card-name">Talk to Sprout</div>
+              <div class="card-desc">Chat with Sprout about your day</div>
+            </div>
+            <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+            <div class="card-cta">Start</div>
+          </div>
+          <div class="card-grid-label">Not Started</div>
+        </div>
+        <!-- Rejected -->
+        <div>
+          <div class="task-card card-brand">
+            <div class="card-badges">
+              <div class="card-badge badge-brand"><span class="tf-badge flame-muted">🔥</span> 3 days</div>
+              <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+            </div>
+            <div class="card-content">
+              <div class="card-name">Talk to Sprout</div>
+              <div class="card-desc">Chat with Sprout about your day</div>
+            </div>
+            <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+            <div class="card-cta">Try again</div>
+          </div>
+          <div class="card-grid-label">Rejected</div>
+        </div>
+        <!-- Submitted -->
+        <div>
+          <div class="task-card card-brand">
+            <div class="card-badges">
+              <div class="card-badge badge-brand"><span class="tf-badge">🔥</span> 3 days</div>
+              <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+            </div>
+            <div class="card-content">
+              <div class="card-name">Talk to Sprout</div>
+              <div class="card-desc">Chat with Sprout about your day</div>
+            </div>
+            <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+            <div class="card-cta card-cta-disabled">Reviewing...</div>
+          </div>
+          <div class="card-grid-label">Submitted</div>
+        </div>
+        <!-- Claimable -->
+        <div>
+          <div class="task-card card-brand">
+            <div class="card-badges">
+              <div class="card-badge badge-brand"><span class="tf-badge">🔥</span> 3 days</div>
+              <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+            </div>
+            <div class="card-content">
+              <div class="card-name">Talk to Sprout</div>
+              <div class="card-desc">Chat with Sprout about your day</div>
+            </div>
+            <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+            <div class="card-cta"><span class="tf-cta">💎</span> Claim</div>
+          </div>
+          <div class="card-grid-label">Claimable</div>
+        </div>
+        <!-- Claimed -->
+        <div>
+          <div class="task-card card-brand">
+            <div class="card-completed-overlay"></div>
+            <div class="card-badges">
+              <div class="card-badge badge-brand"><span class="tf-badge">🔥</span> 4 days</div>
+              <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+            </div>
+            <div class="card-content">
+              <div class="card-name">Talk to Sprout</div>
+              <div class="card-desc">Chat with Sprout about your day</div>
+            </div>
+            <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+          </div>
+          <div class="card-grid-label">Claimed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Color Variants -->
+  <div class="doc-section">
+    <h2>Color variants</h2>
+    <p>Eight color options, each using a <code>-500</code> background with matching <code>-200</code>/<code>-700</code> badge tones. Assign distinct colours to adjacent cards in the carousel so kids can tell them apart at a glance.</p>
+
+    <div class="demo" style="background:var(--bg-sky, #e0f2fe); overflow-x:auto;">
+      <div class="card-grid">
+        <div>
+          <div class="task-card card-brand" style="height:auto; min-height:120px;">
+            <div class="card-badges"><div class="card-badge badge-brand"><span class="tf-badge">🔥</span> 3</div></div>
+            <div class="card-content"><div class="card-name">Brand</div></div>
+            <div class="card-emoji-area" style="padding:12px 0;"><span class="card-emoji" style="font-size:48px;">💬</span></div>
+          </div>
+          <div class="card-grid-label"><code>--brand-500</code></div>
+        </div>
+        <div>
+          <div class="task-card card-blue-dark" style="height:auto; min-height:120px;">
+            <div class="card-badges"><div class="card-badge badge-blue-dark"><span class="tf-badge">🔥</span> 3</div></div>
+            <div class="card-content"><div class="card-name">Blue Dark</div></div>
+            <div class="card-emoji-area" style="padding:12px 0;"><span class="card-emoji" style="font-size:48px;">🌊</span></div>
+          </div>
+          <div class="card-grid-label"><code>--blue-dark-500</code></div>
+        </div>
+        <div>
+          <div class="task-card card-violet" style="height:auto; min-height:120px;">
+            <div class="card-badges"><div class="card-badge badge-violet"><span class="tf-badge">🔥</span> 3</div></div>
+            <div class="card-content"><div class="card-name">Violet</div></div>
+            <div class="card-emoji-area" style="padding:12px 0;"><span class="card-emoji" style="font-size:48px;">📖</span></div>
+          </div>
+          <div class="card-grid-label"><code>--violet-500</code></div>
+        </div>
+        <div>
+          <div class="task-card card-pink" style="height:auto; min-height:120px;">
+            <div class="card-badges"><div class="card-badge badge-pink"><span class="tf-badge">🔥</span> 3</div></div>
+            <div class="card-content"><div class="card-name">Pink</div></div>
+            <div class="card-emoji-area" style="padding:12px 0;"><span class="card-emoji" style="font-size:48px;">🎨</span></div>
+          </div>
+          <div class="card-grid-label"><code>--pink-500</code></div>
+        </div>
+        <div>
+          <div class="task-card card-red" style="height:auto; min-height:120px;">
+            <div class="card-badges"><div class="card-badge badge-red"><span class="tf-badge">🔥</span> 3</div></div>
+            <div class="card-content"><div class="card-name">Red</div></div>
+            <div class="card-emoji-area" style="padding:12px 0;"><span class="card-emoji" style="font-size:48px;">🏃</span></div>
+          </div>
+          <div class="card-grid-label"><code>--red-500</code></div>
+        </div>
+        <div>
+          <div class="task-card card-orange" style="height:auto; min-height:120px;">
+            <div class="card-badges"><div class="card-badge badge-orange"><span class="tf-badge">🔥</span> 3</div></div>
+            <div class="card-content"><div class="card-name">Orange</div></div>
+            <div class="card-emoji-area" style="padding:12px 0;"><span class="card-emoji" style="font-size:48px;">🎵</span></div>
+          </div>
+          <div class="card-grid-label"><code>--orange-500</code></div>
+        </div>
+        <div>
+          <div class="task-card card-yellow" style="height:auto; min-height:120px;">
+            <div class="card-badges"><div class="card-badge badge-yellow"><span class="tf-badge">🔥</span> 3</div></div>
+            <div class="card-content"><div class="card-name">Yellow</div></div>
+            <div class="card-emoji-area" style="padding:12px 0;"><span class="card-emoji" style="font-size:48px;">⭐</span></div>
+          </div>
+          <div class="card-grid-label"><code>--yellow-500</code></div>
+        </div>
+        <div>
+          <div class="task-card card-green" style="height:auto; min-height:120px;">
+            <div class="card-badges"><div class="card-badge badge-green"><span class="tf-badge">🔥</span> 3</div></div>
+            <div class="card-content"><div class="card-name">Green</div></div>
+            <div class="card-emoji-area" style="padding:12px 0;"><span class="card-emoji" style="font-size:48px;">🌱</span></div>
+          </div>
+          <div class="card-grid-label"><code>--green-500</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anatomy -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Background</strong> (required) &mdash; Full-bleed <code>-500</code> colour fill, 278&times;315px with 24px radius.</li>
+        <li><strong>Badges</strong> (optional) &mdash; Streak (left) and gem (right) pill badges at the top. <code>-200</code> background, <code>-700</code> text.</li>
+        <li><strong>Title</strong> (required) &mdash; 22px medium weight, white. Optional description below at 12px, 85% opacity.</li>
+        <li><strong>Emoji</strong> (required) &mdash; 120px TossFace emoji centered in the card body.</li>
+        <li><strong>CTA</strong> (required in default state) &mdash; White secondary-style button pinned to the bottom. Uses the same shadow pattern as <a href="/design-system/components/buttons.html" style="color:var(--brand-600)">Buttons</a> secondary. Disabled in reviewing state, hidden in completed state.</li>
+        <li><strong>Completed overlay</strong> (completed state only) &mdash; <code>rgba(0,0,0,0.4)</code> overlay covering the full card.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Badges -->
+  <div class="doc-section">
+    <h2>Badges</h2>
+    <p>Two pill badges sit in the top row of each card, colour-matched to the card variant.</p>
+
+    <div class="demo" style="background:var(--bg-sky, #e0f2fe);">
+      <div class="demo-item">
+        <span class="demo-label">Streak (active)</span>
+        <div class="card-badge badge-brand" style="font-size:13px;padding:4px 8px;"><span class="tf-badge" style="font-size:14px;">🔥</span> 5 days</div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Streak (inactive)</span>
+        <div class="card-badge badge-brand" style="font-size:13px;padding:4px 8px;"><span class="tf-badge flame-muted" style="font-size:14px;">🔥</span> 0 days</div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Gem reward</span>
+        <div class="card-badge badge-brand" style="font-size:13px;padding:4px 8px;"><span class="tf-badge" style="font-size:14px;">💎</span> 10</div>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li>The streak badge shows consecutive days the task has been completed. The fire emoji is full colour when streak &ge; 1 and muted (grayscale filter) when streak is 0.</li>
+        <li>The gem badge shows the reward for completing the task today.</li>
+        <li>Both badges inherit the card&rsquo;s colour variant &mdash; <code>-200</code> background, <code>-700</code> text.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- States -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>The task card has five states &mdash; <strong>not started</strong>, <strong>rejected</strong>, <strong>submitted</strong>, <strong>claimable</strong>, and <strong>claimed</strong>.</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(5, 1fr);">
+      <div class="state-cell" style="background:var(--bg-sky, #e0f2fe);">
+        <span class="state-cell-label">Not started</span>
+        <div class="task-card card-brand" style="width:100%;max-width:200px;">
+          <div class="card-badges">
+            <div class="card-badge badge-brand"><span class="tf-badge flame-muted">🔥</span> 3 days</div>
+            <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Talk to Sprout</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji" style="font-size:64px;">💬</span></div>
+          <div class="card-cta">Start</div>
+        </div>
+      </div>
+      <div class="state-cell" style="background:var(--bg-sky, #e0f2fe);">
+        <span class="state-cell-label">Rejected</span>
+        <div class="task-card card-brand" style="width:100%;max-width:200px;">
+          <div class="card-badges">
+            <div class="card-badge badge-brand"><span class="tf-badge flame-muted">🔥</span> 3 days</div>
+            <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Talk to Sprout</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji" style="font-size:64px;">💬</span></div>
+          <div class="card-cta">Try again</div>
+        </div>
+      </div>
+      <div class="state-cell" style="background:var(--bg-sky, #e0f2fe);">
+        <span class="state-cell-label">Submitted</span>
+        <div class="task-card card-brand" style="width:100%;max-width:200px;">
+          <div class="card-badges">
+            <div class="card-badge badge-brand"><span class="tf-badge">🔥</span> 3 days</div>
+            <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Talk to Sprout</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji" style="font-size:64px;">💬</span></div>
+          <div class="card-cta card-cta-disabled">Reviewing...</div>
+        </div>
+      </div>
+      <div class="state-cell" style="background:var(--bg-sky, #e0f2fe);">
+        <span class="state-cell-label">Claimable</span>
+        <div class="task-card card-brand" style="width:100%;max-width:200px;">
+          <div class="card-badges">
+            <div class="card-badge badge-brand"><span class="tf-badge">🔥</span> 3 days</div>
+            <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Talk to Sprout</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji" style="font-size:64px;">💬</span></div>
+          <div class="card-cta"><span class="tf-cta">💎</span> Claim</div>
+        </div>
+      </div>
+      <div class="state-cell" style="background:var(--bg-sky, #e0f2fe);">
+        <span class="state-cell-label">Claimed</span>
+        <div class="task-card card-brand" style="width:100%;max-width:200px;">
+          <div class="card-completed-overlay"></div>
+          <div class="card-badges">
+            <div class="card-badge badge-brand"><span class="tf-badge">🔥</span> 4 days</div>
+            <div class="card-badge badge-brand"><span class="tf-badge">💎</span> 10</div>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Talk to Sprout</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji" style="font-size:64px;">💬</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><strong>Not started</strong> &mdash; CTA is active with a generic action label (e.g., &ldquo;Start&rdquo;). Streak badge may show a muted flame.</li>
+        <li><strong>Rejected</strong> &mdash; A parent has rejected the submission. CTA reads &ldquo;Try again&rdquo; and the card remains interactive.</li>
+        <li><strong>Submitted</strong> &mdash; The task has been submitted and awaits parent review. CTA is disabled with &ldquo;Reviewing&hellip;&rdquo; text.</li>
+        <li><strong>Claimable</strong> &mdash; A parent has approved the submission. CTA reads &ldquo;Claim&rdquo; with a gem emoji so the kid can collect their reward.</li>
+        <li><strong>Claimed</strong> &mdash; The reward has been collected. A dark overlay covers the card and the CTA is hidden.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content Guidelines -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Titles should start with a verb and stay to 1&ndash;3 words (e.g., &ldquo;Practice Piano&rdquo;, &ldquo;Read for 20 min&rdquo;)</li>
+        <li>Descriptions are optional &mdash; one short line of supporting context that truncates with an ellipsis</li>
+        <li>Choose a TossFace emoji that directly represents the activity &mdash; avoid abstract or ambiguous symbols</li>
+        <li>CTA copy should be a short verb phrase, optionally with a leading emoji (e.g., &ldquo;Let&rsquo;s Chat&rdquo;, &ldquo;Take Photo&rdquo;)</li>
+        <li>Don&rsquo;t repeat the same colour on adjacent cards in the carousel</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Token Reference -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Card dimensions</td><td>278&times;315px</td></tr>
+        <tr><td>Card border-radius</td><td>24px</td></tr>
+        <tr><td>Card padding</td><td>18px</td></tr>
+        <tr><td>Title font</td><td>22px / 27px, weight 500</td></tr>
+        <tr><td>Description font</td><td>12px / 18px, weight 400, 85% opacity</td></tr>
+        <tr><td>Emoji size</td><td>120px (TossFace)</td></tr>
+        <tr><td>Badge padding</td><td>3px 6px</td></tr>
+        <tr><td>Badge radius</td><td>100px (pill)</td></tr>
+        <tr><td>Badge font</td><td>11px / 15px, weight 400</td></tr>
+        <tr><td>Badge icon size</td><td>12px</td></tr>
+        <tr><td>CTA height</td><td>36px</td></tr>
+        <tr><td>CTA radius</td><td><code>--radius-2xl</code> (16px)</td></tr>
+        <tr><td>CTA font</td><td>12px, <code>--font-weight-bold</code> (700)</td></tr>
+        <tr><td>CTA background</td><td><code>--bg-primary</code> (#ffffff)</td></tr>
+        <tr><td>CTA border</td><td>2px <code>--border-secondary</code></td></tr>
+        <tr><td>CTA shadow</td><td>0 3px 0 0 <code>--gray-200</code></td></tr>
+        <tr><td>Completed overlay</td><td>rgba(0,0,0,0.4)</td></tr>
+        <tr><td>Flame muted</td><td><code>filter: grayscale(1) brightness(2)</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Color token mapping</h3>
+    <table class="token-table">
+      <thead><tr><th>Variant</th><th>Card background</th><th>Badge background</th><th>Badge text</th></tr></thead>
+      <tbody>
+        <tr><td>Brand</td><td><code>--brand-500</code></td><td><code>--brand-200</code></td><td><code>--brand-700</code></td></tr>
+        <tr><td>Blue Dark</td><td><code>--blue-dark-500</code></td><td><code>--blue-dark-200</code></td><td><code>--blue-dark-700</code></td></tr>
+        <tr><td>Violet</td><td><code>--violet-500</code></td><td><code>--violet-200</code></td><td><code>--violet-700</code></td></tr>
+        <tr><td>Pink</td><td><code>--pink-500</code></td><td><code>--pink-200</code></td><td><code>--pink-700</code></td></tr>
+        <tr><td>Red</td><td><code>--red-500</code></td><td><code>--red-200</code></td><td><code>--red-700</code></td></tr>
+        <tr><td>Orange</td><td><code>--orange-500</code></td><td><code>--orange-200</code></td><td><code>--orange-700</code></td></tr>
+        <tr><td>Yellow</td><td><code>--yellow-500</code></td><td><code>--yellow-200</code></td><td><code>--yellow-700</code></td></tr>
+        <tr><td>Green</td><td><code>--green-500</code></td><td><code>--green-200</code></td><td><code>--green-700</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Touch targets:</strong> The full 278&times;315px card area is a tap target. The CTA button within meets the 44px minimum touch width.</li>
+        <li><strong>Contrast:</strong> White text on <code>-500</code> color backgrounds meets WCAG AA for large text. Badge text uses <code>-700</code> on <code>-200</code> for sufficient contrast.</li>
+        <li><strong>Carousel navigation:</strong> The carousel container should support horizontal swipe gestures and keyboard arrow key navigation.</li>
+        <li><strong>Labels:</strong> Each card should have an <code>aria-label</code> combining the task name and state (e.g., &ldquo;Talk to Sprout &mdash; not started, 0 day streak, 5 gems&rdquo;).</li>
+        <li><strong>Completed state:</strong> The overlay dims the card but does not hide content from screen readers. Use <code>aria-disabled="true"</code> on completed cards.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

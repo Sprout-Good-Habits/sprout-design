@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Empty States</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "EmptyStates",
+  "slug": "empty-states",
+  "intent": {
+    "purpose": "Communicate that a screen or section has no content to display yet and guide users toward action",
+    "taskContext": ["no-content", "first-use", "empty-list"],
+    "sentiment": ["neutral", "encouraging"]
+  },
+  "composition": {
+    "requires": ["icon", "title"],
+    "allows": ["description", "primary-button", "secondary-button"],
+    "forbids": ["nested-empty-state", "image"]
+  },
+  "variants": [
+    { "name": "Full-screen", "useWhen": "Entire screen is empty, centered on branded background", "pairWith": ["Background"] },
+    { "name": "Sheet", "useWhen": "Sheet body has no content, compact variant", "pairWith": ["Sheet"] },
+    { "name": "Card", "useWhen": "Card or section has no content, inline compact", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "Full-screen and card — 56px icon" },
+    { "name": "Compact", "useWhen": "Sheet variant — 48px icon" }
+  ],
+  "context": {
+    "density": ["default", "compact"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["full-screen", "inside-sheet", "inside-card"]
+  },
+  "relationships": {
+    "related": ["Sheet", "Background"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Button", "Sheet"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "status",
+    "keyboard": [],
+    "ariaAttributes": ["aria-live"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ══════════════════════════════════════
+   Empty State component
+   ══════════════════════════════════════ */
+
+.empty-state {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:var(--spacing-xl, 16px);
+  text-align:center;
+  width:370px;
+}
+.empty-state-content {
+  display:flex; flex-direction:column;
+  align-items:center;
+  gap:8px;
+  width:100%;
+}
+.empty-state-icon {
+  font-family:'TossFace', sans-serif;
+  font-size:56px; line-height:1;
+}
+.empty-state-title {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+}
+.empty-state-desc {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651);
+}
+.empty-state-actions {
+  display:flex; flex-direction:column;
+  gap:var(--spacing-md, 8px);
+  width:100%;
+}
+
+/* ── Button base (from documented Buttons component) ── */
+.btn-sprout {
+  display:flex; align-items:center; justify-content:center;
+  box-sizing:border-box;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-weight:var(--font-weight-bold, 700);
+  letter-spacing:0;
+  border:none; cursor:pointer;
+  padding:var(--spacing-lg, 12px);
+  border-radius:var(--radius-2xl, 16px);
+  user-select:none; white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-lg { height:50px; font-size:var(--font-size-text-lg, 18px); line-height:var(--line-height-text-lg, 28px); }
+.btn-md { height:46px; font-size:var(--font-size-text-md, 16px); line-height:var(--line-height-text-md, 24px); }
+.btn-primary {
+  background:var(--brand-500, #0ba5ec); color:var(--text-white, #ffffff);
+  border-bottom:2px solid var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-primary.state-disabled {
+  background:var(--gray-300, #d5d7da); color:var(--text-disabled, #717680);
+  border-bottom:2px solid var(--gray-400, #a4a7ae);
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae); cursor:not-allowed; pointer-events:none;
+}
+.btn-secondary {
+  background:var(--bg-primary, #ffffff); color:var(--text-secondary, #414651);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+.btn-secondary.btn-lg { height:54px; }
+.btn-secondary.btn-md { height:50px; }
+
+/* Full-width buttons inside empty state */
+.empty-state-actions .btn-sprout { width:100%; }
+
+/* ── Phone frame for full-screen demos ── */
+.phone-frame {
+  width:366px; height:780px;
+  border-radius:36px; overflow:hidden;
+  position:relative;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  display:flex; align-items:center; justify-content:center;
+}
+/* Branded background (Main Background) */
+.phone-frame-branded {
+  background:var(--bg-sky, #e0f2fe);
+}
+.phone-frame-branded .bg-grass {
+  position:absolute;
+  bottom:0; left:0; width:100%;
+  z-index:0;
+}
+.phone-frame-branded .bg-grass-edge {
+  height:24px; background:var(--bg-grass, #86cb3c);
+  border-radius:var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+}
+.phone-frame-branded .bg-grass-fill {
+  background:var(--bg-grass, #86cb3c);
+  height:17px;
+}
+.phone-frame-branded .empty-state {
+  z-index:1;
+}
+
+/* ── Sheet container for in-context demos ── */
+.sheet {
+  background:var(--bg-primary, #ffffff);
+  border-radius:var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+  width:100%;
+  display:flex; flex-direction:column;
+  max-height:90%;
+}
+.sheet-top {
+  padding:var(--spacing-xl, 16px);
+  flex-shrink:0;
+  display:flex; flex-direction:column;
+  gap:16px; align-items:center;
+}
+.sheet-handle {
+  width:36px; height:4px;
+  background:var(--gray-300, #d5d7da);
+  border-radius:2px;
+}
+.sheet-header {
+  display:flex; align-items:center;
+  gap:var(--spacing-md, 8px);
+  width:100%;
+}
+.sheet-header-content { flex:1; min-width:0; }
+.sheet-title {
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+  font-size:24px; line-height:32px;
+  font-weight:var(--font-weight-bold, 700);
+  letter-spacing:var(--letter-spacing-display, -0.02em);
+  color:var(--text-primary, #181d27);
+  margin:0;
+}
+.sheet-close {
+  width:44px; height:44px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  color:var(--gray-400, #a4a7ae);
+}
+.sheet-close svg { width:24px; height:24px; }
+.sheet-body {
+  flex:1; min-height:0;
+  overflow-y:auto;
+  padding:0 var(--spacing-xl, 16px);
+}
+.sheet-footer {
+  flex-shrink:0;
+  padding:var(--spacing-xl, 16px);
+  padding-bottom:var(--spacing-2xl, 20px);
+  background:var(--bg-primary, #ffffff);
+}
+.sheet-footer.no-border { border-top:none; }
+.sheet-footer .btn-sprout { width:100%; }
+.sheet-footer-stack {
+  display:flex; flex-direction:column;
+  gap:var(--spacing-md, 8px);
+}
+
+/* Sheet scrim */
+.sheet-scrim {
+  position:absolute; inset:0;
+  background:var(--bg-overlay, rgba(10,13,18,0.2));
+  display:flex; align-items:flex-end;
+}
+
+/* Sheet empty state (minimal) */
+.sheet-empty {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:var(--spacing-lg, 12px);
+  padding:var(--spacing-5xl, 40px) 0;
+  text-align:center;
+}
+.sheet-empty-icon {
+  font-family:'TossFace', sans-serif;
+  font-size:48px; line-height:1;
+}
+.sheet-empty-text {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  color:var(--text-quaternary, #717680);
+}
+
+/* ── Card container for in-context demos ── */
+.card-container {
+  width:370px;
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-xl, 12px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  padding:var(--spacing-3xl, 24px);
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ── Sprout character avatar ── */
+.sprout-avatar-lg {
+  width:80px; height:80px;
+}
+.sprout-avatar-lg img {
+  width:100%; height:100%;
+  object-fit:contain;
+}
+
+/* Anatomy sheet (bordered, not in phone frame) */
+.anatomy-sheet {
+  width:366px;
+  border:1px solid var(--border-secondary, #e9eaeb);
+  box-shadow:0 8px 30px rgba(0,0,0,0.08);
+}
+
+/* Wider demos */
+.demo { flex-wrap:wrap; }
+.demo-item { min-width:370px; }
+
+@media(max-width:768px) {
+  .phone-frame { width:100%; height:auto; min-height:600px; }
+  .empty-state { width:100%; }
+  .card-container { width:100%; }
+  .demo-item { min-width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Empty States</div>
+    <div class="sec-desc">Patterns for blank screens, first-run experiences, and zero-data states across Sprout. An empty state communicates that a screen, container, or section has no content to display yet &mdash; it reassures the user and, when appropriate, guides them toward an action.</div>
+  </div>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">No action</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x1F4ED;</div>
+            <div class="empty-state-title">No messages yet</div>
+            <div class="empty-state-desc">When you get messages, they&rsquo;ll show up here</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Primary CTA</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x1F331;</div>
+            <div class="empty-state-title">No goals yet</div>
+            <div class="empty-state-desc">Set your first goal and start growing!</div>
+          </div>
+          <div class="empty-state-actions">
+            <button class="btn-sprout btn-primary btn-lg">Add a goal</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">In-sheet</span>
+        <div class="card-container" style="width:auto;min-width:280px">
+          <div class="sheet-empty" style="padding:var(--spacing-3xl, 24px) 0">
+            <div class="sheet-empty-icon">&#x1FAD7;</div>
+            <div class="sheet-empty-text">Nothing here yet</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ When to use ════ -->
+  <div class="doc-section">
+    <h2>When to use</h2>
+    <p>Use an empty state to communicate that a screen or section has no content to display yet and guide users toward action.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When a list, feed, or container has zero items to display.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> On first-run screens to guide the user toward their first action.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> After a search or filter returns no results.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When a feature is available but requires setup before content appears.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ When not to use ════ -->
+  <div class="doc-section doc-section-contd">
+    <h2>When not to use</h2>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for loading states &mdash; use the <a href="/design-system/components/loading.html" style="color:var(--brand-500)">Loading Indicator</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for error or connectivity states &mdash; use the <a href="/design-system/patterns/error-screen.html" style="color:var(--brand-500)">Error Screen</a> pattern instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for transient confirmations &mdash; use a <a href="/design-system/components/toast.html" style="color:var(--brand-500)">Toast</a>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>The empty state component is a vertically stacked container with flexible slots. All elements are centered.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">All slots</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x26AA;</div>
+            <div class="empty-state-title">Label</div>
+            <div class="empty-state-desc">Description</div>
+          </div>
+          <div class="empty-state-actions">
+            <button class="btn-sprout btn-primary btn-lg">Primary</button>
+            <button class="btn-sprout btn-secondary btn-lg">Secondary</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Icon</strong> (required) &mdash; 56px TossFace emoji. Sets the emotional tone.</li>
+        <li><strong>Title</strong> (required) &mdash; <code>text-md</code> bold (16px/24px), <code>--text-primary</code>. Short, clear statement.</li>
+        <li><strong>Description</strong> (optional) &mdash; <code>text-sm</code> regular (14px/20px), <code>--text-secondary</code>. Extra context or guidance.</li>
+        <li><strong>Primary CTA</strong> (optional) &mdash; <code>btn-primary btn-lg</code>. Guides the user to take action.</li>
+        <li><strong>Secondary CTA</strong> (optional) &mdash; <code>btn-secondary btn-lg</code>. Always paired with a primary CTA, never alone.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Types ════ -->
+  <div class="doc-section">
+    <h2>Types</h2>
+    <p>Empty states appear in three contexts, each with different sizing and emphasis.</p>
+
+    <h3>Full-screen</h3>
+    <p>Used when an entire page has no content. Centers the empty state vertically and horizontally within the main content area. Includes a large icon, title, description, and optional CTA button.</p>
+
+    <h3>In-sheet</h3>
+    <p>Used inside bottom sheets or modals. Uses a more compact layout with a smaller icon (48px) and shorter copy. Keeps the sheet height minimal.</p>
+
+    <h3>In-card</h3>
+    <p>Used inside cards or inline containers. The smallest variant, typically just an icon and a single line of text. Should not include CTA buttons.</p>
+  </div>
+
+  <!-- ════ CTA configurations ════ -->
+  <div class="doc-section">
+    <h2>CTA configurations</h2>
+    <p>Three configurations depending on whether the user can take action from this state.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">No action</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x1F4ED;</div>
+            <div class="empty-state-title">No messages yet</div>
+            <div class="empty-state-desc">When you get messages, they&rsquo;ll show up here</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">Primary CTA</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x1F331;</div>
+            <div class="empty-state-title">No goals yet</div>
+            <div class="empty-state-desc">Set your first goal and start growing!</div>
+          </div>
+          <div class="empty-state-actions">
+            <button class="btn-sprout btn-primary btn-lg">Add a goal</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">Primary + Secondary</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x1F392;</div>
+            <div class="empty-state-title">No apps added</div>
+            <div class="empty-state-desc">Browse the app library to find something fun</div>
+          </div>
+          <div class="empty-state-actions">
+            <button class="btn-sprout btn-primary btn-lg">Browse apps</button>
+            <button class="btn-sprout btn-secondary btn-lg">Maybe later</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>No action</strong> &mdash; informational only. The state resolves through external means (e.g. receiving a message).</li>
+        <li><strong>Primary CTA</strong> &mdash; use when the user can directly resolve the empty state (e.g. creating an item).</li>
+        <li><strong>Primary + Secondary</strong> &mdash; use when there&rsquo;s a main action plus an alternative (e.g. &ldquo;Browse apps&rdquo; / &ldquo;Maybe later&rdquo;).</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Never show a secondary CTA without a primary CTA.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Examples ════ -->
+  <div class="doc-section">
+    <h2>Examples</h2>
+    <p>Common empty state scenarios using TossFace icons.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">No favorites</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x2B50;</div>
+            <div class="empty-state-title">No favorites yet</div>
+            <div class="empty-state-desc">Tap the star on any item to save it here</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">No search results</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x1F50D;</div>
+            <div class="empty-state-title">No results found</div>
+            <div class="empty-state-desc">Try a different search or check your spelling</div>
+          </div>
+          <div class="empty-state-actions">
+            <button class="btn-sprout btn-secondary btn-lg">Clear search</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">No friends</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x1F44B;</div>
+            <div class="empty-state-title">No friends yet</div>
+            <div class="empty-state-desc">Invite someone to join you on Sprout</div>
+          </div>
+          <div class="empty-state-actions">
+            <button class="btn-sprout btn-primary btn-lg">Invite a friend</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">No badges</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x1F3C6;</div>
+            <div class="empty-state-title">No badges yet</div>
+            <div class="empty-state-desc">Complete activities to earn your first badge</div>
+          </div>
+          <div class="empty-state-actions">
+            <button class="btn-sprout btn-primary btn-lg">Explore activities</button>
+            <button class="btn-sprout btn-secondary btn-lg">Maybe later</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">No tasks</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x1F4CB;</div>
+            <div class="empty-state-title">All done!</div>
+            <div class="empty-state-desc">No tasks for today. Enjoy your free time!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">First-run welcome</span>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">&#x2728;</div>
+            <div class="empty-state-title">Welcome!</div>
+            <div class="empty-state-desc">You don&rsquo;t have any activities yet</div>
+          </div>
+          <div class="empty-state-actions">
+            <button class="btn-sprout btn-primary btn-lg">Get started</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Full-screen ════ -->
+  <div class="doc-section">
+    <h2>Full-screen</h2>
+    <p>When an empty state takes over the entire screen, center it vertically. Commonly used for top-level pages on first run.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">No action</span>
+        <div class="phone-frame phone-frame-branded">
+          <div class="empty-state" style="padding:0 var(--spacing-xl, 16px)">
+            <div class="empty-state-content">
+              <div class="empty-state-icon">&#x1F4ED;</div>
+              <div class="empty-state-title">No messages yet</div>
+              <div class="empty-state-desc">When you get messages,<br>they&rsquo;ll show up here</div>
+            </div>
+          </div>
+          <div class="bg-grass"><div class="bg-grass-edge"></div><div class="bg-grass-fill"></div></div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">Primary CTA</span>
+        <div class="phone-frame phone-frame-branded">
+          <div class="empty-state" style="padding:0 var(--spacing-xl, 16px)">
+            <div class="empty-state-content">
+              <div class="empty-state-icon">&#x2728;</div>
+              <div class="empty-state-title">Welcome!</div>
+              <div class="empty-state-desc">You don&rsquo;t have any<br>activities yet</div>
+            </div>
+            <div class="empty-state-actions">
+              <button class="btn-sprout btn-primary btn-lg">Get started</button>
+            </div>
+          </div>
+          <div class="bg-grass"><div class="bg-grass-edge"></div><div class="bg-grass-fill"></div></div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">Primary + Secondary</span>
+        <div class="phone-frame phone-frame-branded">
+          <div class="empty-state" style="padding:0 var(--spacing-xl, 16px)">
+            <div class="empty-state-content">
+              <div class="empty-state-icon">&#x1F392;</div>
+              <div class="empty-state-title">No apps added</div>
+              <div class="empty-state-desc">Browse the app library<br>to find something fun</div>
+            </div>
+            <div class="empty-state-actions">
+              <button class="btn-sprout btn-primary btn-lg">Browse apps</button>
+              <button class="btn-sprout btn-secondary btn-lg">Maybe later</button>
+            </div>
+          </div>
+          <div class="bg-grass"><div class="bg-grass-edge"></div><div class="bg-grass-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ In context — Sheet ════ -->
+  <div class="doc-section">
+    <h2>In context &mdash; Sheet</h2>
+    <p>Inside a <a href="/design-system/components/sheet.html" style="color:var(--brand-500)">Sheet</a>, use the minimal empty state pattern (48px icon + single line). The sheet footer CTA should be disabled when there&rsquo;s nothing to act on.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">No action (disabled CTA)</span>
+        <div class="phone-frame phone-frame-sky">
+          <div style="flex:1"></div>
+          <div class="sheet-scrim">
+            <div class="sheet" style="max-height:none">
+              <div class="sheet-top">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                  <div class="sheet-header-content">
+                    <h1 class="sheet-title">Choose app</h1>
+                  </div>
+                  <div class="sheet-close">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="sheet-body" style="overflow:visible">
+                <div class="sheet-empty">
+                  <div class="sheet-empty-icon">&#x1FAD7;</div>
+                  <div class="sheet-empty-text">Nothing here yet</div>
+                </div>
+              </div>
+              <div class="sheet-footer no-border">
+                <button class="btn-sprout btn-primary btn-lg state-disabled">Confirm</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">Primary CTA</span>
+        <div class="phone-frame phone-frame-sky">
+          <div style="flex:1"></div>
+          <div class="sheet-scrim">
+            <div class="sheet" style="max-height:none">
+              <div class="sheet-top">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                  <div class="sheet-header-content">
+                    <h1 class="sheet-title">My goals</h1>
+                  </div>
+                  <div class="sheet-close">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="sheet-body" style="overflow:visible">
+                <div class="sheet-empty">
+                  <div class="sheet-empty-icon">&#x1F331;</div>
+                  <div class="sheet-empty-text">No goals yet</div>
+                </div>
+              </div>
+              <div class="sheet-footer no-border">
+                <button class="btn-sprout btn-primary btn-lg">Add a goal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">Primary + Secondary</span>
+        <div class="phone-frame phone-frame-sky">
+          <div style="flex:1"></div>
+          <div class="sheet-scrim">
+            <div class="sheet" style="max-height:none">
+              <div class="sheet-top">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                  <div class="sheet-header-content">
+                    <h1 class="sheet-title">Search</h1>
+                  </div>
+                  <div class="sheet-close">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="sheet-body" style="overflow:visible">
+                <div class="sheet-empty">
+                  <div class="sheet-empty-icon">&#x1F50D;</div>
+                  <div class="sheet-empty-text">No results for &ldquo;dinosaur&rdquo;</div>
+                </div>
+              </div>
+              <div class="sheet-footer no-border">
+                <div class="sheet-footer-stack">
+                  <button class="btn-sprout btn-primary btn-lg">Try another search</button>
+                  <button class="btn-sprout btn-secondary btn-lg">Clear filters</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ In context — Card ════ -->
+  <div class="doc-section">
+    <h2>In context &mdash; Card</h2>
+    <p>Inside a card or content block, use a compact empty state. No CTA buttons &mdash; the surrounding UI provides navigation.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Minimal</span>
+        <div class="card-container">
+          <div class="sheet-empty" style="padding:var(--spacing-3xl, 24px) 0">
+            <div class="sheet-empty-icon">&#x1F4CB;</div>
+            <div class="sheet-empty-text">No tasks today</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <span class="demo-label">With description</span>
+        <div class="card-container">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:var(--spacing-3xl, 24px) 0;text-align:center">
+            <div class="sheet-empty-icon">&#x2B50;</div>
+            <div style="font-family:var(--font-family-body);font-size:var(--font-size-text-md, 16px);line-height:var(--line-height-text-md, 24px);font-weight:700;color:var(--text-primary, #181d27)">No favorites</div>
+            <div style="font-family:var(--font-family-body);font-size:var(--font-size-text-sm, 14px);line-height:var(--line-height-text-sm, 20px);color:var(--text-secondary, #414651)">Tap the star on any item to save it here</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Guidelines ════ -->
+  <div class="doc-section">
+    <h2>Guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Be specific.</strong> Tell the user exactly what&rsquo;s missing and, when possible, what action they can take. Avoid generic messages like &ldquo;Nothing here.&rdquo;</li>
+        <li><strong>Stay positive.</strong> Frame the empty state as an opportunity, not a dead end. Use encouraging language appropriate for the audience (parents vs. kids).</li>
+        <li><strong>Use a relevant icon.</strong> Pick a TossFace emoji that relates to the content type (e.g., a camera for an empty photo gallery, a star for an empty favorites list).</li>
+        <li><strong>Limit to one CTA.</strong> Full-screen empty states can include a primary action button. Don&rsquo;t add secondary actions unless there&rsquo;s a clear alternative path.</li>
+        <li><strong>Don&rsquo;t use empty states for errors.</strong> Connectivity issues, timeouts, and failed loads should use the <a href="/design-system/patterns/error-screen.html" style="color:var(--brand-500)">Error Screen</a> pattern instead.</li>
+        <li><strong>Keep copy short.</strong> Title should be one line. Description should be one to two sentences at most.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Content guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Title:</strong> Short, clear statement. Lead with &ldquo;No&rdquo; for absent content (&ldquo;No messages yet&rdquo;) or a positive statement for completed states (&ldquo;All done!&rdquo;).</li>
+        <li><strong>Description:</strong> One sentence of context. Explain what will appear here or how to get started.</li>
+        <li><strong>Tone:</strong> Friendly and encouraging &mdash; this is a kids app. Avoid technical language.</li>
+        <li><strong>TossFace icon:</strong> Pick an emoji that relates to the content type. Examples: &#x1F4ED;&nbsp;messages, &#x1F331;&nbsp;goals, &#x1F392;&nbsp;apps, &#x1F50D;&nbsp;search, &#x1F3C6;&nbsp;achievements, &#x2B50;&nbsp;favorites, &#x1F4CB;&nbsp;tasks, &#x1F44B;&nbsp;friends, &#x2728;&nbsp;welcome.</li>
+        <li><strong>CTA copy:</strong> Use action verbs (&ldquo;Add a goal&rdquo;, &ldquo;Browse apps&rdquo;, &ldquo;Get started&rdquo;). Keep it under 3 words when possible.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Width</td><td>370px (fills container in full-screen)</td></tr>
+        <tr><td>Layout</td><td>Flex column, center aligned</td></tr>
+        <tr><td>Content &harr; actions gap</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Content internal gap</td><td>8px</td></tr>
+        <tr><td>Actions internal gap</td><td><code>--spacing-md</code> (8px)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Typography</h3>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Style</th></tr></thead>
+      <tbody>
+        <tr><td>Icon</td><td>TossFace, 56px</td></tr>
+        <tr><td>Title</td><td><code>text-md</code> bold (16px/24px), <code>--text-primary</code> (#181d27)</td></tr>
+        <tr><td>Description</td><td><code>text-sm</code> regular (14px/20px), <code>--text-secondary</code> (#414651)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Buttons</h3>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Style</th></tr></thead>
+      <tbody>
+        <tr><td>Primary CTA</td><td><code>btn-primary btn-lg</code> &mdash; see <a href="/design-system/components/buttons.html" style="color:var(--brand-500)">Buttons</a></td></tr>
+        <tr><td>Secondary CTA</td><td><code>btn-secondary btn-lg</code></td></tr>
+        <tr><td>Disabled CTA</td><td><code>btn-primary btn-lg state-disabled</code></td></tr>
+        <tr><td>Button width</td><td>Full width (100%)</td></tr>
+        <tr><td>Border radius</td><td><code>--radius-2xl</code> (16px)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Sheet variant (minimal)</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Icon size</td><td>48px</td></tr>
+        <tr><td>Text</td><td><code>text-sm</code> regular (14px/20px), <code>--text-quaternary</code> (#717680)</td></tr>
+        <tr><td>Gap</td><td><code>--spacing-lg</code> (12px)</td></tr>
+        <tr><td>Padding</td><td><code>--spacing-5xl</code> (40px) top/bottom</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>Use <code>role="status"</code> or <code>aria-live="polite"</code> for empty states that appear dynamically (e.g. after filtering).</li>
+        <li>TossFace icons should have <code>aria-hidden="true"</code> &mdash; the title and description convey the meaning.</li>
+        <li>Disabled buttons must include <code>aria-disabled="true"</code>.</li>
+        <li>Ensure title and description text meet WCAG AA contrast (4.5:1). The documented token pairs (<code>--text-primary</code> on <code>--bg-primary</code>) satisfy this.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>
