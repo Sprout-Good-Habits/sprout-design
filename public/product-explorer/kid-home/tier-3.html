@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Product Explorer — Kid 3 Tier</title>
+<title>Sprout Product Explorer — Tier 3</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <style>
@@ -182,32 +182,51 @@
   height: 302px;
 }
 
-/* ── Today / Anytime Tabs (on grass) ── */
+/* ── Today / Anytime Tabs (pill style) ── */
 .home-tabs {
   display: flex;
-  padding: 48px 12px 0;
-  margin-bottom: 0;
-  gap: 0;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px);
+  margin: 48px 12px 0;
+  background: var(--bg-secondary, #fafafa);
+  border-radius: var(--radius-xl, 16px);
+  align-items: center;
 }
 .home-tab {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 4px;
+  gap: var(--spacing-md, 8px);
+  padding: 8px 12px;
+  height: 28px;
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 11px;
+  font-size: var(--font-size-text-xs, 12px);
   line-height: 16px;
   font-weight: var(--font-weight-semibold, 600);
-  color: rgba(255,255,255,0.6);
+  color: var(--text-secondary, #414651);
   cursor: pointer;
-  border-bottom: 2px solid rgba(255,255,255,0.2);
-  transition: color 0.15s, border-color 0.15s;
+  border-radius: var(--radius-xl, 12px);
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
   white-space: nowrap;
+  overflow: hidden;
 }
 .home-tab.active {
-  color: #ffffff;
-  border-bottom-color: #ffffff;
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.home-tab-badge {
+  display: inline-flex;
+  padding: 3px 6px;
+  background: var(--gray-200, #e9eaeb);
+  color: var(--text-secondary, #414651);
+  border-radius: 100px;
+  font-size: 9px;
+  line-height: 13px;
+  font-weight: 400;
 }
 
 /* ── Progress section ── */
@@ -260,6 +279,70 @@
   padding: 0 12px 32px;
   position: relative;
   z-index: 3;
+}
+
+/* ── Anytime gallery grid ── */
+.anytime-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px 12px;
+  position: relative;
+  z-index: 3;
+}
+.anytime-tile {
+  border-radius: 16px;
+  padding: 12px;
+  height: 136px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  overflow: hidden;
+}
+.anytime-tile.tile-brand { background: var(--brand-500, #0ba5ec); }
+.anytime-tile.tile-blue-dark { background: var(--blue-dark-500, #2970ff); }
+.anytime-tile.tile-violet { background: var(--violet-500, #875bf7); }
+.anytime-tile.tile-pink { background: var(--pink-500, #ee46bc); }
+.anytime-tile.tile-red { background: var(--red-500, #f04438); }
+.anytime-tile.tile-orange { background: var(--orange-500, #ef6820); }
+.anytime-tile.tile-yellow { background: var(--yellow-500, #eaaa08); }
+.anytime-tile.tile-green { background: var(--green-500, #17b26a); }
+.anytime-tile .task-badge {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 100px;
+  gap: 3px;
+  font-weight: 400;
+  line-height: 13px;
+}
+.anytime-tile .badge-num {
+  min-width: 0;
+}
+.anytime-tile-badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.anytime-tile-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+.anytime-tile-name {
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 16px;
+}
+.anytime-tile-emoji {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', sans-serif;
+  font-size: 56px;
+  line-height: 1;
 }
 
 /* Section headers */
@@ -322,10 +405,13 @@
 
 /* Emoji box color variants — match kids card solids */
 .emoji-brand { background: var(--brand-500, #0ba5ec); }
-.emoji-orange { background: var(--orange-500, #ef6820); }
-.emoji-violet { background: var(--violet-500, #875bf7); }
-.emoji-green { background: var(--green-500, #17b26a); }
 .emoji-blue-dark { background: var(--blue-dark-500, #2970ff); }
+.emoji-violet { background: var(--violet-500, #875bf7); }
+.emoji-pink { background: var(--pink-500, #ee46bc); }
+.emoji-red { background: var(--red-500, #f04438); }
+.emoji-orange { background: var(--orange-500, #ef6820); }
+.emoji-yellow { background: var(--yellow-500, #eaaa08); }
+.emoji-green { background: var(--green-500, #17b26a); }
 
 .task-info {
   flex: 1;
@@ -724,78 +810,127 @@
 }
 
 /* ── Preview tabs (time of day) ── */
+/* ── Controls row ── */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl, 16px);
+}
+@media (max-width: 600px) {
+  .controls-row {
+    flex-direction: column;
+    gap: var(--spacing-md, 8px);
+  }
+  .controls-row .preview-tabs,
+  .controls-row .device-toggle {
+    width: 100%;
+  }
+  .controls-row .preview-tab,
+  .controls-row .device-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* ── Preview tabs (time of day) ── */
 .preview-tabs {
   display: flex;
-  justify-content: center;
-  gap: var(--spacing-sm, 6px);
-  margin-bottom: var(--spacing-xl, 16px);
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px);
+  background: var(--bg-secondary_alt, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-lg, 10px);
 }
 .preview-tab {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm, 6px);
-  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #fff);
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  height: 36px;
+  border-radius: var(--radius-sm, 6px);
+  border: none;
+  background: transparent;
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-secondary, #535862);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-quaternary, #717680);
   cursor: pointer;
   transition: all 0.15s;
+  box-sizing: border-box;
 }
 .preview-tab:hover {
-  border-color: var(--border-primary, #d5d7da);
+  color: var(--text-tertiary, #535862);
 }
 .preview-tab.active {
-  background: var(--brand-50, #f0f9ff);
-  border-color: var(--brand-200, #b9e6fe);
-  color: var(--brand-700, #026aa2);
-  font-weight: var(--font-weight-semibold, 600);
+  background: var(--bg-primary_alt, #fff);
+  color: var(--text-secondary, #414651);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
 }
 .preview-tab-emoji {
   font-family: 'TossFace', sans-serif;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1;
 }
 
 /* ── Device toggle ── */
 .device-toggle {
   display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px);
+  background: var(--bg-secondary_alt, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-lg, 10px);
 }
 .device-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #fff);
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  height: 36px;
+  border-radius: var(--radius-sm, 6px);
+  border: none;
+  background: transparent;
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-secondary, #535862);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-quaternary, #717680);
   cursor: pointer;
   transition: all 0.15s;
+  box-sizing: border-box;
 }
 .device-btn:hover {
-  border-color: var(--border-primary, #d5d7da);
+  color: var(--text-tertiary, #535862);
 }
 .device-btn.active {
-  background: var(--gray-50, #fafafa);
-  border-color: var(--border-primary, #d5d7da);
-  color: var(--text-primary, #181d27);
-  font-weight: var(--font-weight-semibold, 600);
+  background: var(--bg-primary_alt, #fff);
+  color: var(--text-secondary, #414651);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.device-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.device-btn .device-icon {
+  stroke: var(--text-quaternary, #717680);
+  transition: stroke 0.15s;
+}
+.device-btn.active .device-icon {
+  stroke: var(--text-secondary, #414651);
 }
 
 /* ── iPad overrides ── */
 .device-wrapper.ipad .device-screen {
   width: 480px;
   height: 640px;
+}
+.device-wrapper.ipad .anytime-grid {
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 /* ── Empty state (all done) ── */
@@ -841,7 +976,7 @@
 
       <div class="page-header">
         <div class="page-header-text">
-          <div class="sec-title">Kid 3 Tier</div>
+          <div class="sec-title">Tier 3</div>
           <div class="sec-desc">Older kid home screen — inbox-style task list with grouped sections, streak and gem badges, and colored emoji containers.</div>
         </div>
         <button class="btn-reset" id="reset-btn" aria-label="Reset prototype">
@@ -849,15 +984,17 @@
         </button>
       </div>
 
-      <div class="preview-tabs" id="preview-tabs">
-        <button class="preview-tab" data-preview="morning"><span class="preview-tab-emoji">&#x2600;&#xFE0F;</span> Morning</button>
-        <button class="preview-tab active" data-preview="afternoon"><span class="preview-tab-emoji">&#x26C5;</span> Afternoon</button>
-        <button class="preview-tab" data-preview="night"><span class="preview-tab-emoji">&#x1F319;</span> Night</button>
-      </div>
+      <div class="controls-row">
+        <div class="preview-tabs" id="preview-tabs">
+          <button class="preview-tab" data-preview="morning"><span class="preview-tab-emoji">&#x2600;&#xFE0F;</span> Morning</button>
+          <button class="preview-tab active" data-preview="afternoon"><span class="preview-tab-emoji">&#x26C5;</span> Afternoon</button>
+          <button class="preview-tab" data-preview="night"><span class="preview-tab-emoji">&#x1F319;</span> Night</button>
+        </div>
 
-      <div class="device-toggle">
-        <button class="device-btn active" data-device="iphone">iPhone</button>
-        <button class="device-btn" data-device="ipad">iPad</button>
+        <div class="device-toggle">
+          <button class="device-btn" data-device="ipad"><svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 9 16C9.27614 16 9.5 16.2239 9.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
+          <button class="device-btn active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
+        </div>
       </div>
 
       <div class="viewer">
@@ -902,7 +1039,7 @@
 
                         <!-- Today / Anytime Tabs -->
                         <div class="home-tabs" id="home-tabs">
-                          <div class="home-tab active" data-home-tab="today">Today <span id="today-count">(8)</span></div>
+                          <div class="home-tab active" data-home-tab="today">Today <span class="home-tab-badge" id="today-count">8</span></div>
                           <div class="home-tab" data-home-tab="anytime">Anytime</div>
                         </div>
 
@@ -915,7 +1052,7 @@
 
                           <!-- Morning NOW: Read for 20 min — Not Started -->
                           <div class="task-row" data-show="morning" data-now="morning" data-tab="today">
-                            <div class="task-emoji-box emoji-violet"><span class="tf-task">&#x1F4D6;</span></div>
+                            <div class="task-emoji-box emoji-green"><span class="tf-task">&#x1F4D6;</span></div>
                             <div class="task-info">
                               <div class="task-time">8:00 AM</div>
                               <div class="task-name">Read for 20 min</div>
@@ -948,9 +1085,9 @@
                           <!-- ── EARLIER TODAY ── -->
                           <div class="section-label" data-show="afternoon" data-tab="today">Earlier Today</div>
 
-                          <!-- 3: Read for 20 min — Reviewing (Violet) 3:30 PM -->
+                          <!-- 3: Read for 20 min — Reviewing (Green) 3:30 PM -->
                           <div class="task-row task-row-reviewing" data-show="afternoon" data-tab="today">
-                            <div class="task-emoji-box emoji-violet">
+                            <div class="task-emoji-box emoji-green">
                               <span class="tf-task">&#x1F4D6;</span>
                               <span class="emoji-status-badge">&#x1F504;</span>
                             </div>
@@ -967,10 +1104,10 @@
                             </div>
                           </div>
 
-                          <!-- 4: Homework — Rejected (Blue Dark) 4:00 PM -->
+                          <!-- 4: Homework — Rejected (Orange) 4:00 PM -->
                           <div class="task-card-rejected" id="task-2" data-show="afternoon" data-tab="today">
                             <div class="task-row">
-                              <div class="task-emoji-box emoji-blue-dark">
+                              <div class="task-emoji-box emoji-orange">
                                 <span class="tf-task">&#x1F4DD;</span>
                                 <span class="emoji-status-badge">&#x274E;</span>
                               </div>
@@ -992,10 +1129,10 @@
                             </div>
                           </div>
 
-                          <!-- 5: Practice Piano — Claimable (Brand) 4:30 PM -->
+                          <!-- 5: Practice Piano — Claimable (Violet) 4:30 PM -->
                           <div class="task-card-claim" id="task-4" data-show="afternoon" data-tab="today">
                             <div class="task-row">
-                              <div class="task-emoji-box emoji-brand">
+                              <div class="task-emoji-box emoji-violet">
                                 <span class="tf-task">&#x1F3B9;</span>
                                 <span class="emoji-status-badge">&#x2705;</span>
                               </div>
@@ -1022,7 +1159,7 @@
 
                           <!-- Morning Up Next: Homework — Not Started -->
                           <div class="task-row" data-show="morning" data-tab="today">
-                            <div class="task-emoji-box emoji-blue-dark"><span class="tf-task">&#x1F4DD;</span></div>
+                            <div class="task-emoji-box emoji-orange"><span class="tf-task">&#x1F4DD;</span></div>
                             <div class="task-info">
                               <div class="task-time">4:00 PM</div>
                               <div class="task-name">Homework</div>
@@ -1054,7 +1191,7 @@
 
                           <!-- Morning Up Next: Practice Piano -->
                           <div class="task-row" data-show="morning" data-tab="today">
-                            <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F3B9;</span></div>
+                            <div class="task-emoji-box emoji-violet"><span class="tf-task">&#x1F3B9;</span></div>
                             <div class="task-info">
                               <div class="task-time">4:30 PM</div>
                               <div class="task-name">Practice Piano</div>
@@ -1068,9 +1205,9 @@
                             </div>
                           </div>
 
-                          <!-- 7: Brush Teeth (PM) — Not Started (Orange) 8:00 PM -->
+                          <!-- 7: Brush Teeth (PM) — Not Started (Blue Dark) 8:00 PM -->
                           <div class="task-row" data-show="morning afternoon" data-tab="today">
-                            <div class="task-emoji-box emoji-orange"><span class="tf-task">&#x1FAE7;</span></div>
+                            <div class="task-emoji-box emoji-blue-dark"><span class="tf-task">&#x1FAE7;</span></div>
                             <div class="task-info">
                               <div class="task-time">8:00 PM</div>
                               <div class="task-name">Brush Teeth</div>
@@ -1084,9 +1221,9 @@
                             </div>
                           </div>
 
-                          <!-- 8: Pack Backpack — Not Started (Violet) 8:30 PM -->
+                          <!-- 8: Pack Backpack — Not Started (Yellow) 8:30 PM -->
                           <div class="task-row" data-show="morning afternoon" data-tab="today">
-                            <div class="task-emoji-box emoji-violet"><span class="tf-task">&#x1F392;</span></div>
+                            <div class="task-emoji-box emoji-yellow"><span class="tf-task">&#x1F392;</span></div>
                             <div class="task-info">
                               <div class="task-time">8:30 PM</div>
                               <div class="task-name">Pack Backpack</div>
@@ -1100,79 +1237,102 @@
                             </div>
                           </div>
 
-                          <!-- ── ANYTIME ── -->
+                        </div><!-- /task-list -->
 
-                          <!-- 9: Drink Water — Not Started (Green) -->
-                          <div class="task-row" data-show="morning afternoon" data-tab="anytime">
-                            <div class="task-emoji-box emoji-green"><span class="tf-task">&#x1F4A7;</span></div>
-                            <div class="task-info">
-                              <div class="task-name">Drink Water</div>
-                              <div class="task-desc">Drink 4 glasses today</div>
+                        <!-- ── ANYTIME GALLERY ── -->
+                        <div class="anytime-grid" data-tab="anytime" data-show="morning afternoon">
+
+                          <div class="anytime-tile tile-blue-dark">
+                            <div class="anytime-tile-badges">
+                              <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">10</span></span>
+                              <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
                             </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">10</span></span>
-                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
-                              </div>
+                            <div class="anytime-tile-content">
+                              <div class="anytime-tile-name">Drink Water</div>
                             </div>
+                            <div class="anytime-tile-emoji">&#x1F4A7;</div>
                           </div>
 
-                          <!-- 10: Tidy Room — Not Started (Green) -->
-                          <div class="task-row" data-show="morning afternoon" data-tab="anytime">
-                            <div class="task-emoji-box emoji-green"><span class="tf-task">&#x1F9F9;</span></div>
-                            <div class="task-info">
-                              <div class="task-name">Tidy Room</div>
-                              <div class="task-desc">Pick up clothes and toys</div>
+                          <div class="anytime-tile tile-orange">
+                            <div class="anytime-tile-badges">
+                              <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">4</span></span>
+                              <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
                             </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">4</span></span>
-                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
-                              </div>
+                            <div class="anytime-tile-content">
+                              <div class="anytime-tile-name">Tidy Room</div>
                             </div>
+                            <div class="anytime-tile-emoji">&#x1F9F9;</div>
                           </div>
 
-                          <!-- 11: Go Outside — Reviewing (Brand) -->
-                          <div class="task-row task-row-reviewing" data-show="morning afternoon" data-tab="anytime">
-                            <div class="task-emoji-box emoji-brand">
-                              <span class="tf-task">&#x1F3DE;&#xFE0F;</span>
-                              <span class="emoji-status-badge">&#x1F504;</span>
+                          <div class="anytime-tile tile-green">
+                            <div class="anytime-tile-badges">
+                              <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">6</span></span>
+                              <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
                             </div>
-                            <div class="task-info">
-                              <div class="task-name">Go Outside</div>
-                              <div class="task-desc">Reviewing...</div>
+                            <div class="anytime-tile-content">
+                              <div class="anytime-tile-name">Go Outside</div>
                             </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">6</span></span>
-                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
-                              </div>
-                            </div>
+                            <div class="anytime-tile-emoji">&#x1F3DE;&#xFE0F;</div>
                           </div>
 
-                          <!-- 12: Draw Something — Claimable (Violet) -->
-                          <div class="task-card-claim" data-show="morning afternoon night" id="night-claim-card" data-tab="anytime">
-                            <div class="task-row">
-                              <div class="task-emoji-box emoji-violet">
-                                <span class="tf-task">&#x1F3A8;</span>
-                                <span class="emoji-status-badge">&#x2705;</span>
-                              </div>
-                              <div class="task-info">
-                                <div class="task-name">Draw Something</div>
-                                <div class="task-desc">Completed, ready to claim!</div>
-                              </div>
-                              <div class="task-trailing">
-                                <div class="task-badges">
-                                  <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">3</span></span>
-                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
-                                </div>
-                              </div>
+                          <div class="anytime-tile tile-violet" id="night-claim-tile">
+                            <div class="anytime-tile-badges">
+                              <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">3</span></span>
+                              <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
                             </div>
-                            <div class="task-action-area">
-                              <span class="action-label">Task complete, claim your reward!</span>
-                              <button class="btn-sprout btn-secondary btn-sm"><span class="tf-claim">&#x1F48E;</span> Claim</button>
+                            <div class="anytime-tile-content">
+                              <div class="anytime-tile-name">Draw Something</div>
                             </div>
+                            <div class="anytime-tile-emoji">&#x1F3A8;</div>
                           </div>
+
+                          <div class="anytime-tile tile-pink">
+                            <div class="anytime-tile-badges">
+                              <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">2</span></span>
+                              <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                            </div>
+                            <div class="anytime-tile-content">
+                              <div class="anytime-tile-name">Practice Music</div>
+                            </div>
+                            <div class="anytime-tile-emoji">&#x1F3B5;</div>
+                          </div>
+
+                          <div class="anytime-tile tile-brand">
+                            <div class="anytime-tile-badges">
+                              <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">5</span></span>
+                              <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                            </div>
+                            <div class="anytime-tile-content">
+                              <div class="anytime-tile-name">Stretch</div>
+                            </div>
+                            <div class="anytime-tile-emoji">&#x1F9D8;</div>
+                          </div>
+
+                          <div class="anytime-tile tile-yellow">
+                            <div class="anytime-tile-badges">
+                              <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">8</span></span>
+                              <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                            </div>
+                            <div class="anytime-tile-content">
+                              <div class="anytime-tile-name">Write in Journal</div>
+                            </div>
+                            <div class="anytime-tile-emoji">&#x1F4DD;</div>
+                          </div>
+
+                          <div class="anytime-tile tile-red">
+                            <div class="anytime-tile-badges">
+                              <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
+                              <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
+                            </div>
+                            <div class="anytime-tile-content">
+                              <div class="anytime-tile-name">Help with Chores</div>
+                            </div>
+                            <div class="anytime-tile-emoji">&#x1F9F9;</div>
+                          </div>
+
+                        </div><!-- /anytime-grid -->
+
+                        <div class="task-list" style="padding-top:0;">
 
                           <!-- ── DONE (stacked, bottom) ── -->
                           <div class="section-label done-toggle" id="done-toggle" data-show="morning afternoon night" data-tab="today">Done <svg class="done-toggle-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5l3 3 3-3"/></svg></div>
@@ -1198,7 +1358,7 @@
                                 </div>
                               </div>
                               <div class="task-row task-row-claimed">
-                                <div class="task-emoji-box emoji-orange">
+                                <div class="task-emoji-box emoji-blue-dark">
                                   <span class="tf-task">&#x1FAE7;</span>
                                   <span class="emoji-status-badge">&#x2705;</span>
                                 </div>
@@ -1251,7 +1411,7 @@
         </div>
       </div>
 
-      <div class="legend">
+      <div class="legend" id="legend">
         <div class="legend-item"><span class="legend-dot" style="background:var(--green-500)"></span> Not Started</div>
         <div class="legend-item"><span class="legend-dot" style="background:var(--orange-500)"></span> Rejected</div>
         <div class="legend-item"><span class="legend-dot" style="background:var(--violet-500)"></span> Submitted</div>
@@ -1262,7 +1422,7 @@
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Kid 1 Tier (Coming Soon)',href:'#'},{label:'Kid 2 Tier',href:'/product-explorer/kid-home/2-tabs-bg.html'},{label:'Kid 3 Tier',href:'/product-explorer/kid-home/older.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
@@ -1471,9 +1631,9 @@
   var allShowItems = document.querySelectorAll('[data-show]');
 
   var todayCounts = {
-    morning: '(10)',
-    afternoon: '(8)',
-    night: '(1)'
+    morning: '10',
+    afternoon: '8',
+    night: '1'
   };
 
   function applyPreview(state) {
@@ -1557,11 +1717,17 @@
   var homeTabs = document.querySelectorAll('.home-tab');
   var allTabItems = document.querySelectorAll('[data-tab]');
 
+  var taskLists = document.querySelectorAll('.task-list');
+
   function applyHomeTab(tab) {
     currentHomeTab = tab;
     homeTabs.forEach(function(t) {
       t.classList.toggle('active', t.dataset.homeTab === tab);
     });
+    // Hide task-list containers and legend on anytime tab
+    taskLists.forEach(function(tl) { tl.style.display = tab === 'anytime' ? 'none' : ''; });
+    var legend = document.getElementById('legend');
+    if (legend) legend.style.display = tab === 'anytime' ? 'none' : '';
     var firstAnytime = true;
     allTabItems.forEach(function(el) {
       el.style.marginTop = '';

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Product Explorer — Kid 2 Tier</title>
+<title>Sprout Product Explorer — Tier 2</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <style>
@@ -195,33 +195,51 @@
   z-index: 10;
 }
 
-/* ── Today / Anytime Tabs (on grass) ── */
+/* ── Today / Anytime Tabs (pill style) ── */
 .home-tabs {
   display: flex;
-  padding: 0 12px;
-  margin-top: 48px;
-  margin-bottom: 4px;
-  gap: 0;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px);
+  margin: 48px 12px 4px;
+  background: var(--bg-secondary, #fafafa);
+  border-radius: var(--radius-xl, 16px);
+  align-items: center;
 }
 .home-tab {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 4px;
+  gap: var(--spacing-md, 8px);
+  padding: 8px 12px;
+  height: 28px;
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 11px;
+  font-size: var(--font-size-text-xs, 12px);
   line-height: 16px;
   font-weight: var(--font-weight-semibold, 600);
-  color: rgba(255,255,255,0.6);
+  color: var(--text-secondary, #414651);
   cursor: pointer;
-  border-bottom: 2px solid rgba(255,255,255,0.2);
-  transition: color 0.15s, border-color 0.15s;
+  border-radius: var(--radius-xl, 12px);
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
   white-space: nowrap;
+  overflow: hidden;
 }
 .home-tab.active {
-  color: #ffffff;
-  border-bottom-color: #ffffff;
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.home-tab-badge {
+  display: inline-flex;
+  padding: 3px 6px;
+  background: var(--gray-200, #e9eaeb);
+  color: var(--text-secondary, #414651);
+  border-radius: 100px;
+  font-size: 9px;
+  line-height: 13px;
+  font-weight: 400;
 }
 
 /* ── Task Card Carousel (on grass) ── */
@@ -388,14 +406,20 @@
 .card-brand { background: var(--brand-500, #0ba5ec); }
 .card-blue-dark { background: var(--blue-dark-500, #2970ff); }
 .card-violet { background: var(--violet-500, #875bf7); }
+.card-pink { background: var(--pink-500, #ee46bc); }
+.card-red { background: var(--red-500, #f04438); }
 .card-orange { background: var(--orange-500, #ef6820); }
+.card-yellow { background: var(--yellow-500, #eaaa08); }
 .card-green { background: var(--green-500, #17b26a); }
 
 /* Badge utility-200 backgrounds */
 .badge-brand { background: var(--brand-200, #b9e6fe); color: var(--brand-700, #026aa2); }
 .badge-blue-dark { background: var(--blue-dark-200, #b2ccff); color: var(--blue-dark-700, #004eeb); }
 .badge-violet { background: var(--violet-200, #ddd6fe); color: var(--violet-700, #5925dc); }
+.badge-pink { background: var(--pink-200, #fcceee); color: var(--pink-700, #c11574); }
+.badge-red { background: var(--red-200, #fecdca); color: var(--red-700, #b42318); }
 .badge-orange { background: var(--orange-200, #f9dbaf); color: var(--orange-700, #b93815); }
+.badge-yellow { background: var(--yellow-200, #fedf89); color: var(--yellow-700, #a15c07); }
 .badge-green { background: var(--green-200, #abefc6); color: var(--green-700, #067647); }
 
 /* ── Streak counter glow (after emoji lands) ── */
@@ -545,73 +569,118 @@
   will-change: transform, opacity;
 }
 
+/* ── Controls row ── */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl, 16px);
+}
+@media (max-width: 600px) {
+  .controls-row {
+    flex-direction: column;
+    gap: var(--spacing-md, 8px);
+  }
+  .controls-row .preview-tabs,
+  .controls-row .device-toggle {
+    width: 100%;
+  }
+  .controls-row .preview-tab,
+  .controls-row .device-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
 /* ── Preview tabs (time of day) ── */
 .preview-tabs {
   display: flex;
-  justify-content: center;
-  gap: var(--spacing-sm, 6px);
-  margin-bottom: var(--spacing-xl, 16px);
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px);
+  background: var(--bg-secondary_alt, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-lg, 10px);
 }
 .preview-tab {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm, 6px);
-  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #fff);
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  height: 36px;
+  border-radius: var(--radius-sm, 6px);
+  border: none;
+  background: transparent;
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-secondary, #535862);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-quaternary, #717680);
   cursor: pointer;
   transition: all 0.15s;
+  box-sizing: border-box;
 }
 .preview-tab:hover {
-  border-color: var(--border-primary, #d5d7da);
+  color: var(--text-tertiary, #535862);
 }
 .preview-tab.active {
-  background: var(--brand-50, #f0f9ff);
-  border-color: var(--brand-200, #b9e6fe);
-  color: var(--brand-700, #026aa2);
-  font-weight: var(--font-weight-semibold, 600);
+  background: var(--bg-primary_alt, #fff);
+  color: var(--text-secondary, #414651);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
 }
 .preview-tab-emoji {
   font-family: 'TossFace', sans-serif;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1;
 }
 
 /* ── Device toggle ── */
 .device-toggle {
   display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px);
+  background: var(--bg-secondary_alt, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-lg, 10px);
 }
 .device-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #fff);
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  height: 36px;
+  border-radius: var(--radius-sm, 6px);
+  border: none;
+  background: transparent;
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-secondary, #535862);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-quaternary, #717680);
   cursor: pointer;
   transition: all 0.15s;
+  box-sizing: border-box;
 }
 .device-btn:hover {
-  border-color: var(--border-primary, #d5d7da);
+  color: var(--text-tertiary, #535862);
 }
 .device-btn.active {
-  background: var(--gray-50, #fafafa);
-  border-color: var(--border-primary, #d5d7da);
-  color: var(--text-primary, #181d27);
-  font-weight: var(--font-weight-semibold, 600);
+  background: var(--bg-primary_alt, #fff);
+  color: var(--text-secondary, #414651);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.device-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.device-btn .device-icon {
+  stroke: var(--text-quaternary, #717680);
+  transition: stroke 0.15s;
+}
+.device-btn.active .device-icon {
+  stroke: var(--text-secondary, #414651);
 }
 
 /* ── iPad overrides ── */
@@ -630,6 +699,96 @@
 }
 .device-wrapper.ipad .card-emoji {
   font-size: 72px;
+}
+.device-wrapper.ipad .anytime-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: 1fr 1fr;
+  grid-auto-columns: calc((100% - 2 * 6px) / 3);
+  gap: 6px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 8px 12px;
+}
+.device-wrapper.ipad .anytime-grid::before,
+.device-wrapper.ipad .anytime-grid::after {
+  display: none;
+}
+.device-wrapper.ipad .anytime-page {
+  display: contents;
+}
+.device-wrapper.ipad .anytime-tile {
+  width: auto;
+  scroll-snap-align: none;
+}
+.device-wrapper.ipad .anytime-tile:nth-child(3n+1) {
+  scroll-snap-align: start;
+}
+
+/* ── Anytime gallery grid ── */
+.anytime-grid {
+  display: flex;
+  gap: 6px;
+  padding: 8px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.anytime-grid::-webkit-scrollbar { display: none; }
+.anytime-grid::before,
+.anytime-grid::after {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+}
+.anytime-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  flex-shrink: 0;
+  width: calc(100% - 24px);
+  scroll-snap-align: start;
+}
+.anytime-tile {
+  border-radius: 16px;
+  padding: 12px;
+  height: 136px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  overflow: hidden;
+}
+.anytime-tile-badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.anytime-tile-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+.anytime-tile .card-badge {
+  background: rgba(255,255,255,0.2);
+  color: white;
+}
+.anytime-tile-name {
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 16px;
+}
+.anytime-tile-emoji {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', sans-serif;
+  font-size: 56px;
+  line-height: 1;
 }
 
 /* ── Empty state ── */
@@ -675,7 +834,7 @@
 
       <div class="page-header">
         <div class="page-header-text">
-          <div class="sec-title">Kid 2 Tier</div>
+          <div class="sec-title">Tier 2</div>
           <div class="sec-desc">Alternative layout: card carousel sits on the grass with the character above, scrollable content.</div>
         </div>
         <button class="btn-reset" id="reset-btn" aria-label="Reset prototype">
@@ -683,15 +842,17 @@
         </button>
       </div>
 
-      <div class="preview-tabs" id="preview-tabs">
-        <button class="preview-tab" data-preview="morning"><span class="preview-tab-emoji">&#x2600;&#xFE0F;</span> Morning</button>
-        <button class="preview-tab active" data-preview="afternoon"><span class="preview-tab-emoji">&#x26C5;</span> Afternoon</button>
-        <button class="preview-tab" data-preview="night"><span class="preview-tab-emoji">&#x1F319;</span> Night</button>
-      </div>
+      <div class="controls-row">
+        <div class="preview-tabs" id="preview-tabs">
+          <button class="preview-tab" data-preview="morning"><span class="preview-tab-emoji">&#x2600;&#xFE0F;</span> Morning</button>
+          <button class="preview-tab active" data-preview="afternoon"><span class="preview-tab-emoji">&#x26C5;</span> Afternoon</button>
+          <button class="preview-tab" data-preview="night"><span class="preview-tab-emoji">&#x1F319;</span> Night</button>
+        </div>
 
-      <div class="device-toggle">
-        <button class="device-btn active" data-device="iphone">iPhone</button>
-        <button class="device-btn" data-device="ipad">iPad</button>
+        <div class="device-toggle">
+          <button class="device-btn" data-device="ipad"><svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 9 16C9.27614 16 9.5 16.2239 9.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
+          <button class="device-btn active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
+        </div>
       </div>
 
       <div class="viewer">
@@ -734,7 +895,7 @@
 
                         <!-- Today / Anytime Tabs -->
                         <div class="home-tabs" id="home-tabs">
-                          <div class="home-tab active" data-filter="today">Today</div>
+                          <div class="home-tab active" data-filter="today">Today <span class="home-tab-badge" id="today-count">6</span></div>
                           <div class="home-tab" data-filter="anytime">Anytime</div>
                         </div>
 
@@ -744,10 +905,10 @@
                           <!-- ── TODAY CARDS ── -->
 
                           <!-- Read for 20 min — Reviewing -->
-                          <div class="task-card card-violet" data-filter="today" data-id="read" data-show="morning afternoon" data-now="morning">
+                          <div class="task-card card-green" data-filter="today" data-id="read" data-show="morning afternoon" data-now="morning">
                             <div class="card-badges">
-                              <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 7 days</span>
-                              <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 15</span>
+                              <span class="card-badge badge-green"><span class="tf-badge">&#x1F525;</span> 7 days</span>
+                              <span class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 15</span>
                             </div>
                             <div class="card-content">
                               <div class="card-name">Read for 20 min</div>
@@ -758,10 +919,10 @@
                           </div>
 
                           <!-- Homework — Rejected -->
-                          <div class="task-card card-blue-dark" data-filter="today" data-id="homework" data-show="morning afternoon">
+                          <div class="task-card card-orange" data-filter="today" data-id="homework" data-show="morning afternoon">
                             <div class="card-badges">
-                              <span class="card-badge badge-blue-dark"><span class="tf-badge flame-muted">&#x1F525;</span> 5 days</span>
-                              <span class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F48E;</span> 20</span>
+                              <span class="card-badge badge-orange"><span class="tf-badge flame-muted">&#x1F525;</span> 5 days</span>
+                              <span class="card-badge badge-orange"><span class="tf-badge">&#x1F48E;</span> 20</span>
                             </div>
                             <div class="card-content">
                               <div class="card-name">Homework</div>
@@ -786,10 +947,10 @@
                           </div>
 
                           <!-- Practice Piano — Claimable -->
-                          <div class="task-card card-brand" id="claim-card" data-filter="today" data-id="piano" data-show="afternoon">
+                          <div class="task-card card-violet" id="claim-card" data-filter="today" data-id="piano" data-show="afternoon">
                             <div class="card-badges">
-                              <span class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 12 days</span>
-                              <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 20</span>
+                              <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 12 days</span>
+                              <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 20</span>
                             </div>
                             <div class="card-content">
                               <div class="card-name">Practice Piano</div>
@@ -800,10 +961,10 @@
                           </div>
 
                           <!-- Brush Teeth PM — Not Started -->
-                          <div class="task-card card-orange" data-filter="today" data-id="brush" data-show="afternoon">
+                          <div class="task-card card-blue-dark" data-filter="today" data-id="brush" data-show="afternoon">
                             <div class="card-badges">
-                              <span class="card-badge badge-orange"><span class="tf-badge flame-muted">&#x1F525;</span> 8 days</span>
-                              <span class="card-badge badge-orange"><span class="tf-badge">&#x1F48E;</span> 5</span>
+                              <span class="card-badge badge-blue-dark"><span class="tf-badge flame-muted">&#x1F525;</span> 8 days</span>
+                              <span class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F48E;</span> 5</span>
                             </div>
                             <div class="card-content">
                               <div class="card-name">Brush Teeth</div>
@@ -814,10 +975,10 @@
                           </div>
 
                           <!-- Pack Backpack — Not Started -->
-                          <div class="task-card card-violet" data-filter="today" data-id="pack" data-show="afternoon">
+                          <div class="task-card card-yellow" data-filter="today" data-id="pack" data-show="afternoon">
                             <div class="card-badges">
-                              <span class="card-badge badge-violet"><span class="tf-badge flame-muted">&#x1F525;</span> 2 days</span>
-                              <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 5</span>
+                              <span class="card-badge badge-yellow"><span class="tf-badge flame-muted">&#x1F525;</span> 2 days</span>
+                              <span class="card-badge badge-yellow"><span class="tf-badge">&#x1F48E;</span> 5</span>
                             </div>
                             <div class="card-content">
                               <div class="card-name">Pack Backpack</div>
@@ -827,65 +988,106 @@
                             <div class="card-cta">Start</div>
                           </div>
 
-                          <!-- ── ANYTIME CARDS ── -->
+                        </div><!-- /carousel -->
 
-                          <!-- Drink Water — Locked -->
-                          <div class="task-card card-green card-hidden card-locked" data-filter="anytime" data-id="water" data-show="morning afternoon">
-                            <div class="card-badges">
-                              <span class="card-badge badge-green"><span class="tf-badge flame-muted">&#x1F525;</span> 10 days</span>
-                              <span class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 5</span>
+                        <!-- ── ANYTIME GALLERY ── -->
+                        <div class="anytime-grid" id="anytime-grid" style="display:none;">
+
+                          <!-- Page 1 -->
+                          <div class="anytime-page">
+                            <div class="anytime-tile card-blue-dark">
+                              <div class="anytime-tile-badges">
+                                <span class="card-badge"><span class="tf-badge flame-muted">&#x1F525;</span> 10</span>
+                                <span class="card-badge"><span class="tf-badge">&#x1F48E;</span> 5</span>
+                              </div>
+                              <div class="anytime-tile-content">
+                                <div class="anytime-tile-name">Drink Water</div>
+                              </div>
+                              <div class="anytime-tile-emoji">&#x1F4A7;</div>
                             </div>
-                            <div class="card-content">
-                              <div class="card-name">Drink Water</div>
-                              <div class="card-desc">Drink a full glass of water</div>
+
+                            <div class="anytime-tile card-orange">
+                              <div class="anytime-tile-badges">
+                                <span class="card-badge"><span class="tf-badge flame-muted">&#x1F525;</span> 4</span>
+                                <span class="card-badge"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                              </div>
+                              <div class="anytime-tile-content">
+                                <div class="anytime-tile-name">Tidy Room</div>
+                              </div>
+                              <div class="anytime-tile-emoji">&#x1F9F9;</div>
                             </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1F4A7;</span></div>
-                            <div class="card-cta">Start</div>
+
+                            <div class="anytime-tile card-green">
+                              <div class="anytime-tile-badges">
+                                <span class="card-badge"><span class="tf-badge">&#x1F525;</span> 6</span>
+                                <span class="card-badge"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                              </div>
+                              <div class="anytime-tile-content">
+                                <div class="anytime-tile-name">Go Outside</div>
+                              </div>
+                              <div class="anytime-tile-emoji">&#x1F3DE;&#xFE0F;</div>
+                            </div>
+
+                            <div class="anytime-tile card-violet">
+                              <div class="anytime-tile-badges">
+                                <span class="card-badge"><span class="tf-badge">&#x1F525;</span> 3</span>
+                                <span class="card-badge"><span class="tf-badge">&#x1F48E;</span> 15</span>
+                              </div>
+                              <div class="anytime-tile-content">
+                                <div class="anytime-tile-name">Draw Something</div>
+                              </div>
+                              <div class="anytime-tile-emoji">&#x1F3A8;</div>
+                            </div>
                           </div>
 
-                          <!-- Tidy Room — Locked -->
-                          <div class="task-card card-green card-hidden card-locked" data-filter="anytime" data-id="tidy" data-show="morning afternoon">
-                            <div class="card-badges">
-                              <span class="card-badge badge-green"><span class="tf-badge flame-muted">&#x1F525;</span> 4 days</span>
-                              <span class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                          <!-- Page 2 -->
+                          <div class="anytime-page">
+                            <div class="anytime-tile card-pink">
+                              <div class="anytime-tile-badges">
+                                <span class="card-badge"><span class="tf-badge flame-muted">&#x1F525;</span> 2</span>
+                                <span class="card-badge"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                              </div>
+                              <div class="anytime-tile-content">
+                                <div class="anytime-tile-name">Practice Music</div>
+                              </div>
+                              <div class="anytime-tile-emoji">&#x1F3B5;</div>
                             </div>
-                            <div class="card-content">
-                              <div class="card-name">Tidy Room</div>
-                              <div class="card-desc">Clean up your room</div>
+
+                            <div class="anytime-tile card-brand">
+                              <div class="anytime-tile-badges">
+                                <span class="card-badge"><span class="tf-badge">&#x1F525;</span> 5</span>
+                                <span class="card-badge"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                              </div>
+                              <div class="anytime-tile-content">
+                                <div class="anytime-tile-name">Stretch</div>
+                              </div>
+                              <div class="anytime-tile-emoji">&#x1F9D8;</div>
                             </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1F9F9;</span></div>
-                            <div class="card-cta">Start</div>
+
+                            <div class="anytime-tile card-yellow">
+                              <div class="anytime-tile-badges">
+                                <span class="card-badge"><span class="tf-badge flame-muted">&#x1F525;</span> 8</span>
+                                <span class="card-badge"><span class="tf-badge">&#x1F48E;</span> 20</span>
+                              </div>
+                              <div class="anytime-tile-content">
+                                <div class="anytime-tile-name">Write in Journal</div>
+                              </div>
+                              <div class="anytime-tile-emoji">&#x1F4DD;</div>
+                            </div>
+
+                            <div class="anytime-tile card-red">
+                              <div class="anytime-tile-badges">
+                                <span class="card-badge"><span class="tf-badge">&#x1F525;</span> 12</span>
+                                <span class="card-badge"><span class="tf-badge">&#x1F48E;</span> 15</span>
+                              </div>
+                              <div class="anytime-tile-content">
+                                <div class="anytime-tile-name">Help with Chores</div>
+                              </div>
+                            <div class="anytime-tile-emoji">&#x1F9F9;</div>
+                            </div>
                           </div>
 
-                          <!-- Go Outside — Locked -->
-                          <div class="task-card card-brand card-hidden card-locked" data-filter="anytime" data-id="outside" data-show="morning afternoon">
-                            <div class="card-badges">
-                              <span class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 6 days</span>
-                              <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</span>
-                            </div>
-                            <div class="card-content">
-                              <div class="card-name">Go Outside</div>
-                              <div class="card-desc">Spend some time playing outside</div>
-                            </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1F3DE;&#xFE0F;</span></div>
-                            <div class="card-cta card-cta-disabled">Reviewing...</div>
-                          </div>
-
-                          <!-- Draw Something — Claimable (night only), Locked (morning/afternoon) -->
-                          <div class="task-card card-violet card-hidden card-locked" data-filter="anytime" data-id="draw" data-show="morning afternoon night" data-now="night">
-                            <div class="card-badges">
-                              <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 3 days</span>
-                              <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 15</span>
-                            </div>
-                            <div class="card-content">
-                              <div class="card-name">Draw Something</div>
-                              <div class="card-desc">Draw anything you want and share it</div>
-                            </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1F3A8;</span></div>
-                            <div class="card-cta" id="night-claim-cta"><span class="tf-cta">&#x1F48E;</span> Claim</div>
-                          </div>
-
-                        </div>
+                        </div><!-- /anytime-grid -->
 
                         <!-- Empty state -->
                         <div class="empty-state" id="empty-state">
@@ -915,7 +1117,7 @@
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Kid 1 Tier (Coming Soon)',href:'#'},{label:'Kid 2 Tier',href:'/product-explorer/kid-home/2-tabs-bg.html'},{label:'Kid 3 Tier',href:'/product-explorer/kid-home/older.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
@@ -963,40 +1165,29 @@
   // ── Card state definitions per preview ──
   var cardStates = {
     morning: {
-      read:     { color: 'brand', cta: 'Start', now: true },
-      homework: { color: 'brand', cta: 'Start', now: false },
-      water:    { color: 'green', cta: 'Start', locked: true },
-      tidy:     { color: 'green', cta: 'Start', locked: true },
-      outside:  { color: 'brand', cta: 'Reviewing...', disabled: true, locked: true },
-      draw:     { color: 'violet', cta: 'Claim', claim: true, locked: true }
+      read:     { cta: 'Start', now: true },
+      homework: { cta: 'Start', now: false },
+      water:    { cta: 'Start', locked: true },
+      tidy:     { cta: 'Start', locked: true },
+      outside:  { cta: 'Reviewing...', disabled: true, locked: true },
+      draw:     { cta: 'Claim', claim: true, locked: true }
     },
     afternoon: {
-      read:     { color: 'violet', cta: 'Reviewing...', disabled: true, now: false },
-      homework: { color: 'blue-dark', cta: 'Try again', now: false },
-      sprout:   { color: 'brand', cta: 'Start', now: true },
-      piano:    { color: 'brand', cta: 'Claim', claim: true, now: false },
-      brush:    { color: 'orange', cta: 'Start', now: false },
-      pack:     { color: 'violet', cta: 'Start', now: false },
-      water:    { color: 'green', cta: 'Start', locked: true },
-      tidy:     { color: 'green', cta: 'Start', locked: true },
-      outside:  { color: 'brand', cta: 'Reviewing...', disabled: true, locked: true },
-      draw:     { color: 'violet', cta: 'Claim', claim: true, locked: true }
+      read:     { cta: 'Reviewing...', disabled: true, now: false },
+      homework: { cta: 'Try again', now: false },
+      sprout:   { cta: 'Start', now: true },
+      piano:    { cta: 'Claim', claim: true, now: false },
+      brush:    { cta: 'Start', now: false },
+      pack:     { cta: 'Start', now: false },
+      water:    { cta: 'Start', locked: true },
+      tidy:     { cta: 'Start', locked: true },
+      outside:  { cta: 'Reviewing...', disabled: true, locked: true },
+      draw:     { cta: 'Claim', claim: true, locked: true }
     },
     night: {
-      draw:     { color: 'violet', cta: 'Claim', claim: true, now: true }
+      draw:     { cta: 'Claim', claim: true, now: true }
     }
   };
-
-  var badgeColors = {
-    'brand': 'badge-brand',
-    'blue-dark': 'badge-blue-dark',
-    'violet': 'badge-violet',
-    'orange': 'badge-orange',
-    'green': 'badge-green'
-  };
-
-  var cardColors = ['card-brand', 'card-blue-dark', 'card-violet', 'card-orange', 'card-green'];
-  var badgeClasses = ['badge-brand', 'badge-blue-dark', 'badge-violet', 'badge-orange', 'badge-green'];
 
   function getRelPos(el) {
     var elRect = el.getBoundingClientRect();
@@ -1017,9 +1208,10 @@
       t.classList.toggle('active', t.getAttribute('data-preview') === state);
     });
 
-    // Hide empty state, restore carousel
+    // Hide empty state and anytime grid, restore carousel
     emptyState.classList.remove('visible');
     carousel.style.display = '';
+    anytimeGrid.style.display = 'none';
 
     // Clean up flying emojis/particles
     deviceScreen.querySelectorAll('.flying-emoji, .gem-particle').forEach(function(el) { el.remove(); });
@@ -1030,6 +1222,8 @@
       homeTabs.forEach(function(t) {
         t.classList.toggle('active', t.getAttribute('data-filter') === 'anytime');
       });
+      carousel.style.display = 'none';
+      anytimeGrid.style.display = '';
     } else {
       homeTabs.forEach(function(t) {
         t.classList.toggle('active', t.getAttribute('data-filter') === 'today');
@@ -1059,17 +1253,6 @@
         card.classList.add('card-hidden');
         return;
       }
-
-      // Apply color
-      cardColors.forEach(function(c) { card.classList.remove(c); });
-      card.classList.add('card-' + cardState.color);
-
-      // Apply badge color
-      var badges = card.querySelectorAll('.card-badge');
-      badges.forEach(function(b) {
-        badgeClasses.forEach(function(bc) { b.classList.remove(bc); });
-        b.classList.add(badgeColors[cardState.color]);
-      });
 
       if (cardState.now) card.classList.add('card-now');
       if (cardState.locked) card.classList.add('card-locked');
@@ -1143,26 +1326,35 @@
   }
 
   // ── Tab filtering ──
+  var anytimeGrid = document.getElementById('anytime-grid');
+
   function filterByTab(tab) {
     homeTabs.forEach(function(t) {
       t.classList.toggle('active', t.getAttribute('data-filter') === tab);
     });
-    var states = cardStates[currentPreview];
-    allCards.forEach(function(card) {
-      var id = card.getAttribute('data-id');
-      var cardFilter = card.getAttribute('data-filter');
-      if (!states[id]) {
-        card.classList.add('card-hidden');
-        return;
-      }
-      if (cardFilter === tab) {
-        card.classList.remove('card-hidden');
-      } else {
-        card.classList.add('card-hidden');
-      }
-    });
-    carousel.scrollLeft = 0;
-    if (tab === 'today') setTimeout(function() { scrollToNowCard(currentPreview); }, 50);
+    if (tab === 'anytime') {
+      carousel.style.display = 'none';
+      anytimeGrid.style.display = '';
+    } else {
+      carousel.style.display = '';
+      anytimeGrid.style.display = 'none';
+      var states = cardStates[currentPreview];
+      allCards.forEach(function(card) {
+        var id = card.getAttribute('data-id');
+        var cardFilter = card.getAttribute('data-filter');
+        if (!states[id]) {
+          card.classList.add('card-hidden');
+          return;
+        }
+        if (cardFilter === tab) {
+          card.classList.remove('card-hidden');
+        } else {
+          card.classList.add('card-hidden');
+        }
+      });
+      carousel.scrollLeft = 0;
+      setTimeout(function() { scrollToNowCard(currentPreview); }, 50);
+    }
   }
 
   homeTabs.forEach(function(t) {
@@ -1325,12 +1517,14 @@
     });
   });
 
-  nightClaimCta.addEventListener('click', function() {
-    var drawCard = nightClaimCta.closest('.task-card');
-    runClaimAnimation(drawCard, nightClaimCta, '&#x1F3A8;', 15, function() {
-      checkShowEmptyState();
+  if (nightClaimCta) {
+    nightClaimCta.addEventListener('click', function() {
+      var drawCard = nightClaimCta.closest('.task-card');
+      runClaimAnimation(drawCard, nightClaimCta, '&#x1F3A8;', 15, function() {
+        checkShowEmptyState();
+      });
     });
-  });
+  }
 
   // ── Device toggle ──
   var deviceBtns = document.querySelectorAll('.device-btn');
