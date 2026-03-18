@@ -12,7 +12,7 @@ const LOGIN_HTML = `<!DOCTYPE html>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Inter', system-ui, sans-serif;
-    background: #e0f2fe;
+    background: #f5f5f5;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,9 +22,11 @@ const LOGIN_HTML = `<!DOCTYPE html>
   }
   .login-card {
     background: white;
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 48px 40px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    box-shadow:
+      0 1px 3px 0 rgba(10,13,18,0.1),
+      0 1px 2px -1px rgba(10,13,18,0.1);
     max-width: 400px;
     width: 90%;
     text-align: center;
@@ -39,78 +41,57 @@ const LOGIN_HTML = `<!DOCTYPE html>
   .logo {
     width: 64px;
     height: 64px;
-    background: #acdc79;
-    border-radius: 16px;
     margin: 0 auto 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    box-shadow: 0 4px 16px rgba(134,203,60,0.25);
   }
-  .logo .eye {
-    width: 10px; height: 10px;
-    background: #fff;
-    border-radius: 50%;
-    position: absolute;
-    top: 17px;
-  }
-  .logo .eye::after {
-    content: '';
-    width: 6px; height: 6px;
-    background: #181d27;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px; left: 2px;
-  }
-  .logo .eye.l { left: 14px; }
-  .logo .eye.r { right: 14px; }
-  .logo .mouth {
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px; height: 4px;
-    border-bottom: 2px solid #181d27;
-    border-radius: 0 0 6px 6px;
+  .logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
   h1 {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 600;
     margin-bottom: 8px;
     color: #181d27;
   }
-  p { color: #535862; font-size: 14px; margin-bottom: 28px; }
+  p { color: #535862; font-size: 14px; line-height: 20px; margin-bottom: 24px; }
   form { display: flex; flex-direction: column; gap: 12px; }
   input[type="password"] {
-    padding: 12px 16px;
-    border: 2px solid #e9eaeb;
-    border-radius: 10px;
+    padding: 10px 14px;
+    border: 1px solid #d5d7da;
+    border-radius: 8px;
     font-size: 16px;
+    line-height: 24px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.15s, box-shadow 0.15s;
     background: white;
     color: #181d27;
     font-family: 'Inter', system-ui, sans-serif;
   }
-  input[type="password"]::placeholder { color: #a4a7ae; }
-  input[type="password"]:focus { border-color: #86cb3c; }
+  input[type="password"]::placeholder { color: #717680; }
+  input[type="password"]:focus {
+    border-color: #0ba5ec;
+    box-shadow: 0 0 0 4px rgba(11,165,236,0.24);
+  }
   button {
-    padding: 12px;
-    background: #86cb3c;
+    padding: 10px 18px;
+    background: #0ba5ec;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
+    line-height: 24px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.15s;
     font-family: 'Inter', system-ui, sans-serif;
+    box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
   }
-  button:hover { background: #4f7a21; }
+  button:hover { background: #0086c9; }
   .error {
     color: #d92d20;
-    font-size: 13px;
+    font-size: 14px;
+    line-height: 20px;
     margin-top: 4px;
     display: none;
   }
@@ -120,9 +101,7 @@ const LOGIN_HTML = `<!DOCTYPE html>
 <body>
 <div class="login-card">
   <div class="logo">
-    <div class="eye l"></div>
-    <div class="eye r"></div>
-    <div class="mouth"></div>
+    <img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout">
   </div>
   <h1>Sprout Design</h1>
   <p>Enter the passcode to access design resources.</p>
