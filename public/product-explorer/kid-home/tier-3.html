@@ -44,8 +44,8 @@
   position: relative;
 }
 .device-screen {
-  width: 302px;
-  height: 656px;
+  width: 402px;
+  height: 874px;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -56,17 +56,17 @@
 
 /* ── Status bar ── */
 .phone-status {
-  height: 44px;
-  padding: 14px 20px 0;
+  height: 54px;
+  padding: 14px 24px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary, #181d27);
 }
-.phone-status-icons { display: flex; gap: 3px; align-items: center; }
-.phone-status-icons svg { width: 12px; height: 12px; }
+.phone-status-icons { display: flex; gap: 4px; align-items: center; }
+.phone-status-icons svg { width: 16px; height: 16px; }
 
 /* ── Sky background ── */
 .screen-sky-alt {
@@ -107,41 +107,41 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px 6px;
+  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
 }
 .toolbar-trailing {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-md, 8px);
 }
 .btn-util {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0;
-  padding: 7px;
+  padding: var(--spacing-lg, 12px);
   background: var(--bg-primary, #ffffff);
-  border: 1.5px solid var(--border-secondary, #e9eaeb);
+  border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: var(--radius-full, 9999px);
-  box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
   flex-shrink: 0;
 }
-.btn-util-with-label { gap: 4px; padding-right: 10px; }
+.btn-util-with-label { gap: var(--spacing-md, 8px); }
 .btn-util-label {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 12px;
-  line-height: 1;
-  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-secondary, #414651);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 .tf-icon {
   font-family: 'TossFace', sans-serif;
-  font-size: 16px;
+  font-size: 24px;
   line-height: 1;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,9 +156,9 @@
   flex-direction: column;
 }
 .grass-edge {
-  height: 18px;
+  height: 24px;
   background: var(--bg-grass, #86cb3c);
-  border-radius: 18px 18px 0 0;
+  border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
 }
 .grass-fill {
   background: var(--bg-grass, #86cb3c);
@@ -170,16 +170,16 @@
 .rive-wrap {
   position: absolute;
   left: 50%;
-  width: 302px;
-  height: 302px;
+  width: 402px;
+  height: 402px;
   z-index: 2;
   pointer-events: none;
   transform: translateX(-50%) scale(1);
   transform-origin: bottom center;
 }
 .rive-canvas {
-  width: 302px;
-  height: 302px;
+  width: 402px;
+  height: 402px;
 }
 
 /* ── Today / Anytime Tabs (pill style) ── */
@@ -187,7 +187,7 @@
   display: flex;
   gap: var(--spacing-xs, 4px);
   padding: var(--spacing-xs, 4px);
-  margin: 48px 12px 0;
+  margin: 64px 16px 0;
   background: var(--bg-secondary, #fafafa);
   border-radius: var(--radius-xl, 16px);
   align-items: center;
@@ -198,8 +198,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-md, 8px);
-  padding: 8px 12px;
-  height: 28px;
+  padding: 10px 16px;
+  height: 36px;
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
   line-height: 16px;
@@ -220,18 +220,18 @@
 }
 .home-tab-badge {
   display: inline-flex;
-  padding: 3px 6px;
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
   background: var(--gray-200, #e9eaeb);
   color: var(--text-secondary, #414651);
   border-radius: 100px;
-  font-size: 9px;
-  line-height: 13px;
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
   font-weight: 400;
 }
 
 /* ── Progress section ── */
 .progress-section {
-  padding: 16px 12px 0;
+  padding: 20px 16px 0;
   position: relative;
   z-index: 3;
 }
@@ -243,40 +243,40 @@
 }
 .progress-title {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 14px;
+  font-size: var(--font-size-text-lg, 18px);
   font-weight: var(--font-weight-bold, 700);
   color: var(--text-primary, #181d27);
-  line-height: 20px;
+  line-height: var(--line-height-text-lg, 28px);
 }
 .progress-controls {
   display: flex;
-  gap: 4px;
+  gap: var(--spacing-sm, 6px);
 }
 .btn-util-sm {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  padding: 4px 8px;
+  gap: 4px;
+  padding: 6px 10px;
   background: var(--bg-primary, #ffffff);
-  border: 1.5px solid var(--border-secondary, #e9eaeb);
+  border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: var(--radius-full, 9999px);
-  box-shadow: 0 1.5px 0 0 var(--gray-200, #e9eaeb);
+  box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb);
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 10px;
+  font-size: var(--font-size-text-xs, 12px);
   font-weight: var(--font-weight-semibold, 600);
   color: var(--text-secondary, #414651);
   flex-shrink: 0;
 }
 .btn-util-sm .tf-sm {
   font-family: 'TossFace', sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1;
 }
 
 /* ── Task list ── */
 .task-list {
-  padding: 0 12px 32px;
+  padding: 0 16px 40px;
   position: relative;
   z-index: 3;
 }
@@ -285,15 +285,15 @@
 .anytime-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  padding: 8px 12px;
+  gap: 8px;
+  padding: 12px 16px;
   position: relative;
   z-index: 3;
 }
 .anytime-tile {
   border-radius: 16px;
-  padding: 12px;
-  height: 136px;
+  padding: 16px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   color: white;
@@ -311,11 +311,11 @@
 .anytime-tile .task-badge {
   background: rgba(255,255,255,0.2);
   color: white;
-  padding: 3px 6px;
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
   border-radius: 100px;
-  gap: 3px;
+  gap: 4px;
   font-weight: 400;
-  line-height: 13px;
+  line-height: 16px;
 }
 .anytime-tile .badge-num {
   min-width: 0;
@@ -328,7 +328,7 @@
 .anytime-tile-content {
   display: flex;
   flex-direction: column;
-  margin-top: 8px;
+  margin-top: var(--spacing-md, 8px);
 }
 .anytime-tile-name {
   font-size: var(--font-size-text-xs, 12px);
@@ -341,30 +341,30 @@
   align-items: center;
   justify-content: center;
   font-family: 'TossFace', sans-serif;
-  font-size: 56px;
+  font-size: 72px;
   line-height: 1;
 }
 
 /* Section headers */
 .section-label {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 9px;
+  font-size: var(--font-size-text-xs, 12px);
   font-weight: var(--font-weight-bold, 700);
   color: var(--text-tertiary, #535862);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 10px 0 4px;
+  padding: 14px 0 6px;
 }
 
 /* ── Task row (notification style — tappable, no action buttons) ── */
 .task-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-md, 8px);
   background: var(--bg-primary, #ffffff);
-  border-radius: 10px;
-  padding: 8px 10px;
-  margin-bottom: 5px;
+  border-radius: var(--radius-2xl, 16px);
+  padding: var(--spacing-lg, 12px);
+  margin-bottom: var(--spacing-md, 8px);
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -372,9 +372,9 @@
   background: var(--gray-50, #fafafa);
 }
 .task-emoji-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 7px;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm, 6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -399,7 +399,7 @@
 }
 .task-emoji-box .tf-task {
   font-family: 'TossFace', sans-serif;
-  font-size: 20px;
+  font-size: 36px;
   line-height: 1;
 }
 
@@ -419,26 +419,26 @@
 }
 .task-name {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 12px;
+  font-size: var(--font-size-text-md, 16px);
   font-weight: var(--font-weight-semibold, 600);
   color: var(--text-primary, #181d27);
-  line-height: 16px;
+  line-height: var(--line-height-text-md, 24px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .task-time {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 9px;
+  font-size: var(--font-size-text-xs, 12px);
   font-weight: var(--font-weight-medium, 500);
   color: var(--text-quaternary, #717680);
-  line-height: 12px;
+  line-height: var(--line-height-text-xs, 16px);
 }
 .task-desc {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 10px;
+  font-size: var(--font-size-text-xs, 12px);
   color: var(--text-tertiary, #535862);
-  line-height: 14px;
+  line-height: var(--line-height-text-xs, 16px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -448,20 +448,20 @@
 .task-trailing {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--spacing-md, 8px);
   flex-shrink: 0;
 }
 .task-badges {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--spacing-sm, 6px);
 }
 .task-badge {
   display: inline-flex;
   align-items: center;
   gap: 2px;
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 9px;
+  font-size: var(--font-size-text-xs, 12px);
   font-weight: var(--font-weight-medium, 500);
   color: var(--text-quaternary, #717680);
   line-height: 1;
@@ -469,12 +469,12 @@
 .badge-num {
   display: inline-block;
   font-variant-numeric: tabular-nums;
-  min-width: 18px;
+  min-width: 24px;
   text-align: left;
 }
 .task-badge .tf-badge {
   font-family: 'TossFace', sans-serif;
-  font-size: 10px;
+  font-size: 16px;
   line-height: 1;
 }
 
@@ -495,8 +495,8 @@
 /* ── Rejected card — iOS Live Activity style ── */
 .task-card-rejected {
   background: var(--bg-primary, #ffffff);
-  border-radius: 10px;
-  margin-bottom: 5px;
+  border-radius: var(--radius-2xl, 16px);
+  margin-bottom: var(--spacing-md, 8px);
   overflow: hidden;
 }
 .task-card-rejected .task-row {
@@ -516,16 +516,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 8px 10px 10px;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px);
   background: var(--bg-secondary, #fafafa);
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 var(--radius-2xl, 16px) var(--radius-2xl, 16px);
 }
 .action-label {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 10px;
+  font-size: var(--font-size-text-sm, 14px);
   color: var(--text-secondary, #414651);
-  line-height: 14px;
+  line-height: var(--line-height-text-sm, 20px);
   text-align: center;
 }
 /* ── btn-sprout system ── */
@@ -546,7 +546,7 @@
   user-select: none;
   white-space: nowrap;
 }
-.btn-sm { height: 32px; font-size: 11px; }
+.btn-sm { height: 44px; font-size: var(--font-size-text-md, 16px); }
 .btn-secondary {
   background: var(--bg-primary, #ffffff);
   color: var(--text-secondary, #414651);
@@ -561,8 +561,8 @@
 /* ── Claimable card — iOS Live Activity style ── */
 .task-card-claim {
   background: var(--bg-primary, #ffffff);
-  border-radius: 10px;
-  margin-bottom: 5px;
+  border-radius: var(--radius-2xl, 16px);
+  margin-bottom: var(--spacing-md, 8px);
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(10,13,18,0.06);
 }
@@ -580,18 +580,18 @@
 }
 .action-label strong {
   color: var(--text-primary, #181d27);
-  line-height: 14px;
+  line-height: var(--line-height-text-sm, 20px);
   text-align: center;
 }
 .btn-sprout .tf-claim {
   font-family: 'TossFace', sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1;
 }
 
 /* Claimed transition for the card */
 .task-card-claimed .task-action-area {
-  padding: 10px;
+  padding: var(--spacing-lg, 12px);
 }
 .task-card-claimed .action-label {
   color: var(--green-600, #079455);
@@ -604,7 +604,7 @@
 /* ── Done stack (iOS notification style) ── */
 .done-stack {
   position: relative;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   cursor: pointer;
 }
 .done-stack-items {
@@ -633,38 +633,38 @@
   position: relative;
   pointer-events: auto;
   z-index: 3;
-  border-radius: 10px;
+  border-radius: var(--radius-2xl, 16px);
   margin-bottom: 0;
 }
 .done-stack.collapsed .done-stack-items .task-row:nth-child(2) {
   top: 100%;
   bottom: auto;
   z-index: 2;
-  height: 5px;
+  height: 7px;
   min-height: 0;
   padding: 0;
   transform: translateY(0);
-  margin-left: 6px;
-  margin-right: 6px;
-  border-radius: 0 0 8px 8px;
+  margin-left: 8px;
+  margin-right: 8px;
+  border-radius: 0 0 10px 10px;
   opacity: 0.7;
 }
 .done-stack.collapsed .done-stack-items .task-row:nth-child(3) {
   top: 100%;
   bottom: auto;
   z-index: 1;
-  height: 5px;
+  height: 7px;
   min-height: 0;
   padding: 0;
-  transform: translateY(5px);
-  margin-left: 12px;
-  margin-right: 12px;
-  border-radius: 0 0 6px 6px;
+  transform: translateY(7px);
+  margin-left: 16px;
+  margin-right: 16px;
+  border-radius: 0 0 8px 8px;
   opacity: 0.45;
 }
 .done-stack.collapsed .done-stack-items .task-row:nth-child(n+4) {
   opacity: 0;
-  transform: translateY(calc(100% + 5px));
+  transform: translateY(calc(100% + 7px));
 }
 .done-stack.collapsed .done-stack-items .task-row:nth-child(2) *,
 .done-stack.collapsed .done-stack-items .task-row:nth-child(3) * {
@@ -680,13 +680,13 @@
   transform: none;
   opacity: 1;
   z-index: auto;
-  margin-bottom: 5px;
+  margin-bottom: var(--spacing-md, 8px);
   height: auto;
   min-height: 0;
-  padding: 8px 10px;
+  padding: var(--spacing-lg, 12px);
   margin-left: 0;
   margin-right: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-2xl, 16px);
   overflow: visible;
 }
 .done-stack.expanded .done-stack-items .task-row * {
@@ -696,7 +696,7 @@
 .done-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   cursor: pointer;
 }
 .done-toggle-chevron {
@@ -1027,10 +1027,10 @@
                     <!-- Grass with character -->
                     <div class="grass-container" style="position: relative;">
                       <!-- Sky spacer (pushes grass down to show sky) -->
-                      <div class="sky-spacer" style="height: 152px; position: relative;">
+                      <div class="sky-spacer" style="height: 202px; position: relative;">
                         <!-- Character — absolute, feet on grass edge -->
-                        <div class="rive-wrap" style="position: absolute; bottom: -90px;">
-                          <canvas id="rive-character" class="rive-canvas" width="302" height="302"></canvas>
+                        <div class="rive-wrap" style="position: absolute; bottom: -120px;">
+                          <canvas id="rive-character" class="rive-canvas" width="402" height="402"></canvas>
                         </div>
                       </div>
 
@@ -1564,8 +1564,8 @@
           } else {
             var clonedRow = row.cloneNode(true);
             clonedRow.classList.add('task-row-claimed');
-            clonedRow.style.marginBottom = '5px';
-            clonedRow.style.borderRadius = '10px';
+            clonedRow.style.marginBottom = '8px';
+            clonedRow.style.borderRadius = '16px';
             card.remove();
             if (doneItems) {
               doneItems.insertBefore(clonedRow, doneItems.firstChild);

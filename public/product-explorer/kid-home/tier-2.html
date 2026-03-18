@@ -44,8 +44,8 @@
   position: relative;
 }
 .device-screen {
-  width: 302px;
-  height: 656px;
+  width: 402px;
+  height: 874px;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -56,17 +56,17 @@
 
 /* ── Status bar ── */
 .phone-status {
-  height: 44px;
-  padding: 14px 20px 0;
+  height: 54px;
+  padding: 14px 24px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary, #181d27);
 }
-.phone-status-icons { display: flex; gap: 3px; align-items: center; }
-.phone-status-icons svg { width: 12px; height: 12px; }
+.phone-status-icons { display: flex; gap: 4px; align-items: center; }
+.phone-status-icons svg { width: 16px; height: 16px; }
 
 /* ── Sky background ── */
 .screen-sky-alt {
@@ -106,41 +106,41 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px 6px;
+  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
 }
 .toolbar-trailing {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-md, 8px);
 }
 .btn-util {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0;
-  padding: 7px;
+  padding: var(--spacing-lg, 12px);
   background: var(--bg-primary, #ffffff);
-  border: 1.5px solid var(--border-secondary, #e9eaeb);
+  border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: var(--radius-full, 9999px);
-  box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
   flex-shrink: 0;
 }
-.btn-util-with-label { gap: 4px; padding-right: 10px; }
+.btn-util-with-label { gap: var(--spacing-md, 8px); }
 .btn-util-label {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 12px;
-  line-height: 1;
-  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-secondary, #414651);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 .tf-icon {
   font-family: 'TossFace', sans-serif;
-  font-size: 16px;
+  font-size: 24px;
   line-height: 1;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,9 +155,9 @@
   flex-direction: column;
 }
 .grass-edge {
-  height: 18px;
+  height: 24px;
   background: var(--bg-grass, #86cb3c);
-  border-radius: 18px 18px 0 0;
+  border-radius: 24px 24px 0 0;
 }
 .grass-fill {
   background: var(--bg-grass, #86cb3c);
@@ -170,26 +170,26 @@
 .rive-wrap {
   position: absolute;
   left: 50%;
-  width: 302px;
-  height: 302px;
+  width: 402px;
+  height: 402px;
   z-index: 2;
   pointer-events: none;
-  transform: translateX(-50%) scale(1);
+  transform: translateX(-50%);
   transform-origin: bottom center;
 }
 .rive-canvas {
-  width: 302px;
-  height: 302px;
+  width: 402px;
+  height: 402px;
 }
 
 /* ── Home indicator ── */
 .home-indicator {
   position: absolute;
-  bottom: 6px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 108px;
-  height: 4px;
+  width: 134px;
+  height: 5px;
   background: black;
   border-radius: 100px;
   z-index: 10;
@@ -200,7 +200,7 @@
   display: flex;
   gap: var(--spacing-xs, 4px);
   padding: var(--spacing-xs, 4px);
-  margin: 48px 12px 4px;
+  margin: 64px 16px 4px;
   background: var(--bg-secondary, #fafafa);
   border-radius: var(--radius-xl, 16px);
   align-items: center;
@@ -211,8 +211,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-md, 8px);
-  padding: 8px 12px;
-  height: 28px;
+  padding: 10px 16px;
+  height: 36px;
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
   line-height: 16px;
@@ -233,12 +233,12 @@
 }
 .home-tab-badge {
   display: inline-flex;
-  padding: 3px 6px;
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
   background: var(--gray-200, #e9eaeb);
   color: var(--text-secondary, #414651);
   border-radius: 100px;
-  font-size: 9px;
-  line-height: 13px;
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
   font-weight: 400;
 }
 
@@ -247,11 +247,11 @@
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
-  scroll-padding: 0 12px;
+  scroll-padding: 0 16px;
   display: flex;
   align-items: flex-start;
-  gap: 6px;
-  padding: 8px 12px;
+  gap: 8px;
+  padding: 12px 16px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   position: relative;
@@ -261,14 +261,15 @@
 .carousel-container::after {
   content: '';
   flex-shrink: 0;
-  width: 12px;
+  width: 16px;
 }
 .task-card {
   flex-shrink: 0;
-  width: 278px;
-  height: 278px;
+  width: 370px;
+  height: 392px;
   border-radius: 16px;
-  padding: 12px;
+  padding: var(--spacing-2xl, 20px) var(--spacing-2xl, 20px) var(--spacing-3xl, 24px);
+  gap: var(--spacing-md, 8px);
   display: flex;
   flex-direction: column;
   color: white;
@@ -281,7 +282,7 @@
 /* ── "Now" glow ring ── */
 @keyframes now-glow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5), 0 0 0 0 rgba(11,165,236,0.3); }
-  50% { box-shadow: 0 0 0 4px rgba(255,255,255,0.6), 0 0 0 8px rgba(11,165,236,0.2); }
+  50% { box-shadow: 0 0 0 5px rgba(255,255,255,0.6), 0 0 0 10px rgba(11,165,236,0.2); }
 }
 .task-card.card-now {
   animation: now-glow 2s ease-in-out infinite;
@@ -298,19 +299,19 @@
 .card-badge {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 3px 6px;
+  gap: var(--spacing-xxs, 2px);
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
   border-radius: 100px;
-  font-size: 9px;
-  line-height: 13px;
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
   font-weight: 400;
 }
 .card-badge .tf-badge {
   font-family: 'TossFace', sans-serif;
-  font-size: 10px;
+  font-size: 16px;
   line-height: 1;
-  width: 10px;
-  height: 10px;
+  width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -320,18 +321,18 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-top: 8px;
+  margin-top: var(--spacing-md, 8px);
   position: relative;
   z-index: 2;
 }
 .card-name {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 18px;
+  font-size: var(--font-size-text-xl, 20px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-text-xl, 30px);
 }
 .card-desc {
-  font-size: 10px;
-  line-height: 14px;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
   font-weight: 400;
   opacity: 0.85;
   overflow: hidden;
@@ -348,7 +349,7 @@
 }
 .card-emoji {
   font-family: 'TossFace', sans-serif;
-  font-size: 96px;
+  font-size: 120px;
   line-height: 1;
 }
 
@@ -357,16 +358,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  height: 30px;
-  border-radius: 12px;
+  gap: var(--spacing-sm, 6px);
+  height: 50px;
+  border-radius: var(--radius-2xl, 16px);
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 10px;
+  font-size: var(--font-size-text-md, 16px);
   font-weight: var(--font-weight-bold, 700);
   background: var(--bg-primary, #ffffff);
   color: var(--text-secondary, #414651);
-  border: 1.5px solid var(--border-secondary, #e9eaeb);
-  box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
   cursor: pointer;
   position: relative;
   z-index: 2;
@@ -375,14 +376,14 @@
 }
 .card-cta .tf-cta {
   font-family: 'TossFace', sans-serif;
-  font-size: 12px;
+  font-size: var(--font-size-text-xs, 12px);
   line-height: 1;
 }
 .card-cta-disabled {
   background: var(--gray-300, #d5d7da);
   color: var(--text-disabled, #717680);
-  border: 1.5px solid var(--gray-400, #a4a7ae);
-  box-shadow: 0 2px 0 0 var(--gray-400, #a4a7ae);
+  border: 2px solid var(--gray-400, #a4a7ae);
+  box-shadow: 0 4px 0 0 var(--gray-400, #a4a7ae);
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -424,9 +425,9 @@
 
 /* ── Streak counter glow (after emoji lands) ── */
 @keyframes streak-counter-glow {
-  0% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0.5); }
-  50% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 5px rgba(239,104,32,0.25); }
-  100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0); }
+  0% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0.5); }
+  50% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 6px rgba(239,104,32,0.25); }
+  100% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0); }
 }
 .streak-counter-glow {
   animation: streak-counter-glow 0.35s ease-out;
@@ -497,7 +498,7 @@
 .gem-particle {
   position: absolute;
   font-family: 'TossFace', sans-serif;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1;
   pointer-events: none;
   z-index: 20;
@@ -505,9 +506,9 @@
 }
 
 @keyframes gem-counter-glow {
-  0% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0.5); }
-  50% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 5px rgba(11,165,236,0.25); }
-  100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
+  0% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0.5); }
+  50% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 6px rgba(11,165,236,0.25); }
+  100% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
 }
 .gem-counter-glow {
   animation: gem-counter-glow 0.35s ease-out;
@@ -728,12 +729,12 @@
 /* ── Anytime gallery grid ── */
 .anytime-grid {
   display: flex;
-  gap: 6px;
-  padding: 8px 0;
+  gap: 8px;
+  padding: 12px 0;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
-  scroll-padding: 0 12px;
+  scroll-padding: 0 16px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -742,20 +743,20 @@
 .anytime-grid::after {
   content: '';
   flex-shrink: 0;
-  width: 6px;
+  width: 8px;
 }
 .anytime-page {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
-  width: calc(100% - 24px);
+  width: calc(100% - 32px);
   scroll-snap-align: start;
 }
 .anytime-tile {
   border-radius: 16px;
-  padding: 12px;
-  height: 136px;
+  padding: 16px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   color: white;
@@ -770,7 +771,7 @@
 .anytime-tile-content {
   display: flex;
   flex-direction: column;
-  margin-top: 8px;
+  margin-top: var(--spacing-md, 8px);
 }
 .anytime-tile .card-badge {
   background: rgba(255,255,255,0.2);
@@ -787,7 +788,7 @@
   align-items: center;
   justify-content: center;
   font-family: 'TossFace', sans-serif;
-  font-size: 56px;
+  font-size: 72px;
   line-height: 1;
 }
 
@@ -797,7 +798,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 32px 24px;
+  padding: 40px 32px;
   text-align: center;
   font-family: var(--font-family-body, 'Inter', sans-serif);
 }
@@ -806,22 +807,22 @@
 }
 .empty-state-emoji {
   font-family: 'TossFace', sans-serif;
-  font-size: 48px;
+  font-size: 64px;
   line-height: 1;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 .empty-state-title {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary, #181d27);
-  line-height: 20px;
-  margin-bottom: 4px;
+  line-height: 28px;
+  margin-bottom: 6px;
 }
 .empty-state-desc {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--text-tertiary, #535862);
-  line-height: 16px;
-  max-width: 200px;
+  line-height: 20px;
+  max-width: 260px;
 }
 </style>
 </head>
@@ -884,9 +885,9 @@
 
                     <!-- Grass with character -->
                     <div class="grass-container" style="position: relative;">
-                      <div class="sky-spacer" style="height: 152px; position: relative;">
-                        <div class="rive-wrap" style="position: absolute; bottom: -90px;">
-                          <canvas id="rive-character" class="rive-canvas" width="302" height="302"></canvas>
+                      <div class="sky-spacer" style="height: 202px; position: relative;">
+                        <div class="rive-wrap" style="position: absolute; bottom: -120px;">
+                          <canvas id="rive-character" class="rive-canvas" width="402" height="402"></canvas>
                         </div>
                       </div>
 
