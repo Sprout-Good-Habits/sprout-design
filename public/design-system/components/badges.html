@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Badges</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Badge",
+  "slug": "badges",
+  "intent": {
+    "purpose": "Display small pieces of metadata like streaks, rewards, or counts alongside content",
+    "taskContext": ["task-card", "kid-home", "gamification"],
+    "sentiment": ["informational", "motivational"]
+  },
+  "composition": {
+    "requires": ["label"],
+    "allows": ["leading-emoji"],
+    "forbids": ["nested-interactive", "long-text"]
+  },
+  "variants": [
+    { "name": "Pill", "useWhen": "On colored backgrounds. Uses -200 bg / -700 text color-matched to parent" },
+    { "name": "Inline", "useWhen": "On white backgrounds. Plain text, no background" }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts" }
+  ],
+  "context": {
+    "density": ["default", "compact"],
+    "modality": ["mobile"],
+    "placement": ["task-card", "task-row"]
+  },
+  "relationships": {
+    "related": ["Task Card"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": []
+  },
+  "states": ["active", "inactive"],
+  "accessibility": {
+    "role": "status",
+    "keyboard": [],
+    "ariaAttributes": ["aria-label"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<link rel="stylesheet" href="/design-system/styles.css">
+<style>
+/* ── TossFace ── */
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+.tf-inline { font-family: 'TossFace', sans-serif; }
+
+/* ══════════════════════════════════════
+   Pill Badge
+   ══════════════════════════════════════ */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs, 2px);
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
+  border-radius: var(--radius-full, 9999px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  font-weight: var(--font-weight-regular, 400);
+}
+.badge-pill .tf {
+  font-family: 'TossFace', sans-serif;
+  font-size: var(--font-size-text-md, 16px);
+  line-height: 1;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pill color variants */
+.pill-brand { background: var(--brand-200, #b9e6fe); color: var(--brand-700, #026aa2); }
+.pill-blue-dark { background: var(--blue-dark-200, #b2ccff); color: var(--blue-dark-700, #004eeb); }
+.pill-violet { background: var(--violet-200, #ddd6fe); color: var(--violet-700, #5925dc); }
+.pill-pink { background: var(--pink-200, #fcceee); color: var(--pink-700, #c11574); }
+.pill-red { background: var(--red-200, #fecdca); color: var(--red-700, #b42318); }
+.pill-orange { background: var(--orange-200, #f9dbaf); color: var(--orange-700, #b93815); }
+.pill-yellow { background: var(--yellow-200, #feee95); color: var(--yellow-700, #a15c07); }
+.pill-green { background: var(--green-200, #abefc6); color: var(--green-700, #067647); }
+
+/* ══════════════════════════════════════
+   Inline Badge
+   ══════════════════════════════════════ */
+.badge-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-secondary, #414651);
+  line-height: 1;
+  min-width: 24px;
+}
+.badge-inline .tf {
+  font-family: 'TossFace', sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  width: 16px;
+  height: 16px;
+}
+
+/* ══════════════════════════════════════
+   Status Badge (emoji box overlay)
+   ══════════════════════════════════════ */
+.badge-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxs, 2px);
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-xs, 4px);
+  font-family: 'TossFace', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* Inactive streak */
+.flame-muted {
+  filter: grayscale(1) brightness(2);
+}
+
+/* Demo helpers */
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+}
+.color-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-lg, 12px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-radius: var(--radius-md, 8px);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Badges</div>
+    <div class="sec-desc">Small metadata indicators that display streaks, gem rewards, and task status. Used primarily within <a href="/design-system/components/task-card.html" style="color:var(--brand-600)">Task Cards</a> across both age tiers.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For displaying streak counts, gem rewards, or small numeric metadata</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For showing task submission status on emoji boxes</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Not for interactive elements or actions. Use <a href="/design-system/components/buttons.html" style="color:var(--brand-600)">Buttons</a> instead</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Not for long text or multi-line content</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Overview                               -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="variant-overview">
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="demo-item">
+        <span class="demo-label">Pill</span>
+        <div class="badge-row">
+          <div class="badge-pill pill-brand"><span class="tf">&#x1F525;</span> 3 days</div>
+          <div class="badge-pill pill-brand"><span class="tf">&#x1F48E;</span> 10</div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Inline</span>
+        <div class="badge-row">
+          <span class="badge-inline"><span class="tf">&#x1F525;</span> 3</span>
+          <span class="badge-inline"><span class="tf">&#x1F48E;</span> 10</span>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Status</span>
+        <div class="badge-row">
+          <span class="badge-status"><span class="tf-inline">&#x1F504;</span></span>
+          <span class="badge-status"><span class="tf-inline">&#x274E;</span></span>
+          <span class="badge-status"><span class="tf-inline">&#x2705;</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Pill Badge                             -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Pill badge</h2>
+    <p>Used on colored backgrounds. Color-matched to the parent using <code>-200</code> background and <code>-700</code> text from the same color scale.</p>
+
+    <h3>Anatomy</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Leading emoji</strong> (optional) &mdash; 16px TossFace emoji icon</li>
+        <li><strong>Label</strong> (required) &mdash; <code>--font-size-text-xs</code> regular text</li>
+        <li><strong>Container</strong> &mdash; Pill shape (<code>--radius-full</code>), <code>--spacing-xs</code> vertical / <code>--spacing-sm</code> horizontal padding</li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Color variants</h3>
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <div class="color-swatch" style="background:var(--brand-500);">
+            <div class="badge-pill pill-brand"><span class="tf">&#x1F525;</span> 3 days</div>
+            <div class="badge-pill pill-brand"><span class="tf">&#x1F48E;</span> 10</div>
+          </div>
+          <div class="color-swatch" style="background:var(--blue-dark-500);">
+            <div class="badge-pill pill-blue-dark"><span class="tf">&#x1F525;</span> 5 days</div>
+            <div class="badge-pill pill-blue-dark"><span class="tf">&#x1F48E;</span> 20</div>
+          </div>
+          <div class="color-swatch" style="background:var(--violet-500);">
+            <div class="badge-pill pill-violet"><span class="tf">&#x1F525;</span> 12 days</div>
+            <div class="badge-pill pill-violet"><span class="tf">&#x1F48E;</span> 15</div>
+          </div>
+          <div class="color-swatch" style="background:var(--pink-500);">
+            <div class="badge-pill pill-pink"><span class="tf">&#x1F525;</span> 7 days</div>
+            <div class="badge-pill pill-pink"><span class="tf">&#x1F48E;</span> 10</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <div class="color-swatch" style="background:var(--red-500);">
+            <div class="badge-pill pill-red"><span class="tf">&#x1F525;</span> 2 days</div>
+            <div class="badge-pill pill-red"><span class="tf">&#x1F48E;</span> 5</div>
+          </div>
+          <div class="color-swatch" style="background:var(--orange-500);">
+            <div class="badge-pill pill-orange"><span class="tf">&#x1F525;</span> 8 days</div>
+            <div class="badge-pill pill-orange"><span class="tf">&#x1F48E;</span> 10</div>
+          </div>
+          <div class="color-swatch" style="background:var(--yellow-500);">
+            <div class="badge-pill pill-yellow"><span class="tf">&#x1F525;</span> 4 days</div>
+            <div class="badge-pill pill-yellow"><span class="tf">&#x1F48E;</span> 15</div>
+          </div>
+          <div class="color-swatch" style="background:var(--green-500);">
+            <div class="badge-pill pill-green"><span class="tf">&#x1F525;</span> 6 days</div>
+            <div class="badge-pill pill-green"><span class="tf">&#x1F48E;</span> 20</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Streak states</h3>
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="demo-item">
+        <span class="demo-label">Active streak (&ge; 1)</span>
+        <div class="badge-pill pill-brand"><span class="tf">&#x1F525;</span> 5 days</div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Inactive streak (0)</span>
+        <div class="badge-pill pill-brand"><span class="tf flame-muted">&#x1F525;</span> 0 days</div>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li>The fire emoji is full colour when streak &ge; 1</li>
+        <li>When streak is 0, the fire emoji is muted using <code>filter: grayscale(1) brightness(2)</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Inline Badge                           -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Inline badge</h2>
+    <p>Plain text with no background, used on white surfaces. Positioned at the trailing edge of a row or container.</p>
+
+    <h3>Anatomy</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Leading emoji</strong> (optional) &mdash; 16px TossFace emoji icon</li>
+        <li><strong>Label</strong> (required) &mdash; <code>--font-size-text-xs</code> regular in <code>--text-secondary</code></li>
+        <li>No container or background. Uses <code>--spacing-xs</code> (4px) gap between emoji and text</li>
+      </ul>
+    </div>
+
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="demo-item">
+        <span class="demo-label">Active streak</span>
+        <div class="badge-row">
+          <span class="badge-inline"><span class="tf">&#x1F525;</span> 5</span>
+          <span class="badge-inline"><span class="tf">&#x1F48E;</span> 10</span>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Inactive streak</span>
+        <div class="badge-row">
+          <span class="badge-inline"><span class="tf flame-muted">&#x1F525;</span> 0</span>
+          <span class="badge-inline"><span class="tf">&#x1F48E;</span> 10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Status Badge                           -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Status badge</h2>
+    <p>A small indicator that overlays the bottom-right corner of an emoji box to communicate task submission state.</p>
+
+    <h3>Anatomy</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Container</strong> &mdash; <code>--bg-primary</code> background, <code>--radius-xs</code> (4px), <code>--spacing-xxs</code> (2px) padding on all sides</li>
+        <li><strong>Icon</strong> &mdash; 12px TossFace emoji, centered</li>
+        <li>Positioned <code>absolute</code>, offset -3px from the bottom-right of the parent emoji box</li>
+      </ul>
+    </div>
+
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="demo-item">
+        <span class="demo-label">Reviewing</span>
+        <span class="badge-status"><span class="tf-inline">&#x1F504;</span></span>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Rejected</span>
+        <span class="badge-status"><span class="tf-inline">&#x274E;</span></span>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Claimable</span>
+        <span class="badge-status"><span class="tf-inline">&#x2705;</span></span>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li>Only appears in Rejected, Submitted, and Claimable states</li>
+        <li>Not shown in Not started or Claimed states</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Content Guidelines                     -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Badge labels should be short: a number or a number + unit ("3 days", "10")</li>
+        <li>Always use TossFace emoji for leading icons, never system emoji</li>
+        <li>Pill badge colors must match the parent task card color variant</li>
+        <li>Streak badges always show a count, even when 0 (with a muted flame)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Token Reference                        -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3>Pill badge</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Padding</td><td><code>--spacing-xs</code> (4px) <code>--spacing-sm</code> (6px)</td></tr>
+        <tr><td>Border-radius</td><td><code>--radius-full</code> (pill)</td></tr>
+        <tr><td>Gap</td><td><code>--spacing-xxs</code> (2px)</td></tr>
+        <tr><td>Font</td><td><code>--font-size-text-xs</code> / <code>--line-height-text-xs</code>, <code>--font-weight-regular</code></td></tr>
+        <tr><td>Emoji size</td><td>16px (TossFace)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Inline badge</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Font</td><td><code>--font-size-text-xs</code>, <code>--font-weight-regular</code>, <code>--text-secondary</code></td></tr>
+        <tr><td>Emoji size</td><td>16px (TossFace)</td></tr>
+        <tr><td>Min width</td><td>24px</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Status badge</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Padding</td><td><code>--spacing-xxs</code> (2px)</td></tr>
+        <tr><td>Border-radius</td><td><code>--radius-xs</code> (4px)</td></tr>
+        <tr><td>Background</td><td><code>--bg-primary</code></td></tr>
+        <tr><td>Icon size</td><td>12px (TossFace)</td></tr>
+        <tr><td>Position offset</td><td>-3px bottom-right</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Color token mapping</h3>
+    <table class="token-table">
+      <thead><tr><th>Variant</th><th>Background</th><th>Text</th></tr></thead>
+      <tbody>
+        <tr><td>Brand</td><td><code>--brand-200</code></td><td><code>--brand-700</code></td></tr>
+        <tr><td>Blue Dark</td><td><code>--blue-dark-200</code></td><td><code>--blue-dark-700</code></td></tr>
+        <tr><td>Violet</td><td><code>--violet-200</code></td><td><code>--violet-700</code></td></tr>
+        <tr><td>Pink</td><td><code>--pink-200</code></td><td><code>--pink-700</code></td></tr>
+        <tr><td>Red</td><td><code>--red-200</code></td><td><code>--red-700</code></td></tr>
+        <tr><td>Orange</td><td><code>--orange-200</code></td><td><code>--orange-700</code></td></tr>
+        <tr><td>Yellow</td><td><code>--yellow-200</code></td><td><code>--yellow-700</code></td></tr>
+        <tr><td>Green</td><td><code>--green-200</code></td><td><code>--green-700</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Accessibility                          -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Contrast:</strong> Pill badge text uses <code>-700</code> on <code>-200</code> backgrounds, meeting WCAG AA contrast requirements</li>
+        <li><strong>Inline badges:</strong> Use <code>--text-secondary</code> on white, which meets AA contrast</li>
+        <li><strong>Status badges:</strong> Convey state visually via emoji. Always pair with descriptive text nearby (e.g., "Reviewing..." in the task description) for screen readers</li>
+        <li><strong>Streak muting:</strong> The grayscale filter on inactive streaks is a visual cue only. The numeric label ("0 days") communicates the same information accessibly</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Badges',href:'/design-system/components/badges.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/spec-renderer.js"></script>
+<script src="/design-system/shell.js"></script>
+</body>
+</html>

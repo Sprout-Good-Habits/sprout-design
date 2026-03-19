@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Card — Figma Capture</title>
+<link rel="stylesheet" href="/design-system/tokens.css">
+<style>
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-family-body, 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif);
+  background: var(--bg-primary, #ffffff);
+  padding: 48px;
+}
+
+/* ── Labels ── */
+.section-label {
+  font-size: var(--font-size-display-xs, 24px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  margin-bottom: var(--spacing-3xl, 24px);
+}
+.state-label {
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-tertiary, #535862);
+  text-align: center;
+  margin-top: var(--spacing-md, 8px);
+}
+
+/* ── Layout ── */
+.tier-row {
+  display: flex;
+  gap: var(--spacing-4xl, 32px);
+  align-items: flex-start;
+  margin-bottom: 64px;
+}
+.card-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.row-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4xl, 32px);
+}
+
+/* ══════════════════════════════════════
+   Tier 2: Carousel Card
+   ══════════════════════════════════════ */
+.task-card {
+  flex-shrink: 0;
+  width: 370px;
+  height: 392px;
+  border-radius: var(--radius-2xl, 16px);
+  padding: var(--spacing-2xl, 20px) var(--spacing-2xl, 20px) var(--spacing-3xl, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  background: var(--brand-500, #0ba5ec);
+}
+.card-badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs, 2px);
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
+  border-radius: var(--radius-full, 9999px);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  font-weight: var(--font-weight-regular, 400);
+  background: var(--brand-200, #b9e6fe);
+  color: var(--brand-700, #026aa2);
+}
+.card-badge .tf {
+  font-family: 'TossFace', sans-serif;
+  font-size: var(--font-size-text-md, 16px);
+  line-height: 1;
+  width: 16px;
+  height: 16px;
+}
+.card-content {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+.card-name {
+  font-size: var(--font-size-text-xl, 20px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-text-xl, 30px);
+}
+.card-desc {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: var(--font-weight-regular, 400);
+  opacity: 0.85;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.card-emoji-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  position: relative;
+  z-index: 2;
+}
+.card-emoji {
+  font-family: 'TossFace', sans-serif;
+  font-size: 120px;
+  line-height: 1;
+}
+.card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm, 6px);
+  height: 50px;
+  border-radius: var(--radius-2xl, 16px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-bold, 700);
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+.card-cta .tf {
+  font-family: 'TossFace', sans-serif;
+  font-size: var(--font-size-text-md, 16px);
+  line-height: 1;
+}
+.card-cta-disabled {
+  background: var(--gray-300, #d5d7da);
+  color: var(--text-disabled, #717680);
+  border: 2px solid var(--gray-400, #a4a7ae);
+  box-shadow: 0 4px 0 0 var(--gray-400, #a4a7ae);
+}
+.card-completed-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  border-radius: var(--radius-2xl, 16px);
+  pointer-events: none;
+  z-index: 1;
+}
+.flame-muted {
+  filter: grayscale(1) brightness(2);
+}
+
+/* ══════════════════════════════════════
+   Tier 3: Task Row
+   ══════════════════════════════════════ */
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-lg, 10px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  width: 320px;
+}
+.task-emoji-box {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm, 6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  background: var(--brand-500, #0ba5ec);
+}
+.task-emoji-box .tf {
+  font-family: 'TossFace', sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+.emoji-status-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 16px;
+  height: 16px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-xs, 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+}
+.task-info {
+  flex: 1;
+  min-width: 0;
+}
+.task-name {
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  line-height: var(--line-height-text-xs, 16px);
+}
+.task-time {
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-quaternary, #717680);
+  line-height: var(--line-height-text-xs, 16px);
+}
+.task-desc {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-tertiary, #535862);
+  line-height: var(--line-height-text-xs, 16px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+  flex-shrink: 0;
+}
+.task-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+}
+.task-badge-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs, 2px);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-quaternary, #717680);
+  line-height: 1;
+}
+.task-badge-row .tf {
+  font-family: 'TossFace', sans-serif;
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: 1;
+}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════ -->
+<!-- TIER 2 (Younger Kids)      -->
+<!-- ═══════════════════════════ -->
+<div class="section-label">Tier 2 (younger kids)</div>
+<div class="tier-row">
+
+  <!-- Not Started -->
+  <div class="card-col">
+    <div class="task-card">
+      <div class="card-badges">
+        <div class="card-badge"><span class="tf flame-muted">🔥</span> 3 days</div>
+        <div class="card-badge"><span class="tf">💎</span> 10</div>
+      </div>
+      <div class="card-content">
+        <div class="card-name">Talk to Sprout</div>
+        <div class="card-desc">Chat with Sprout about your day</div>
+      </div>
+      <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+      <div class="card-cta">Start</div>
+    </div>
+    <div class="state-label">Not started</div>
+  </div>
+
+  <!-- Rejected -->
+  <div class="card-col">
+    <div class="task-card">
+      <div class="card-badges">
+        <div class="card-badge"><span class="tf flame-muted">🔥</span> 3 days</div>
+        <div class="card-badge"><span class="tf">💎</span> 10</div>
+      </div>
+      <div class="card-content">
+        <div class="card-name">Talk to Sprout</div>
+        <div class="card-desc">Chat with Sprout about your day</div>
+      </div>
+      <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+      <div class="card-cta">Try again</div>
+    </div>
+    <div class="state-label">Rejected</div>
+  </div>
+
+  <!-- Submitted -->
+  <div class="card-col">
+    <div class="task-card">
+      <div class="card-badges">
+        <div class="card-badge"><span class="tf">🔥</span> 3 days</div>
+        <div class="card-badge"><span class="tf">💎</span> 10</div>
+      </div>
+      <div class="card-content">
+        <div class="card-name">Talk to Sprout</div>
+        <div class="card-desc">Chat with Sprout about your day</div>
+      </div>
+      <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+      <div class="card-cta card-cta-disabled">Reviewing...</div>
+    </div>
+    <div class="state-label">Submitted</div>
+  </div>
+
+  <!-- Claimable -->
+  <div class="card-col">
+    <div class="task-card">
+      <div class="card-badges">
+        <div class="card-badge"><span class="tf">🔥</span> 3 days</div>
+        <div class="card-badge"><span class="tf">💎</span> 10</div>
+      </div>
+      <div class="card-content">
+        <div class="card-name">Talk to Sprout</div>
+        <div class="card-desc">Chat with Sprout about your day</div>
+      </div>
+      <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+      <div class="card-cta"><span class="tf">💎</span> Claim</div>
+    </div>
+    <div class="state-label">Claimable</div>
+  </div>
+
+  <!-- Claimed -->
+  <div class="card-col">
+    <div class="task-card">
+      <div class="card-completed-overlay"></div>
+      <div class="card-badges">
+        <div class="card-badge"><span class="tf">🔥</span> 4 days</div>
+        <div class="card-badge"><span class="tf">💎</span> 10</div>
+      </div>
+      <div class="card-content">
+        <div class="card-name">Talk to Sprout</div>
+        <div class="card-desc">Chat with Sprout about your day</div>
+      </div>
+      <div class="card-emoji-area"><span class="card-emoji">💬</span></div>
+    </div>
+    <div class="state-label">Claimed</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- TIER 3 (Older Kids)        -->
+<!-- ═══════════════════════════ -->
+<div class="section-label">Tier 3 (older kids)</div>
+<div class="row-col">
+
+  <!-- Not Started -->
+  <div>
+    <div class="task-row">
+      <div class="task-emoji-box"><span class="tf">💬</span></div>
+      <div class="task-info">
+        <div class="task-time">5:00 PM</div>
+        <div class="task-name">Talk to Sprout</div>
+        <div class="task-desc">Chat with Sprout about your day</div>
+      </div>
+      <div class="task-trailing">
+        <div class="task-badges">
+          <span class="task-badge-row"><span class="tf flame-muted">🔥</span> 3</span>
+          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+        </div>
+      </div>
+    </div>
+    <div class="state-label" style="text-align:left;">Not started</div>
+  </div>
+
+  <!-- Rejected -->
+  <div>
+    <div class="task-row">
+      <div class="task-emoji-box">
+        <span class="tf">💬</span>
+        <span class="emoji-status-badge">❎</span>
+      </div>
+      <div class="task-info">
+        <div class="task-time">5:00 PM</div>
+        <div class="task-name">Talk to Sprout</div>
+        <div class="task-desc">Try again</div>
+      </div>
+      <div class="task-trailing">
+        <div class="task-badges">
+          <span class="task-badge-row"><span class="tf flame-muted">🔥</span> 3</span>
+          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+        </div>
+      </div>
+    </div>
+    <div class="state-label" style="text-align:left;">Rejected</div>
+  </div>
+
+  <!-- Submitted -->
+  <div>
+    <div class="task-row">
+      <div class="task-emoji-box">
+        <span class="tf">💬</span>
+        <span class="emoji-status-badge">🔄</span>
+      </div>
+      <div class="task-info">
+        <div class="task-time">5:00 PM</div>
+        <div class="task-name">Talk to Sprout</div>
+        <div class="task-desc">Reviewing...</div>
+      </div>
+      <div class="task-trailing">
+        <div class="task-badges">
+          <span class="task-badge-row"><span class="tf">🔥</span> 3</span>
+          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+        </div>
+      </div>
+    </div>
+    <div class="state-label" style="text-align:left;">Submitted</div>
+  </div>
+
+  <!-- Claimable -->
+  <div>
+    <div class="task-row">
+      <div class="task-emoji-box">
+        <span class="tf">💬</span>
+        <span class="emoji-status-badge">✅</span>
+      </div>
+      <div class="task-info">
+        <div class="task-time">5:00 PM</div>
+        <div class="task-name">Talk to Sprout</div>
+        <div class="task-desc">Completed, ready to claim!</div>
+      </div>
+      <div class="task-trailing">
+        <div class="task-badges">
+          <span class="task-badge-row"><span class="tf">🔥</span> 3</span>
+          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+        </div>
+      </div>
+    </div>
+    <div class="state-label" style="text-align:left;">Claimable</div>
+  </div>
+
+  <!-- Claimed -->
+  <div>
+    <div class="task-row">
+      <div class="task-emoji-box"><span class="tf">💬</span></div>
+      <div class="task-info">
+        <div class="task-time">5:00 PM</div>
+        <div class="task-name">Talk to Sprout</div>
+        <div class="task-desc">Done!</div>
+      </div>
+      <div class="task-trailing">
+        <div class="task-badges">
+          <span class="task-badge-row"><span class="tf">🔥</span> 4</span>
+          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+        </div>
+      </div>
+    </div>
+    <div class="state-label" style="text-align:left;">Claimed</div>
+  </div>
+
+</div>
+
+</body>
+</html>
