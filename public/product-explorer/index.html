@@ -17,52 +17,6 @@
   line-height: var(--line-height-text-md, 24px);
   margin-bottom: var(--spacing-xl, 16px);
 }
-.hub-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-xl, 16px);
-  margin-top: var(--spacing-3xl, 24px);
-}
-@media (max-width: 800px) { .hub-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .hub-grid { grid-template-columns: 1fr; } }
-.hub-card {
-  display: block;
-  background: var(--bg-primary, #ffffff);
-  border-radius: var(--radius-xl, 12px);
-  text-decoration: none;
-  color: inherit;
-  overflow: hidden;
-  transition: box-shadow 0.15s, border-color 0.15s;
-  border: 1px solid var(--border-secondary, #e9eaeb);
-}
-.hub-card:hover {
-  border-color: var(--gray-300, #d5d7da);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  text-decoration: none;
-}
-.hub-thumb {
-  height: 120px;
-  background: var(--bg-secondary, #fafafa);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'TossFace', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
-  font-size: 40px;
-}
-.hub-body {
-  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px) var(--spacing-lg, 12px);
-}
-.hub-title {
-  font-size: var(--font-size-text-xs, 12px);
-  font-weight: var(--font-weight-semibold, 600);
-  color: var(--text-primary, #181d27);
-  line-height: 18px;
-}
-.hub-desc {
-  font-size: var(--font-size-text-xs, 12px);
-  color: var(--text-tertiary, #535862);
-  line-height: 18px;
-}
 </style>
 </head>
 <body>
@@ -77,37 +31,12 @@
 
       <div class="overview-content">
         <p>This space documents the key screens and flows that make up the Sprout product experience. Use it to understand how components come together in context, review user journeys, and reference real implementation patterns.</p>
-      </div>
-
-      <div class="hub-grid">
-        <a class="hub-card" href="/product-explorer/kid-home.html">
-          <div class="hub-thumb">🏠</div>
-          <div class="hub-body">
-            <div class="hub-title">Kid Home</div>
-            <div class="hub-desc">Home screen variants for different age groups</div>
-          </div>
-        </a>
-
-        <a class="hub-card" href="/product-explorer/task.html">
-          <div class="hub-thumb">✅</div>
-          <div class="hub-body">
-            <div class="hub-title">Tasks</div>
-            <div class="hub-desc">Chat, photo, and quiz task flows</div>
-          </div>
-        </a>
-
-        <a class="hub-card" href="/product-explorer/core-loop.html">
-          <div class="hub-thumb">🔄</div>
-          <div class="hub-body">
-            <div class="hub-title">Core Loop</div>
-            <div class="hub-desc">Shopping agent, My Stuff, screen time, economy, daily cycle</div>
-          </div>
-        </a>
+        <p>More content coming soon.</p>
       </div>
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]},{label:'Core Loop',href:'/product-explorer/core-loop.html',dot:'var(--pink-500)',children:[{label:'Overview',href:'/product-explorer/core-loop.html'},{label:'Shopping Agent',href:'/product-explorer/core-loop/shopping.html'},{label:'My Stuff',href:'/product-explorer/core-loop/my-stuff.html'},{label:'Screen Time',href:'/product-explorer/core-loop/screen-time.html'},{label:'Economy',href:'/product-explorer/core-loop/economy.html'},{label:'Daily Cycle',href:'/product-explorer/core-loop/daily-cycle.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 </body>
 </html>
