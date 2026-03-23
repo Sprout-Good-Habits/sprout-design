@@ -121,7 +121,7 @@
     if (!sidebar) return;
 
     sidebar.innerHTML = '<div class="sidebar-inner">' +
-      '<div class="sidebar-logo"><img src="/design-system/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44"></div>' +
+      '<div class="sidebar-logo"><img src="/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44"></div>' +
       '<div class="nav-list">' + buildNavHTML() + '</div></div>';
 
     attachSectionToggles(sidebar);
@@ -135,7 +135,7 @@
     var page = findCurrentPage();
     if (!page) return;
 
-    var html = '<a href="/design-system/">Design System</a>';
+    var html = '<a href="/">Design System</a>';
 
     if (page.section) {
       html += '<span class="breadcrumb-sep">/</span>' +
@@ -192,7 +192,7 @@
     // Top bar
     var topbar = document.createElement('div');
     topbar.className = 'mobile-topbar';
-    topbar.innerHTML = '<img src="/design-system/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44">' +
+    topbar.innerHTML = '<img src="/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44">' +
       '<button class="mobile-menu-btn" aria-label="Open menu">' + HAMBURGER + '</button>';
     document.body.insertBefore(topbar, document.body.firstChild);
 
@@ -202,7 +202,7 @@
     overlay.innerHTML = '<div class="mobile-overlay-scrim"></div>' +
       '<div class="mobile-drawer">' +
         '<div class="mobile-drawer-header">' +
-          '<img src="/design-system/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44">' +
+          '<img src="/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44">' +
         '</div>' +
         '<div class="nav-list"></div>' +
       '</div>' +

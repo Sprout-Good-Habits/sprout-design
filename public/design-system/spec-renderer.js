@@ -323,7 +323,7 @@
         var slug = toSlug(item.name);
         var info = COMPONENT_THUMBS[item.name] || { desc: '', thumb: '' };
         var displayName = unCamel(item.name);
-        var href = '/design-system/components/' + slug + '.html';
+        var href = '/components/' + slug + '.html';
         relHtml += '<a class="gallery-card" href="' + href + '">';
         relHtml += '<div class="gallery-thumb">' + info.thumb + '</div>';
         relHtml += '<div class="gallery-body">';

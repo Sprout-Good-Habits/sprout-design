@@ -169,9 +169,9 @@ Pill-shaped utility button. Used in Toolbar for navigation, stats, and actions.
 .btn-util-with-label { gap: var(--spacing-md, 8px); }
 .btn-util-label {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-lg, 18px);
-  line-height: var(--line-height-text-lg, 28px);
-  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-regular, 400);
   color: var(--text-secondary, #414651);
 }
 

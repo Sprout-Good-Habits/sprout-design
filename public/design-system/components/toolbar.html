@@ -25,7 +25,7 @@
     { "name": "Quest", "useWhen": "Exercise flow with progress bar and stat counters", "pairWith": ["ProgressBar", "ButtonUtility"] },
     { "name": "Kid Home", "useWhen": "Home screen with shield and stat display", "pairWith": ["ButtonUtility"] },
     { "name": "Large Title", "useWhen": "Section headers with prominent text", "pairWith": [] },
-    { "name": "Quest - Transparent", "useWhen": "Exercise flow with btn-util close and progress bar", "pairWith": ["ProgressBar", "ButtonUtility"] }
+    { "name": "Quest 2", "useWhen": "Exercise flow with btn-util close and progress bar", "pairWith": ["ProgressBar", "ButtonUtility"] }
   ],
   "sizes": [
     { "name": "Default", "useWhen": "Standard — 56px height" }
@@ -50,8 +50,8 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/design-system/tokens.css">
-<link rel="stylesheet" href="/design-system/styles.css">
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
 <style>
 /* ── Toss Face emoji font ── */
 @font-face {
@@ -165,9 +165,9 @@
 .btn-util-with-label { gap:var(--spacing-md, 8px); }
 .btn-util-label {
   font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-lg, 18px);
-  line-height:var(--line-height-text-lg, 28px);
-  font-weight:var(--font-weight-medium, 500);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-regular, 400);
   color:var(--text-secondary, #414651);
   white-space:nowrap;
 }
@@ -250,7 +250,7 @@
 .toolbar-center-subtitle {
   font-family:var(--font-family-body, 'Inter', sans-serif);
   font-size:var(--font-size-text-xs, 12px);
-  line-height:var(--line-height-text-xs, 16px);
+  line-height:var(--line-height-text-xs, 18px);
   font-weight:var(--font-weight-medium, 500);
   color:var(--text-secondary, #414651); white-space:nowrap;
 }
@@ -340,7 +340,7 @@
   border-radius:var(--radius-full, 9999px);
 }
 
-/* ── Toolbar: Quest - Transparent ── */
+/* ── Toolbar: Quest 2 ── */
 .toolbar-quest-transparent {
   align-items:center;
   gap:var(--spacing-md, 8px);
@@ -458,7 +458,7 @@
         <div class="toolbar toolbar-chat" style="width:340px;position:relative;">
           <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
           <span class="toolbar-abs-title">Family Chat</span>
-          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div></div>
         </div>
       </div>
       <div class="demo-item">
@@ -497,7 +497,7 @@
         </div>
       </div>
       <div class="demo-item">
-        <span class="demo-label">Quest - Transparent</span>
+        <span class="demo-label">Quest 2</span>
         <div class="toolbar toolbar-quest-transparent" style="width:340px;">
           <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
           <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
@@ -563,7 +563,7 @@
   <!-- ════ Toolbar styles ════ -->
   <div class="doc-section">
     <h2>Toolbar styles</h2>
-    <p>8 style variants, each designed for a specific navigation context.</p>
+    <p>9 style variants, each designed for a specific navigation context.</p>
 
     <!-- 1. Compact Large -->
     <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Compact Large</h3>
@@ -645,7 +645,7 @@
         <div class="toolbar toolbar-chat">
           <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
           <span class="toolbar-abs-title">Family Chat</span>
-          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div></div>
         </div>
         <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
       </div>
@@ -722,8 +722,8 @@
       </div>
     </div>
 
-    <!-- 9. Quest - Transparent -->
-    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Quest - Transparent</h3>
+    <!-- 9. Quest 2 -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Quest 2</h3>
     <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Transparent variant of the quest toolbar. No background or bottom shadow &mdash; the toolbar blends into the page content. Close button is a <code>Button utility</code> pill instead of a bare icon.</p>
     <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Cancel (btn-util) &nbsp;&middot;&nbsp; <strong>Center:</strong> Progress bar &nbsp;&middot;&nbsp; <strong>Trailing:</strong> &mdash;</p>
     <div class="demo" style="gap:24px;">
@@ -943,7 +943,7 @@
   <div class="doc-section">
     <h2>Sub-component: Button utility</h2>
     <p>Pill-shaped action buttons used in the <strong>Leading</strong> and <strong>Trailing</strong> slots. Hover and click to see interactive states. For full documentation see the dedicated page.</p>
-    <p style="margin-top:8px;"><a href="/design-system/components/button-utility.html" style="color:var(--brand-600, #0086c9);font-weight:600;text-decoration:none;">View Button Utility component page &rarr;</a></p>
+    <p style="margin-top:8px;"><a href="/components/button-utility.html" style="color:var(--brand-600, #0086c9);font-weight:600;text-decoration:none;">View Button Utility component page &rarr;</a></p>
 
     <!-- Types -->
     <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Types</h3>
@@ -974,7 +974,7 @@
       </div>
       <div class="state-cell">
         <span class="state-cell-label">User group</span>
-        <div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div>
+        <div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div>
       </div>
       <div class="state-cell">
         <span class="state-cell-label">Emoji only</span>
@@ -1091,7 +1091,7 @@
   <div class="doc-section">
     <h2>Sub-component: Progress bar</h2>
     <p>Linear progress indicator used inside the <strong>Quest</strong> toolbar. For full documentation including animation specs, spark effects, and streak messages, see the dedicated page.</p>
-    <p style="margin-top:12px;"><a href="/design-system/components/progress-bar.html" style="color:var(--brand-600, #0086c9);font-weight:600;text-decoration:none;">View Progress Bar component page &rarr;</a></p>
+    <p style="margin-top:12px;"><a href="/components/progress-bar.html" style="color:var(--brand-600, #0086c9);font-weight:600;text-decoration:none;">View Progress Bar component page &rarr;</a></p>
   </div>
 
   <!-- ════ Sub-component: Avatar ════ -->
@@ -1101,8 +1101,8 @@
 
     <div class="demo">
       <div class="demo-item"><span class="demo-label">User</span><div class="avatar"></div></div>
-      <div class="demo-item"><span class="demo-label">Sprout</span><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div>
-      <div class="demo-item"><span class="demo-label">User group (3)</span><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/design-system/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div>
+      <div class="demo-item"><span class="demo-label">Sprout</span><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div>
+      <div class="demo-item"><span class="demo-label">User group (3)</span><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div>
     </div>
 
     <table class="token-table">
@@ -1133,7 +1133,7 @@
         <tr><td><strong>Kid home</strong></td><td>Kid&rsquo;s main feed</td><td>Shield</td><td>&mdash;</td><td>Stat counters + avatar</td></tr>
         <tr><td><strong>Quest map</strong></td><td>Curriculum world</td><td>Back</td><td>Large title + subtitle</td><td>Stat counters (3)</td></tr>
         <tr><td><strong>Quest</strong></td><td>Inside exercise</td><td>Cancel (X)</td><td>Progress bar</td><td>&mdash;</td></tr>
-        <tr><td><strong>Quest - Transparent</strong></td><td>Exercise on variable bg</td><td>Cancel (btn-util)</td><td>Progress bar</td><td>&mdash;</td></tr>
+        <tr><td><strong>Quest 2</strong></td><td>Exercise on variable bg</td><td>Cancel (btn-util)</td><td>Progress bar</td><td>&mdash;</td></tr>
       </tbody>
     </table>
   </div>
@@ -1146,7 +1146,7 @@
     <table class="token-table">
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
       <tbody>
-        <tr><td><code>style</code></td><td>Enum</td><td>Default</td><td>Compact Large, Large Title, Title 2 Line, Default, Chat, Kid home, Quest map, Quest, Quest - Transparent</td></tr>
+        <tr><td><code>style</code></td><td>Enum</td><td>Default</td><td>Compact Large, Large Title, Title 2 Line, Default, Chat, Kid home, Quest map, Quest, Quest 2</td></tr>
         <tr><td><code>showSubtitle</code></td><td>Boolean</td><td>true</td><td>Toggle subtitle visibility (Large Title &amp; Title 2 Line only)</td></tr>
       </tbody>
     </table>
@@ -1216,9 +1216,9 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Badges',href:'/design-system/components/badges.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Task Card',href:'/design-system/components/task-card.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
-<script src="/design-system/spec-renderer.js"></script>
-<script src="/design-system/shell.js"></script>
+<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
 <script>
 // Scroll-collapse demo for Large Title -> Compact Large
 (function() {

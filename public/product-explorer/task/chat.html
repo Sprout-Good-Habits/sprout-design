@@ -7,42 +7,7 @@
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <style>
-/* ── Prototype viewer ── */
-.proto-viewer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-3xl, 24px);
-  margin-top: var(--spacing-5xl, 40px);
-}
-.proto-arrow {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #ffffff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-tertiary, #535862);
-  transition: all 0.15s;
-  flex-shrink: 0;
-}
-.proto-arrow:hover {
-  border-color: var(--border-primary, #d5d7da);
-  color: var(--text-primary, #181d27);
-}
-.proto-arrow:disabled,
-.proto-arrow.disabled {
-  opacity: 0.35;
-  cursor: default;
-  pointer-events: none;
-}
-.proto-arrow svg { width: 20px; height: 20px; }
-
-/* ── Device frame ── */
+/* ── Device frame (from shared styles.css) ── */
 .device-wrapper {
   background: var(--bg-primary, #ffffff);
   border: 1px solid rgba(0,0,0,0.08);
@@ -69,579 +34,558 @@
   box-shadow:
     inset 0 0 6px 2px rgba(10,13,18,0.08),
     inset 0 0 4px 2px rgba(10,13,18,0.03);
+  z-index: 6;
 }
 .device-mockup {
   background: var(--bg-tertiary, #fafafa);
   border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: 24px;
-  overflow: hidden;
+  clip-path: inset(0 round 24px);
+  position: relative;
 }
 .device-screen {
-  width: 302px;
-  height: 656px;
+  width: 402px;
+  height: 874px;
   position: relative;
   overflow: hidden;
+  background: var(--bg-sky, #e0f2fe);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.viewer {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-3xl, 24px);
+}
+
+/* ── Controls row + device toggle ── */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.device-toggle {
+  display: flex;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px);
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-lg, 10px);
+}
+.device-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  height: 36px;
+  border-radius: var(--radius-sm, 6px);
+  border: none;
+  background: transparent;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-quaternary, #717680);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.device-btn:hover { color: var(--text-tertiary, #535862); }
+.device-btn.active {
+  background: var(--bg-primary, #fff);
+  color: var(--text-secondary, #414651);
+  box-shadow: 0 1px 3px 0 rgba(10,13,18,0.1), 0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.device-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.device-btn .device-icon { stroke: var(--text-quaternary, #717680); transition: stroke 0.15s; }
+.device-btn.active .device-icon { stroke: var(--text-secondary, #414651); }
+
+/* ── iPad overrides ── */
+.device-wrapper.ipad .device-screen {
+  width: 640px;
+  height: 854px;
 }
 
 /* ── Status bar ── */
-.phone-status {
+.status-bar {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 54px;
-  padding: 14px 24px 0;
+  height: 62px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 var(--spacing-3xl, 24px) var(--spacing-md, 8px);
+  z-index: 10;
+  pointer-events: none;
+}
+.status-bar-time {
+  font-size: 17px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  letter-spacing: -0.01em;
+}
+.status-bar-icons {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-primary, #181d27);
-  z-index: 5;
+  gap: 6px;
 }
-.phone-status-icons { display: flex; gap: 4px; align-items: center; }
-.phone-status-icons svg { width: 16px; height: 16px; }
+.status-bar-icons svg { display: block; }
 
-/* ── Sky + grass ── */
-.screen-sky {
-  background: var(--bg-sky, #e0f2fe);
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-.grass-container {
+/* ── Grass + character area ── */
+.bg-bottom {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
-}
-.grass-edge {
-  height: 18px;
-  background: var(--bg-grass, #86cb3c);
-  border-radius: 18px 18px 0 0;
-}
-.grass-fill {
-  background: var(--bg-grass, #86cb3c);
-  width: 100%;
-  height: 32px;
-}
-
-/* ── Rive character ── */
-.rive-canvas {
-  position: absolute;
-  left: 50%;
-  width: 302px;
-  height: 302px;
-  z-index: 3;
+  right: 0;
+  z-index: 1;
   pointer-events: none;
-  transform: translateX(-50%) scale(1.25);
-  transform-origin: bottom center;
-  bottom: -46px;
+}
+.bg-grass-edge {
+  display: block;
+  width: 100%;
+  height: 24px;
+  border-radius: 24px 24px 0 0;
+  background: var(--bg-grass, #86cb3c);
+}
+.bg-grass-fill {
+  width: 100%;
+  height: 89px;
+  background: var(--bg-grass, #86cb3c);
 }
 
 /* ── Home indicator ── */
 .home-indicator {
   position: absolute;
-  bottom: 6px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 108px;
-  height: 4px;
-  background: black;
+  width: 134px;
+  height: 5px;
   border-radius: 100px;
-  z-index: 10;
+  background: var(--text-primary, #181d27);
+  z-index: 20;
 }
 
-/* ── Kid Home toolbar ── */
-@font-face {
-  font-family: 'TossFace';
-  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
-  font-display: swap;
-}
-.toolbar {
-  display: flex;
-  align-items: center;
-  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+/* ── Composer area (pinned to bottom) ── */
+.composer-area {
   position: absolute;
-  top: 54px;
+  bottom: 34px;
   left: 0;
   right: 0;
-  z-index: 3;
-  transform: scale(0.751);
-  transform-origin: top left;
-  width: calc(100% / 0.751);
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 0 var(--spacing-xl, 16px);
+  transition: padding 0.2s;
 }
-.toolbar-kid-home {
-  justify-content: space-between;
-}
-.toolbar-trailing {
+
+/* ── Plus / Close button ── */
+.btn-attach {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: var(--spacing-md, 8px);
-}
-.btn-util {
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  gap: 0;
-  padding: var(--spacing-lg, 12px);
   background: var(--bg-primary, #ffffff);
   border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: var(--radius-full, 9999px);
   box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  flex-shrink: 0;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
 }
-.btn-util-with-label { gap: var(--spacing-md, 8px); }
-.btn-util-label {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-lg, 18px);
-  line-height: var(--line-height-text-lg, 28px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-secondary, #414651);
-  white-space: nowrap;
-}
-.tf-icon {
-  font-family: 'TossFace', sans-serif;
-  font-size: 24px;
-  line-height: 1;
+.btn-attach:hover { background: var(--gray-50, #fafafa); }
+.btn-attach:active { box-shadow: none; transform: translateY(2px); }
+.btn-attach svg {
   width: 24px;
   height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  color: var(--text-primary, #181d27);
 }
 
-/* ── Prototype screen (content layer) ── */
-.proto-screen {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
+/* ── Composer input bubble ── */
+.composer {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 24px;
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
   overflow: hidden;
-}
-
-/* ── Screen navigation ── */
-.screen {
-  position: absolute;
-  inset: 0;
   display: flex;
   flex-direction: column;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-.screen.active {
-  opacity: 1;
-  pointer-events: auto;
+  padding: var(--spacing-xs, 4px);
+  transition: max-height 0.25s ease;
 }
 
-/* ── Task Card Carousel ── */
-.carousel-container {
-  position: absolute;
-  top: 96px;
-  left: 0;
-  right: 0;
-  bottom: 0;
+/* ── Media row ── */
+.media-row {
+  display: none;
+  gap: 8px;
+  padding: var(--spacing-xs, 4px) var(--spacing-lg, 12px) 0;
   overflow-x: auto;
   overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-padding: 0 12px;
-  display: flex;
-  gap: 6px;
-  padding: 12px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
-.carousel-container::-webkit-scrollbar { display: none; }
-.carousel-container::after {
-  content: '';
-  flex-shrink: 0;
-  width: 12px;
-}
-.task-card {
-  flex-shrink: 0;
-  width: 278px;
-  height: 315px;
-  border-radius: 24px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  color: white;
-  scroll-snap-align: center;
-  position: relative;
-  overflow: hidden;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-}
+.media-row::-webkit-scrollbar { display: none; }
+.media-row.visible { display: flex; }
 
-/* Card layout: badges → content → emoji → cta */
-.card-badges {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+.media-card {
   position: relative;
-  z-index: 2;
-}
-.card-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 3px 6px;
-  border-radius: 100px;
-  font-size: 11px;
-  line-height: 15px;
-  font-weight: 400;
-}
-.card-badge .tf-badge {
-  font-family: 'TossFace', sans-serif;
-  font-size: 12px;
-  line-height: 1;
-  width: 12px;
-  height: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-top: 10px;
-  position: relative;
-  z-index: 2;
-}
-.card-name {
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 27px;
-}
-.card-desc {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 400;
-  opacity: 0.85;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: 20px;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
-.card-emoji-area {
-  flex: 1;
+.media-card-image {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--brand-100, #b2ddff) 0%, var(--brand-200, #7cc4fa) 100%);
+  border-radius: 20px;
+}
+.media-remove {
+  position: absolute;
+  top: var(--spacing-md, 8px);
+  right: var(--spacing-md, 8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  z-index: 2;
-}
-.card-emoji {
-  font-family: 'TossFace', sans-serif;
-  font-size: 120px;
-  line-height: 1;
-}
-
-/* Card CTA — Sprout secondary button (scaled for card) */
-.card-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm, 6px);
-  height: 36px;
-  border-radius: var(--radius-2xl, 16px);
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 12px;
-  font-weight: var(--font-weight-bold, 700);
-  background: var(--bg-primary, #ffffff);
-  color: var(--text-secondary, #414651);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  background: var(--bg-tertiary, #f5f5f5);
+  border-radius: var(--radius-full, 9999px);
+  border: none;
   cursor: pointer;
-  position: relative;
-  z-index: 2;
-  flex-shrink: 0;
-  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  padding: var(--spacing-md, 8px);
+  transition: transform 0.15s, opacity 0.15s;
 }
-.card-cta .tf-cta {
-  font-family: 'TossFace', sans-serif;
-  font-size: 14px;
-  line-height: 1;
+.media-remove:active {
+  transform: scale(0.9);
+  opacity: 0.85;
 }
-.card-cta-disabled {
-  background: var(--gray-300, #d5d7da);
-  color: var(--text-disabled, #717680);
-  border: 2px solid var(--gray-400, #a4a7ae);
-  box-shadow: 0 3px 0 0 var(--gray-400, #a4a7ae);
-  cursor: not-allowed;
-  pointer-events: none;
+.media-remove svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text-secondary, #414651);
 }
-
-/* Flame: muted for incomplete, full color for completed */
-.flame-muted {
-  filter: grayscale(1) brightness(2);
-}
-
-/* Completed overlay */
-.card-completed-overlay {
+/* ── Media loading overlay ── */
+.media-card-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.4);
-  border-radius: 24px;
-  pointer-events: none;
+  background: rgba(0,0,0,0.2);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 1;
 }
 
-/* Solid utility-500 card colors */
-.card-brand { background: var(--brand-500, #0ba5ec); }
-.card-blue-dark { background: var(--blue-dark-500, #2970ff); }
-.card-violet { background: var(--violet-500, #875bf7); }
-.card-pink { background: var(--pink-500, #ee46bc); }
-.card-red { background: var(--red-500, #f04438); }
-.card-orange { background: var(--orange-500, #ef6820); }
-.card-yellow { background: var(--yellow-500, #eaaa08); }
-.card-green { background: var(--green-500, #17b26a); }
-
-/* Badge utility-200 backgrounds */
-.badge-brand { background: var(--brand-200, #b9e6fe); color: var(--brand-700, #026aa2); }
-.badge-blue-dark { background: var(--blue-dark-200, #b2ccff); color: var(--blue-dark-700, #004eeb); }
-.badge-violet { background: var(--violet-200, #ddd6fe); color: var(--violet-700, #5925dc); }
-.badge-pink { background: var(--pink-200, #fcceee); color: var(--pink-700, #c11574); }
-.badge-red { background: var(--red-200, #fecdca); color: var(--red-700, #b42318); }
-.badge-orange { background: var(--orange-200, #f9dbaf); color: var(--orange-700, #b93815); }
-.badge-yellow { background: var(--yellow-200, #feee95); color: var(--yellow-700, #a15c07); }
-.badge-green { background: var(--green-200, #abefc6); color: var(--green-700, #067647); }
-
-/* ── Screen 2: Task Intro (conversation style) ── */
-.intro-messages {
-  position: absolute;
-  top: 96px;
-  left: 0;
-  right: 0;
-  padding: 12px;
-  z-index: 2;
-}
-
-/* ── Screen 3: Chat Interface ── */
-.chat-screen {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-}
-.toolbar-quest {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md, 8px);
-  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
-  position: absolute;
-  top: 54px;
-  left: 0;
-  right: 0;
-  z-index: 3;
-  transform: scale(0.751);
-  transform-origin: top left;
-  width: calc(100% / 0.751);
-  background: var(--bg-sky, #e0f2fe);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-}
-.quest-close {
-  display: flex;
-  align-items: center;
-  padding: var(--spacing-xs, 4px);
+/* ── Design system spinner ── */
+.spinner-circle {
+  display: inline-block;
   flex-shrink: 0;
-  cursor: pointer;
+  animation: spinner-rotate 0.8s linear infinite;
 }
-.quest-close svg { width: 40px; height: 40px; }
-.progress-track {
+@keyframes spinner-rotate { to { transform: rotate(360deg); } }
+.spinner-sm { width: 20px; height: 20px; }
+
+/* ── Input row ── */
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 var(--spacing-xxs, 2px) 0 var(--spacing-md, 8px);
+  min-height: 36px;
+}
+.input-row.align-end { align-items: flex-end; }
+.input-row.input-row-audio {
+  padding: 0 var(--spacing-xxs, 2px) 0 var(--spacing-sm, 6px);
+}
+
+.composer-input {
   flex: 1;
-  height: 16px;
-  background: var(--bg-secondary, #fafafa);
-  border-radius: var(--radius-full, 9999px);
-  overflow: hidden;
-  position: relative;
-}
-.progress-fill {
-  height: 100%;
-  background: var(--brand-500, #0ba5ec);
-  border-radius: var(--radius-full, 9999px);
-  min-width: 32px;
-  padding: var(--spacing-xs, 4px) var(--spacing-md, 8px);
-  box-sizing: border-box;
-  position: relative;
-  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.progress-fill::after {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 4px;
-  background: rgba(255,255,255,0.5);
-  border-radius: var(--radius-full, 9999px);
-}
-.chat-messages {
-  position: absolute;
-  top: 96px;
-  left: 0;
-  right: 0;
-  bottom: 60px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  overflow-y: auto;
-  z-index: 2;
-}
-.chat-bubble {
-  max-width: 192px;
-  min-width: 68px;
-  padding: 9px 12px;
-  border-radius: 18px;
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--text-primary, #181d27);
-}
-.bubble-sprout {
-  background: var(--bg-primary, #ffffff);
-  align-self: flex-start;
-}
-.bubble-kid {
-  background: var(--brand-200, #b9e6fe);
-  align-self: flex-end;
-}
-.chat-mic {
-  position: absolute;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 4;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 15px;
-  background: var(--brand-500, #0ba5ec);
   border: none;
-  border-bottom: 2px solid var(--brand-600, #0086c9);
-  border-radius: var(--radius-full, 9999px);
-  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
-  cursor: pointer;
-  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
-  animation: mic-bounce 1.2s ease-in-out 2;
-}
-.chat-mic:hover { background: var(--brand-400, #36bffa); }
-.chat-mic:active {
-  box-shadow: none;
-  border-bottom: none;
-  transform: translateX(-50%) translateY(4px);
-  animation: none;
-}
-.chat-mic svg { width: 30px; height: 30px; color: #ffffff; display: block; }
-@keyframes mic-bounce {
-  0% { transform: translateX(-50%) scale(1) rotate(0deg); }
-  15% { transform: translateX(-50%) scale(1.1) rotate(-5deg); }
-  30% { transform: translateX(-50%) scale(1) rotate(4deg); }
-  45% { transform: translateX(-50%) scale(1.04) rotate(-2deg); }
-  60% { transform: translateX(-50%) scale(1) rotate(0deg); }
-  100% { transform: translateX(-50%) scale(1) rotate(0deg); }
-}
-
-/* ── Screen 4: Success ── */
-.success-screen {
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  background: var(--bg-sky, #e0f2fe);
-}
-.success-content {
-  padding-top: 80px;
-  text-align: center;
-  z-index: 2;
-}
-.success-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary, #181d27);
-  margin-bottom: 6px;
-}
-.success-subtitle {
-  font-size: 12px;
-  color: var(--text-secondary, #414651);
-}
-.success-bottom-btn {
-  position: absolute;
-  bottom: 22px;
-  left: 12px;
-  right: 12px;
-  height: 38px;
-  border-radius: var(--radius-2xl, 16px);
-  background: var(--brand-500, #0ba5ec);
-  color: var(--text-white, #ffffff);
-  font-size: 12px;
-  font-weight: var(--font-weight-bold, 700);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  border: none;
-  border-bottom: 2px solid var(--brand-600, #0086c9);
-  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
-  z-index: 4;
-  cursor: pointer;
-  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
-}
-.success-bottom-btn:active {
-  box-shadow: none;
-  border-bottom: none;
-  transform: translateY(4px);
-}
-.rive-canvas-success {
-  position: absolute;
-  left: 50%;
-  width: 302px;
-  height: 302px;
-  z-index: 1;
-  pointer-events: none;
-  transform: translateX(-50%) scale(1.25);
-  transform-origin: bottom center;
-  bottom: -46px;
-}
-
-/* ── Reset button ── */
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--spacing-xl, 16px);
-}
-.page-header-text { flex: 1; }
-.btn-reset {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #ffffff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-tertiary, #535862);
-  transition: all 0.15s;
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-.btn-reset:hover {
-  border-color: var(--border-primary, #d5d7da);
-  color: var(--text-primary, #181d27);
-}
-.btn-reset svg { width: 20px; height: 20px; }
-
-/* ── Screen label (below device) ── */
-.screen-label-outer {
+  outline: none;
+  background: transparent;
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-md, 16px);
   line-height: var(--line-height-text-md, 24px);
   color: var(--text-secondary, #414651);
-  text-align: center;
-  margin-top: var(--spacing-xl, 16px);
+  resize: none;
+  min-height: 24px;
+  max-height: 178px;
+  padding: var(--spacing-xs, 4px) 0;
+  overflow-y: auto;
 }
+.composer-input::placeholder {
+  color: var(--text-placeholder-subtle, #d5d7da);
+}
+
+/* ── Mic button ── */
+.btn-mic {
+  padding: var(--spacing-sm, 6px);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full, 9999px);
+}
+.btn-mic svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text-quaternary, #717680);
+}
+
+/* ── Send button ── */
+.btn-send {
+  flex-shrink: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--fg-brand-primary, #0ba5ec);
+  border: none;
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  padding: var(--spacing-md, 8px);
+  transition: transform 0.15s, opacity 0.15s;
+}
+.btn-send.visible { display: flex; }
+.btn-send:active { transform: scale(0.9); opacity: 0.85; }
+.btn-send svg {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+
+/* ── Stop button ── */
+.btn-stop {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red-200, #fecdca);
+  border: none;
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  padding: var(--spacing-md, 8px);
+  transition: transform 0.15s, opacity 0.15s;
+}
+.btn-stop:active { transform: scale(0.9); opacity: 0.85; }
+.btn-stop svg {
+  width: 20px;
+  height: 20px;
+  color: var(--red-600, #d92d20);
+}
+
+/* ── Play button (send audio) ── */
+.btn-play {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-200, #e9eaeb);
+  border: none;
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  padding: var(--spacing-sm, 6px);
+  transition: transform 0.15s, opacity 0.15s;
+}
+.btn-play:active { transform: scale(0.9); opacity: 0.85; }
+.btn-play svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text-primary, #181d27);
+}
+
+/* ── Waveform ── */
+.waveform {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 24px;
+  overflow: hidden;
+}
+.waveform-bar {
+  width: 2px;
+  border-radius: 1px;
+  transition: height 0.15s ease;
+}
+.waveform-bar.active {
+  background: var(--fg-secondary, #414651);
+}
+.waveform-bar.inactive {
+  background: var(--fg-quaternary, #a4a7ae);
+}
+
+/* Animate bars during listening */
+@keyframes waveformPulse {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+.waveform.listening .waveform-bar {
+  animation: waveformPulse 0.6s ease-in-out infinite;
+  background: var(--fg-secondary, #414651);
+  pointer-events: none;
+}
+
+/* Ensure stop button is clickable above waveform */
+.btn-stop, .btn-play, .btn-send {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Transcribing state ── */
+.transcribing-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  flex: 1;
+  padding: var(--spacing-xs, 4px) 0;
+}
+.transcribing-label {
+  font-size: var(--font-size-text-md, 16px);
+  color: var(--text-placeholder, #717680);
+  line-height: var(--line-height-text-md, 24px);
+}
+
+/* Transcribing spinner uses .spinner-circle + .spinner-sm from design system */
+
+/* ── Attachment sheet ── */
+.sheet-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 15;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.sheet-scrim.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+  z-index: 16;
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+  padding-bottom: 34px;
+}
+.sheet.visible {
+  transform: translateY(0);
+}
+.sheet-header {
+  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--gray-300, #d5d7da);
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.sheet-title-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: var(--spacing-md, 8px);
+}
+.sheet-title {
+  flex: 1;
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  line-height: var(--line-height-text-md, 24px);
+}
+.sheet-close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-full, 9999px);
+  padding: 0;
+}
+.sheet-close:hover { background: var(--gray-50, #fafafa); }
+.sheet-close svg {
+  width: 24px;
+  height: 24px;
+  color: var(--text-secondary, #414651);
+}
+
+.sheet-actions {
+  display: flex;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-xs, 4px) var(--spacing-lg, 12px) var(--spacing-lg, 12px);
+}
+.action-tile {
+  flex: 1;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md, 8px);
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.action-tile:hover { background: var(--gray-100, #f0f1f1); }
+.action-tile-icon {
+  font-family: 'TossFace', sans-serif;
+  font-size: 36px;
+  line-height: 1;
+}
+.action-tile-label {
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #414651);
+  line-height: var(--line-height-text-sm, 20px);
+}
+
+/* ── State visibility helpers ── */
+.hidden { display: none !important; }
+
+/* ── State label (for demo) ── */
+.state-indicator {
+  position: absolute;
+  top: 68px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.6);
+  color: white;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium, 500);
+  padding: 4px 12px;
+  border-radius: var(--radius-full, 9999px);
+  z-index: 12;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.state-indicator.visible { opacity: 1; }
+
 </style>
 </head>
 <body>
@@ -654,292 +598,565 @@
       <div class="page-header">
         <div class="page-header-text">
           <div class="sec-title">Chat</div>
-          <div class="sec-desc">Chat-based task completion flow — from task selection through conversation to reward.</div>
+          <div class="sec-desc">Interactive prototype of the message composer. Try typing, recording audio, and adding attachments.</div>
         </div>
-        <button class="btn-reset" id="reset-btn" aria-label="Reset prototype">
-          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-        </button>
       </div>
 
-      <div class="proto-viewer">
-        <button class="proto-arrow disabled" id="prev-btn" aria-label="Previous screen">
-          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
+      <div class="controls-row">
+        <div class="device-toggle">
+          <button class="device-btn" data-device="ipad"><svg viewBox="0 0 18 22" fill="none"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 9 16C9.27614 16 9.5 16.2239 9.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
+          <button class="device-btn active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
+        </div>
+      </div>
 
+      <div class="viewer">
         <div class="device-wrapper">
           <div class="device-inner-shadow">
             <div class="device-mockup">
-              <div class="device-screen">
-                <div class="phone-status">
-                  <span>9:41</span>
-                  <div class="phone-status-icons">
-                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
-                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
-                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
-                  </div>
-                </div>
+              <div class="device-screen" id="phone">
 
-                <div class="screen-sky">
-                  <div class="proto-screen" id="proto-screen">
+        <!-- Status bar -->
+        <div class="status-bar">
+          <span class="status-bar-time">9:41</span>
+          <span class="status-bar-icons">
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+            <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+          </span>
+        </div>
 
-                    <!-- Screen 1: Home Carousel -->
-                    <div class="screen active" data-screen="0">
-                      <div class="toolbar toolbar-kid-home">
-                        <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
-                        <div class="toolbar-trailing">
-                          <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
-                          <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
-                          <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
-                        </div>
-                      </div>
-                      <div class="carousel-container">
-                        <!-- Card 1: Talk to Sprout — Not Started -->
-                        <div class="task-card card-brand">
-                          <div class="card-badges">
-                            <span class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 3 days</span>
-                            <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</span>
-                          </div>
-                          <div class="card-content">
-                            <div class="card-name">Talk to Sprout</div>
-                            <div class="card-desc">Chat with Sprout about your day</div>
-                          </div>
-                          <div class="card-emoji-area"><span class="card-emoji">&#x1F4AC;</span></div>
-                          <div class="card-cta">Start</div>
-                        </div>
+        <!-- State indicator -->
+        <div class="state-indicator" id="stateLabel"></div>
 
-                        <!-- Card 2: Read for 20 min — Submitted -->
-                        <div class="task-card card-violet">
-                          <div class="card-badges">
-                            <span class="card-badge badge-violet"><span class="tf-badge flame-muted">&#x1F525;</span> 7 days</span>
-                            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 15</span>
-                          </div>
-                          <div class="card-content">
-                            <div class="card-name">Read for 20 min</div>
-                            <div class="card-desc">Read a book and share what you liked</div>
-                          </div>
-                          <div class="card-emoji-area"><span class="card-emoji">&#x1F4DA;</span></div>
-                          <div class="card-cta card-cta-disabled">Reviewing...</div>
-                        </div>
+        <!-- Character peeking from bottom -->
+        <div class="bg-bottom">
+          <div class="bg-grass-edge"></div>
+          <div class="bg-grass-fill"></div>
+        </div>
 
-                        <!-- Card 3: Practice Piano — Completed (claimed) -->
-                        <div class="task-card card-green">
-                          <div class="card-completed-overlay"></div>
-                          <div class="card-badges">
-                            <span class="card-badge badge-green"><span class="tf-badge">&#x1F525;</span> 12 days</span>
-                            <span class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 20</span>
-                          </div>
-                          <div class="card-content">
-                            <div class="card-name">Practice Piano</div>
-                            <div class="card-desc">Practice your piano for 15 minutes</div>
-                          </div>
-                          <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
-                        </div>
-                      </div>
-                    </div>
+        <!-- Composer -->
+        <div class="composer-area" id="composerArea">
+          <!-- Plus / X button -->
+          <button class="btn-attach" id="btnAttach" aria-label="Add attachment">
+            <svg id="iconPlus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <svg id="iconClose" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
 
-                    <!-- Screen 2: Task Intro -->
-                    <div class="screen" data-screen="1">
-                      <div class="toolbar toolbar-quest">
-                        <div class="quest-close"><svg viewBox="0 0 40 40" fill="none"><path d="M14 14l12 12M26 14l-12 12" stroke="var(--gray-500)" stroke-width="2.5" stroke-linecap="round"/></svg></div>
-                        <div class="progress-track"><div class="progress-fill" style="width:10%"></div></div>
-                      </div>
-                      <div class="intro-messages">
-                        <div class="chat-bubble bubble-sprout">Hi Jay how was your day today?</div>
-                      </div>
-                      <div class="chat-mic" id="intro-mic-btn">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="9" y="1" width="6" height="12" rx="3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-                      </div>
-                    </div>
+          <!-- Composer bubble -->
+          <div class="composer" id="composer">
+            <!-- Media attachments row -->
+            <div class="media-row" id="mediaRow"></div>
 
-                    <!-- Screen 3: Chat Interface -->
-                    <div class="screen" data-screen="2">
-                      <div class="chat-screen">
-                        <div class="toolbar toolbar-quest">
-                          <div class="quest-close"><svg viewBox="0 0 40 40" fill="none"><path d="M14 14l12 12M26 14l-12 12" stroke="var(--gray-500)" stroke-width="2.5" stroke-linecap="round"/></svg></div>
-                          <div class="progress-track"><div class="progress-fill" style="width:60%"></div></div>
-                        </div>
-                        <div class="chat-messages">
-                          <div class="chat-bubble bubble-sprout">Hi Jay how was your day today?</div>
-                          <div class="chat-bubble bubble-kid">My day was pretty good, thanks!</div>
-                        </div>
-                        <div class="chat-mic" id="chat-mic-btn">
-                          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="9" y="1" width="6" height="12" rx="3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-                        </div>
-                      </div>
-                    </div>
+            <!-- Default input row (placeholder, typing, single/multi line) -->
+            <div class="input-row" id="inputRowDefault">
+              <textarea class="composer-input" id="composerInput" rows="1" placeholder="Talk to Sprout..."></textarea>
+              <button class="btn-mic" id="btnMic" aria-label="Record voice message">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="21" x2="12" y2="17"/></svg>
+              </button>
+              <button class="btn-send" id="btnSend" aria-label="Send message">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </button>
+            </div>
 
-                    <!-- Screen 4: Success -->
-                    <div class="screen" data-screen="3">
-                      <div class="success-screen">
-                        <div class="success-content">
-                          <div class="success-title">Great job!</div>
-                          <div class="success-subtitle">Sent to your parent to check!</div>
-                        </div>
-                        <canvas id="rive-success" class="rive-canvas-success" width="604" height="604"></canvas>
-                        <div class="grass-container" style="z-index:2">
-                          <div class="grass-edge"></div>
-                          <div class="grass-fill"></div>
-                        </div>
-                        <div class="success-bottom-btn" id="back-to-tasks-btn">Back to tasks</div>
-                      </div>
-                    </div>
+            <!-- Listening row -->
+            <div class="input-row hidden" id="inputRowListening">
+              <div class="waveform listening" id="waveform"></div>
+              <button class="btn-stop" id="btnStop" aria-label="Stop recording">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+              </button>
+            </div>
 
-                  </div>
-                  <canvas id="rive-character" class="rive-canvas" width="604" height="604"></canvas>
-                  <div class="grass-container">
-                    <div class="grass-edge"></div>
-                    <div class="grass-fill"></div>
-                  </div>
-                </div>
-                <div class="home-indicator"></div>
+            <!-- Send audio row -->
+            <div class="input-row input-row-audio hidden" id="inputRowAudio">
+              <button class="btn-play" id="btnPlay" aria-label="Play recording">
+                <svg id="iconPlay" viewBox="0 0 24 24" fill="none"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86a1 1 0 0 0-1.5.86z" fill="currentColor"/></svg>
+                <svg id="iconPause" class="hidden" viewBox="0 0 24 24" fill="none"><rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/></svg>
+              </button>
+              <div class="waveform" id="waveformStatic"></div>
+              <button class="btn-send visible" id="btnSendAudio" aria-label="Send audio">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </button>
+            </div>
+
+            <!-- Transcribing row -->
+            <div class="input-row hidden" id="inputRowTranscribing">
+              <div class="transcribing-row">
+                <svg class="spinner-circle spinner-sm" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="var(--border-primary, #d5d7da)" stroke-width="2" stroke-linecap="round"/><path d="M10 2a8 8 0 0 1 8 8" stroke="var(--fg-brand-primary, #0ba5ec)" stroke-width="2" stroke-linecap="round"/></svg>
+                <span class="transcribing-label">Transcribing</span>
               </div>
+              <button class="btn-send visible" id="btnSendTranscribing" aria-label="Send">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </button>
             </div>
           </div>
         </div>
 
-        <button class="proto-arrow" id="next-btn" aria-label="Next screen">
-          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
+        <!-- Attachment sheet -->
+        <div class="sheet-scrim" id="sheetScrim"></div>
+        <div class="sheet" id="sheet">
+          <div class="sheet-header">
+            <div class="sheet-handle"></div>
+            <div class="sheet-title-row">
+              <span class="sheet-title">Sprout</span>
+              <button class="sheet-close" id="sheetClose" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="sheet-actions">
+            <div class="action-tile" id="tileCamera">
+              <span class="action-tile-icon">&#x1F4F7;</span>
+              <span class="action-tile-label">Camera</span>
+            </div>
+            <div class="action-tile" id="tilePhotos">
+              <span class="action-tile-icon">&#x1F5BC;</span>
+              <span class="action-tile-label">Photos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Home indicator -->
+        <div class="home-indicator"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="screen-label-outer" id="screen-label"></div>
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
-<script src="/product-explorer/shell.js"></script>
-<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+
 <script>
 (function() {
-  // Rive characters — home screen + success screen
-  var SM = 'State Machine 1';
-  var celebrationTrigger = null;
-  function riveWithHair(canvas, onReady) {
-    var r = new rive.Rive({
-      src: '/design-system/sprout-character.riv', canvas: canvas, autoplay: true, stateMachines: SM, fit: rive.Fit.Contain,
-      onLoad: function() {
-        try {
-          var inputs = r.stateMachineInputs(SM);
-          if (inputs) {
-            inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
-            if (onReady) onReady(inputs);
-          }
-        } catch(e) {}
+  // ── State machine ──
+  var State = {
+    PLACEHOLDER: 'placeholder',
+    TYPING: 'typing',
+    LISTENING: 'listening',
+    TRANSCRIBING: 'transcribing',
+    SEND_AUDIO: 'send_audio',
+    SHEET_OPEN: 'sheet_open'
+  };
+
+  var currentState = State.PLACEHOLDER;
+  var prevState = null;
+  var mediaItems = [];
+  var transcribeTimer = null;
+
+  // ── DOM refs ──
+  var composerInput = document.getElementById('composerInput');
+  var btnAttach = document.getElementById('btnAttach');
+  var iconPlus = document.getElementById('iconPlus');
+  var iconClose = document.getElementById('iconClose');
+  var btnMic = document.getElementById('btnMic');
+  var btnSend = document.getElementById('btnSend');
+  var btnStop = document.getElementById('btnStop');
+  var btnPlay = document.getElementById('btnPlay');
+  var btnSendAudio = document.getElementById('btnSendAudio');
+  var btnSendTranscribing = document.getElementById('btnSendTranscribing');
+  var inputRowDefault = document.getElementById('inputRowDefault');
+  var inputRowListening = document.getElementById('inputRowListening');
+  var inputRowAudio = document.getElementById('inputRowAudio');
+  var inputRowTranscribing = document.getElementById('inputRowTranscribing');
+  var mediaRow = document.getElementById('mediaRow');
+  var waveform = document.getElementById('waveform');
+  var waveformStatic = document.getElementById('waveformStatic');
+  var sheetScrim = document.getElementById('sheetScrim');
+  var sheet = document.getElementById('sheet');
+  var sheetClose = document.getElementById('sheetClose');
+  var tileCamera = document.getElementById('tileCamera');
+  var tilePhotos = document.getElementById('tilePhotos');
+  var stateLabel = document.getElementById('stateLabel');
+  var composer = document.getElementById('composer');
+
+  // ── Build waveform bars ──
+  function buildWaveformBars(container, count, animated) {
+    container.innerHTML = '';
+    for (var i = 0; i < count; i++) {
+      var bar = document.createElement('div');
+      bar.className = 'waveform-bar ' + (i < count * 0.6 ? 'active' : 'inactive');
+      var h = 4 + Math.floor(Math.random() * 20);
+      bar.style.height = h + 'px';
+      if (animated) {
+        bar.style.animationDelay = (i * 0.04) + 's';
+      }
+      container.appendChild(bar);
+    }
+  }
+
+  buildWaveformBars(waveform, 77, true);
+  buildWaveformBars(waveformStatic, 54, false);
+
+  // ── State label ──
+  var labelTimer = null;
+  function showStateLabel(text) {
+    stateLabel.textContent = text;
+    stateLabel.classList.add('visible');
+    clearTimeout(labelTimer);
+    labelTimer = setTimeout(function() {
+      stateLabel.classList.remove('visible');
+    }, 1500);
+  }
+
+  // ── Show/hide rows ──
+  function showRow(row) {
+    inputRowDefault.classList.add('hidden');
+    inputRowListening.classList.add('hidden');
+    inputRowAudio.classList.add('hidden');
+    inputRowTranscribing.classList.add('hidden');
+    row.classList.remove('hidden');
+  }
+
+  // ── Update attach button icon ──
+  function setAttachIcon(isClose) {
+    iconPlus.classList.toggle('hidden', isClose);
+    iconClose.classList.toggle('hidden', !isClose);
+  }
+
+  // ── Auto-resize textarea ──
+  function autoResize() {
+    composerInput.style.height = 'auto';
+    composerInput.style.height = Math.min(composerInput.scrollHeight, 178) + 'px';
+    // Toggle multiline alignment
+    var isMulti = composerInput.scrollHeight > 40;
+    inputRowDefault.classList.toggle('align-end', isMulti);
+  }
+
+  // ── Update send/mic visibility + placeholder ──
+  function updateSendMic() {
+    var hasText = composerInput.value.trim().length > 0;
+    var hasMedia = mediaItems.length > 0;
+    var showSend = hasText || hasMedia;
+    btnSend.classList.toggle('visible', showSend);
+    btnMic.classList.toggle('hidden', showSend);
+    composerInput.placeholder = hasMedia ? 'Add a comment or send' : 'Talk to Sprout...';
+  }
+
+  // ── Render media items ──
+  function renderMedia() {
+    mediaRow.innerHTML = '';
+    if (mediaItems.length === 0) {
+      mediaRow.classList.remove('visible');
+      return;
+    }
+    mediaRow.classList.add('visible');
+
+    mediaItems.forEach(function(item, idx) {
+      var card = document.createElement('div');
+      card.className = 'media-card';
+      var overlay = item.loading
+        ? '<div class="media-card-overlay"><svg class="spinner-circle spinner-sm" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/><path d="M10 2a8 8 0 0 1 8 8" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/></svg></div>'
+        : '';
+      card.innerHTML =
+        '<div class="media-card-image" style="background:' + item.bg + '"></div>' +
+        '<button class="media-remove" data-idx="' + idx + '" aria-label="Remove">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+        '</button>' + overlay;
+      mediaRow.appendChild(card);
+    });
+
+    // Bind remove buttons
+    mediaRow.querySelectorAll('.media-remove').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var idx = parseInt(this.getAttribute('data-idx'));
+        mediaItems.splice(idx, 1);
+        renderMedia();
+        updateSendMic();
+      });
+    });
+  }
+
+  // ── Transition to state ──
+  function goTo(state) {
+    prevState = currentState;
+    currentState = state;
+
+    // Stop any active playback animation
+    if (typeof stopPlayback === 'function') stopPlayback();
+
+    switch (state) {
+      case State.PLACEHOLDER:
+      case State.TYPING:
+        showRow(inputRowDefault);
+        setAttachIcon(false);
+        btnAttach.classList.remove('hidden');
+        updateSendMic();
+        if (state === State.PLACEHOLDER) {
+          showStateLabel('Placeholder');
+        }
+        break;
+
+      case State.LISTENING:
+        showRow(inputRowListening);
+        setAttachIcon(false);
+        btnAttach.classList.add('hidden');
+        buildWaveformBars(waveform, 77, true);
+        showStateLabel('Listening');
+        break;
+
+      case State.TRANSCRIBING:
+        showRow(inputRowTranscribing);
+        setAttachIcon(true);
+        btnAttach.classList.remove('hidden');
+        showStateLabel('Transcribing');
+        // Auto-resolve after 2.5s
+        clearTimeout(transcribeTimer);
+        transcribeTimer = setTimeout(function() {
+          composerInput.value = 'Hey Sprout, what should we do today?';
+          autoResize();
+          goTo(State.TYPING);
+          updateSendMic();
+          showStateLabel('Transcribed');
+        }, 2500);
+        break;
+
+      case State.SEND_AUDIO:
+        showRow(inputRowAudio);
+        setAttachIcon(true);
+        btnAttach.classList.remove('hidden');
+        buildWaveformBars(waveformStatic, 54, false);
+        showStateLabel('Send Audio');
+        break;
+
+      case State.SHEET_OPEN:
+        sheetScrim.classList.add('visible');
+        sheet.classList.add('visible');
+        showStateLabel('Attachment Sheet');
+        break;
+    }
+  }
+
+  function closeSheet() {
+    sheetScrim.classList.remove('visible');
+    sheet.classList.remove('visible');
+    currentState = prevState || State.PLACEHOLDER;
+  }
+
+  // ── Event listeners ──
+
+  // Typing
+  composerInput.addEventListener('input', function() {
+    autoResize();
+    updateSendMic();
+    if (currentState === State.PLACEHOLDER && composerInput.value.length > 0) {
+      currentState = State.TYPING;
+    }
+  });
+
+  composerInput.addEventListener('focus', function() {
+    if (currentState === State.PLACEHOLDER) {
+      showStateLabel('Typing');
+    }
+  });
+
+  // Send text
+  btnSend.addEventListener('click', function() {
+    showStateLabel('Sent!');
+    composerInput.value = '';
+    autoResize();
+    mediaItems = [];
+    renderMedia();
+    updateSendMic();
+    inputRowDefault.classList.remove('align-end');
+    goTo(State.PLACEHOLDER);
+  });
+
+  // Mic → Listening
+  btnMic.addEventListener('click', function() {
+    goTo(State.LISTENING);
+  });
+
+  // Stop → Send Audio
+  btnStop.addEventListener('click', function() {
+    goTo(State.SEND_AUDIO);
+  });
+
+  // Send audio
+  btnSendAudio.addEventListener('click', function() {
+    showStateLabel('Audio Sent!');
+    goTo(State.PLACEHOLDER);
+  });
+
+  // Send from transcribing
+  btnSendTranscribing.addEventListener('click', function() {
+    clearTimeout(transcribeTimer);
+    showStateLabel('Sent!');
+    goTo(State.PLACEHOLDER);
+  });
+
+  // Play audio preview — organic dancing waveform
+  var isPlaying = false;
+  var playAnimId = null;
+  var playTimer = null;
+  var iconPlay = document.getElementById('iconPlay');
+  var iconPause = document.getElementById('iconPause');
+
+  function setPlayIcon(playing) {
+    iconPlay.classList.toggle('hidden', playing);
+    iconPause.classList.toggle('hidden', !playing);
+    btnPlay.setAttribute('aria-label', playing ? 'Pause' : 'Play recording');
+  }
+
+  function stopPlayback() {
+    isPlaying = false;
+    setPlayIcon(false);
+    if (playAnimId) { cancelAnimationFrame(playAnimId); playAnimId = null; }
+    if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+
+    // Ease bars back to resting state
+    var bars = waveformStatic.querySelectorAll('.waveform-bar');
+    for (var i = 0; i < bars.length; i++) {
+      bars[i].style.height = bars[i].dataset.restHeight + 'px';
+      bars[i].style.background = '';
+    }
+  }
+
+  btnPlay.addEventListener('click', function() {
+    // Toggle pause
+    if (isPlaying) {
+      stopPlayback();
+      showStateLabel('Paused');
+      return;
+    }
+
+    isPlaying = true;
+    setPlayIcon(true);
+    showStateLabel('Playing...');
+
+    var bars = waveformStatic.querySelectorAll('.waveform-bar');
+    var count = bars.length;
+
+    // Store resting heights and seed per-bar phase offsets
+    var restHeights = [];
+    var phases = [];
+    var speeds = [];
+    for (var i = 0; i < count; i++) {
+      var h = parseInt(bars[i].style.height) || 6;
+      bars[i].dataset.restHeight = h;
+      restHeights.push(h);
+      phases.push(i * 0.15 + Math.random() * 0.5);
+      speeds.push(3 + Math.random() * 2);
+      bars[i].style.background = 'var(--fg-secondary, #414651)';
+    }
+
+    var startTime = performance.now();
+    var lastUpdate = 0;
+
+    function animate(now) {
+      if (!isPlaying) return;
+
+      // Update heights every ~60ms (CSS transition handles smoothing)
+      if (now - lastUpdate > 60) {
+        lastUpdate = now;
+        var elapsed = (now - startTime) / 1000;
+
+        // Ease-in factor (0→1 over first 300ms)
+        var easeIn = Math.min(1, elapsed / 0.3);
+
+        for (var i = 0; i < count; i++) {
+          var wave = Math.sin(elapsed * speeds[i] + phases[i]);
+          var noise = Math.sin(elapsed * 7.3 + i * 2.1) * 0.3;
+          var energy = 0.6 + 0.4 * Math.sin(elapsed * 1.5 - i * 0.08);
+
+          var amplitude = (wave + noise) * energy * easeIn;
+          var target = restHeights[i] + amplitude * 10;
+          target = Math.max(2, Math.min(20, target));
+
+          bars[i].style.height = Math.round(target) + 'px';
+        }
+      }
+
+      playAnimId = requestAnimationFrame(animate);
+    }
+
+    playAnimId = requestAnimationFrame(animate);
+
+    // Auto-stop after 3s
+    playTimer = setTimeout(function() {
+      stopPlayback();
+    }, 3000);
+  });
+
+  // Attach button (+ or X)
+  btnAttach.addEventListener('click', function() {
+    if (currentState === State.SEND_AUDIO || currentState === State.TRANSCRIBING) {
+      // X button: cancel recording
+      clearTimeout(transcribeTimer);
+      composerInput.value = '';
+      autoResize();
+      goTo(State.PLACEHOLDER);
+      updateSendMic();
+      showStateLabel('Cancelled');
+    } else if (currentState === State.SHEET_OPEN) {
+      closeSheet();
+    } else {
+      prevState = currentState;
+      goTo(State.SHEET_OPEN);
+    }
+  });
+
+  // Sheet close
+  sheetClose.addEventListener('click', closeSheet);
+  sheetScrim.addEventListener('click', closeSheet);
+
+  // Finish loading after delay
+  function scheduleLoad(item) {
+    setTimeout(function() {
+      item.loading = false;
+      renderMedia();
+    }, 5000);
+  }
+
+  // Camera tile — adds sample image
+  tileCamera.addEventListener('click', function() {
+    var item = { type: 'image', loading: true, bg: 'linear-gradient(135deg, #7cc4fa 0%, #36bffa 50%, #0ba5ec 100%)' };
+    mediaItems.push(item);
+    scheduleLoad(item);
+    closeSheet();
+    renderMedia();
+    updateSendMic();
+    showStateLabel('Photo Added');
+  });
+
+  // Photos tile — adds sample images
+  tilePhotos.addEventListener('click', function() {
+    var item1 = { type: 'image', loading: true, bg: 'linear-gradient(135deg, #b2ddff 0%, #7cc4fa 100%)' };
+    mediaItems.push(item1);
+    scheduleLoad(item1);
+    if (mediaItems.length === 1) {
+      var item2 = { type: 'image', loading: true, bg: 'linear-gradient(135deg, #e0f2fe 0%, #b2ddff 50%, #7cc4fa 100%)' };
+      mediaItems.push(item2);
+      scheduleLoad(item2);
+    }
+    closeSheet();
+    renderMedia();
+    updateSendMic();
+    showStateLabel('Photos Added');
+  });
+
+  // Initialize
+  updateSendMic();
+  autoResize();
+
+  // ── Device toggle ──
+  var deviceBtns = document.querySelectorAll('.device-btn');
+  var deviceWrapper = document.querySelector('.device-wrapper');
+  deviceBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var device = btn.getAttribute('data-device');
+      deviceBtns.forEach(function(b) { b.classList.toggle('active', b === btn); });
+      if (device === 'ipad') {
+        deviceWrapper.classList.add('ipad');
+      } else {
+        deviceWrapper.classList.remove('ipad');
       }
     });
-    return r;
-  }
-  var canvas1 = document.getElementById('rive-character');
-  if (canvas1 && window.rive) { riveWithHair(canvas1); }
-  var canvas2 = document.getElementById('rive-success');
-  if (canvas2 && window.rive) {
-    riveWithHair(canvas2, function(inputs) {
-      var t = inputs.find(function(i) { return i.name === 'celebration'; });
-      if (t) celebrationTrigger = t;
-    });
-  }
-
-  // Home rive + grass (hide on non-home screens)
-  var homeRive = document.getElementById('rive-character');
-  var homeGrass = homeRive ? homeRive.nextElementSibling : null;
-
-  // Screen navigation
-  var screens = document.querySelectorAll('.screen');
-  var prevBtn = document.getElementById('prev-btn');
-  var nextBtn = document.getElementById('next-btn');
-  var screenLabel = document.getElementById('screen-label');
-  var labels = ['Home — Task Carousel', 'Task Intro', 'Chat Conversation', 'Success'];
-  var current = 0;
-  var total = screens.length;
-
-  function updateScreen() {
-    screens.forEach(function(s, i) {
-      s.classList.toggle('active', i === current);
-    });
-    prevBtn.classList.toggle('disabled', current === 0);
-    nextBtn.classList.toggle('disabled', current === total - 1);
-    screenLabel.textContent = labels[current] || '';
-    // Show home rive + grass on home and task intro screens
-    var showHomeRive = current <= 2;
-    if (homeRive) {
-      homeRive.style.display = showHomeRive ? '' : 'none';
-      homeRive.style.zIndex = current === 0 ? '3' : '1';
-    }
-    if (homeGrass) homeGrass.style.display = showHomeRive ? '' : 'none';
-    // Fire celebration on success screen
-    if (current === 3 && celebrationTrigger) celebrationTrigger.fire();
-    // Restart mic bounce animation on Task Intro
-    var introMic = document.getElementById('intro-mic-btn');
-    if (current === 1 && introMic) {
-      introMic.style.animation = 'none';
-      introMic.offsetHeight; // force reflow
-      introMic.style.animation = '';
-    }
-  }
-
-  prevBtn.addEventListener('click', function() {
-    if (current > 0) { current--; updateScreen(); }
   });
-  nextBtn.addEventListener('click', function() {
-    if (current < total - 1) { current++; updateScreen(); }
-  });
-
-  document.getElementById('intro-mic-btn').addEventListener('click', function() {
-    current = 2;
-    updateScreen();
-  });
-  document.getElementById('chat-mic-btn').addEventListener('click', function() {
-    current = total - 1;
-    updateScreen();
-  });
-  document.getElementById('back-to-tasks-btn').addEventListener('click', function() {
-    current = 0;
-    updateScreen();
-    var carousel = document.querySelector('.carousel-container');
-    if (carousel) carousel.scrollLeft = 0;
-  });
-
-  document.getElementById('reset-btn').addEventListener('click', function() {
-    current = 0;
-    updateScreen();
-    var carousel = document.querySelector('.carousel-container');
-    if (carousel) carousel.scrollLeft = 0;
-  });
-
-  // Quest close (X) buttons → back to home
-  document.querySelectorAll('.quest-close').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      current = 0;
-      updateScreen();
-      var carousel = document.querySelector('.carousel-container');
-      if (carousel) carousel.scrollLeft = 0;
-    });
-  });
-
-  // Card CTA "Start" → next screen
-  var startCta = document.querySelector('.task-card.card-brand .card-cta');
-  if (startCta) {
-    startCta.addEventListener('click', function() {
-      current = 1;
-      updateScreen();
-    });
-  }
-
-  // Tap on screen: right half → next, left half → prev
-  var deviceScreen = document.querySelector('.device-screen');
-  deviceScreen.addEventListener('click', function(e) {
-    // Ignore clicks on interactive elements (buttons, CTAs, mic, etc.)
-    if (e.target.closest('.card-cta, .chat-mic, .success-bottom-btn, .btn-util, .quest-close')) return;
-    var rect = deviceScreen.getBoundingClientRect();
-    var x = e.clientX - rect.left;
-    if (x > rect.width / 2) {
-      if (current < total - 1) { current++; updateScreen(); }
-    } else {
-      if (current > 0) { current--; updateScreen(); }
-    }
-  });
-
-  updateScreen();
 })();
 </script>
+
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Chat — Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat — Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script src="/product-explorer/shell.js"></script>
 </body>
 </html>

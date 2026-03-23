@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Task Card — Figma Capture</title>
+<title>Quest Card — Figma Capture</title>
 <link rel="stylesheet" href="/design-system/tokens.css">
 <style>
 @font-face {
@@ -54,7 +54,7 @@ body {
 /* ══════════════════════════════════════
    Tier 2: Carousel Card
    ══════════════════════════════════════ */
-.task-card {
+.quest-card--t2 {
   flex-shrink: 0;
   width: 370px;
   height: 392px;
@@ -174,7 +174,7 @@ body {
 /* ══════════════════════════════════════
    Tier 3: Task Row
    ══════════════════════════════════════ */
-.task-row {
+.quest-card--t3 {
   display: flex;
   align-items: center;
   gap: var(--spacing-md, 8px);
@@ -184,7 +184,7 @@ body {
   font-family: var(--font-family-body, 'Inter', sans-serif);
   width: 320px;
 }
-.task-emoji-box {
+.quest-emoji-box {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-sm, 6px);
@@ -195,7 +195,7 @@ body {
   position: relative;
   background: var(--brand-500, #0ba5ec);
 }
-.task-emoji-box .tf {
+.quest-emoji-box .tf {
   font-family: 'TossFace', sans-serif;
   font-size: 20px;
   line-height: 1;
@@ -215,23 +215,23 @@ body {
   font-size: 12px;
   line-height: 1;
 }
-.task-info {
+.quest-info {
   flex: 1;
   min-width: 0;
 }
-.task-name {
+.quest-name {
   font-size: var(--font-size-text-xs, 12px);
   font-weight: var(--font-weight-semibold, 600);
   color: var(--text-primary, #181d27);
   line-height: var(--line-height-text-xs, 16px);
 }
-.task-time {
+.quest-time {
   font-size: var(--font-size-text-xs, 12px);
   font-weight: var(--font-weight-medium, 500);
   color: var(--text-quaternary, #717680);
   line-height: var(--line-height-text-xs, 16px);
 }
-.task-desc {
+.quest-desc {
   font-size: var(--font-size-text-xs, 12px);
   color: var(--text-tertiary, #535862);
   line-height: var(--line-height-text-xs, 16px);
@@ -239,18 +239,18 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.task-trailing {
+.quest-trailing {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm, 6px);
   flex-shrink: 0;
 }
-.task-badges {
+.quest-badges {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs, 4px);
 }
-.task-badge-row {
+.quest-badge-row {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs, 2px);
@@ -259,7 +259,7 @@ body {
   color: var(--text-quaternary, #717680);
   line-height: 1;
 }
-.task-badge-row .tf {
+.quest-badge-row .tf {
   font-family: 'TossFace', sans-serif;
   font-size: var(--font-size-text-xs, 12px);
   line-height: 1;
@@ -277,7 +277,7 @@ body {
 
   <!-- Not Started -->
   <div class="card-col">
-    <div class="task-card">
+    <div class="quest-card quest-card--t2">
       <div class="card-badges">
         <div class="card-badge"><span class="tf flame-muted">🔥</span> 3 days</div>
         <div class="card-badge"><span class="tf">💎</span> 10</div>
@@ -294,7 +294,7 @@ body {
 
   <!-- Rejected -->
   <div class="card-col">
-    <div class="task-card">
+    <div class="quest-card quest-card--t2">
       <div class="card-badges">
         <div class="card-badge"><span class="tf flame-muted">🔥</span> 3 days</div>
         <div class="card-badge"><span class="tf">💎</span> 10</div>
@@ -311,7 +311,7 @@ body {
 
   <!-- Submitted -->
   <div class="card-col">
-    <div class="task-card">
+    <div class="quest-card quest-card--t2">
       <div class="card-badges">
         <div class="card-badge"><span class="tf">🔥</span> 3 days</div>
         <div class="card-badge"><span class="tf">💎</span> 10</div>
@@ -328,7 +328,7 @@ body {
 
   <!-- Claimable -->
   <div class="card-col">
-    <div class="task-card">
+    <div class="quest-card quest-card--t2">
       <div class="card-badges">
         <div class="card-badge"><span class="tf">🔥</span> 3 days</div>
         <div class="card-badge"><span class="tf">💎</span> 10</div>
@@ -345,7 +345,7 @@ body {
 
   <!-- Claimed -->
   <div class="card-col">
-    <div class="task-card">
+    <div class="quest-card quest-card--t2">
       <div class="card-completed-overlay"></div>
       <div class="card-badges">
         <div class="card-badge"><span class="tf">🔥</span> 4 days</div>
@@ -370,17 +370,17 @@ body {
 
   <!-- Not Started -->
   <div>
-    <div class="task-row">
-      <div class="task-emoji-box"><span class="tf">💬</span></div>
-      <div class="task-info">
-        <div class="task-time">5:00 PM</div>
-        <div class="task-name">Talk to Sprout</div>
-        <div class="task-desc">Chat with Sprout about your day</div>
+    <div class="quest-card quest-card--t3">
+      <div class="quest-emoji-box"><span class="tf">💬</span></div>
+      <div class="quest-info">
+        <div class="quest-time">5:00 PM</div>
+        <div class="quest-name">Talk to Sprout</div>
+        <div class="quest-desc">Chat with Sprout about your day</div>
       </div>
-      <div class="task-trailing">
-        <div class="task-badges">
-          <span class="task-badge-row"><span class="tf flame-muted">🔥</span> 3</span>
-          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+      <div class="quest-trailing">
+        <div class="quest-badges">
+          <span class="quest-badge-row"><span class="tf flame-muted">🔥</span> 3</span>
+          <span class="quest-badge-row"><span class="tf">💎</span> 10</span>
         </div>
       </div>
     </div>
@@ -389,20 +389,20 @@ body {
 
   <!-- Rejected -->
   <div>
-    <div class="task-row">
-      <div class="task-emoji-box">
+    <div class="quest-card quest-card--t3">
+      <div class="quest-emoji-box">
         <span class="tf">💬</span>
         <span class="emoji-status-badge">❎</span>
       </div>
-      <div class="task-info">
-        <div class="task-time">5:00 PM</div>
-        <div class="task-name">Talk to Sprout</div>
-        <div class="task-desc">Try again</div>
+      <div class="quest-info">
+        <div class="quest-time">5:00 PM</div>
+        <div class="quest-name">Talk to Sprout</div>
+        <div class="quest-desc">Try again</div>
       </div>
-      <div class="task-trailing">
-        <div class="task-badges">
-          <span class="task-badge-row"><span class="tf flame-muted">🔥</span> 3</span>
-          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+      <div class="quest-trailing">
+        <div class="quest-badges">
+          <span class="quest-badge-row"><span class="tf flame-muted">🔥</span> 3</span>
+          <span class="quest-badge-row"><span class="tf">💎</span> 10</span>
         </div>
       </div>
     </div>
@@ -411,20 +411,20 @@ body {
 
   <!-- Submitted -->
   <div>
-    <div class="task-row">
-      <div class="task-emoji-box">
+    <div class="quest-card quest-card--t3">
+      <div class="quest-emoji-box">
         <span class="tf">💬</span>
         <span class="emoji-status-badge">🔄</span>
       </div>
-      <div class="task-info">
-        <div class="task-time">5:00 PM</div>
-        <div class="task-name">Talk to Sprout</div>
-        <div class="task-desc">Reviewing...</div>
+      <div class="quest-info">
+        <div class="quest-time">5:00 PM</div>
+        <div class="quest-name">Talk to Sprout</div>
+        <div class="quest-desc">Reviewing...</div>
       </div>
-      <div class="task-trailing">
-        <div class="task-badges">
-          <span class="task-badge-row"><span class="tf">🔥</span> 3</span>
-          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+      <div class="quest-trailing">
+        <div class="quest-badges">
+          <span class="quest-badge-row"><span class="tf">🔥</span> 3</span>
+          <span class="quest-badge-row"><span class="tf">💎</span> 10</span>
         </div>
       </div>
     </div>
@@ -433,20 +433,20 @@ body {
 
   <!-- Claimable -->
   <div>
-    <div class="task-row">
-      <div class="task-emoji-box">
+    <div class="quest-card quest-card--t3">
+      <div class="quest-emoji-box">
         <span class="tf">💬</span>
         <span class="emoji-status-badge">✅</span>
       </div>
-      <div class="task-info">
-        <div class="task-time">5:00 PM</div>
-        <div class="task-name">Talk to Sprout</div>
-        <div class="task-desc">Completed, ready to claim!</div>
+      <div class="quest-info">
+        <div class="quest-time">5:00 PM</div>
+        <div class="quest-name">Talk to Sprout</div>
+        <div class="quest-desc">Completed, ready to claim!</div>
       </div>
-      <div class="task-trailing">
-        <div class="task-badges">
-          <span class="task-badge-row"><span class="tf">🔥</span> 3</span>
-          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+      <div class="quest-trailing">
+        <div class="quest-badges">
+          <span class="quest-badge-row"><span class="tf">🔥</span> 3</span>
+          <span class="quest-badge-row"><span class="tf">💎</span> 10</span>
         </div>
       </div>
     </div>
@@ -455,17 +455,17 @@ body {
 
   <!-- Claimed -->
   <div>
-    <div class="task-row">
-      <div class="task-emoji-box"><span class="tf">💬</span></div>
-      <div class="task-info">
-        <div class="task-time">5:00 PM</div>
-        <div class="task-name">Talk to Sprout</div>
-        <div class="task-desc">Done!</div>
+    <div class="quest-card quest-card--t3">
+      <div class="quest-emoji-box"><span class="tf">💬</span></div>
+      <div class="quest-info">
+        <div class="quest-time">5:00 PM</div>
+        <div class="quest-name">Talk to Sprout</div>
+        <div class="quest-desc">Done!</div>
       </div>
-      <div class="task-trailing">
-        <div class="task-badges">
-          <span class="task-badge-row"><span class="tf">🔥</span> 4</span>
-          <span class="task-badge-row"><span class="tf">💎</span> 10</span>
+      <div class="quest-trailing">
+        <div class="quest-badges">
+          <span class="quest-badge-row"><span class="tf">🔥</span> 4</span>
+          <span class="quest-badge-row"><span class="tf">💎</span> 10</span>
         </div>
       </div>
     </div>
