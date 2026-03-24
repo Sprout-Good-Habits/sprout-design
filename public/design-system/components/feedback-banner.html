@@ -75,10 +75,10 @@
 
 /* ── Header: icon + title ── */
 .fb-header {
-  display:flex; align-items:center; gap:12px;
+  display:flex; align-items:center; gap:var(--spacing-lg, 12px);
 }
 .fb-icon {
-  width:32px; height:32px; flex-shrink:0;
+  width:var(--spacing-4xl, 32px); height:var(--spacing-4xl, 32px); flex-shrink:0;
   font-family:'TossFace', sans-serif;
   font-size:28px; line-height:32px;
   text-align:center;
@@ -172,10 +172,10 @@
   font-size:var(--font-size-text-xs, 12px);
   font-weight:var(--font-weight-medium, 500);
   line-height:var(--line-height-text-xs, 18px);
-  padding:2px 8px;
+  padding:var(--spacing-xxs, 2px) var(--spacing-md, 8px);
   border-radius:var(--radius-full, 9999px);
   vertical-align:middle;
-  margin-left:8px;
+  margin-left:var(--spacing-md, 8px);
 }
 .sentiment-positive { background:var(--green-50, #ecfdf3); color:var(--green-700, #067647); }
 .sentiment-neutral { background:var(--gray-50, #fafafa); color:var(--text-secondary, #414651); border:1px solid var(--border-secondary, #e9eaeb); }
@@ -188,7 +188,7 @@
 /* ── Phone frame for placement ── */
 .phone-frame {
   width:366px; height:680px;
-  border-radius:36px; overflow:hidden;
+  border-radius:var(--radius-4xl, 24px); overflow:hidden;
   position:relative;
   box-shadow:0 8px 30px rgba(0,0,0,0.1);
   border:2px solid var(--border-secondary, #e9eaeb);

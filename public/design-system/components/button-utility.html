@@ -137,7 +137,7 @@
   width:32px; height:32px;
   border-radius:var(--radius-full, 9999px);
   background:var(--bg-sky, #e0f2fe);
-  border:2px solid white; flex-shrink:0;
+  border:2px solid var(--fg-white, #ffffff); flex-shrink:0;
 }
 .user-group { display:flex; align-items:baseline; padding-right:var(--spacing-md, 8px); }
 .user-group .avatar { margin-right:calc(-1 * var(--spacing-md, 8px)); }
@@ -149,10 +149,10 @@
   background:var(--bg-secondary, #fafafa);
   border-radius:var(--radius-xl, 12px);
   border:1px solid var(--border-secondary, #e9eaeb);
-  margin:16px 0 24px;
+  margin:var(--spacing-xl, 16px) 0 var(--spacing-3xl, 24px);
 }
 .anatomy-item {
-  display:flex; flex-direction:column; align-items:center; gap:8px;
+  display:flex; flex-direction:column; align-items:center; gap:var(--spacing-md, 8px);
 }
 .anatomy-label {
   font-size:var(--font-size-text-xs, 12px);

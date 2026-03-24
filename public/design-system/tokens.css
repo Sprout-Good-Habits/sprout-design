@@ -63,10 +63,14 @@
   --spacing-11xl: 160px;
 
   /* ── Border Radius ── */
+  --radius-xxs: 2px;
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-4xl: 24px;
   --radius-full: 9999px;
 
   /* ── Sprout Green ── */
@@ -224,6 +228,11 @@
   --bg-success-solid: #079455;
   --bg-warning-primary: #fefbe8;
   --bg-warning-solid: #ca8504;
+  --bg-overlay: rgba(10, 13, 18, 0.2);
+  --bg-disabled: #f5f5f5;
+  --bg-error-secondary: #fee4e2;
+  --bg-success-secondary: #dcfae6;
+  --bg-warning-secondary: #fef7c3;
 
   /* ── Semantic / Text ── */
   --text-primary: #181d27;
@@ -235,8 +244,12 @@
   --text-brand-primary: #0b4a6f;
   --text-brand-secondary: #026aa2;
   --text-error: #d92d20;
+  --text-error-primary: #d92d20;
   --text-success: #079455;
+  --text-success-primary: #079455;
   --text-warning: #ca8504;
+  --text-warning-primary: #ca8504;
+  --text-placeholder: #717680;
 
   /* ── Semantic / Border ── */
   --border-primary: #d5d7da;

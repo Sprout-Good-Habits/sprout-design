@@ -66,7 +66,7 @@
   flex-shrink: 0;
   width: 370px;
   height: 392px;
-  border-radius: 16px;
+  border-radius: var(--radius-2xl, 16px);
   padding: var(--spacing-2xl, 20px) var(--spacing-2xl, 20px) var(--spacing-3xl, 24px);
   gap: var(--spacing-md, 8px);
   display: flex;
@@ -88,17 +88,17 @@
   align-items: center;
   gap: var(--spacing-xxs, 2px);
   padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
-  border-radius: 100px;
+  border-radius: var(--radius-full, 9999px);
   font-size: var(--font-size-text-xs, 12px);
   line-height: var(--line-height-text-xs, 16px);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular, 400);
 }
-.card-badge .tf-badge {
+.card-badge .tf-icon {
   font-family: 'TossFace', sans-serif;
-  font-size: 16px;
+  font-size: var(--font-size-text-md, 16px);
   line-height: 1;
-  width: 16px;
-  height: 16px;
+  width: var(--spacing-xl, 16px);
+  height: var(--spacing-xl, 16px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,7 +119,7 @@
 .card-desc {
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular, 400);
   opacity: 0.85;
   overflow: hidden;
   white-space: nowrap;
@@ -147,6 +147,7 @@
   border-radius: var(--radius-2xl, 16px);
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
   font-weight: var(--font-weight-bold, 700);
   background: var(--bg-primary, #ffffff);
   color: var(--text-secondary, #414651);
@@ -161,7 +162,7 @@
 }
 .card-cta .tf-cta {
   font-family: 'TossFace', sans-serif;
-  font-size: 16px;
+  font-size: var(--font-size-text-md, 16px);
   line-height: 1;
 }
 .card-cta-disabled {
@@ -176,7 +177,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.4);
-  border-radius: 16px;
+  border-radius: var(--radius-2xl, 16px);
   pointer-events: none;
   z-index: 1;
 }
@@ -219,7 +220,7 @@
 .task-emoji-box {
   width: 52px;
   height: 52px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm, 6px);
   padding: var(--spacing-md, 8px);
   display: flex;
   align-items: center;
@@ -245,12 +246,12 @@
   width: 16px;
   height: 16px;
   background: var(--bg-primary, #ffffff);
-  border-radius: 4px;
+  border-radius: var(--radius-xs, 4px);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'TossFace', sans-serif;
-  font-size: 12px;
+  font-size: var(--font-size-text-xs, 12px);
   line-height: 1;
 }
 .task-info {
@@ -273,7 +274,7 @@
   line-height: var(--line-height-text-xs, 16px);
 }
 .task-desc {
-  font-size: 12px;
+  font-size: var(--font-size-text-xs, 12px);
   color: var(--text-tertiary, #535862);
   line-height: var(--line-height-text-xs, 16px);
   white-space: nowrap;
@@ -283,7 +284,7 @@
 .task-trailing {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--spacing-sm, 6px);
   flex-shrink: 0;
 }
 .task-badges {
@@ -294,18 +295,18 @@
 .task-badge-row {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--spacing-xxs, 2px);
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 12px;
+  font-size: var(--font-size-text-xs, 12px);
   font-weight: var(--font-weight-regular, 400);
   color: var(--text-secondary, #414651);
   line-height: 1;
 }
-.task-badge-row .tf-badge {
+.task-badge-row .tf-icon {
   font-family: 'TossFace', sans-serif;
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
+  font-size: var(--font-size-text-md, 16px);
+  width: var(--spacing-xl, 16px);
+  height: var(--spacing-xl, 16px);
   line-height: 1;
 }
 .badge-num {
@@ -319,8 +320,8 @@
    FORMAT 3: Anytime Tile (Both Tiers)
    ══════════════════════════════════════ */
 .anytime-tile {
-  border-radius: 16px;
-  padding: 12px;
+  border-radius: var(--radius-2xl, 16px);
+  padding: var(--spacing-lg, 12px);
   height: 136px;
   display: flex;
   flex-direction: column;
@@ -330,29 +331,29 @@
 }
 .anytime-tile-badges {
   display: flex;
-  gap: 6px;
+  gap: var(--spacing-sm, 6px);
 }
 .anytime-tile-badge {
   display: inline-flex;
   align-items: center;
   gap: 3px;
   padding: 3px 6px;
-  border-radius: 100px;
+  border-radius: var(--radius-full, 9999px);
   background: rgba(255,255,255,0.2);
   font-size: 9px;
   line-height: 13px;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular, 400);
 }
-.anytime-tile-badge .tf-badge {
+.anytime-tile-badge .tf-icon {
   font-family: 'TossFace', sans-serif;
   font-size: 10px;
   line-height: 1;
 }
 .anytime-tile-name {
-  font-size: 12px;
+  font-size: var(--font-size-text-xs, 12px);
   font-weight: var(--font-weight-semibold, 600);
-  line-height: 16px;
-  margin-top: 4px;
+  line-height: var(--line-height-text-xs, 16px);
+  margin-top: var(--spacing-xs, 4px);
 }
 .anytime-tile-emoji {
   font-family: 'TossFace', sans-serif;
@@ -368,12 +369,12 @@
 .card-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--spacing-xl, 16px);
 }
 .card-grid-scroll {
   display: flex;
   flex-wrap: nowrap;
-  gap: 16px;
+  gap: var(--spacing-xl, 16px);
 }
 .card-grid-scroll::after {
   content: '';
@@ -385,12 +386,12 @@
   font-size: var(--font-size-text-xs, 12px);
   color: var(--text-tertiary, #535862);
   text-align: center;
-  margin-top: 8px;
+  margin-top: var(--spacing-md, 8px);
 }
 .tile-grid-demo {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
+  gap: var(--spacing-sm, 6px);
   max-width: 280px;
 }
 .row-demo {
@@ -402,7 +403,7 @@
 }
 .format-grid {
   display: flex;
-  gap: 32px;
+  gap: var(--spacing-4xl, 32px);
   flex-wrap: wrap;
   align-items: flex-start;
 }
@@ -443,8 +444,8 @@
         <div class="format-col">
           <div class="task-card card-brand">
             <div class="card-badges">
-              <div class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 3 days</div>
-              <div class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</div>
+              <div class="card-badge badge-brand"><span class="tf-icon flame-muted">&#x1F525;</span> 3 days</div>
+              <div class="card-badge badge-brand"><span class="tf-icon">&#x1F48E;</span> 10</div>
             </div>
             <div class="card-content">
               <div class="card-name">Talk to Sprout</div>
@@ -468,8 +469,8 @@
               </div>
               <div class="task-trailing">
                 <div class="task-badges">
-                  <span class="task-badge-row"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
-                  <span class="task-badge-row"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                  <span class="task-badge-row"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
+                  <span class="task-badge-row"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">10</span></span>
                 </div>
               </div>
             </div>
@@ -481,8 +482,8 @@
               </div>
               <div class="task-trailing">
                 <div class="task-badges">
-                  <span class="task-badge-row"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
-                  <span class="task-badge-row"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                  <span class="task-badge-row"><span class="tf-icon">&#x1F525;</span><span class="badge-num">12</span></span>
+                  <span class="task-badge-row"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">20</span></span>
                 </div>
               </div>
             </div>
@@ -494,8 +495,8 @@
               </div>
               <div class="task-trailing">
                 <div class="task-badges">
-                  <span class="task-badge-row"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">8</span></span>
-                  <span class="task-badge-row"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                  <span class="task-badge-row"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">8</span></span>
+                  <span class="task-badge-row"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">5</span></span>
                 </div>
               </div>
             </div>
@@ -508,16 +509,16 @@
           <div class="tile-grid-demo">
             <div class="anytime-tile card-blue-dark">
               <div class="anytime-tile-badges">
-                <span class="anytime-tile-badge"><span class="tf-badge flame-muted">&#x1F525;</span> 10</span>
-                <span class="anytime-tile-badge"><span class="tf-badge">&#x1F48E;</span> 5</span>
+                <span class="anytime-tile-badge"><span class="tf-icon flame-muted">&#x1F525;</span> 10</span>
+                <span class="anytime-tile-badge"><span class="tf-icon">&#x1F48E;</span> 5</span>
               </div>
               <div class="anytime-tile-name">Drink Water</div>
               <div class="anytime-tile-emoji">&#x1F4A7;</div>
             </div>
             <div class="anytime-tile card-orange">
               <div class="anytime-tile-badges">
-                <span class="anytime-tile-badge"><span class="tf-badge flame-muted">&#x1F525;</span> 4</span>
-                <span class="anytime-tile-badge"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                <span class="anytime-tile-badge"><span class="tf-icon flame-muted">&#x1F525;</span> 4</span>
+                <span class="anytime-tile-badge"><span class="tf-icon">&#x1F48E;</span> 10</span>
               </div>
               <div class="anytime-tile-name">Tidy Room</div>
               <div class="anytime-tile-emoji">&#x1F9F9;</div>
@@ -585,8 +586,8 @@
         <div class="format-col">
           <div class="task-card card-green" style="width:180px; height:180px;">
             <div class="card-badges">
-              <div class="card-badge badge-green"><span class="tf-badge">&#x1F525;</span> 7</div>
-              <div class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 15</div>
+              <div class="card-badge badge-green"><span class="tf-icon">&#x1F525;</span> 7</div>
+              <div class="card-badge badge-green"><span class="tf-icon">&#x1F48E;</span> 15</div>
             </div>
             <div class="card-content"><div class="card-name">Read 20 min</div></div>
             <div class="card-emoji-area"><span class="card-emoji" style="font-size:56px;">&#x1F4D6;</span></div>
@@ -598,8 +599,8 @@
           <div class="tile-grid-demo" style="max-width:180px;">
             <div class="anytime-tile card-green" style="height:100px;">
               <div class="anytime-tile-badges">
-                <span class="anytime-tile-badge"><span class="tf-badge">&#x1F525;</span> 6</span>
-                <span class="anytime-tile-badge"><span class="tf-badge">&#x1F48E;</span> 10</span>
+                <span class="anytime-tile-badge"><span class="tf-icon">&#x1F525;</span> 6</span>
+                <span class="anytime-tile-badge"><span class="tf-icon">&#x1F48E;</span> 10</span>
               </div>
               <div class="anytime-tile-name">Go Outside</div>
               <div class="anytime-tile-emoji" style="font-size:36px;">&#x1F3DE;&#xFE0F;</div>
@@ -632,8 +633,8 @@
         <div>
           <div class="task-card card-green">
             <div class="card-badges">
-              <div class="card-badge badge-green"><span class="tf-badge">&#x1F525;</span> 7 days</div>
-              <div class="card-badge badge-green"><span class="tf-badge">&#x1F48E;</span> 15</div>
+              <div class="card-badge badge-green"><span class="tf-icon">&#x1F525;</span> 7 days</div>
+              <div class="card-badge badge-green"><span class="tf-icon">&#x1F48E;</span> 15</div>
             </div>
             <div class="card-content">
               <div class="card-name">Read for 20 min</div>
@@ -647,8 +648,8 @@
         <div>
           <div class="task-card card-orange">
             <div class="card-badges">
-              <div class="card-badge badge-orange"><span class="tf-badge flame-muted">&#x1F525;</span> 5 days</div>
-              <div class="card-badge badge-orange"><span class="tf-badge">&#x1F48E;</span> 20</div>
+              <div class="card-badge badge-orange"><span class="tf-icon flame-muted">&#x1F525;</span> 5 days</div>
+              <div class="card-badge badge-orange"><span class="tf-icon">&#x1F48E;</span> 20</div>
             </div>
             <div class="card-content">
               <div class="card-name">Homework</div>
@@ -662,8 +663,8 @@
         <div>
           <div class="task-card card-brand">
             <div class="card-badges">
-              <div class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 3 days</div>
-              <div class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</div>
+              <div class="card-badge badge-brand"><span class="tf-icon flame-muted">&#x1F525;</span> 3 days</div>
+              <div class="card-badge badge-brand"><span class="tf-icon">&#x1F48E;</span> 10</div>
             </div>
             <div class="card-content">
               <div class="card-name">Talk to Sprout</div>
@@ -677,8 +678,8 @@
         <div>
           <div class="task-card card-violet">
             <div class="card-badges">
-              <div class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 12 days</div>
-              <div class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 20</div>
+              <div class="card-badge badge-violet"><span class="tf-icon">&#x1F525;</span> 12 days</div>
+              <div class="card-badge badge-violet"><span class="tf-icon">&#x1F48E;</span> 20</div>
             </div>
             <div class="card-content">
               <div class="card-name">Practice Piano</div>
@@ -693,8 +694,8 @@
           <div class="task-card card-blue-dark">
             <div class="card-completed-overlay"></div>
             <div class="card-badges">
-              <div class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F525;</span> 9 days</div>
-              <div class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F48E;</span> 5</div>
+              <div class="card-badge badge-blue-dark"><span class="tf-icon">&#x1F525;</span> 9 days</div>
+              <div class="card-badge badge-blue-dark"><span class="tf-icon">&#x1F48E;</span> 5</div>
             </div>
             <div class="card-content">
               <div class="card-name">Brush Teeth</div>
@@ -734,8 +735,8 @@
           </div>
           <div class="task-trailing">
             <div class="task-badges">
-              <span class="task-badge-row"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
-              <span class="task-badge-row"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+              <span class="task-badge-row"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
+              <span class="task-badge-row"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">10</span></span>
             </div>
           </div>
         </div>
@@ -752,8 +753,8 @@
           </div>
           <div class="task-trailing">
             <div class="task-badges">
-              <span class="task-badge-row"><span class="tf-badge">&#x1F525;</span><span class="badge-num">7</span></span>
-              <span class="task-badge-row"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
+              <span class="task-badge-row"><span class="tf-icon">&#x1F525;</span><span class="badge-num">7</span></span>
+              <span class="task-badge-row"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">15</span></span>
             </div>
           </div>
         </div>
@@ -770,8 +771,8 @@
           </div>
           <div class="task-trailing">
             <div class="task-badges">
-              <span class="task-badge-row"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
-              <span class="task-badge-row"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+              <span class="task-badge-row"><span class="tf-icon">&#x1F525;</span><span class="badge-num">12</span></span>
+              <span class="task-badge-row"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">20</span></span>
             </div>
           </div>
         </div>
@@ -800,32 +801,32 @@
       <div class="tile-grid-demo" style="margin:0 auto;">
         <div class="anytime-tile card-blue-dark">
           <div class="anytime-tile-badges">
-            <span class="anytime-tile-badge"><span class="tf-badge flame-muted">&#x1F525;</span> 10</span>
-            <span class="anytime-tile-badge"><span class="tf-badge">&#x1F48E;</span> 5</span>
+            <span class="anytime-tile-badge"><span class="tf-icon flame-muted">&#x1F525;</span> 10</span>
+            <span class="anytime-tile-badge"><span class="tf-icon">&#x1F48E;</span> 5</span>
           </div>
           <div class="anytime-tile-name">Drink Water</div>
           <div class="anytime-tile-emoji">&#x1F4A7;</div>
         </div>
         <div class="anytime-tile card-orange">
           <div class="anytime-tile-badges">
-            <span class="anytime-tile-badge"><span class="tf-badge flame-muted">&#x1F525;</span> 4</span>
-            <span class="anytime-tile-badge"><span class="tf-badge">&#x1F48E;</span> 10</span>
+            <span class="anytime-tile-badge"><span class="tf-icon flame-muted">&#x1F525;</span> 4</span>
+            <span class="anytime-tile-badge"><span class="tf-icon">&#x1F48E;</span> 10</span>
           </div>
           <div class="anytime-tile-name">Tidy Room</div>
           <div class="anytime-tile-emoji">&#x1F9F9;</div>
         </div>
         <div class="anytime-tile card-green">
           <div class="anytime-tile-badges">
-            <span class="anytime-tile-badge"><span class="tf-badge">&#x1F525;</span> 6</span>
-            <span class="anytime-tile-badge"><span class="tf-badge">&#x1F48E;</span> 10</span>
+            <span class="anytime-tile-badge"><span class="tf-icon">&#x1F525;</span> 6</span>
+            <span class="anytime-tile-badge"><span class="tf-icon">&#x1F48E;</span> 10</span>
           </div>
           <div class="anytime-tile-name">Go Outside</div>
           <div class="anytime-tile-emoji">&#x1F3DE;&#xFE0F;</div>
         </div>
         <div class="anytime-tile card-violet">
           <div class="anytime-tile-badges">
-            <span class="anytime-tile-badge"><span class="tf-badge">&#x1F525;</span> 3</span>
-            <span class="anytime-tile-badge"><span class="tf-badge">&#x1F48E;</span> 15</span>
+            <span class="anytime-tile-badge"><span class="tf-icon">&#x1F525;</span> 3</span>
+            <span class="anytime-tile-badge"><span class="tf-icon">&#x1F48E;</span> 15</span>
           </div>
           <div class="anytime-tile-name">Draw Something</div>
           <div class="anytime-tile-emoji">&#x1F3A8;</div>
@@ -853,7 +854,7 @@
       <div class="card-grid">
         <div>
           <div class="task-card card-brand" style="width:120px; height:auto; min-height:100px;">
-            <div class="card-badges"><div class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 3</div></div>
+            <div class="card-badges"><div class="card-badge badge-brand"><span class="tf-icon">&#x1F525;</span> 3</div></div>
             <div class="card-content"><div class="card-name" style="font-size:12px;">Brand</div></div>
             <div class="card-emoji-area" style="padding:8px 0;"><span class="card-emoji" style="font-size:36px;">&#x1F4AC;</span></div>
           </div>
@@ -861,7 +862,7 @@
         </div>
         <div>
           <div class="task-card card-blue-dark" style="width:120px; height:auto; min-height:100px;">
-            <div class="card-badges"><div class="card-badge badge-blue-dark"><span class="tf-badge">&#x1F525;</span> 3</div></div>
+            <div class="card-badges"><div class="card-badge badge-blue-dark"><span class="tf-icon">&#x1F525;</span> 3</div></div>
             <div class="card-content"><div class="card-name" style="font-size:12px;">Blue Dark</div></div>
             <div class="card-emoji-area" style="padding:8px 0;"><span class="card-emoji" style="font-size:36px;">&#x1F4DD;</span></div>
           </div>
@@ -869,7 +870,7 @@
         </div>
         <div>
           <div class="task-card card-violet" style="width:120px; height:auto; min-height:100px;">
-            <div class="card-badges"><div class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 3</div></div>
+            <div class="card-badges"><div class="card-badge badge-violet"><span class="tf-icon">&#x1F525;</span> 3</div></div>
             <div class="card-content"><div class="card-name" style="font-size:12px;">Violet</div></div>
             <div class="card-emoji-area" style="padding:8px 0;"><span class="card-emoji" style="font-size:36px;">&#x1F3B9;</span></div>
           </div>
@@ -877,7 +878,7 @@
         </div>
         <div>
           <div class="task-card card-pink" style="width:120px; height:auto; min-height:100px;">
-            <div class="card-badges"><div class="card-badge badge-pink"><span class="tf-badge">&#x1F525;</span> 3</div></div>
+            <div class="card-badges"><div class="card-badge badge-pink"><span class="tf-icon">&#x1F525;</span> 3</div></div>
             <div class="card-content"><div class="card-name" style="font-size:12px;">Pink</div></div>
             <div class="card-emoji-area" style="padding:8px 0;"><span class="card-emoji" style="font-size:36px;">&#x1F9D8;</span></div>
           </div>
@@ -885,7 +886,7 @@
         </div>
         <div>
           <div class="task-card card-red" style="width:120px; height:auto; min-height:100px;">
-            <div class="card-badges"><div class="card-badge badge-red"><span class="tf-badge">&#x1F525;</span> 3</div></div>
+            <div class="card-badges"><div class="card-badge badge-red"><span class="tf-icon">&#x1F525;</span> 3</div></div>
             <div class="card-content"><div class="card-name" style="font-size:12px;">Red</div></div>
             <div class="card-emoji-area" style="padding:8px 0;"><span class="card-emoji" style="font-size:36px;">&#x1F392;</span></div>
           </div>
@@ -893,7 +894,7 @@
         </div>
         <div>
           <div class="task-card card-orange" style="width:120px; height:auto; min-height:100px;">
-            <div class="card-badges"><div class="card-badge badge-orange"><span class="tf-badge">&#x1F525;</span> 3</div></div>
+            <div class="card-badges"><div class="card-badge badge-orange"><span class="tf-icon">&#x1F525;</span> 3</div></div>
             <div class="card-content"><div class="card-name" style="font-size:12px;">Orange</div></div>
             <div class="card-emoji-area" style="padding:8px 0;"><span class="card-emoji" style="font-size:36px;">&#x1F4D6;</span></div>
           </div>
@@ -901,7 +902,7 @@
         </div>
         <div>
           <div class="task-card card-yellow" style="width:120px; height:auto; min-height:100px;">
-            <div class="card-badges"><div class="card-badge badge-yellow"><span class="tf-badge">&#x1F525;</span> 3</div></div>
+            <div class="card-badges"><div class="card-badge badge-yellow"><span class="tf-icon">&#x1F525;</span> 3</div></div>
             <div class="card-content"><div class="card-name" style="font-size:12px;">Yellow</div></div>
             <div class="card-emoji-area" style="padding:8px 0;"><span class="card-emoji" style="font-size:36px;">&#x1F4AC;</span></div>
           </div>
@@ -909,7 +910,7 @@
         </div>
         <div>
           <div class="task-card card-green" style="width:120px; height:auto; min-height:100px;">
-            <div class="card-badges"><div class="card-badge badge-green"><span class="tf-badge">&#x1F525;</span> 3</div></div>
+            <div class="card-badges"><div class="card-badge badge-green"><span class="tf-icon">&#x1F525;</span> 3</div></div>
             <div class="card-content"><div class="card-name" style="font-size:12px;">Green</div></div>
             <div class="card-emoji-area" style="padding:8px 0;"><span class="card-emoji" style="font-size:36px;">&#x1F3B9;</span></div>
           </div>
@@ -956,8 +957,8 @@
         <span class="state-cell-label">Not started</span>
         <div class="task-card card-brand" style="width:100%;max-width:180px;">
           <div class="card-badges">
-            <div class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 3</div>
-            <div class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</div>
+            <div class="card-badge badge-brand"><span class="tf-icon flame-muted">&#x1F525;</span> 3</div>
+            <div class="card-badge badge-brand"><span class="tf-icon">&#x1F48E;</span> 10</div>
           </div>
           <div class="card-content"><div class="card-name">Talk to Sprout</div></div>
           <div class="card-emoji-area"><span class="card-emoji" style="font-size:56px;">&#x1F4AC;</span></div>
@@ -968,8 +969,8 @@
         <span class="state-cell-label">Rejected</span>
         <div class="task-card card-brand" style="width:100%;max-width:180px;">
           <div class="card-badges">
-            <div class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 3</div>
-            <div class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</div>
+            <div class="card-badge badge-brand"><span class="tf-icon flame-muted">&#x1F525;</span> 3</div>
+            <div class="card-badge badge-brand"><span class="tf-icon">&#x1F48E;</span> 10</div>
           </div>
           <div class="card-content"><div class="card-name">Talk to Sprout</div></div>
           <div class="card-emoji-area"><span class="card-emoji" style="font-size:56px;">&#x1F4AC;</span></div>
@@ -980,8 +981,8 @@
         <span class="state-cell-label">Submitted</span>
         <div class="task-card card-brand" style="width:100%;max-width:180px;">
           <div class="card-badges">
-            <div class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 3</div>
-            <div class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</div>
+            <div class="card-badge badge-brand"><span class="tf-icon">&#x1F525;</span> 3</div>
+            <div class="card-badge badge-brand"><span class="tf-icon">&#x1F48E;</span> 10</div>
           </div>
           <div class="card-content"><div class="card-name">Talk to Sprout</div></div>
           <div class="card-emoji-area"><span class="card-emoji" style="font-size:56px;">&#x1F4AC;</span></div>
@@ -992,8 +993,8 @@
         <span class="state-cell-label">Claimable</span>
         <div class="task-card card-brand" style="width:100%;max-width:180px;">
           <div class="card-badges">
-            <div class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 3</div>
-            <div class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</div>
+            <div class="card-badge badge-brand"><span class="tf-icon">&#x1F525;</span> 3</div>
+            <div class="card-badge badge-brand"><span class="tf-icon">&#x1F48E;</span> 10</div>
           </div>
           <div class="card-content"><div class="card-name">Talk to Sprout</div></div>
           <div class="card-emoji-area"><span class="card-emoji" style="font-size:56px;">&#x1F4AC;</span></div>
@@ -1005,8 +1006,8 @@
         <div class="task-card card-brand" style="width:100%;max-width:180px;">
           <div class="card-completed-overlay"></div>
           <div class="card-badges">
-            <div class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 4</div>
-            <div class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</div>
+            <div class="card-badge badge-brand"><span class="tf-icon">&#x1F525;</span> 4</div>
+            <div class="card-badge badge-brand"><span class="tf-icon">&#x1F48E;</span> 10</div>
           </div>
           <div class="card-content"><div class="card-name">Talk to Sprout</div></div>
           <div class="card-emoji-area"><span class="card-emoji" style="font-size:56px;">&#x1F4AC;</span></div>
@@ -1035,25 +1036,25 @@
     <div class="demo" style="background:var(--bg-sky, #e0f2fe);">
       <div class="demo-item">
         <span class="demo-label">Card badge (active streak)</span>
-        <div class="card-badge badge-brand" style="font-size:11px;padding:4px 8px;"><span class="tf-badge" style="font-size:12px;">&#x1F525;</span> 5 days</div>
+        <div class="card-badge badge-brand" style="font-size:11px;padding:4px 8px;"><span class="tf-icon" style="font-size:12px;">&#x1F525;</span> 5 days</div>
       </div>
       <div class="demo-item">
         <span class="demo-label">Card badge (no streak)</span>
-        <div class="card-badge badge-brand" style="font-size:11px;padding:4px 8px;"><span class="tf-badge flame-muted" style="font-size:12px;">&#x1F525;</span> 0 days</div>
+        <div class="card-badge badge-brand" style="font-size:11px;padding:4px 8px;"><span class="tf-icon flame-muted" style="font-size:12px;">&#x1F525;</span> 0 days</div>
       </div>
       <div class="demo-item">
         <span class="demo-label">Card badge (gems)</span>
-        <div class="card-badge badge-brand" style="font-size:11px;padding:4px 8px;"><span class="tf-badge" style="font-size:12px;">&#x1F48E;</span> 10</div>
+        <div class="card-badge badge-brand" style="font-size:11px;padding:4px 8px;"><span class="tf-icon" style="font-size:12px;">&#x1F48E;</span> 10</div>
       </div>
       <div class="demo-item">
         <span class="demo-label">Tile badge (translucent)</span>
-        <div class="anytime-tile-badge" style="font-size:11px;padding:4px 8px;color:white;"><span class="tf-badge" style="font-size:12px;">&#x1F525;</span> 5</div>
+        <div class="anytime-tile-badge" style="font-size:11px;padding:4px 8px;color:white;"><span class="tf-icon" style="font-size:12px;">&#x1F525;</span> 5</div>
       </div>
       <div class="demo-item">
         <span class="demo-label">Row badges (inline)</span>
         <div style="display:flex;gap:5px;">
-          <span class="task-badge-row" style="font-size:11px;"><span class="tf-badge" style="font-size:12px;">&#x1F525;</span><span class="badge-num">5</span></span>
-          <span class="task-badge-row" style="font-size:11px;"><span class="tf-badge" style="font-size:12px;">&#x1F48E;</span><span class="badge-num">10</span></span>
+          <span class="task-badge-row" style="font-size:11px;"><span class="tf-icon" style="font-size:12px;">&#x1F525;</span><span class="badge-num">5</span></span>
+          <span class="task-badge-row" style="font-size:11px;"><span class="tf-icon" style="font-size:12px;">&#x1F48E;</span><span class="badge-num">10</span></span>
         </div>
       </div>
     </div>

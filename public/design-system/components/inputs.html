@@ -54,7 +54,7 @@
 <style>
 /* ── Text Input component ── */
 .text-input-wrapper {
-  display:flex; flex-direction:column; gap:8px;
+  display:flex; flex-direction:column; gap:var(--spacing-md, 8px);
   width:370px;
 }
 .text-input-label {
@@ -65,10 +65,10 @@
   color:var(--text-primary, #181d27);
 }
 .text-input {
-  display:flex; align-items:center; gap:8px;
+  display:flex; align-items:center; gap:var(--spacing-md, 8px);
   box-sizing:border-box;
   width:370px; height:56px;
-  padding:2px 18px;
+  padding:var(--spacing-xxs, 2px) 18px;
   background:var(--bg-primary, #ffffff);
   border:2px solid var(--border-secondary, #e9eaeb);
   border-radius:var(--radius-2xl, 16px);
@@ -89,7 +89,7 @@
 }
 .text-input .input-cursor {
   color:var(--brand-500, #0ba5ec);
-  font-weight:400;
+  font-weight:var(--font-weight-regular, 400);
   animation:blink 1s step-end infinite;
   flex:0 0 auto;
   margin:0 -1px;
@@ -107,7 +107,7 @@
   flex:0 0 auto;
 }
 .text-input.state-focused .input-lead {
-  margin-right:8px;
+  margin-right:var(--spacing-md, 8px);
 }
 .text-input.state-focused .input-icon {
   margin-left:auto;

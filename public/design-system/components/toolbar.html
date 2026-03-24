@@ -79,23 +79,23 @@
 
 /* Status bar inside phone */
 .phone-status {
-  height:54px; padding:14px 24px 0;
+  height:54px; padding:14px var(--spacing-3xl, 24px) 0;
   display:flex; align-items:center; justify-content:space-between;
-  font-size:15px; font-weight:600;
+  font-size:15px; font-weight:var(--font-weight-semibold, 600);
   color:var(--text-primary, #181d27);
 }
-.phone-status-icons { display:flex; gap:4px; align-items:center; }
+.phone-status-icons { display:flex; gap:var(--spacing-xs, 4px); align-items:center; }
 .phone-status-icons svg { width:16px; height:16px; }
 
 /* Placeholder content below toolbar */
 .phone-content {
-  padding:16px;
+  padding:var(--spacing-xl, 16px);
 }
 .phone-content-line {
   height:12px;
   background:var(--gray-100, #f5f5f5);
-  border-radius:6px;
-  margin-bottom:8px;
+  border-radius:var(--radius-sm, 6px);
+  margin-bottom:var(--spacing-md, 8px);
 }
 .phone-content-line:nth-child(2) { width:80%; }
 .phone-content-line:nth-child(3) { width:60%; }
@@ -113,11 +113,11 @@
 /* ── Leading / Trailing slot labels ── */
 .slot-label {
   position:absolute;
-  font-size:10px; font-weight:700;
+  font-size:10px; font-weight:var(--font-weight-bold, 700);
   text-transform:uppercase; letter-spacing:0.8px;
   color:var(--violet-500, #875bf7);
   background:var(--violet-50, #f5f3ff);
-  padding:2px 6px; border-radius:3px;
+  padding:var(--spacing-xxs, 2px) var(--spacing-sm, 6px); border-radius:3px;
   white-space:nowrap; z-index:10;
   pointer-events:none;
 }
@@ -176,7 +176,7 @@
 /* ── TossFace emoji icon ── */
 .tf-icon {
   font-family:'TossFace', sans-serif;
-  font-size:24px; line-height:1;
+  font-size:var(--font-size-display-xs, 24px); line-height:1;
   width:24px; height:24px;
   display:flex; align-items:center; justify-content:center;
   flex-shrink:0;
@@ -251,7 +251,7 @@
 .toolbar-center-subtitle {
   font-family:var(--font-family-body, 'Inter', sans-serif);
   font-size:var(--font-size-text-xs, 12px);
-  line-height:var(--line-height-text-xs, 18px);
+  line-height:var(--line-height-text-xs, 16px);
   font-weight:var(--font-weight-medium, 500);
   color:var(--text-secondary, #414651); white-space:nowrap;
 }
@@ -279,7 +279,7 @@
   width:32px; height:32px;
   border-radius:var(--radius-full, 9999px);
   background:var(--brand-100, #e0f2fe);
-  border:2px solid white; flex-shrink:0;
+  border:2px solid var(--fg-white, #ffffff); flex-shrink:0;
 }
 .user-group { display:flex; align-items:baseline; padding-right:var(--spacing-md, 8px); }
 .user-group .avatar { margin-right:calc(-1 * var(--spacing-md, 8px)); }
@@ -319,7 +319,7 @@
 
 /* ── Progress bar (Quest) ── */
 .progress-track {
-  flex:1; height:16px;
+  flex:1; height:var(--spacing-xl, 16px);
   background:var(--bg-secondary, #fafafa);
   border-radius:var(--radius-full, 9999px);
   overflow:hidden; position:relative;
@@ -328,7 +328,7 @@
   height:100%;
   background:var(--brand-500, #0ba5ec);
   border-radius:var(--radius-full, 9999px);
-  min-width:32px;
+  min-width:var(--spacing-4xl, 32px);
   padding:var(--spacing-xs, 4px) var(--spacing-md, 8px);
   box-sizing:border-box;
   position:relative;
@@ -337,7 +337,7 @@
 .progress-fill::after {
   content:'';
   display:block;
-  width:100%; height:4px;
+  width:100%; height:var(--spacing-xs, 4px);
   background:rgba(255,255,255,0.5);
   border-radius:var(--radius-full, 9999px);
 }
@@ -351,10 +351,10 @@
 
 /* ── Figma link ── */
 .figma-link {
-  display:inline-flex; align-items:center; gap:6px;
-  font-size:13px; font-weight:500;
+  display:inline-flex; align-items:center; gap:var(--spacing-sm, 6px);
+  font-size:13px; font-weight:var(--font-weight-medium, 500);
   color:var(--brand-600, #0086c9);
-  text-decoration:none; margin-bottom:24px;
+  text-decoration:none; margin-bottom:var(--spacing-3xl, 24px);
 }
 .figma-link:hover { text-decoration:underline; }
 .figma-link svg { width:16px; height:16px; }
@@ -362,32 +362,32 @@
 /* ── Anatomy diagram ── */
 .anatomy-row {
   display:flex; align-items:center; gap:0;
-  padding:16px; width:100%;
+  padding:var(--spacing-xl, 16px); width:100%;
   background:var(--bg-secondary, #fafafa);
   border-radius:var(--radius-xl, 12px);
   border:1px solid var(--border-secondary, #e9eaeb);
   position:relative;
 }
 .anatomy-slot {
-  display:flex; flex-direction:column; align-items:center; gap:6px;
-  padding:8px 12px;
+  display:flex; flex-direction:column; align-items:center; gap:var(--spacing-sm, 6px);
+  padding:var(--spacing-md, 8px) var(--spacing-lg, 12px);
   border:2px dashed var(--violet-500, #875bf7);
   border-radius:var(--radius-md, 8px);
   position:relative;
 }
 .anatomy-slot-label {
-  font-size:10px; font-weight:700;
+  font-size:10px; font-weight:var(--font-weight-bold, 700);
   text-transform:uppercase; letter-spacing:0.8px;
   color:var(--violet-500, #875bf7);
   white-space:nowrap;
 }
 .anatomy-slot-leading { margin-right:auto; }
-.anatomy-slot-center { flex:1; margin:0 12px; }
+.anatomy-slot-center { flex:1; margin:0 var(--spacing-lg, 12px); }
 .anatomy-slot-trailing { margin-left:auto; }
 
 /* ── Demo overrides ── */
 .demo { flex-wrap:wrap; }
-.demo-col { flex-direction:column; gap:24px; }
+.demo-col { flex-direction:column; gap:var(--spacing-3xl, 24px); }
 @media(max-width:768px) {
   .phone-frame { width:100%; }
 }

@@ -78,8 +78,8 @@
 }
 .toast-icon {
   font-family:'TossFace', sans-serif;
-  font-size:20px; line-height:1;
-  width:24px; height:24px;
+  font-size:var(--font-size-text-xl, 20px); line-height:1;
+  width:var(--spacing-3xl, 24px); height:var(--spacing-3xl, 24px);
   display:flex; align-items:center; justify-content:center;
   flex-shrink:0;
 }
@@ -110,12 +110,12 @@
   cursor:pointer;
 }
 .toast-close {
-  width:24px; height:24px; flex-shrink:0;
+  width:var(--spacing-3xl, 24px); height:var(--spacing-3xl, 24px); flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
   color:var(--text-quaternary, #717680);
   cursor:pointer;
 }
-.toast-close svg { width:24px; height:24px; }
+.toast-close svg { width:var(--spacing-3xl, 24px); height:var(--spacing-3xl, 24px); }
 
 /* -- Preferred icon grid -- */
 .icon-grid {
@@ -130,11 +130,11 @@
   font-size:var(--font-size-text-sm, 14px);
   color:var(--text-secondary, #414651);
 }
-.icon-chip .toast-icon { font-size:20px; }
+.icon-chip .toast-icon { font-size:var(--font-size-text-xl, 20px); }
 
 /* Progress bar */
 .toast-progress {
-  position:absolute; bottom:0; left:0; right:0; height:4px;
+  position:absolute; bottom:0; left:0; right:0; height:var(--spacing-xs, 4px);
   background:var(--bg-secondary, #fafafa);
 }
 .toast-progress-fill {
@@ -197,7 +197,7 @@
 .phone-frame-anim {
   width:402px; height:460px;
   background:var(--bg-sky, #e0f2fe);
-  border-radius:36px;
+  border-radius:var(--radius-4xl, 24px);
   overflow:hidden;
   box-shadow:0 8px 30px rgba(0,0,0,0.1);
   border:2px solid var(--border-secondary, #e9eaeb);
@@ -211,7 +211,7 @@
   z-index:1;
 }
 .phone-frame-anim .toast-container {
-  position:absolute; bottom:24px; left:16px; right:16px;
+  position:absolute; bottom:var(--spacing-3xl, 24px); left:var(--spacing-xl, 16px); right:var(--spacing-xl, 16px);
   display:flex; justify-content:center;
   z-index:2;
 }
@@ -224,7 +224,7 @@
   position:absolute; bottom:0; left:0; width:100%; z-index:0;
 }
 .phone-frame-anim .bg-grass-edge {
-  height:24px; background:var(--bg-grass, #86cb3c);
+  height:var(--spacing-3xl, 24px); background:var(--bg-grass, #86cb3c);
   border-radius:var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
 }
 .phone-frame-anim .bg-grass-fill {
@@ -329,14 +329,14 @@
 .phone-frame-toast {
   width:402px; height:300px;
   background:var(--bg-primary, #ffffff);
-  border-radius:36px;
+  border-radius:var(--radius-4xl, 24px);
   overflow:hidden;
   box-shadow:0 8px 30px rgba(0,0,0,0.1);
   border:2px solid var(--border-secondary, #e9eaeb);
   display:flex; flex-direction:column;
   align-items:center;
   justify-content:flex-end;
-  padding:0 16px 24px;
+  padding:0 var(--spacing-xl, 16px) var(--spacing-3xl, 24px);
 }
 .phone-frame-toast .phone-content {
   flex:1; display:flex; align-items:center; justify-content:center;

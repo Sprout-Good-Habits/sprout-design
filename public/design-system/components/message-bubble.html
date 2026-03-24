@@ -78,7 +78,7 @@
 
 /* Column */
 .msg-col {
-  display:flex; flex-direction:column; gap:4px;
+  display:flex; flex-direction:column; gap:var(--spacing-xs, 4px);
 }
 .msg-col-in { align-items:flex-start; }
 .msg-col-out { align-items:flex-end; }
@@ -90,7 +90,7 @@
   line-height:var(--line-height-text-xs, 16px);
   font-weight:var(--font-weight-regular, 400);
   color:var(--text-secondary, #414651);
-  padding:0 16px;
+  padding:0 var(--spacing-xl, 16px);
 }
 
 /* Bubble */
@@ -114,11 +114,11 @@
 
 /* Media grid */
 .msg-images {
-  display:flex; flex-wrap:wrap; gap:4px; max-width:330px;
+  display:flex; flex-wrap:wrap; gap:var(--spacing-xs, 4px); max-width:330px;
 }
 .msg-images-out { justify-content:flex-end; }
 .msg-image {
-  width:104px; height:104px; border-radius:20px;
+  width:104px; height:104px; border-radius:var(--radius-3xl, 20px);
   background:var(--gray-200, #e9eaeb); flex-shrink:0;
   overflow:hidden;
 }
@@ -138,7 +138,7 @@
   width:256px;
 }
 .msg-audio-row {
-  display:flex; gap:4px; align-items:center;
+  display:flex; gap:var(--spacing-xs, 4px); align-items:center;
 }
 .msg-audio-play {
   flex-shrink:0; display:flex; align-items:center; justify-content:center;
@@ -155,7 +155,7 @@
 .msg-audio-play.playing .pause-icon { display:block;
 }
 .msg-audio-waveform {
-  flex:1; display:flex; gap:2px; align-items:center; height:20px; overflow:hidden;
+  flex:1; display:flex; gap:var(--spacing-xxs, 2px); align-items:center; height:20px; overflow:hidden;
 }
 .msg-audio-waveform .bar {
   width:2px; border-radius:1px; flex-shrink:0;
@@ -198,11 +198,11 @@
   30% { opacity:1; }
 }
 .msg-typing-dots {
-  display:flex; gap:4px; align-items:center;
-  padding:16px 20px;
+  display:flex; gap:var(--spacing-xs, 4px); align-items:center;
+  padding:var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
 }
 .typing-dot {
-  width:8px; height:8px; border-radius:50%;
+  width:var(--spacing-md, 8px); height:var(--spacing-md, 8px); border-radius:50%;
   background:var(--gray-400, #a4a7ae);
   animation:typingDot 1.4s ease-in-out infinite;
 }
@@ -211,7 +211,7 @@
 
 /* Demo overrides */
 .msg-demo-stack {
-  display:flex; flex-direction:column; gap:12px; align-items:stretch;
+  display:flex; flex-direction:column; gap:var(--spacing-lg, 12px); align-items:stretch;
   width:370px;
 }
 </style>

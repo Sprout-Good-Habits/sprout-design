@@ -55,7 +55,7 @@
   width:32px; height:32px;
   border-radius:var(--radius-full, 9999px);
   background:var(--bg-sky, #e0f2fe);
-  border:2px solid white; flex-shrink:0;
+  border:2px solid var(--fg-white, #ffffff); flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
   font-family:var(--font-family-body, 'Inter', sans-serif);
   font-size:var(--font-size-text-sm, 14px);
@@ -103,14 +103,14 @@
 
 /* ── Anatomy diagram ── */
 .anatomy-diagram {
-  display:flex; align-items:center; gap:32px;
-  padding:24px; justify-content:center;
+  display:flex; align-items:center; gap:var(--spacing-4xl, 32px);
+  padding:var(--spacing-3xl, 24px); justify-content:center;
 }
 .anatomy-callout {
-  display:flex; flex-direction:column; gap:8px;
+  display:flex; flex-direction:column; gap:var(--spacing-md, 8px);
 }
 .anatomy-callout-item {
-  display:flex; align-items:center; gap:8px;
+  display:flex; align-items:center; gap:var(--spacing-md, 8px);
   font-size:var(--font-size-text-sm, 14px);
   color:var(--text-secondary, #414651);
 }
@@ -126,10 +126,10 @@
   background:var(--yellow-50, #fefbe8);
   border:1px solid var(--yellow-300, #fec84b);
   border-radius:var(--radius-md, 8px);
-  margin-bottom:24px;
+  margin-bottom:var(--spacing-3xl, 24px);
 }
 .blocker-banner-icon {
-  font-size:20px; line-height:1; flex-shrink:0;
+  font-size:var(--font-size-text-xl, 20px); line-height:1; flex-shrink:0;
 }
 .blocker-banner-text {
   font-family:var(--font-family-body, 'Inter', sans-serif);

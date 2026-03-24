@@ -58,7 +58,7 @@
   letter-spacing:0;
   width:320px; height:48px;
   padding:var(--spacing-lg, 12px) var(--spacing-3xl, 24px);
-  border-radius:16px; cursor:pointer;
+  border-radius:var(--radius-2xl, 16px); cursor:pointer;
   transition:background 0.15s, box-shadow 0.15s;
   white-space:nowrap; box-sizing:border-box;
   background:var(--bg-primary, #ffffff); color:var(--text-secondary, #414651);
@@ -84,7 +84,7 @@
 /* ── Loading spinner ── */
 .spinner {
   display:inline-block; width:20px; height:20px;
-  border-radius:50%; animation:spin 0.7s linear infinite;
+  border-radius:var(--radius-full, 9999px); animation:spin 0.7s linear infinite;
 }
 .btn-social .spinner { border:2.5px solid rgba(11,165,236,0.2); border-top-color:var(--brand-500, #0ba5ec); }
 @keyframes spin { to { transform:rotate(360deg); } }

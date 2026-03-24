@@ -59,10 +59,10 @@
 
 /* ── List Item component ── */
 .list-item {
-  display:flex; align-items:center; gap:16px;
+  display:flex; align-items:center; gap:var(--spacing-xl, 16px);
   box-sizing:border-box;
   width:354px;
-  padding:16px 20px;
+  padding:var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
   background:var(--bg-primary, #ffffff);
   border:2px solid var(--border-secondary, #e9eaeb);
   border-radius:var(--radius-xl, 12px);
@@ -124,7 +124,7 @@
 }
 .list-item-check-icon {
   display:none; width:14px; height:14px;
-  stroke:#ffffff; stroke-width:2.5; fill:none;
+  stroke:var(--fg-white, #ffffff); stroke-width:2.5; fill:none;
 }
 .checked .list-item-check-icon { display:block; }
 
@@ -144,7 +144,7 @@
 .list-item-radio-dot {
   display:none; width:8px; height:8px;
   border-radius:var(--radius-full, 9999px);
-  background:#ffffff;
+  background:var(--fg-white, #ffffff);
 }
 .checked .list-item-radio-dot { display:block; }
 

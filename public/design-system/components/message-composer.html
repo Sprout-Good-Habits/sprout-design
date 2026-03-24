@@ -53,7 +53,7 @@
 .mc-demo {
   display: flex;
   align-items: flex-end;
-  gap: 12px;
+  gap: var(--spacing-lg, 12px);
   padding: 0 var(--spacing-xl, 16px);
   width: 402px;
 }
@@ -82,7 +82,7 @@
   min-width: 0;
   background: var(--bg-primary, #ffffff);
   border: 2px solid var(--border-secondary, #e9eaeb);
-  border-radius: 24px;
+  border-radius: var(--radius-4xl, 24px);
   box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
   padding: var(--spacing-xs, 4px);
   display: flex;
@@ -91,7 +91,7 @@
 .mc-row {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-xs, 4px);
   padding: 0 var(--spacing-xxs, 2px) 0 var(--spacing-md, 8px);
   min-height: 36px;
 }
@@ -129,7 +129,7 @@
   border: none;
 }
 .mc-btn-send { background: var(--fg-brand-primary, #0ba5ec); padding: var(--spacing-md, 8px); }
-.mc-btn-send svg { width: 20px; height: 20px; color: white; }
+.mc-btn-send svg { width: 20px; height: 20px; color: var(--fg-white, #ffffff); }
 .mc-btn-stop { background: var(--red-200, #fecdca); padding: var(--spacing-md, 8px); }
 .mc-btn-stop svg { width: 20px; height: 20px; color: var(--red-600, #d92d20); }
 .mc-btn-play { background: var(--gray-200, #e9eaeb); padding: var(--spacing-sm, 6px); }
@@ -142,7 +142,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--spacing-xxs, 2px);
   height: 24px;
   overflow: hidden;
 }
@@ -173,7 +173,7 @@
 /* Media row */
 .mc-media-row {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-md, 8px);
   padding: var(--spacing-xs, 4px) var(--spacing-lg, 12px) 0;
 }
 .mc-media-card {
@@ -181,13 +181,13 @@
   width: 120px;
   height: 120px;
   flex-shrink: 0;
-  border-radius: 20px;
+  border-radius: var(--radius-3xl, 20px);
   overflow: hidden;
 }
 .mc-media-image {
   width: 100%;
   height: 100%;
-  border-radius: 20px;
+  border-radius: var(--radius-3xl, 20px);
 }
 .mc-media-remove {
   position: absolute;
@@ -205,7 +205,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.2);
-  border-radius: 20px;
+  border-radius: var(--radius-3xl, 20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -225,14 +225,14 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-xl, 16px);
   align-items: center;
 }
 .sheet-handle {
   width: 36px;
   height: 4px;
   background: var(--gray-300, #d5d7da);
-  border-radius: 2px;
+  border-radius: var(--radius-xxs, 2px);
 }
 .sheet-header {
   display: flex;
@@ -307,7 +307,7 @@
   gap: var(--spacing-md, 8px);
   padding: var(--spacing-lg, 12px) var(--spacing-2xl, 20px);
   background: var(--fg-brand-primary, #0ba5ec);
-  color: white;
+  color: var(--fg-white, #ffffff);
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-md, 16px);
   font-weight: var(--font-weight-semibold, 600);
@@ -581,7 +581,7 @@
             <div class="sheet-handle"></div>
             <div class="sheet-header">
               <div class="sheet-header-content">
-                <h1 class="sheet-title" style="font-size:var(--font-size-text-md, 16px);line-height:var(--line-height-text-md, 24px);font-weight:var(--font-weight-semibold, 600);letter-spacing:0">Sprout</h1>
+                <h1 class="sheet-title-compact">Sprout</h1>
               </div>
               <div class="sheet-close">
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>

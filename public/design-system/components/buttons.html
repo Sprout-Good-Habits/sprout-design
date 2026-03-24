@@ -205,14 +205,14 @@
 
 /* ── Loading spinner ── */
 .spinner {
-  display:inline-block; width:20px; height:20px;
+  display:inline-block; width:var(--spacing-2xl, 20px); height:var(--spacing-2xl, 20px);
   border-radius:50%; animation:spin 0.7s linear infinite;
 }
-.btn-primary .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:#ffffff; }
+.btn-primary .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:var(--fg-white, #ffffff); }
 .btn-secondary .spinner { border:2.5px solid rgba(11,165,236,0.2); border-top-color:var(--brand-500, #0ba5ec); }
-.btn-destructive .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:#ffffff; }
-.btn-warning .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:#ffffff; }
-.btn-success .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:#ffffff; }
+.btn-destructive .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:var(--fg-white, #ffffff); }
+.btn-warning .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:var(--fg-white, #ffffff); }
+.btn-success .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:var(--fg-white, #ffffff); }
 @keyframes spin { to { transform:rotate(360deg); } }
 
 /* ── Sentiment tags ── */
@@ -221,10 +221,10 @@
   font-size:var(--font-size-text-xs, 12px);
   font-weight:var(--font-weight-medium, 500);
   line-height:var(--line-height-text-xs, 18px);
-  padding:2px 8px;
+  padding:var(--spacing-xxs, 2px) var(--spacing-md, 8px);
   border-radius:var(--radius-full, 9999px);
   vertical-align:middle;
-  margin-left:8px;
+  margin-left:var(--spacing-md, 8px);
 }
 .sentiment-positive { background:var(--green-50, #ecfdf3); color:var(--green-700, #067647); }
 .sentiment-neutral { background:var(--gray-50, #fafafa); color:var(--text-secondary, #414651); border:1px solid var(--border-secondary, #e9eaeb); }
@@ -237,7 +237,7 @@
 /* ── Phone frame for placement demos ── */
 .phone-frame {
   width:366px; height:680px;
-  border-radius:36px; overflow:hidden;
+  border-radius:var(--radius-4xl, 24px); overflow:hidden;
   position:relative;
   box-shadow:0 8px 30px rgba(0,0,0,0.1);
   border:2px solid var(--border-secondary, #e9eaeb);
@@ -257,7 +257,7 @@
   background:var(--gray-100, #f5f5f5);
   border:1px dashed var(--border-secondary, #e9eaeb);
   border-radius:var(--radius-md, 8px);
-  height:48px;
+  height:var(--spacing-6xl, 48px);
   display:flex; align-items:center; justify-content:center;
   font-size:var(--font-size-text-xs, 12px);
   color:var(--text-quaternary, #717680);
