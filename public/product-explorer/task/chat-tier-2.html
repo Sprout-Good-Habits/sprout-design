@@ -233,7 +233,9 @@
 /* ── Camera view ── */
 .camera-view{position:absolute;inset:0;background:#d5d7da;z-index:25;display:none;flex-direction:column}
 .camera-view.open{display:flex}
-.camera-top{flex:1;padding:78px 16px 8px}
+/* ── Camera toolbar ── */
+.camera-toolbar{position:absolute;top:62px;left:0;right:0;display:flex;align-items:flex-start;padding:0 var(--spacing-xl,16px) var(--spacing-md,8px);z-index:26}
+.camera-top{flex:1;padding:118px 16px 8px}
 .camera-guide{display:flex;gap:16px;align-items:flex-start}
 .camera-sprout{width:120px;height:180px;flex-shrink:0;background:#e0f2fe;border-radius:24px;overflow:hidden;position:relative}
 .camera-rive-wrap{position:absolute;bottom:-96px;left:50%;transform:translateX(-50%);width:300px;height:300px;pointer-events:none}
@@ -389,6 +391,11 @@
       <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
     </span>
   </div>
+  <div class="camera-toolbar">
+    <button class="btn-util" id="cameraClose" aria-label="Close camera">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
   <div class="camera-top">
     <div class="camera-guide">
       <div class="camera-sprout">
@@ -526,6 +533,7 @@
   var btnRetake    = document.getElementById('btnRetake');
   var btnSendPhoto = document.getElementById('btnSendPhoto');
   var feedbackBnr  = document.getElementById('feedbackBanner');
+  var cameraClose  = document.getElementById('cameraClose');
 
   var cameraMode = 'camera'; // 'camera' or 'photos'
 
@@ -572,6 +580,11 @@
       cameraMsg.textContent = 'Point camera at your completed task';
       flash('Camera');
     }
+  });
+
+  cameraClose.addEventListener('click', function() {
+    cameraView.classList.remove('open');
+    feedbackBnr.classList.remove('open');
   });
 
   btnSendPhoto.addEventListener('click', function() {
