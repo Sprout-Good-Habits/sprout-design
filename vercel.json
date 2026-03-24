@@ -1,7 +1,7 @@
 {
   "version": 2,
   "buildCommand": "",
-  "outputDirectory": "public",
+  "outputDirectory": "public/design-system",
   "framework": null,
   "cleanUrls": true
 }
