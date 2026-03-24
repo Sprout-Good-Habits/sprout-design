@@ -104,6 +104,10 @@
   width: 640px;
   height: 854px;
 }
+.device-wrapper.ipad .msg-col { max-width: 536px; }
+.device-wrapper.ipad .msg-bubble { max-width: 480px; }
+.device-wrapper.ipad .msg-images { max-width: 536px; }
+.device-wrapper.ipad .msg-bubble-audio { width: 360px; }
 
 /* ── Chat toolbar ── */
 .chat-toolbar {
@@ -1180,7 +1184,7 @@
         showRow(inputRowListening);
         setAttachIcon(false);
         btnAttach.classList.add('hidden');
-        buildWaveformBars(waveform, 77, true);
+        buildWaveformBars(waveform, getBarCount(77, waveform), true);
         showStateLabel('Listening');
         break;
 
@@ -1204,7 +1208,7 @@
         showRow(inputRowAudio);
         setAttachIcon(true);
         btnAttach.classList.remove('hidden');
-        buildWaveformBars(waveformStatic, 54, false);
+        buildWaveformBars(waveformStatic, getBarCount(54, waveformStatic), false);
         showStateLabel('Send Audio');
         break;
 
@@ -1675,15 +1679,26 @@
   // ── Device toggle ──
   var deviceBtns = document.querySelectorAll('.device-btn');
   var deviceWrapper = document.querySelector('.device-wrapper');
+  var isTablet = false;
+  function getBarCount(base, container) {
+    if (!isTablet || !container) return base;
+    var w = container.offsetWidth;
+    if (w > 0) return Math.floor(w / 4);
+    return base;
+  }
   deviceBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
       var device = btn.getAttribute('data-device');
       deviceBtns.forEach(function(b) { b.classList.toggle('active', b === btn); });
       if (device === 'ipad') {
         deviceWrapper.classList.add('ipad');
+        isTablet = true;
       } else {
         deviceWrapper.classList.remove('ipad');
+        isTablet = false;
       }
+      buildWaveformBars(waveform, getBarCount(77, waveform), true);
+      buildWaveformBars(waveformStatic, getBarCount(54, waveformStatic), false);
     });
   });
 })();
