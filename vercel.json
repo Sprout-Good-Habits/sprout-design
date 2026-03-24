@@ -3,5 +3,27 @@
   "buildCommand": "",
   "outputDirectory": "public",
   "framework": null,
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/tokens.css", "destination": "/design-system/tokens.css" },
+    { "source": "/styles.css", "destination": "/design-system/styles.css" },
+    { "source": "/shell.js", "destination": "/design-system/shell.js" },
+    { "source": "/spec-renderer.js", "destination": "/design-system/spec-renderer.js" },
+    { "source": "/component-specs.json", "destination": "/design-system/component-specs.json" },
+    { "source": "/tokens.json", "destination": "/design-system/tokens.json" },
+    { "source": "/sprout-character.riv", "destination": "/design-system/sprout-character.riv" },
+    { "source": "/brand/:path*", "destination": "/design-system/brand/:path*" },
+    { "source": "/foundations/:path*", "destination": "/design-system/foundations/:path*" },
+    { "source": "/components/:path*", "destination": "/design-system/components/:path*" },
+    { "source": "/patterns/:path*", "destination": "/design-system/patterns/:path*" },
+    { "source": "/resources/:path*", "destination": "/design-system/resources/:path*" },
+    { "source": "/foundations.html", "destination": "/design-system/foundations.html" },
+    { "source": "/components.html", "destination": "/design-system/components.html" },
+    { "source": "/patterns.html", "destination": "/design-system/patterns.html" },
+    { "source": "/resources.html", "destination": "/design-system/resources.html" },
+    { "source": "/getting-started.html", "destination": "/design-system/getting-started.html" },
+    { "source": "/principles.html", "destination": "/design-system/principles.html" },
+    { "source": "/accessibility.html", "destination": "/design-system/accessibility.html" },
+    { "source": "/figma-workflow.html", "destination": "/design-system/figma-workflow.html" }
+  ]
 }
