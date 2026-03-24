@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sprout Design System — Toolbar</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script type="application/ld+json">
 {
   "@type": "DesignComponent",
@@ -285,12 +286,13 @@
 .avatar-sprout {
   background:var(--bg-sky, #e0f2fe);
   position:relative; overflow:hidden;
+  display:block;
 }
-.avatar-sprout img {
+.avatar-sprout canvas {
   position:absolute;
-  inset:0;
-  width:100%; height:100%;
-  object-fit:cover;
+  top:-40px; left:50%; transform:translateX(-50%);
+  width:96px; height:138px;
+  display:block;
 }
 
 /* ── Toolbar: Kid home ── */
@@ -458,7 +460,7 @@
         <div class="toolbar toolbar-chat" style="width:340px;position:relative;">
           <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
           <span class="toolbar-abs-title">Family Chat</span>
-          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div></div></div>
         </div>
       </div>
       <div class="demo-item">
@@ -645,7 +647,7 @@
         <div class="toolbar toolbar-chat">
           <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
           <span class="toolbar-abs-title">Family Chat</span>
-          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div></div></div>
         </div>
         <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
       </div>
@@ -974,7 +976,7 @@
       </div>
       <div class="state-cell">
         <span class="state-cell-label">User group</span>
-        <div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div>
+        <div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div></div>
       </div>
       <div class="state-cell">
         <span class="state-cell-label">Emoji only</span>
@@ -1101,8 +1103,8 @@
 
     <div class="demo">
       <div class="demo-item"><span class="demo-label">User</span><div class="avatar"></div></div>
-      <div class="demo-item"><span class="demo-label">Sprout</span><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div>
-      <div class="demo-item"><span class="demo-label">User group (3)</span><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><img src="/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div></div></div>
+      <div class="demo-item"><span class="demo-label">Sprout</span><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div>
+      <div class="demo-item"><span class="demo-label">User group (3)</span><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div></div>
     </div>
 
     <table class="token-table">
@@ -1216,7 +1218,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 <script>
@@ -1268,6 +1270,39 @@
     }
   });
 })();
+
+// Initialize Rive avatars
+var RIVE_SRC = '/sprout-character.riv';
+var SM_NAME = 'State Machine 1';
+document.querySelectorAll('.rive-avatar').forEach(function(canvas) {
+  canvas.width = 128;
+  canvas.height = 184;
+  canvas.style.width = '96px';
+  canvas.style.height = '138px';
+  try {
+    var r = new rive.Rive({
+      src: RIVE_SRC,
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: SM_NAME,
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.TopCenter,
+      onLoad: function() {
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM_NAME);
+          if (inputs) {
+            inputs.forEach(function(inp) {
+              if (inp.name === 'hairID') inp.value = 1;
+            });
+          }
+        } catch(e) {}
+      }
+    });
+  } catch(e) {
+    console.warn('Rive avatar init failed', e);
+  }
+});
 </script>
 </body>
 </html>
