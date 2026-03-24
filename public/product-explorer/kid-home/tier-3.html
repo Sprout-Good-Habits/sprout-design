@@ -6,6 +6,7 @@
 <title>Sprout Product Explorer — Tier 3</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 /* ── Device frame ── */
 .device-wrapper {
@@ -107,18 +108,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  padding: 0 10px 6px;
 }
 .toolbar-trailing {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md, 8px);
+  gap: 4px;
 }
 .btn-util {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
   padding: var(--spacing-lg, 12px);
   background: var(--bg-primary, #ffffff);
   border: 2px solid var(--border-secondary, #e9eaeb);
@@ -129,9 +129,9 @@
 .btn-util-with-label { gap: var(--spacing-md, 8px); }
 .btn-util-label {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-lg, 18px);
-  line-height: var(--line-height-text-lg, 28px);
-  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-regular, 400);
   color: var(--text-secondary, #414651);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -156,9 +156,9 @@
   flex-direction: column;
 }
 .grass-edge {
-  height: 24px;
+  height: 18px;
   background: var(--bg-grass, #86cb3c);
-  border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+  border-radius: 18px 18px 0 0;
 }
 .grass-fill {
   background: var(--bg-grass, #86cb3c);
@@ -187,7 +187,7 @@
   display: flex;
   gap: var(--spacing-xs, 4px);
   padding: var(--spacing-xs, 4px);
-  margin: 64px 16px 0;
+  margin: 48px 16px 0;
   background: var(--bg-secondary, #fafafa);
   border-radius: var(--radius-xl, 16px);
   align-items: center;
@@ -198,8 +198,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-md, 8px);
-  padding: 10px 16px;
-  height: 36px;
+  padding: 8px 12px;
+  height: 28px;
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
   line-height: 16px;
@@ -220,18 +220,18 @@
 }
 .home-tab-badge {
   display: inline-flex;
-  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
+  padding: 3px 6px;
   background: var(--gray-200, #e9eaeb);
   color: var(--text-secondary, #414651);
   border-radius: 100px;
-  font-size: var(--font-size-text-xs, 12px);
-  line-height: var(--line-height-text-xs, 16px);
+  font-size: 9px;
+  line-height: 13px;
   font-weight: 400;
 }
 
 /* ── Progress section ── */
 .progress-section {
-  padding: 20px 16px 0;
+  padding: 16px 12px 0;
   position: relative;
   z-index: 3;
 }
@@ -243,40 +243,40 @@
 }
 .progress-title {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-lg, 18px);
+  font-size: 14px;
   font-weight: var(--font-weight-bold, 700);
   color: var(--text-primary, #181d27);
-  line-height: var(--line-height-text-lg, 28px);
+  line-height: 20px;
 }
 .progress-controls {
   display: flex;
-  gap: var(--spacing-sm, 6px);
+  gap: 4px;
 }
 .btn-util-sm {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 6px 10px;
+  gap: 3px;
+  padding: 4px 8px;
   background: var(--bg-primary, #ffffff);
-  border: 2px solid var(--border-secondary, #e9eaeb);
+  border: 1.5px solid var(--border-secondary, #e9eaeb);
   border-radius: var(--radius-full, 9999px);
-  box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb);
+  box-shadow: 0 1.5px 0 0 var(--gray-200, #e9eaeb);
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-xs, 12px);
+  font-size: 10px;
   font-weight: var(--font-weight-semibold, 600);
   color: var(--text-secondary, #414651);
   flex-shrink: 0;
 }
 .btn-util-sm .tf-sm {
   font-family: 'TossFace', sans-serif;
-  font-size: 14px;
+  font-size: 11px;
   line-height: 1;
 }
 
 /* ── Task list ── */
 .task-list {
-  padding: 0 16px 40px;
+  padding: 0 16px 32px;
   position: relative;
   z-index: 3;
 }
@@ -286,14 +286,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 8px 16px;
   position: relative;
   z-index: 3;
 }
 .anytime-tile {
   border-radius: 16px;
-  padding: 16px;
-  height: 180px;
+  padding: 12px;
+  height: 136px;
   display: flex;
   flex-direction: column;
   color: white;
@@ -311,11 +311,11 @@
 .anytime-tile .task-badge {
   background: rgba(255,255,255,0.2);
   color: white;
-  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
+  padding: 3px 6px;
   border-radius: 100px;
-  gap: 4px;
+  gap: 3px;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 13px;
 }
 .anytime-tile .badge-num {
   min-width: 0;
@@ -328,7 +328,7 @@
 .anytime-tile-content {
   display: flex;
   flex-direction: column;
-  margin-top: var(--spacing-md, 8px);
+  margin-top: 8px;
 }
 .anytime-tile-name {
   font-size: var(--font-size-text-xs, 12px);
@@ -341,7 +341,7 @@
   align-items: center;
   justify-content: center;
   font-family: 'TossFace', sans-serif;
-  font-size: 72px;
+  font-size: 56px;
   line-height: 1;
 }
 
@@ -353,7 +353,7 @@
   color: var(--text-tertiary, #535862);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 14px 0 6px;
+  padding: 10px 0 4px;
 }
 
 /* ── Task row (notification style — tappable, no action buttons) ── */
@@ -364,7 +364,7 @@
   background: var(--bg-primary, #ffffff);
   border-radius: var(--radius-2xl, 16px);
   padding: var(--spacing-lg, 12px);
-  margin-bottom: var(--spacing-md, 8px);
+  margin-bottom: 5px;
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -374,7 +374,8 @@
 .task-emoji-box {
   width: 52px;
   height: 52px;
-  border-radius: var(--radius-sm, 6px);
+  border-radius: 6px;
+  padding: var(--spacing-md, 8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -420,8 +421,8 @@
 .task-name {
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-md, 16px);
-  font-weight: var(--font-weight-semibold, 600);
-  color: var(--text-primary, #181d27);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-secondary, #414651);
   line-height: var(--line-height-text-md, 24px);
   white-space: nowrap;
   overflow: hidden;
@@ -430,13 +431,13 @@
 .task-time {
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: var(--font-weight-medium, 500);
+  font-weight: var(--font-weight-regular, 400);
   color: var(--text-quaternary, #717680);
   line-height: var(--line-height-text-xs, 16px);
 }
 .task-desc {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-xs, 12px);
+  font-size: 12px;
   color: var(--text-tertiary, #535862);
   line-height: var(--line-height-text-xs, 16px);
   white-space: nowrap;
@@ -448,33 +449,35 @@
 .task-trailing {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md, 8px);
+  gap: 6px;
   flex-shrink: 0;
 }
 .task-badges {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm, 6px);
+  gap: var(--spacing-xs, 4px);
 }
 .task-badge {
   display: inline-flex;
   align-items: center;
   gap: 2px;
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-xs, 12px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-quaternary, #717680);
+  font-size: 12px;
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-secondary, #414651);
   line-height: 1;
 }
 .badge-num {
   display: inline-block;
   font-variant-numeric: tabular-nums;
-  min-width: 24px;
+  min-width: 18px;
   text-align: left;
 }
 .task-badge .tf-badge {
   font-family: 'TossFace', sans-serif;
   font-size: 16px;
+  width: 16px;
+  height: 16px;
   line-height: 1;
 }
 
@@ -494,9 +497,9 @@
 
 /* ── Rejected card — iOS Live Activity style ── */
 .task-card-rejected {
-  background: var(--bg-primary, #ffffff);
+  background: var(--bg-secondary, #fafafa);
   border-radius: var(--radius-2xl, 16px);
-  margin-bottom: var(--spacing-md, 8px);
+  margin-bottom: 5px;
   overflow: hidden;
 }
 .task-card-rejected .task-row {
@@ -519,13 +522,13 @@
   gap: var(--spacing-md, 8px);
   padding: var(--spacing-lg, 12px);
   background: var(--bg-secondary, #fafafa);
-  border-radius: 0 0 var(--radius-2xl, 16px) var(--radius-2xl, 16px);
+  border-radius: var(--radius-2xl, 16px);
 }
 .action-label {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-sm, 14px);
-  color: var(--text-secondary, #414651);
-  line-height: var(--line-height-text-sm, 20px);
+  font-size: 12px;
+  color: var(--text-tertiary, #535862);
+  line-height: var(--line-height-text-xs, 16px);
   text-align: center;
 }
 /* ── btn-sprout system ── */
@@ -546,7 +549,7 @@
   user-select: none;
   white-space: nowrap;
 }
-.btn-sm { height: 44px; font-size: var(--font-size-text-md, 16px); }
+.btn-sm { height: 50px; font-size: var(--font-size-text-md, 16px); }
 .btn-secondary {
   background: var(--bg-primary, #ffffff);
   color: var(--text-secondary, #414651);
@@ -560,9 +563,9 @@
 
 /* ── Claimable card — iOS Live Activity style ── */
 .task-card-claim {
-  background: var(--bg-primary, #ffffff);
+  background: var(--bg-secondary, #fafafa);
   border-radius: var(--radius-2xl, 16px);
-  margin-bottom: var(--spacing-md, 8px);
+  margin-bottom: 5px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(10,13,18,0.06);
 }
@@ -580,12 +583,12 @@
 }
 .action-label strong {
   color: var(--text-primary, #181d27);
-  line-height: var(--line-height-text-sm, 20px);
+  line-height: 14px;
   text-align: center;
 }
 .btn-sprout .tf-claim {
   font-family: 'TossFace', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
 }
 
@@ -604,7 +607,7 @@
 /* ── Done stack (iOS notification style) ── */
 .done-stack {
   position: relative;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   cursor: pointer;
 }
 .done-stack-items {
@@ -640,31 +643,31 @@
   top: 100%;
   bottom: auto;
   z-index: 2;
-  height: 7px;
+  height: 5px;
   min-height: 0;
   padding: 0;
   transform: translateY(0);
-  margin-left: 8px;
-  margin-right: 8px;
-  border-radius: 0 0 10px 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  border-radius: 0 0 8px 8px;
   opacity: 0.7;
 }
 .done-stack.collapsed .done-stack-items .task-row:nth-child(3) {
   top: 100%;
   bottom: auto;
   z-index: 1;
-  height: 7px;
+  height: 5px;
   min-height: 0;
   padding: 0;
-  transform: translateY(7px);
-  margin-left: 16px;
-  margin-right: 16px;
-  border-radius: 0 0 8px 8px;
+  transform: translateY(5px);
+  margin-left: 12px;
+  margin-right: 12px;
+  border-radius: 0 0 6px 6px;
   opacity: 0.45;
 }
 .done-stack.collapsed .done-stack-items .task-row:nth-child(n+4) {
   opacity: 0;
-  transform: translateY(calc(100% + 7px));
+  transform: translateY(calc(100% + 5px));
 }
 .done-stack.collapsed .done-stack-items .task-row:nth-child(2) *,
 .done-stack.collapsed .done-stack-items .task-row:nth-child(3) * {
@@ -680,7 +683,7 @@
   transform: none;
   opacity: 1;
   z-index: auto;
-  margin-bottom: var(--spacing-md, 8px);
+  margin-bottom: 5px;
   height: auto;
   min-height: 0;
   padding: var(--spacing-lg, 12px);
@@ -696,7 +699,7 @@
 .done-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   cursor: pointer;
 }
 .done-toggle-chevron {
@@ -734,30 +737,6 @@
   align-items: center;
   justify-content: center;
   margin-top: var(--spacing-5xl, 40px);
-}
-
-/* ── Legend ── */
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-lg, 12px) var(--spacing-3xl, 24px);
-  justify-content: center;
-  margin-top: var(--spacing-xl, 16px);
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-sm, 14px);
-  line-height: var(--line-height-text-sm, 20px);
-  color: var(--text-secondary, #414651);
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm, 6px);
-}
-.legend-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-full, 9999px);
-  flex-shrink: 0;
 }
 
 /* ── Reset button ── */
@@ -926,8 +905,8 @@
 
 /* ── iPad overrides ── */
 .device-wrapper.ipad .device-screen {
-  width: 480px;
-  height: 640px;
+  width: 640px;
+  height: 854px;
 }
 .device-wrapper.ipad .anytime-grid {
   grid-template-columns: 1fr 1fr 1fr;
@@ -1027,10 +1006,10 @@
                     <!-- Grass with character -->
                     <div class="grass-container" style="position: relative;">
                       <!-- Sky spacer (pushes grass down to show sky) -->
-                      <div class="sky-spacer" style="height: 202px; position: relative;">
+                      <div class="sky-spacer" style="height: 200px; position: relative;">
                         <!-- Character — absolute, feet on grass edge -->
                         <div class="rive-wrap" style="position: absolute; bottom: -120px;">
-                          <canvas id="rive-character" class="rive-canvas" width="402" height="402"></canvas>
+                          <canvas id="rive-character" class="rive-canvas" width="804" height="804"></canvas>
                         </div>
                       </div>
 
@@ -1411,18 +1390,11 @@
         </div>
       </div>
 
-      <div class="legend" id="legend">
-        <div class="legend-item"><span class="legend-dot" style="background:var(--green-500)"></span> Not Started</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--orange-500)"></span> Rejected</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--violet-500)"></span> Submitted</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--brand-500)"></span> Claimable</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--blue-dark-500)"></span> Claimed</div>
-      </div>
 
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Chat — Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat — Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
@@ -1450,6 +1422,7 @@
   var gemCounter = document.getElementById('gem-counter');
   var gemLabel = document.getElementById('gem-counter-label');
   var deviceScreen = document.querySelector('.device-screen');
+  var deviceMockup = document.querySelector('.device-mockup');
   var doneStack = document.getElementById('done-stack');
   var doneItems = doneStack ? doneStack.querySelector('.done-stack-items') : null;
   var ios = 'cubic-bezier(0.32, 0.72, 0, 1)';
@@ -1457,7 +1430,7 @@
   var todayCount = document.getElementById('today-count');
 
   function getRelPos(el) {
-    var r = el.getBoundingClientRect(), s = deviceScreen.getBoundingClientRect();
+    var r = el.getBoundingClientRect(), s = deviceMockup.getBoundingClientRect();
     return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height / 2 };
   }
 
@@ -1475,7 +1448,7 @@
         gem.style.left = from.x + 'px';
         gem.style.top = from.y + 'px';
         gem.style.opacity = '0';
-        deviceScreen.appendChild(gem);
+        deviceMockup.appendChild(gem);
         var delay = idx * 60 + Math.random() * 40;
         var dur = 500 + Math.random() * 200;
         var sx = (Math.random() - 0.5) * 50, sy = (Math.random() - 0.5) * 25;
@@ -1490,7 +1463,7 @@
           var fx = from.x + sx * (1 - e), fy = from.y + sy * (1 - e);
           var bx = (1-e)*(1-e)*fx + 2*(1-e)*e*mx + e*e*to.x;
           var by = (1-e)*(1-e)*fy + 2*(1-e)*e*my + e*e*to.y;
-          gem.style.transform = 'translate(-50%,-50%) translate('+(bx-from.x)+'px,'+(by-from.y)+'px) scale('+(1-0.4*e)+')';
+          gem.style.transform = 'translate(-50%,-50%) translate('+(bx-from.x)+'px,'+(by-from.y)+'px)';
           gem.style.opacity = t < 0.1 ? t/0.1 : t > 0.85 ? Math.max(0,1-(t-0.85)/0.15) : 1;
           if (t < 1) { requestAnimationFrame(tick); }
           else {
@@ -1564,8 +1537,8 @@
           } else {
             var clonedRow = row.cloneNode(true);
             clonedRow.classList.add('task-row-claimed');
-            clonedRow.style.marginBottom = '8px';
-            clonedRow.style.borderRadius = '16px';
+            clonedRow.style.marginBottom = '5px';
+            clonedRow.style.borderRadius = '10px';
             card.remove();
             if (doneItems) {
               doneItems.insertBefore(clonedRow, doneItems.firstChild);
@@ -1724,10 +1697,8 @@
     homeTabs.forEach(function(t) {
       t.classList.toggle('active', t.dataset.homeTab === tab);
     });
-    // Hide task-list containers and legend on anytime tab
+    // Hide task-list containers on anytime tab
     taskLists.forEach(function(tl) { tl.style.display = tab === 'anytime' ? 'none' : ''; });
-    var legend = document.getElementById('legend');
-    if (legend) legend.style.display = tab === 'anytime' ? 'none' : '';
     var firstAnytime = true;
     allTabItems.forEach(function(el) {
       el.style.marginTop = '';

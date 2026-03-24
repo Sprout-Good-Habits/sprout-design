@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Product Explorer — Chat</title>
+<title>Sprout Product Explorer — Chat Tier 3</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <style>
@@ -103,6 +103,218 @@
 .device-wrapper.ipad .device-screen {
   width: 640px;
   height: 854px;
+}
+
+/* ── Chat toolbar ── */
+.chat-toolbar {
+  position: absolute;
+  top: 62px;
+  left: 0;
+  right: 0;
+  height: 56px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  z-index: 10;
+  background: var(--bg-sky, #e0f2fe);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+.chat-toolbar-title {
+  position: absolute;
+  left: 50%;
+  top: 13px;
+  transform: translateX(-50%);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+}
+.chat-toolbar-btn {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink: 0;
+}
+.chat-toolbar-btn svg {
+  width: 24px;
+  height: 24px;
+  color: var(--text-primary, #181d27);
+}
+
+/* ── Chat thread ── */
+.chat-thread {
+  position: absolute;
+  top: 118px;
+  left: 0;
+  right: 0;
+  bottom: 113px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) var(--spacing-xl, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+  z-index: 5;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.chat-thread::-webkit-scrollbar { display: none; }
+
+/* ── Message bubbles ── */
+.msg-row {
+  display: flex;
+  width: 100%;
+}
+.msg-outgoing {
+  justify-content: flex-end;
+}
+.msg-incoming {
+  align-items: flex-end;
+  gap: var(--spacing-md, 8px);
+}
+.msg-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 330px;
+}
+.msg-col-out {
+  align-items: flex-end;
+}
+.msg-col-in {
+  align-items: flex-start;
+}
+.msg-sender {
+  font-family: -apple-system, 'SF Pro', sans-serif;
+  font-size: 11px;
+  line-height: 13px;
+  letter-spacing: 0.06px;
+  color: var(--text-secondary, #414651);
+  padding-left: var(--spacing-xl, 16px);
+}
+.msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full, 9999px);
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--bg-sky, #e0f2fe);
+  border: 2px solid white;
+  position: relative;
+}
+.msg-avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.msg-bubble {
+  border-radius: var(--radius-4xl, 24px);
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  max-width: 256px;
+  min-width: 90px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-primary, #181d27);
+  word-wrap: break-word;
+}
+.msg-bubble-out {
+  background: var(--brand-200, #b9e6fe);
+}
+.msg-bubble-in {
+  background: var(--bg-primary, #ffffff);
+}
+.msg-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 330px;
+}
+.msg-images-out {
+  justify-content: flex-end;
+}
+.msg-image {
+  width: 104px;
+  height: 104px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* Typing indicator */
+@keyframes typingDot {
+  0%, 60%, 100% { opacity: 0.3; }
+  30% { opacity: 1; }
+}
+.msg-typing .msg-bubble-in {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 16px 20px;
+}
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gray-400, #a4a7ae);
+  animation: typingDot 1.4s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── Audio message in thread ── */
+.msg-bubble-audio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs, 4px);
+  width: 256px;
+}
+.msg-audio-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.msg-audio-play {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-200, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  padding: var(--spacing-sm, 6px);
+  cursor: pointer;
+}
+.msg-audio-play svg { width: 20px; height: 20px; color: var(--text-primary, #181d27); }
+.msg-audio-play svg.hidden { display: none; }
+.msg-audio-waveform {
+  flex: 1;
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  height: 20px;
+  overflow: hidden;
+}
+.msg-audio-waveform .waveform-bar {
+  width: 2px;
+  border-radius: 1px;
+}
+.msg-audio-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-secondary, #414651);
 }
 
 /* ── Status bar ── */
@@ -456,11 +668,11 @@
 
 /* Transcribing spinner uses .spinner-circle + .spinner-sm from design system */
 
-/* ── Attachment sheet ── */
+/* ── Sheet (per design system) ── */
 .sheet-scrim {
   position: absolute;
   inset: 0;
-  background: rgba(10,13,18,0.2);
+  background: var(--bg-overlay, rgba(10,13,18,0.2));
   z-index: 15;
   opacity: 0;
   pointer-events: none;
@@ -470,7 +682,6 @@
   opacity: 1;
   pointer-events: auto;
 }
-
 .sheet {
   position: absolute;
   bottom: 0;
@@ -481,15 +692,19 @@
   z-index: 16;
   transform: translateY(100%);
   transition: transform 0.3s ease-out;
-  padding-bottom: 34px;
+  padding-bottom: var(--spacing-4xl, 32px);
+  display: flex;
+  flex-direction: column;
 }
 .sheet.visible {
   transform: translateY(0);
 }
-.sheet-header {
-  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0;
+.sheet-top {
+  padding: var(--spacing-xl, 16px);
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  gap: 16px;
   align-items: center;
 }
 .sheet-handle {
@@ -497,40 +712,40 @@
   height: 4px;
   border-radius: 2px;
   background: var(--gray-300, #d5d7da);
-  margin-bottom: var(--spacing-xl, 16px);
 }
-.sheet-title-row {
+.sheet-header {
   display: flex;
   align-items: center;
-  width: 100%;
   gap: var(--spacing-md, 8px);
+  width: 100%;
+}
+.sheet-header-content {
+  flex: 1;
+  min-width: 0;
 }
 .sheet-title {
-  flex: 1;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-md, 16px);
-  font-weight: var(--font-weight-semibold, 600);
-  color: var(--text-primary, #181d27);
   line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  margin: 0;
 }
 .sheet-close {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  color: var(--gray-400, #a4a7ae);
   background: none;
   border: none;
-  cursor: pointer;
   border-radius: var(--radius-full, 9999px);
-  padding: 0;
 }
-.sheet-close:hover { background: var(--gray-50, #fafafa); }
-.sheet-close svg {
-  width: 24px;
-  height: 24px;
-  color: var(--text-secondary, #414651);
-}
-
+.sheet-close:hover { background: var(--bg-tertiary, #f5f5f5); }
+.sheet-close svg { width: 24px; height: 24px; }
 .sheet-actions {
   display: flex;
   gap: var(--spacing-md, 8px);
@@ -543,24 +758,26 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-md, 8px);
-  background: var(--bg-secondary, #fafafa);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-xl, 12px);
+  gap: var(--spacing-xs, 4px);
+  background: var(--bg-primary, #fff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-2xl, 16px);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
 }
-.action-tile:hover { background: var(--gray-100, #f0f1f1); }
+.action-tile:hover { background: var(--bg-secondary, #fafafa); }
+.action-tile:active { box-shadow: none; transform: translateY(2px); }
 .action-tile-icon {
   font-family: 'TossFace', sans-serif;
-  font-size: 36px;
+  font-size: 24px;
   line-height: 1;
 }
 .action-tile-label {
-  font-size: var(--font-size-text-sm, 14px);
-  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-bold, 700);
   color: var(--text-secondary, #414651);
-  line-height: var(--line-height-text-sm, 20px);
+  line-height: var(--line-height-text-md, 24px);
 }
 
 /* ── State visibility helpers ── */
@@ -597,7 +814,7 @@
 
       <div class="page-header">
         <div class="page-header-text">
-          <div class="sec-title">Chat</div>
+          <div class="sec-title">Chat — Tier 3</div>
           <div class="sec-desc">Interactive prototype of the message composer. Try typing, recording audio, and adding attachments.</div>
         </div>
       </div>
@@ -625,8 +842,16 @@
           </span>
         </div>
 
-        <!-- State indicator -->
-        <div class="state-indicator" id="stateLabel"></div>
+        <!-- Toolbar -->
+        <div class="chat-toolbar">
+          <div class="chat-toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg></div>
+          <span class="chat-toolbar-title">Sprout</span>
+          <div style="width:48px"></div>
+        </div>
+
+
+        <!-- Chat thread -->
+        <div class="chat-thread" id="chatThread"></div>
 
         <!-- Character peeking from bottom -->
         <div class="bg-bottom">
@@ -694,10 +919,12 @@
         <!-- Attachment sheet -->
         <div class="sheet-scrim" id="sheetScrim"></div>
         <div class="sheet" id="sheet">
-          <div class="sheet-header">
+          <div class="sheet-top">
             <div class="sheet-handle"></div>
-            <div class="sheet-title-row">
-              <span class="sheet-title">Sprout</span>
+            <div class="sheet-header">
+              <div class="sheet-header-content">
+                <h2 class="sheet-title">Sprout</h2>
+              </div>
               <button class="sheet-close" id="sheetClose" aria-label="Close">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
@@ -789,14 +1016,8 @@
 
   // ── State label ──
   var labelTimer = null;
-  function showStateLabel(text) {
-    stateLabel.textContent = text;
-    stateLabel.classList.add('visible');
-    clearTimeout(labelTimer);
-    labelTimer = setTimeout(function() {
-      stateLabel.classList.remove('visible');
-    }, 1500);
-  }
+  function showStateLabel() {}
+
 
   // ── Show/hide rows ──
   function showRow(row) {
@@ -933,6 +1154,135 @@
     currentState = prevState || State.PLACEHOLDER;
   }
 
+  // ── Chat thread ──
+  var chatThread = document.getElementById('chatThread');
+  var sproutReplies = [
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    'Magna nam cursus in urna. Id at a pharetra purus.',
+    'Sed do eiusmod tempor incididunt ut labore et dolore.',
+    'Ut enim ad minim veniam, quis nostrud exercitation.',
+    'Duis aute irure dolor in reprehenderit in voluptate.'
+  ];
+  var replyIdx = 0;
+
+  function scrollThread() {
+    setTimeout(function() { chatThread.scrollTop = chatThread.scrollHeight; }, 50);
+  }
+
+  function addOutgoingMessage(text, images) {
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-outgoing';
+    var col = document.createElement('div');
+    col.className = 'msg-col msg-col-out';
+
+    // Images
+    if (images && images.length > 0) {
+      var imgGrid = document.createElement('div');
+      imgGrid.className = 'msg-images msg-images-out';
+      images.forEach(function(img) {
+        var card = document.createElement('div');
+        card.className = 'msg-image';
+        card.style.background = img.bg;
+        imgGrid.appendChild(card);
+      });
+      col.appendChild(imgGrid);
+    }
+
+    // Text bubble
+    if (text) {
+      var bubble = document.createElement('div');
+      bubble.className = 'msg-bubble msg-bubble-out';
+      bubble.textContent = text;
+      col.appendChild(bubble);
+    }
+
+    row.appendChild(col);
+    chatThread.appendChild(row);
+    scrollThread();
+  }
+
+  function addIncomingMessage(text) {
+    // Show typing indicator first
+    var typingRow = document.createElement('div');
+    typingRow.className = 'msg-row msg-incoming msg-typing';
+    typingRow.innerHTML =
+      '<div class="msg-avatar"><img src="/product-explorer/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div>' +
+      '<div class="msg-col msg-col-in">' +
+        '<div class="msg-bubble msg-bubble-in"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>' +
+      '</div>';
+    chatThread.appendChild(typingRow);
+    scrollThread();
+
+    // Replace with actual message after delay
+    setTimeout(function() {
+      chatThread.removeChild(typingRow);
+      var row = document.createElement('div');
+      row.className = 'msg-row msg-incoming';
+      row.innerHTML =
+        '<div class="msg-avatar"><img src="/product-explorer/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div>' +
+        '<div class="msg-col msg-col-in">' +
+          '<div class="msg-bubble msg-bubble-in">' + text + '</div>' +
+        '</div>';
+      chatThread.appendChild(row);
+      scrollThread();
+    }, 1500);
+  }
+
+  function buildMsgWaveform(container) {
+    var count = 54;
+    for (var i = 0; i < count; i++) {
+      var bar = document.createElement('div');
+      bar.className = 'waveform-bar';
+      var h = 2 + Math.floor(Math.random() * 16);
+      bar.style.height = h + 'px';
+      bar.dataset.restHeight = h;
+      var color = i < count * 0.6 ? 'var(--fg-secondary, #414651)' : 'var(--fg-quaternary, #a4a7ae)';
+      bar.style.background = color;
+      bar.dataset.restColor = color;
+      bar.style.transition = 'height 0.15s ease';
+      container.appendChild(bar);
+    }
+  }
+
+  function addOutgoingAudioMessage() {
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-outgoing';
+    var col = document.createElement('div');
+    col.className = 'msg-col msg-col-out';
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble msg-bubble-out msg-bubble-audio';
+    var wfId = 'msgWaveform' + Date.now();
+    bubble.innerHTML =
+      '<div class="msg-audio-row">' +
+        '<div class="msg-audio-play">' +
+          '<svg class="msg-play-icon" viewBox="0 0 24 24" fill="none"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86a1 1 0 0 0-1.5.86z" fill="currentColor"/></svg>' +
+          '<svg class="msg-pause-icon hidden" viewBox="0 0 24 24" fill="none"><rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/></svg>' +
+        '</div>' +
+        '<div class="msg-audio-waveform" id="' + wfId + '"></div>' +
+      '</div>' +
+      '<div class="msg-audio-label">Transcribing...</div>';
+    col.appendChild(bubble);
+    row.appendChild(col);
+    chatThread.appendChild(row);
+    buildMsgWaveform(document.getElementById(wfId));
+    scrollThread();
+
+    // After 5s, change to "Show transcript" (bold)
+    var label = bubble.querySelector('.msg-audio-label');
+    setTimeout(function() {
+      label.textContent = 'Show transcript';
+      label.style.fontWeight = 'var(--font-weight-bold, 700)';
+    }, 5000);
+  }
+
+  function sendAndReply(text, images) {
+    addOutgoingMessage(text, images);
+    // Sprout auto-reply
+    var reply = sproutReplies[replyIdx % sproutReplies.length];
+    replyIdx++;
+    addIncomingMessage(reply);
+  }
+
   // ── Event listeners ──
 
   // Typing
@@ -952,7 +1302,9 @@
 
   // Send text
   btnSend.addEventListener('click', function() {
-    showStateLabel('Sent!');
+    var text = composerInput.value.trim();
+    var images = mediaItems.slice();
+    sendAndReply(text, images);
     composerInput.value = '';
     autoResize();
     mediaItems = [];
@@ -974,14 +1326,20 @@
 
   // Send audio
   btnSendAudio.addEventListener('click', function() {
-    showStateLabel('Audio Sent!');
+    addOutgoingAudioMessage();
+    var reply = sproutReplies[replyIdx % sproutReplies.length];
+    replyIdx++;
+    addIncomingMessage(reply);
     goTo(State.PLACEHOLDER);
   });
 
   // Send from transcribing
   btnSendTranscribing.addEventListener('click', function() {
     clearTimeout(transcribeTimer);
-    showStateLabel('Sent!');
+    addOutgoingAudioMessage();
+    var reply = sproutReplies[replyIdx % sproutReplies.length];
+    replyIdx++;
+    addIncomingMessage(reply);
     goTo(State.PLACEHOLDER);
   });
 
@@ -1139,6 +1497,90 @@
   updateSendMic();
   autoResize();
 
+  // Sprout greeting on load
+  setTimeout(function() {
+    addIncomingMessage("Hey there! What should we do today?");
+  }, 800);
+
+  // ── Audio message play (event delegation) ──
+  chatThread.addEventListener('click', function(e) {
+    var playBtn = e.target.closest('.msg-audio-play');
+    if (!playBtn) return;
+
+    // Check if already playing
+    if (playBtn.dataset.playing === 'true') {
+      // Stop
+      playBtn.dataset.playing = 'false';
+      cancelAnimationFrame(parseInt(playBtn.dataset.animId));
+      clearTimeout(parseInt(playBtn.dataset.timerId));
+      playBtn.querySelector('.msg-play-icon').classList.remove('hidden');
+      playBtn.querySelector('.msg-pause-icon').classList.add('hidden');
+      var wf = playBtn.closest('.msg-audio-row').querySelector('.msg-audio-waveform');
+      var bars = wf.querySelectorAll('.waveform-bar');
+      for (var i = 0; i < bars.length; i++) {
+        bars[i].style.height = bars[i].dataset.restHeight + 'px';
+        bars[i].style.background = bars[i].dataset.restColor || '';
+      }
+      return;
+    }
+
+    // Start playing
+    playBtn.dataset.playing = 'true';
+    playBtn.querySelector('.msg-play-icon').classList.add('hidden');
+    playBtn.querySelector('.msg-pause-icon').classList.remove('hidden');
+
+    var wf = playBtn.closest('.msg-audio-row').querySelector('.msg-audio-waveform');
+    var bars = wf.querySelectorAll('.waveform-bar');
+    var count = bars.length;
+    var restHeights = [];
+    var phases = [];
+    var speeds = [];
+
+    for (var i = 0; i < count; i++) {
+      var h = parseInt(bars[i].dataset.restHeight) || 6;
+      restHeights.push(h);
+      phases.push(i * 0.15 + Math.random() * 0.5);
+      speeds.push(3 + Math.random() * 2);
+      bars[i].style.background = 'var(--fg-secondary, #414651)';
+    }
+
+    var startTime = performance.now();
+    var lastUpdate = 0;
+
+    function animate(now) {
+      if (playBtn.dataset.playing !== 'true') return;
+      if (now - lastUpdate > 60) {
+        lastUpdate = now;
+        var elapsed = (now - startTime) / 1000;
+        var easeIn = Math.min(1, elapsed / 0.3);
+        for (var i = 0; i < count; i++) {
+          var wave = Math.sin(elapsed * speeds[i] + phases[i]);
+          var noise = Math.sin(elapsed * 7.3 + i * 2.1) * 0.3;
+          var energy = 0.6 + 0.4 * Math.sin(elapsed * 1.5 - i * 0.08);
+          var amplitude = (wave + noise) * energy * easeIn;
+          var target = restHeights[i] + amplitude * 8;
+          target = Math.max(2, Math.min(18, target));
+          bars[i].style.height = Math.round(target) + 'px';
+        }
+      }
+      playBtn.dataset.animId = requestAnimationFrame(animate);
+    }
+
+    playBtn.dataset.animId = requestAnimationFrame(animate);
+
+    // Auto-stop after 3s
+    playBtn.dataset.timerId = setTimeout(function() {
+      playBtn.dataset.playing = 'false';
+      cancelAnimationFrame(parseInt(playBtn.dataset.animId));
+      playBtn.querySelector('.msg-play-icon').classList.remove('hidden');
+      playBtn.querySelector('.msg-pause-icon').classList.add('hidden');
+      for (var i = 0; i < count; i++) {
+        bars[i].style.height = bars[i].dataset.restHeight + 'px';
+        bars[i].style.background = bars[i].dataset.restColor || '';
+      }
+    }, 3000);
+  });
+
   // ── Device toggle ──
   var deviceBtns = document.querySelectorAll('.device-btn');
   var deviceWrapper = document.querySelector('.device-wrapper');
@@ -1156,7 +1598,7 @@
 })();
 </script>
 
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Chat — Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat — Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat — Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat — Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 </body>
 </html>

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quest Card States — All Tiers</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  background: var(--bg-secondary, #fafafa);
+  padding: 40px;
+}
+
+/* ── Layout ── */
+.spec-page {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.tier-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.tier-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary, #181d27);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-secondary, #e9eaeb);
+}
+.states-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.state-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.state-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary, #535862);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ═══════════════════════════════════
+   TIER 2 — Carousel Cards (278×278)
+   ═══════════════════════════════════ */
+.quest-card--t2 {
+  flex-shrink: 0;
+  width: 370px;
+  height: 392px;
+  border-radius: var(--radius-2xl, 16px);
+  padding: var(--spacing-2xl, 20px) var(--spacing-2xl, 20px) var(--spacing-3xl, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+.card-badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs, 2px);
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
+  border-radius: var(--radius-full, 9999px);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  font-weight: 400;
+}
+.card-badge .tf-badge {
+  font-family: 'TossFace', sans-serif;
+  font-size: var(--font-size-text-md, 16px);
+  line-height: 1;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-content {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+.card-name {
+  font-size: var(--font-size-text-xl, 20px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-text-xl, 30px);
+}
+.card-desc {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  opacity: 0.85;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.card-emoji-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  position: relative;
+  z-index: 2;
+}
+.card-emoji {
+  font-family: 'TossFace', sans-serif;
+  font-size: 120px;
+  line-height: 1;
+}
+.card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm, 6px);
+  height: 50px;
+  border-radius: var(--radius-2xl, 16px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-bold, 700);
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+.card-cta .tf-cta {
+  font-family: 'TossFace', sans-serif;
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: 1;
+}
+.card-cta-disabled {
+  background: var(--gray-300, #d5d7da);
+  color: var(--text-disabled, #717680);
+  border: 2px solid var(--gray-400, #a4a7ae);
+  box-shadow: 0 4px 0 0 var(--gray-400, #a4a7ae);
+}
+.card-completed-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  border-radius: var(--radius-2xl, 16px);
+  pointer-events: none;
+  z-index: 1;
+}
+.flame-muted {
+  filter: grayscale(1) brightness(2);
+}
+
+/* Card colors */
+.card-violet { background: var(--violet-500, #875bf7); }
+.badge-violet { background: var(--violet-200, #ddd6fe); color: var(--violet-700, #5925dc); }
+
+/* Now glow */
+.quest-card--t2.card-now {
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.6), 0 0 0 8px rgba(135,91,247,0.25);
+}
+
+/* Locked */
+.quest-card--t2.card-locked {
+  filter: grayscale(1) brightness(1.1);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════
+   TIER 3 — List Rows
+   ═══════════════════════════════════ */
+.t3-container {
+  width: 302px;
+  display: flex;
+  flex-direction: column;
+}
+.quest-card--t3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-2xl, 16px);
+  padding: var(--spacing-lg, 12px);
+}
+.quest-emoji-box {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm, 6px);
+  padding: var(--spacing-md, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.emoji-status-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  padding: var(--spacing-xxs, 2px);
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-xs, 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+}
+.quest-emoji-box .tf-quest {
+  font-family: 'TossFace', sans-serif;
+  font-size: 36px;
+  line-height: 1;
+}
+.emoji-violet { background: var(--violet-500, #875bf7); }
+.quest-info {
+  flex: 1;
+  min-width: 0;
+}
+.quest-name {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-secondary, #414651);
+  line-height: var(--line-height-text-md, 24px);
+}
+.quest-time {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-tertiary, #535862);
+  line-height: var(--line-height-text-xs, 16px);
+}
+.quest-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-tertiary, #535862);
+  line-height: var(--line-height-text-xs, 16px);
+}
+.quest-trailing {
+  flex-shrink: 0;
+}
+.quest-badges {
+  display: flex;
+  gap: 4px;
+}
+.quest-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: 1;
+  color: var(--text-secondary, #414651);
+}
+.quest-badge .tf-badge {
+  font-family: 'TossFace', sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Reviewing row */
+.quest-card--reviewing {
+  background: var(--bg-primary, #ffffff);
+}
+
+/* Rejected card */
+.quest-card-rejected {
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-2xl, 16px);
+  overflow: hidden;
+}
+.quest-card-rejected .quest-card--t3 {
+  border-radius: 0;
+  box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
+}
+
+/* Claimable card */
+.quest-card-claim {
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-2xl, 16px);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(10,13,18,0.06);
+}
+.quest-card-claim .quest-card--t3 {
+  border-radius: 0;
+  box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
+}
+
+/* Claimed card */
+.quest-card-claimed .quest-action-area {
+  padding: 10px;
+}
+.quest-card-claimed .action-label {
+  color: var(--green-600, #079455);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* Action area */
+.quest-action-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px);
+  background: var(--bg-secondary, #fafafa);
+}
+.action-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-secondary, #414651);
+  line-height: var(--line-height-text-xs, 16px);
+  text-align: center;
+}
+.action-label strong {
+  color: var(--text-primary, #181d27);
+}
+
+/* Button */
+.btn-sprout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-bold, 700);
+  border: none;
+  cursor: pointer;
+  gap: var(--spacing-sm, 6px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-radius: var(--radius-2xl, 16px);
+  white-space: nowrap;
+}
+.btn-sm { height: 50px; font-size: var(--font-size-text-md, 16px); }
+.btn-secondary {
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #414651);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+.btn-sprout .tf-claim {
+  font-family: 'TossFace', sans-serif;
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* Done row (in stack) */
+.quest-card--done {
+  opacity: 0.6;
+}
+.quest-card--done .quest-name {
+  text-decoration: line-through;
+  color: var(--text-tertiary, #535862);
+}
+</style>
+</head>
+<body>
+
+<div class="spec-page">
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- TIER 2 — Carousel Cards            -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="tier-section">
+    <div class="tier-title">Tier 2 — Carousel Card</div>
+    <div class="states-row">
+
+      <!-- Not Started -->
+      <div class="state-col">
+        <span class="state-label">Not Started</span>
+        <div class="quest-card quest-card--t2 card-violet">
+          <div class="card-badges">
+            <span class="card-badge badge-violet"><span class="tf-badge flame-muted">&#x1F525;</span> 12 days</span>
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 20</span>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Practice Piano</div>
+            <div class="card-desc">Practice your piano for 15 minutes</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+          <div class="card-cta">Start</div>
+        </div>
+      </div>
+
+      <!-- Now -->
+      <div class="state-col">
+        <span class="state-label">Now</span>
+        <div class="quest-card quest-card--t2 card-violet card-now">
+          <div class="card-badges">
+            <span class="card-badge badge-violet"><span class="tf-badge flame-muted">&#x1F525;</span> 12 days</span>
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 20</span>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Practice Piano</div>
+            <div class="card-desc">Practice your piano for 15 minutes</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+          <div class="card-cta">Start</div>
+        </div>
+      </div>
+
+      <!-- Reviewing -->
+      <div class="state-col">
+        <span class="state-label">Reviewing</span>
+        <div class="quest-card quest-card--t2 card-violet">
+          <div class="card-badges">
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 12 days</span>
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 20</span>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Practice Piano</div>
+            <div class="card-desc">Practice your piano for 15 minutes</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+          <div class="card-cta card-cta-disabled">Reviewing...</div>
+        </div>
+      </div>
+
+      <!-- Rejected -->
+      <div class="state-col">
+        <span class="state-label">Rejected</span>
+        <div class="quest-card quest-card--t2 card-violet">
+          <div class="card-badges">
+            <span class="card-badge badge-violet"><span class="tf-badge flame-muted">&#x1F525;</span> 12 days</span>
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 20</span>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Practice Piano</div>
+            <div class="card-desc">Practice your piano for 15 minutes</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+          <div class="card-cta">Try again</div>
+        </div>
+      </div>
+
+      <!-- Claimable -->
+      <div class="state-col">
+        <span class="state-label">Claimable</span>
+        <div class="quest-card quest-card--t2 card-violet">
+          <div class="card-badges">
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 12 days</span>
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 20</span>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Practice Piano</div>
+            <div class="card-desc">Practice your piano for 15 minutes</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+          <div class="card-cta"><span class="tf-cta">&#x1F48E;</span> Claim</div>
+        </div>
+      </div>
+
+      <!-- Completed -->
+      <div class="state-col">
+        <span class="state-label">Completed</span>
+        <div class="quest-card quest-card--t2 card-violet">
+          <div class="card-completed-overlay"></div>
+          <div class="card-badges">
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 12 days</span>
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 20</span>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Practice Piano</div>
+            <div class="card-desc">Practice your piano for 15 minutes</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+          <div class="card-cta card-cta-disabled">Done</div>
+        </div>
+      </div>
+
+      <!-- Locked -->
+      <div class="state-col">
+        <span class="state-label">Locked</span>
+        <div class="quest-card quest-card--t2 card-violet card-locked">
+          <div class="card-badges">
+            <span class="card-badge badge-violet"><span class="tf-badge flame-muted">&#x1F525;</span> 12 days</span>
+            <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 20</span>
+          </div>
+          <div class="card-content">
+            <div class="card-name">Practice Piano</div>
+            <div class="card-desc">Practice your piano for 15 minutes</div>
+          </div>
+          <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
+          <div class="card-cta">Start</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- TIER 3 — List Rows                  -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="tier-section">
+    <div class="tier-title">Tier 3 — List Row</div>
+    <div class="states-row">
+
+      <!-- Not Started -->
+      <div class="state-col">
+        <span class="state-label">Not Started</span>
+        <div class="t3-container">
+          <div class="quest-card quest-card--t3">
+            <div class="quest-emoji-box emoji-violet"><span class="tf-quest">&#x1F3B9;</span></div>
+            <div class="quest-info">
+              <div class="quest-time">4:30 PM</div>
+              <div class="quest-name">Practice Piano</div>
+              <div class="quest-desc">Practice for 15 minutes</div>
+            </div>
+            <div class="quest-trailing">
+              <div class="quest-badges">
+                <span class="quest-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">12</span></span>
+                <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Now -->
+      <div class="state-col">
+        <span class="state-label">Now</span>
+        <div class="t3-container">
+          <div class="quest-card quest-card--t3" style="background: var(--brand-25, #f5fbff);">
+            <div class="quest-emoji-box emoji-violet"><span class="tf-quest">&#x1F3B9;</span></div>
+            <div class="quest-info">
+              <div class="quest-time">4:30 PM</div>
+              <div class="quest-name">Practice Piano</div>
+              <div class="quest-desc">Practice for 15 minutes</div>
+            </div>
+            <div class="quest-trailing">
+              <div class="quest-badges">
+                <span class="quest-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">12</span></span>
+                <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviewing -->
+      <div class="state-col">
+        <span class="state-label">Reviewing</span>
+        <div class="t3-container">
+          <div class="quest-card quest-card--t3 quest-card--reviewing">
+            <div class="quest-emoji-box emoji-violet">
+              <span class="tf-quest">&#x1F3B9;</span>
+              <span class="emoji-status-badge">&#x1F504;</span>
+            </div>
+            <div class="quest-info">
+              <div class="quest-time">4:30 PM</div>
+              <div class="quest-name">Practice Piano</div>
+              <div class="quest-desc">Reviewing...</div>
+            </div>
+            <div class="quest-trailing">
+              <div class="quest-badges">
+                <span class="quest-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
+                <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rejected -->
+      <div class="state-col">
+        <span class="state-label">Rejected</span>
+        <div class="t3-container">
+          <div class="quest-card-rejected">
+            <div class="quest-card quest-card--t3">
+              <div class="quest-emoji-box emoji-violet">
+                <span class="tf-quest">&#x1F3B9;</span>
+                <span class="emoji-status-badge">&#x274E;</span>
+              </div>
+              <div class="quest-info">
+                <div class="quest-time">4:30 PM</div>
+                <div class="quest-name">Practice Piano</div>
+                <div class="quest-desc">Photo wasn't clear enough</div>
+              </div>
+              <div class="quest-trailing">
+                <div class="quest-badges">
+                  <span class="quest-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">12</span></span>
+                  <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                </div>
+              </div>
+            </div>
+            <div class="quest-action-area">
+              <span class="action-label">Take a new photo to complete this quest</span>
+              <button class="btn-sprout btn-secondary btn-sm">Try Again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Claimable -->
+      <div class="state-col">
+        <span class="state-label">Claimable</span>
+        <div class="t3-container">
+          <div class="quest-card-claim">
+            <div class="quest-card quest-card--t3">
+              <div class="quest-emoji-box emoji-violet">
+                <span class="tf-quest">&#x1F3B9;</span>
+                <span class="emoji-status-badge">&#x2705;</span>
+              </div>
+              <div class="quest-info">
+                <div class="quest-time">4:30 PM</div>
+                <div class="quest-name">Practice Piano</div>
+                <div class="quest-desc">Completed, ready to claim!</div>
+              </div>
+              <div class="quest-trailing">
+                <div class="quest-badges">
+                  <span class="quest-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
+                  <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                </div>
+              </div>
+            </div>
+            <div class="quest-action-area">
+              <span class="action-label">Quest complete, claim your reward!</span>
+              <button class="btn-sprout btn-secondary btn-sm"><span class="tf-claim">&#x1F48E;</span> Claim</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Claimed -->
+      <div class="state-col">
+        <span class="state-label">Claimed</span>
+        <div class="t3-container">
+          <div class="quest-card-claim quest-card-claimed">
+            <div class="quest-card quest-card--t3">
+              <div class="quest-emoji-box emoji-violet">
+                <span class="tf-quest">&#x1F3B9;</span>
+                <span class="emoji-status-badge">&#x2705;</span>
+              </div>
+              <div class="quest-info">
+                <div class="quest-time">4:30 PM</div>
+                <div class="quest-name">Practice Piano</div>
+                <div class="quest-desc">Completed, ready to claim!</div>
+              </div>
+              <div class="quest-trailing">
+                <div class="quest-badges">
+                  <span class="quest-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
+                  <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                </div>
+              </div>
+            </div>
+            <div class="quest-action-area">
+              <span class="action-label">Claimed! +20 gems earned</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Done -->
+      <div class="state-col">
+        <span class="state-label">Done</span>
+        <div class="t3-container">
+          <div class="quest-card quest-card--t3 quest-card--done">
+            <div class="quest-emoji-box emoji-violet"><span class="tf-quest">&#x1F3B9;</span></div>
+            <div class="quest-info">
+              <div class="quest-time">4:30 PM</div>
+              <div class="quest-name">Practice Piano</div>
+              <div class="quest-desc">Practice for 15 minutes</div>
+            </div>
+            <div class="quest-trailing">
+              <div class="quest-badges">
+                <span class="quest-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
+                <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

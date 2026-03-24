@@ -180,7 +180,7 @@
   flex-shrink: 0;
 }
 
-/* ── Task Card Carousel ── */
+/* ── Quest Card Carousel ── */
 .carousel-container {
   position: absolute;
   top: 96px;
@@ -205,7 +205,7 @@
   flex-shrink: 0;
   width: 12px;
 }
-.task-card {
+.quest-card {
   flex-shrink: 0;
   width: 278px;
   height: 315px;
@@ -226,7 +226,7 @@
   0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5), 0 0 0 0 rgba(11,165,236,0.3); }
   50% { box-shadow: 0 0 0 4px rgba(255,255,255,0.6), 0 0 0 8px rgba(11,165,236,0.2); }
 }
-.task-card.card-now {
+.quest-card.card-now {
   animation: now-glow 2s ease-in-out infinite;
 }
 
@@ -360,7 +360,7 @@
 .badge-green { background: var(--green-200, #abefc6); color: var(--green-700, #067647); }
 
 /* Hidden card */
-.task-card.card-hidden {
+.quest-card.card-hidden {
   display: none;
 }
 
@@ -681,7 +681,7 @@
                   <div class="carousel-container" id="carousel">
 
                     <!-- Read for 20 min — morning: now/not started, afternoon: reviewing -->
-                    <div class="task-card card-brand" data-id="read" data-show="morning afternoon" data-now="morning">
+                    <div class="quest-card card-brand" data-id="read" data-show="morning afternoon" data-now="morning">
                       <div class="card-badges">
                         <span class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 7 days</span>
                         <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 15</span>
@@ -695,7 +695,7 @@
                     </div>
 
                     <!-- Homework — morning: not started, afternoon: rejected -->
-                    <div class="task-card card-brand" data-id="homework" data-show="morning afternoon" data-now="">
+                    <div class="quest-card card-brand" data-id="homework" data-show="morning afternoon" data-now="">
                       <div class="card-badges">
                         <span class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 5 days</span>
                         <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 20</span>
@@ -709,7 +709,7 @@
                     </div>
 
                     <!-- Practice Piano — afternoon: claimable -->
-                    <div class="task-card card-brand" id="claim-card" data-id="piano" data-show="afternoon" data-now="">
+                    <div class="quest-card card-brand" id="claim-card" data-id="piano" data-show="afternoon" data-now="">
                       <div class="card-badges">
                         <span class="card-badge badge-brand"><span class="tf-badge">&#x1F525;</span> 12 days</span>
                         <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 20</span>
@@ -723,7 +723,7 @@
                     </div>
 
                     <!-- Talk to Sprout — afternoon: now -->
-                    <div class="task-card card-brand" id="now-card" data-id="sprout" data-show="afternoon" data-now="afternoon">
+                    <div class="quest-card card-brand" id="now-card" data-id="sprout" data-show="afternoon" data-now="afternoon">
                       <div class="card-badges">
                         <span class="card-badge badge-brand"><span class="tf-badge flame-muted">&#x1F525;</span> 3 days</span>
                         <span class="card-badge badge-brand"><span class="tf-badge">&#x1F48E;</span> 10</span>
@@ -737,7 +737,7 @@
                     </div>
 
                     <!-- Brush Teeth — afternoon: upcoming (not shown yet), night: done -->
-                    <div class="task-card card-orange" data-id="brush" data-show="afternoon" data-now="">
+                    <div class="quest-card card-orange" data-id="brush" data-show="afternoon" data-now="">
                       <div class="card-badges">
                         <span class="card-badge badge-orange"><span class="tf-badge flame-muted">&#x1F525;</span> 8 days</span>
                         <span class="card-badge badge-orange"><span class="tf-badge">&#x1F48E;</span> 5</span>
@@ -751,7 +751,7 @@
                     </div>
 
                     <!-- Draw Something — night only: claimable anytime task -->
-                    <div class="task-card card-violet" data-id="draw" data-show="night" data-now="night">
+                    <div class="quest-card card-violet" data-id="draw" data-show="night" data-now="night">
                       <div class="card-badges">
                         <span class="card-badge badge-violet"><span class="tf-badge">&#x1F525;</span> 3 days</span>
                         <span class="card-badge badge-violet"><span class="tf-badge">&#x1F48E;</span> 15</span>
@@ -790,7 +790,7 @@
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Quests',href:'/product-explorer/quest.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/quest.html'},{label:'Chat',href:'/product-explorer/quest/chat.html'},{label:'Photo',href:'/product-explorer/quest/photo.html'},{label:'Quiz',href:'/product-explorer/quest/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/quest/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
@@ -820,7 +820,7 @@
   var deviceScreen = document.querySelector('.device-screen');
   var carousel = document.getElementById('carousel');
   var emptyState = document.getElementById('empty-state');
-  var allCards = document.querySelectorAll('.task-card');
+  var allCards = document.querySelectorAll('.quest-card');
   var previewTabs = document.querySelectorAll('.preview-tab');
 
   var gemReward = 15;
@@ -1026,7 +1026,7 @@
 
             // Check if any visible cards remain
             setTimeout(function() {
-              var remaining = carousel.querySelectorAll('.task-card:not(.card-hidden):not(.card-collapsed)');
+              var remaining = carousel.querySelectorAll('.quest-card:not(.card-hidden):not(.card-collapsed)');
               if (remaining.length === 0) {
                 carousel.style.display = 'none';
                 emptyState.classList.add('visible');
@@ -1064,7 +1064,7 @@
   if (claimCta && claimCard) setupClaim(claimCta, claimCard, '&#x1F3B9;');
 
   var nightCta = document.getElementById('night-claim-cta');
-  var nightCard = nightCta ? nightCta.closest('.task-card') : null;
+  var nightCard = nightCta ? nightCta.closest('.quest-card') : null;
   if (nightCta && nightCard) setupClaim(nightCta, nightCard, '&#x1F3A8;');
 
   // ── Device toggle ──

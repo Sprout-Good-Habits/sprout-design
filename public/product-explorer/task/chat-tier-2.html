@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer — Chat Tier 2</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+/* ── Device ── */
+.device-wrapper{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:32px;padding:4px;box-shadow:0 12px 16px -4px rgba(10,13,18,.08),0 4px 6px -2px rgba(10,13,18,.03),0 2px 2px -1px rgba(10,13,18,.04)}
+.device-inner-shadow{background:#fff;border-radius:28px;padding:4px;overflow:hidden;position:relative}
+.device-inner-shadow::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 6px 2px rgba(10,13,18,.08),inset 0 0 4px 2px rgba(10,13,18,.03);z-index:6}
+.device-mockup{background:#fafafa;border:2px solid #e9eaeb;border-radius:24px;clip-path:inset(0 round 24px);position:relative}
+.device-screen{width:402px;height:874px;position:relative;overflow:hidden;background:#e0f2fe;user-select:none;-webkit-user-select:none}
+.viewer{display:flex;justify-content:center;margin-top:24px}
+
+/* ── Controls row + device toggle ── */
+.controls-row{display:flex;align-items:center;justify-content:flex-end;margin-bottom:16px}
+.device-toggle{display:flex;gap:4px;padding:4px;background:#fafafa;border:1px solid #e9eaeb;border-radius:10px}
+.device-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;height:36px;border-radius:6px;border:none;background:transparent;font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:600;color:#717680;cursor:pointer;transition:all .15s}
+.device-btn:hover{color:#535862}
+.device-btn.active{background:#fff;color:#414651;box-shadow:0 1px 3px 0 rgba(10,13,18,.1),0 1px 2px -1px rgba(10,13,18,.1)}
+.device-btn svg{width:20px;height:20px;flex-shrink:0}
+.device-btn .device-icon{stroke:#717680;transition:stroke .15s}
+.device-btn.active .device-icon{stroke:#414651}
+
+/* ── iPad overrides ── */
+.device-wrapper.ipad .device-screen{width:640px;height:854px}
+
+/* ── Status bar ── */
+.status-bar{position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;z-index:10;pointer-events:none}
+.status-bar-time{font-size:17px;font-weight:600;color:#181d27;letter-spacing:-.01em}
+.status-bar-icons{display:flex;align-items:center;gap:6px}
+.status-bar-icons svg{display:block}
+
+/* ── Chat toolbar ── */
+.chat-toolbar{position:absolute;top:62px;left:0;right:0;height:56px;display:flex;align-items:flex-start;justify-content:space-between;padding:0 16px 8px;z-index:10;background:#e0f2fe;box-shadow:0 3px 0 0 #e9eaeb}
+.chat-toolbar-title{position:absolute;left:50%;top:13px;transform:translateX(-50%);font-family:var(--font-family-body,'Inter',sans-serif);font-size:18px;line-height:28px;font-weight:600;color:#181d27;white-space:nowrap}
+.chat-toolbar-btn{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #e9eaeb;border-radius:9999px;box-shadow:0 3px 0 0 #e9eaeb;flex-shrink:0;cursor:pointer;transition:background .15s,box-shadow .15s,transform .15s}
+.chat-toolbar-btn:hover{background:#fafafa}
+.chat-toolbar-btn:active{box-shadow:none;transform:translateY(2px)}
+.chat-toolbar-btn svg{width:24px;height:24px;color:#181d27}
+
+/* ── Chat thread ── */
+.chat-thread{position:absolute;top:118px;left:0;right:0;bottom:382px;overflow-y:auto;overflow-x:hidden;padding:16px;display:flex;flex-direction:column;gap:8px;z-index:5;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chat-thread::-webkit-scrollbar{display:none}
+.chat-thread-fade{position:absolute;left:0;right:0;bottom:382px;height:100px;background:linear-gradient(to bottom,rgba(224,242,254,0) 0%,rgba(224,242,254,1) 100%);z-index:6;pointer-events:none;opacity:0;transition:opacity .3s}
+
+/* ── Message bubbles ── */
+.msg-row{display:flex;width:100%}
+.msg-outgoing{justify-content:flex-end}
+.msg-incoming{align-items:flex-end;gap:8px}
+.msg-col{display:flex;flex-direction:column;gap:4px;max-width:330px}
+.msg-col-out{align-items:flex-end}
+.msg-col-in{align-items:flex-start}
+.msg-avatar{display:none}
+.msg-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.msg-bubble{border-radius:24px;padding:12px 16px;max-width:256px;min-width:90px;font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;line-height:20px;font-weight:400;color:#181d27;word-wrap:break-word}
+.msg-bubble-out{background:#b9e6fe}
+.msg-bubble-in{background:#fff}
+.msg-images{display:flex;flex-wrap:wrap;gap:4px;max-width:330px}
+.msg-images-out{justify-content:flex-end}
+.msg-image{width:104px;height:104px;border-radius:20px;flex-shrink:0}
+
+/* ── Typing indicator ── */
+@keyframes typingDot{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.msg-typing .msg-bubble-in{display:flex;gap:4px;align-items:center;padding:16px 20px}
+.typing-dot{width:8px;height:8px;border-radius:50%;background:#a4a7ae;animation:typingDot 1.4s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+
+/* ── Audio message in thread ── */
+.msg-bubble-audio{display:flex;flex-direction:column;gap:4px;width:256px}
+.msg-audio-row{display:flex;gap:4px;align-items:center}
+.msg-audio-play{flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#e9eaeb;border-radius:9999px;padding:6px;cursor:pointer}
+.msg-audio-play svg{width:20px;height:20px;color:#181d27}
+.msg-audio-play svg.hidden{display:none}
+.msg-audio-waveform{flex:1;display:flex;gap:2px;align-items:center;height:20px;overflow:hidden}
+.msg-audio-waveform .waveform-bar{width:2px;border-radius:1px}
+.msg-audio-label{font-size:12px;line-height:16px;color:#414651}
+
+/* ── Grass ── */
+.bg-bottom{position:absolute;bottom:0;left:0;right:0;z-index:1;pointer-events:none}
+.bg-grass-edge{width:100%;height:24px;border-radius:24px 24px 0 0;background:#86cb3c}
+.bg-grass-fill{width:100%;height:89px;background:#86cb3c}
+
+/* ── Sprout (Rive character) ── */
+.rive-wrap{position:absolute;bottom:-144px;left:50%;transform:translateX(-50%);width:690px;height:690px;z-index:2;pointer-events:none}
+.rive-canvas{width:690px;height:690px}
+
+/* ── Home indicator ── */
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:#181d27;z-index:20}
+
+/* ── Composer bar ── */
+.composer-bar{position:absolute;bottom:45px;left:0;right:0;z-index:10;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px}
+
+/* ── Btn-util (plus button) ── */
+.btn-util{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #e9eaeb;border-radius:9999px;box-shadow:0 3px 0 0 #e9eaeb;cursor:pointer;padding:0;transition:background .15s,box-shadow .15s,transform .15s}
+.btn-util:hover{background:#fafafa}
+.btn-util:active{box-shadow:none;transform:translateY(2px)}
+.btn-util svg{width:24px;height:24px;color:#181d27}
+
+/* ── Spacer ── */
+.spacer{display:none}
+
+/* ════════════════════════════════════
+   MIC BUTTON
+   Driven by data-state attribute:
+     start-default | start-pressed
+     stop-default  | stop-pressed
+     start-loading
+   ════════════════════════════════════ */
+.mic-btn{
+  width:72px;height:72px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:9999px;cursor:pointer;padding:0;
+  position:relative;
+  /* defaults = start-default (blue) */
+  border:2px solid #0086c9;
+  box-shadow:0 4px 0 0 #0086c9;
+  transform:translateY(0);
+  transition:border-color .12s,box-shadow .12s,transform .12s;
+}
+/* Background fill (mix-blend-mode per Figma) */
+.mic-btn::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:#0ba5ec;
+  mix-blend-mode:multiply;
+  transition:background .12s;
+}
+
+/* Icons & spinner sit above the fill */
+.mic-btn svg,.mic-btn .spinner{position:relative;z-index:1}
+.mic-btn svg{width:40px;height:40px}
+.mic-btn .spinner{width:24px;height:24px}
+
+/* ── Icon visibility by state ── */
+.mic-btn .icon-mic,
+.mic-btn .icon-stop,
+.mic-btn .spinner{display:none}
+
+.mic-btn[data-state="start-default"] .icon-mic,
+.mic-btn[data-state="start-pressed"] .icon-mic{display:block}
+
+.mic-btn[data-state="stop-default"] .icon-stop,
+.mic-btn[data-state="stop-pressed"] .icon-stop{display:block}
+
+.mic-btn[data-state="start-loading"] .spinner{display:block}
+
+/* ── Start recording: Default ── */
+.mic-btn[data-state="start-default"]{
+  border-color:#0086c9;box-shadow:0 4px 0 0 #0086c9;transform:translateY(0);
+}
+.mic-btn[data-state="start-default"]::before{background:#0ba5ec}
+.mic-btn[data-state="start-default"]:hover::before{background:#36bffa}
+
+/* ── Start recording: Active/Pressed ── */
+.mic-btn[data-state="start-pressed"]{
+  border-color:#0086c9;box-shadow:none;transform:translateY(2px);animation:none;
+}
+.mic-btn[data-state="start-pressed"]::before{background:#0ba5ec}
+
+/* ── Stop recording: Default ── */
+@keyframes recording-ring{
+  0%,100%{top:-4px;left:-4px;right:-4px;bottom:-8px;opacity:.4}
+  50%{top:-12px;left:-12px;right:-12px;bottom:-16px;opacity:.7}
+}
+.mic-btn[data-state="stop-default"]{
+  border-color:#d92d20;box-shadow:0 4px 0 0 #d92d20;transform:translateY(0);
+}
+.mic-btn[data-state="stop-default"]::after{
+  content:'';position:absolute;
+  top:-8px;left:-8px;right:-8px;bottom:-12px;
+  border:2px solid rgba(217,45,32,0.7);
+  border-radius:inherit;
+  pointer-events:none;
+  animation:recording-ring 2s cubic-bezier(0.22,1,0.36,1) infinite;
+}
+.mic-btn[data-state="stop-default"]::before{background:#f04438}
+.mic-btn[data-state="stop-default"]:hover::before{background:#f97066}
+
+/* ── Stop recording: Active/Pressed ── */
+.mic-btn[data-state="stop-pressed"]{
+  border-color:#d92d20;box-shadow:none;transform:translateY(2px);animation:none;
+}
+.mic-btn[data-state="stop-pressed"]::before{background:#f04438}
+
+/* ── Start recording: Loading ── */
+.mic-btn[data-state="start-loading"]{
+  border-color:#0086c9;box-shadow:0 4px 0 0 #0086c9;transform:translateY(0);
+  pointer-events:none;
+}
+.mic-btn[data-state="start-loading"]::before{background:#0ba5ec}
+
+/* ── Disabled ── */
+.mic-btn.disabled{pointer-events:none}
+.mic-btn.disabled::before{background:#d5d7da}
+.mic-btn.disabled{border-color:#a4a7ae;box-shadow:0 4px 0 0 #a4a7ae}
+
+/* ── Spinner animation ── */
+.spinner{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Mic glow (pulse after Sprout finishes talking) ── */
+@keyframes mic-glow{
+  0%,100%{box-shadow:0 4px 0 0 #0086c9,0 2px 0 0 rgba(255,255,255,0.5),0 2px 0 0 rgba(11,165,236,0.3)}
+  50%{box-shadow:0 4px 0 0 #0086c9,0 2px 0 4px rgba(255,255,255,0.6),0 2px 0 8px rgba(11,165,236,0.2)}
+}
+.mic-btn.glow{animation:mic-glow 2s cubic-bezier(0.22,1,0.36,1) infinite}
+
+/* ── Sheet ── */
+/* ── Sheet (per design system) ── */
+.sheet-scrim{position:absolute;inset:0;background:var(--bg-overlay,rgba(10,13,18,.2));z-index:15;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet-scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:absolute;bottom:0;left:0;right:0;background:var(--bg-primary,#fff);border-radius:var(--radius-4xl,24px) var(--radius-4xl,24px) 0 0;z-index:16;transform:translateY(100%);transition:transform .3s ease-out;padding-bottom:var(--spacing-4xl,32px);display:flex;flex-direction:column}
+.sheet.open{transform:translateY(0)}
+.sheet-top{padding:var(--spacing-xl,16px);flex-shrink:0;display:flex;flex-direction:column;gap:16px;align-items:center}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--gray-300,#d5d7da)}
+.sheet-header{display:flex;align-items:center;gap:var(--spacing-md,8px);width:100%}
+.sheet-header-content{flex:1;min-width:0}
+.sheet-title{font-family:var(--font-family-body,'Inter',sans-serif);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-bold,700);color:var(--text-primary,#181d27);margin:0}
+.sheet-close{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-400,#a4a7ae);background:none;border:none;border-radius:var(--radius-full,9999px)}
+.sheet-close:hover{background:var(--bg-tertiary,#f5f5f5)}
+.sheet-close svg{width:24px;height:24px}
+.sheet-actions{display:flex;gap:var(--spacing-md,8px);padding:var(--spacing-xs,4px) var(--spacing-lg,12px) var(--spacing-lg,12px)}
+.action-tile{flex:1;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--spacing-xs,4px);background:var(--bg-primary,#fff);border:2px solid var(--border-secondary,#e9eaeb);border-radius:var(--radius-2xl,16px);box-shadow:0 3px 0 0 var(--gray-200,#e9eaeb);cursor:pointer;transition:background .15s,box-shadow .15s,transform .15s;color:var(--brand-500,#0ba5ec)}
+.action-tile:hover{background:var(--bg-secondary,#fafafa)}
+.action-tile:active{box-shadow:none;transform:translateY(2px)}
+.action-tile-icon{font-family:'TossFace',sans-serif;font-size:24px;line-height:1}
+.action-tile-label{font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-bold,700);color:var(--text-secondary,#414651);line-height:var(--line-height-text-md,24px)}
+
+/* ── Camera view ── */
+.camera-view{position:absolute;inset:0;background:#d5d7da;z-index:25;display:none;flex-direction:column}
+.camera-view.open{display:flex}
+.camera-top{flex:1;padding:78px 16px 8px}
+.camera-guide{display:flex;gap:16px;align-items:flex-start}
+.camera-sprout{width:120px;height:180px;flex-shrink:0;background:#e0f2fe;border-radius:24px;overflow:hidden;position:relative}
+.camera-rive-wrap{position:absolute;bottom:-96px;left:50%;transform:translateX(-50%);width:300px;height:300px;pointer-events:none}
+.camera-rive-canvas{width:300px;height:300px}
+.camera-message{flex:1;background:rgba(10,13,18,.2);border-radius:24px;padding:12px 16px;font-size:18px;line-height:28px;color:#fff;align-self:center}
+.camera-bottom{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 42px}
+.btn-capture{width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #e9eaeb;border-radius:9999px;box-shadow:0 3px 0 0 #e9eaeb;cursor:pointer;padding:0;transition:background .15s,box-shadow .15s,transform .15s}
+.btn-capture:hover{background:#fafafa}
+.btn-capture:active{box-shadow:none;transform:translateY(3px)}
+.btn-capture svg{width:40px;height:40px;color:#181d27}
+
+/* ── Feedback banner ── */
+.feedback-banner{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #d5d7da;padding:25px 16px 24px;display:none;flex-direction:column;gap:16px;z-index:26}
+.feedback-banner.open{display:flex}
+.feedback-title{font-family:var(--font-family-display,'Inter',sans-serif);font-size:24px;font-weight:700;line-height:32px;color:#181d27}
+.feedback-actions{display:flex;gap:10px}
+.btn-fb{flex:1;height:50px;display:flex;align-items:center;justify-content:center;font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;font-weight:700;line-height:24px;border-radius:16px;cursor:pointer;padding:12px;transition:background .15s,box-shadow .15s,transform .15s}
+.btn-fb.secondary{background:#fff;border:2px solid #e9eaeb;color:#414651;box-shadow:0 3px 0 0 #e9eaeb}
+.btn-fb.secondary:active{box-shadow:none;transform:translateY(2px)}
+.btn-fb.primary{background:#0ba5ec;border:none;border-bottom:2px solid #0086c9;color:#fff;box-shadow:0 4px 0 0 #0086c9}
+.btn-fb.primary:active{box-shadow:none;transform:translateY(2px)}
+
+/* ── State label ── */
+.state-label{display:none}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="page-header">
+        <div class="page-header-text">
+          <div class="sec-title">Chat Tier 2</div>
+          <div class="sec-desc">Audio-first chat for younger kids. Tap the mic to record a voice note, use + to attach a photo.</div>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <div class="device-toggle">
+          <button class="device-btn" data-device="ipad"><svg viewBox="0 0 18 22" fill="none"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 9 16C9.27614 16 9.5 16.2239 9.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
+          <button class="device-btn active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
+        </div>
+      </div>
+
+      <div class="viewer">
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen">
+
+<!-- Status bar -->
+<div class="status-bar">
+  <span class="status-bar-time">9:41</span>
+  <span class="status-bar-icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+  </span>
+</div>
+
+<!-- Toolbar -->
+<div class="chat-toolbar">
+  <div class="chat-toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg></div>
+  <span class="chat-toolbar-title">Sprout</span>
+  <div style="width:48px"></div>
+</div>
+
+<!-- Chat thread -->
+<div class="chat-thread" id="chatThread"></div>
+<div class="chat-thread-fade"></div>
+
+<!-- State label -->
+<div class="state-label" id="label"></div>
+
+<!-- Sprout character (Rive) -->
+<div class="rive-wrap">
+  <canvas id="rive-character" class="rive-canvas" width="1380" height="1380"></canvas>
+</div>
+
+<!-- Grass -->
+<div class="bg-bottom">
+  <div class="bg-grass-edge"></div>
+  <div class="bg-grass-fill"></div>
+</div>
+
+<!-- Composer bar -->
+<div class="composer-bar">
+  <!-- Plus button -->
+  <button class="btn-util" id="btnPlus" aria-label="Add attachment">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+  <!-- Mic button -->
+  <button class="mic-btn disabled" id="micBtn" data-state="start-default" aria-label="Record voice message">
+    <!-- Mic icon (white) -->
+    <svg class="icon-mic" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="2" width="6" height="11" rx="3"/>
+      <path d="M5 10a7 7 0 0 0 14 0"/>
+      <line x1="12" y1="21" x2="12" y2="17"/>
+    </svg>
+    <!-- Stop icon (white) -->
+    <svg class="icon-stop" viewBox="0 0 24 24" fill="none">
+      <rect x="6" y="6" width="12" height="12" rx="2" fill="white"/>
+    </svg>
+    <!-- Spinner (white) -->
+    <svg class="spinner" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M12 3a9 9 0 0 1 9 9" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <!-- Spacer to center mic -->
+  <div style="width:48px;height:48px;opacity:0;pointer-events:none;flex-shrink:0"></div>
+</div>
+
+<!-- Sheet scrim -->
+<div class="sheet-scrim" id="scrim"></div>
+
+<!-- Attachment sheet -->
+<div class="sheet" id="sheet">
+  <div class="sheet-top">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-header-content">
+        <h2 class="sheet-title">Sprout</h2>
+      </div>
+      <button class="sheet-close" id="sheetClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="sheet-actions">
+    <div class="action-tile" id="tileCamera">
+      <span class="action-tile-icon">&#x1F4F7;</span>
+      <span class="action-tile-label">Camara</span>
+    </div>
+    <div class="action-tile" id="tilePhotos">
+      <span class="action-tile-icon">&#x1F3DE;</span>
+      <span class="action-tile-label">Photos</span>
+    </div>
+  </div>
+</div>
+
+<!-- Camera view -->
+<div class="camera-view" id="cameraView">
+  <div class="status-bar">
+    <span class="status-bar-time">9:41</span>
+    <span class="status-bar-icons">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+    </span>
+  </div>
+  <div class="camera-top">
+    <div class="camera-guide">
+      <div class="camera-sprout">
+        <div class="camera-rive-wrap">
+          <canvas id="rive-camera" class="camera-rive-canvas" width="600" height="600"></canvas>
+        </div>
+      </div>
+      <div class="camera-message" id="cameraMsg">Point camera at your completed task</div>
+    </div>
+  </div>
+  <div class="camera-bottom" id="cameraBottom">
+    <button class="btn-util" aria-label="Toggle flash">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+    </button>
+    <button class="btn-capture" id="btnCapture" aria-label="Take photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    </button>
+    <button class="btn-util" aria-label="Flip camera">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+    </button>
+  </div>
+  <div class="feedback-banner" id="feedbackBanner">
+    <span class="feedback-title">Ready to share?</span>
+    <div class="feedback-actions">
+      <button class="btn-fb secondary" id="btnRetake">Retake photo</button>
+      <button class="btn-fb primary" id="btnSendPhoto">Send</button>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+
+<!-- Home indicator -->
+<div class="home-indicator"></div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var micBtn = document.getElementById('micBtn');
+  var btnPlus = document.getElementById('btnPlus');
+  var scrim = document.getElementById('scrim');
+  var sheet = document.getElementById('sheet');
+  var sheetClose = document.getElementById('sheetClose');
+  var tileCamera = document.getElementById('tileCamera');
+  var tilePhotos = document.getElementById('tilePhotos');
+  var label = document.getElementById('label');
+  var labelTimer;
+
+  function flash(msg) {
+    label.textContent = msg;
+    label.classList.add('show');
+    clearTimeout(labelTimer);
+    labelTimer = setTimeout(function() { label.classList.remove('show'); }, 1800);
+  }
+
+  /* ════════════════════════════════
+     MIC BUTTON STATE MACHINE
+     States driven by data-state attr
+     ════════════════════════════════ */
+  var locked = false;
+
+  function setState(s) {
+    micBtn.setAttribute('data-state', s);
+  }
+
+  micBtn.addEventListener('click', function() {
+    if (locked) return;
+    var state = micBtn.getAttribute('data-state');
+
+    if (state === 'start-default') {
+      // ── Tap to start recording ──
+      micBtn.classList.remove('glow');
+      locked = true;
+      setState('start-pressed');
+      flash('Start recording \u2014 Pressed');
+
+      setTimeout(function() {
+        setState('stop-default');
+        flash('Recording\u2026');
+        locked = false;
+      }, 150);
+
+    } else if (state === 'stop-default') {
+      // ── Tap to stop recording ──
+      locked = true;
+      setState('stop-pressed');
+      flash('Stop recording \u2014 Pressed');
+
+      setTimeout(function() {
+        setState('start-loading');
+        flash('Sending\u2026');
+
+        setTimeout(function() {
+          setState('start-default');
+          addOutgoingAudioMessage();
+          triggerReply();
+          flash('Sent!');
+          locked = false;
+        }, 1500);
+      }, 150);
+    }
+  });
+
+  /* ════════════════════════════════
+     SHEET
+     ════════════════════════════════ */
+  function openSheet() {
+    scrim.classList.add('open');
+    sheet.classList.add('open');
+    flash('Attachment Sheet');
+  }
+  function closeSheet() {
+    scrim.classList.remove('open');
+    sheet.classList.remove('open');
+  }
+
+  btnPlus.addEventListener('click', openSheet);
+  sheetClose.addEventListener('click', closeSheet);
+  scrim.addEventListener('click', closeSheet);
+
+  /* ════════════════════════════════
+     CAMERA
+     ════════════════════════════════ */
+  var cameraView   = document.getElementById('cameraView');
+  var cameraMsg    = document.getElementById('cameraMsg');
+  var cameraBottom = document.getElementById('cameraBottom');
+  var btnCapture   = document.getElementById('btnCapture');
+  var btnRetake    = document.getElementById('btnRetake');
+  var btnSendPhoto = document.getElementById('btnSendPhoto');
+  var feedbackBnr  = document.getElementById('feedbackBanner');
+
+  var cameraMode = 'camera'; // 'camera' or 'photos'
+
+  function showFeedback() {
+    cameraBottom.style.display = 'none';
+    cameraMsg.textContent = 'Message from sprout goes here as subtitles';
+    btnRetake.textContent = cameraMode === 'camera' ? 'Retake photo' : 'Change photo';
+    feedbackBnr.classList.add('open');
+    flash('Ready to share');
+  }
+
+  tileCamera.addEventListener('click', function() {
+    closeSheet();
+    cameraMode = 'camera';
+    cameraView.classList.add('open');
+    feedbackBnr.classList.remove('open');
+    cameraBottom.style.display = '';
+    cameraMsg.textContent = 'Point camera at your completed task';
+    flash('Camera');
+  });
+
+  tilePhotos.addEventListener('click', function() {
+    closeSheet();
+    cameraMode = 'photos';
+    cameraView.classList.add('open');
+    cameraBottom.style.display = 'none';
+    showFeedback();
+  });
+
+  btnCapture.addEventListener('click', function() {
+    showFeedback();
+  });
+
+  btnRetake.addEventListener('click', function() {
+    if (cameraMode === 'photos') {
+      // Change photo → close overlay, reopen sheet
+      cameraView.classList.remove('open');
+      feedbackBnr.classList.remove('open');
+      openSheet();
+    } else {
+      // Retake photo → back to camera buttons
+      feedbackBnr.classList.remove('open');
+      cameraBottom.style.display = '';
+      cameraMsg.textContent = 'Point camera at your completed task';
+      flash('Camera');
+    }
+  });
+
+  btnSendPhoto.addEventListener('click', function() {
+    cameraView.classList.remove('open');
+    feedbackBnr.classList.remove('open');
+    // Add photo as outgoing message
+    addOutgoingMessage(null, [{ bg: 'linear-gradient(135deg, #7cc4fa 0%, #36bffa 50%, #0ba5ec 100%)' }]);
+    triggerReply();
+    flash('Photo Sent!');
+  });
+
+  /* ════════════════════════════════
+     CHAT THREAD
+     ════════════════════════════════ */
+  var chatThread = document.getElementById('chatThread');
+  var sproutReplies = [
+    'That looks awesome! Great job!',
+    'Wow, you did amazing work today!',
+    'I love that! Tell me more about it.',
+    'You are so creative! Keep it up!',
+    'That makes me so happy!'
+  ];
+  var replyIdx = 0;
+
+  var threadFade = document.querySelector('.chat-thread-fade');
+
+  function updateFade() {
+    var atBottom = chatThread.scrollHeight - chatThread.scrollTop - chatThread.clientHeight < 10;
+    threadFade.style.opacity = atBottom ? '0' : '1';
+  }
+
+  chatThread.addEventListener('scroll', updateFade);
+
+  function scrollThread() {
+    setTimeout(function() {
+      chatThread.scrollTop = chatThread.scrollHeight;
+      updateFade();
+    }, 50);
+  }
+
+  function buildMsgWaveform(container) {
+    for (var i = 0; i < 54; i++) {
+      var bar = document.createElement('div');
+      bar.className = 'waveform-bar';
+      var h = 2 + Math.floor(Math.random() * 16);
+      bar.style.height = h + 'px';
+      var color = i < 32 ? '#414651' : '#a4a7ae';
+      bar.style.background = color;
+      bar.dataset.restHeight = h;
+      bar.dataset.restColor = color;
+      bar.style.transition = 'height 0.15s ease';
+      container.appendChild(bar);
+    }
+  }
+
+  function addOutgoingMessage(text, images) {
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-outgoing';
+    var col = document.createElement('div');
+    col.className = 'msg-col msg-col-out';
+    if (images && images.length > 0) {
+      var imgGrid = document.createElement('div');
+      imgGrid.className = 'msg-images msg-images-out';
+      images.forEach(function(img) {
+        var card = document.createElement('div');
+        card.className = 'msg-image';
+        card.style.background = img.bg;
+        imgGrid.appendChild(card);
+      });
+      col.appendChild(imgGrid);
+    }
+    if (text) {
+      var bubble = document.createElement('div');
+      bubble.className = 'msg-bubble msg-bubble-out';
+      bubble.textContent = text;
+      col.appendChild(bubble);
+    }
+    row.appendChild(col);
+    chatThread.appendChild(row);
+    scrollThread();
+  }
+
+  function addOutgoingAudioMessage() {
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-outgoing';
+    var col = document.createElement('div');
+    col.className = 'msg-col msg-col-out';
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble msg-bubble-out msg-bubble-audio';
+    var wfId = 'msgWf' + Date.now();
+    bubble.innerHTML =
+      '<div class="msg-audio-row">' +
+        '<div class="msg-audio-play">' +
+          '<svg class="msg-play-icon" viewBox="0 0 24 24" fill="none"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86a1 1 0 0 0-1.5.86z" fill="currentColor"/></svg>' +
+          '<svg class="msg-pause-icon hidden" viewBox="0 0 24 24" fill="none"><rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/></svg>' +
+        '</div>' +
+        '<div class="msg-audio-waveform" id="' + wfId + '"></div>' +
+      '</div>' +
+      '<div class="msg-audio-label">Transcribing...</div>';
+    col.appendChild(bubble);
+    row.appendChild(col);
+    chatThread.appendChild(row);
+    buildMsgWaveform(document.getElementById(wfId));
+    scrollThread();
+    var lbl = bubble.querySelector('.msg-audio-label');
+    setTimeout(function() {
+      lbl.textContent = 'Show transcript';
+      lbl.style.fontWeight = '700';
+    }, 5000);
+  }
+
+  function addIncomingMessage(text) {
+    micBtn.classList.add('disabled');
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-incoming';
+    var col = document.createElement('div');
+    col.className = 'msg-col msg-col-in';
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble msg-bubble-in';
+    bubble.textContent = '';
+    col.appendChild(bubble);
+    row.appendChild(col);
+    chatThread.appendChild(row);
+    scrollThread();
+
+    // Stream word by word
+    var words = text.split(' ');
+    var i = 0;
+    var interval = setInterval(function() {
+      if (i < words.length) {
+        bubble.textContent += (i > 0 ? ' ' : '') + words[i];
+        i++;
+        scrollThread();
+      } else {
+        clearInterval(interval);
+        micBtn.classList.remove('disabled');
+        micBtn.classList.add('glow');
+      }
+    }, 120);
+  }
+
+  function triggerReply() {
+    var reply = sproutReplies[replyIdx % sproutReplies.length];
+    replyIdx++;
+    addIncomingMessage(reply);
+  }
+
+  /* ════════════════════════════════
+     AUDIO MESSAGE PLAYBACK
+     ════════════════════════════════ */
+  chatThread.addEventListener('click', function(e) {
+    var playBtn = e.target.closest('.msg-audio-play');
+    if (!playBtn) return;
+
+    if (playBtn.dataset.playing === 'true') {
+      playBtn.dataset.playing = 'false';
+      cancelAnimationFrame(parseInt(playBtn.dataset.animId));
+      clearTimeout(parseInt(playBtn.dataset.timerId));
+      playBtn.querySelector('.msg-play-icon').classList.remove('hidden');
+      playBtn.querySelector('.msg-pause-icon').classList.add('hidden');
+      var wf = playBtn.closest('.msg-audio-row').querySelector('.msg-audio-waveform');
+      var bars = wf.querySelectorAll('.waveform-bar');
+      for (var i = 0; i < bars.length; i++) {
+        bars[i].style.height = bars[i].dataset.restHeight + 'px';
+        bars[i].style.background = bars[i].dataset.restColor || '';
+      }
+      return;
+    }
+
+    playBtn.dataset.playing = 'true';
+    playBtn.querySelector('.msg-play-icon').classList.add('hidden');
+    playBtn.querySelector('.msg-pause-icon').classList.remove('hidden');
+
+    var wf = playBtn.closest('.msg-audio-row').querySelector('.msg-audio-waveform');
+    var bars = wf.querySelectorAll('.waveform-bar');
+    var count = bars.length;
+    var restHeights = [];
+    var phases = [];
+    var speeds = [];
+
+    for (var i = 0; i < count; i++) {
+      var h = parseInt(bars[i].dataset.restHeight) || 6;
+      restHeights.push(h);
+      phases.push(i * 0.15 + Math.random() * 0.5);
+      speeds.push(3 + Math.random() * 2);
+      bars[i].style.background = '#414651';
+    }
+
+    var startTime = performance.now();
+    var lastUpdate = 0;
+
+    function animate(now) {
+      if (playBtn.dataset.playing !== 'true') return;
+      if (now - lastUpdate > 60) {
+        lastUpdate = now;
+        var elapsed = (now - startTime) / 1000;
+        var easeIn = Math.min(1, elapsed / 0.3);
+        for (var i = 0; i < count; i++) {
+          var wave = Math.sin(elapsed * speeds[i] + phases[i]);
+          var noise = Math.sin(elapsed * 7.3 + i * 2.1) * 0.3;
+          var energy = 0.6 + 0.4 * Math.sin(elapsed * 1.5 - i * 0.08);
+          var amplitude = (wave + noise) * energy * easeIn;
+          var target = restHeights[i] + amplitude * 8;
+          target = Math.max(2, Math.min(18, target));
+          bars[i].style.height = Math.round(target) + 'px';
+        }
+      }
+      playBtn.dataset.animId = requestAnimationFrame(animate);
+    }
+
+    playBtn.dataset.animId = requestAnimationFrame(animate);
+
+    playBtn.dataset.timerId = setTimeout(function() {
+      playBtn.dataset.playing = 'false';
+      cancelAnimationFrame(parseInt(playBtn.dataset.animId));
+      playBtn.querySelector('.msg-play-icon').classList.remove('hidden');
+      playBtn.querySelector('.msg-pause-icon').classList.add('hidden');
+      for (var i = 0; i < count; i++) {
+        bars[i].style.height = bars[i].dataset.restHeight + 'px';
+        bars[i].style.background = bars[i].dataset.restColor || '';
+      }
+    }, 3000);
+  });
+
+  // Sprout greeting on load
+  setTimeout(function() {
+    addIncomingMessage("Hey there! What should we do today?");
+  }, 800);
+})();
+</script>
+
+<script>
+  var deviceBtns = document.querySelectorAll('.device-btn');
+  var deviceWrapper = document.querySelector('.device-wrapper');
+  deviceBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      deviceBtns.forEach(function(b) { b.classList.toggle('active', b === btn); });
+      if (btn.getAttribute('data-device') === 'ipad') {
+        deviceWrapper.classList.add('ipad');
+      } else {
+        deviceWrapper.classList.remove('ipad');
+      }
+    });
+  });
+</script>
+
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script>
+  // Main screen Rive
+  var canvas = document.getElementById('rive-character');
+  if (canvas && window.rive) {
+    var r = new rive.Rive({
+      src: '/design-system/sprout-character.riv',
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: 'State Machine 1',
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.BottomCenter,
+      onLoad: function() {
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs('State Machine 1');
+          if (inputs) inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
+        } catch(e) {}
+      }
+    });
+  }
+
+  // Camera card Rive
+  var camCanvas = document.getElementById('rive-camera');
+  if (camCanvas && window.rive) {
+    var r2 = new rive.Rive({
+      src: '/design-system/sprout-character.riv',
+      canvas: camCanvas,
+      autoplay: true,
+      stateMachines: 'State Machine 1',
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.BottomCenter,
+      onLoad: function() {
+        r2.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r2.stateMachineInputs('State Machine 1');
+          if (inputs) inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
+        } catch(e) {}
+      }
+    });
+  }
+</script>
+
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat — Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat — Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

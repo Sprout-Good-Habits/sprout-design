@@ -235,7 +235,7 @@
   pointer-events: auto;
 }
 
-/* ── Task Card Carousel ── */
+/* ── Quest Card Carousel ── */
 .carousel-container {
   position: absolute;
   top: 96px;
@@ -258,7 +258,7 @@
   flex-shrink: 0;
   width: 12px;
 }
-.task-card {
+.quest-card {
   flex-shrink: 0;
   width: 278px;
   height: 315px;
@@ -910,7 +910,7 @@
                       </div>
                       <div class="carousel-container">
                         <!-- Card 1: Brush Teeth — Not Started -->
-                        <div class="task-card card-orange">
+                        <div class="quest-card card-orange">
                           <div class="card-badges">
                             <span class="card-badge badge-orange"><span class="tf-badge flame-muted">🔥</span> 5 days</span>
                             <span class="card-badge badge-orange"><span class="tf-badge">💎</span> 5</span>
@@ -924,7 +924,7 @@
                         </div>
 
                         <!-- Card 2: Make Bed — Rejected -->
-                        <div class="task-card card-blue-dark">
+                        <div class="quest-card card-blue-dark">
                           <div class="card-badges">
                             <span class="card-badge badge-blue-dark"><span class="tf-badge flame-muted">🔥</span> 2 days</span>
                             <span class="card-badge badge-blue-dark"><span class="tf-badge">💎</span> 10</span>
@@ -938,7 +938,7 @@
                         </div>
 
                         <!-- Card 3: Drink Water — Completed (claimable) -->
-                        <div class="task-card card-green">
+                        <div class="quest-card card-green">
                           <div class="card-badges">
                             <span class="card-badge badge-green"><span class="tf-badge">🔥</span> 10 days</span>
                             <span class="card-badge badge-green"><span class="tf-badge">💎</span> 5</span>
@@ -1058,7 +1058,7 @@
                           <div class="grass-edge"></div>
                           <div class="grass-fill"></div>
                         </div>
-                        <div class="success-bottom-btn" id="back-to-tasks-btn">Back to tasks</div>
+                        <div class="success-bottom-btn" id="back-to-tasks-btn">Back to quests</div>
                       </div>
                     </div>
 
@@ -1083,7 +1083,7 @@
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Quests',href:'/product-explorer/quest.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/quest.html'},{label:'Chat',href:'/product-explorer/quest/chat.html'},{label:'Photo',href:'/product-explorer/quest/photo.html'},{label:'Quiz',href:'/product-explorer/quest/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/quest/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
@@ -1195,7 +1195,7 @@
     if (carousel) carousel.scrollLeft = 0;
     // Reset claim state
     gemClaimed = false;
-    var claimCard = claimCta.closest('.task-card');
+    var claimCard = claimCta.closest('.quest-card');
     claimCard.classList.remove('card-claiming', 'card-claimed-anim');
     var overlay = claimCard.querySelector('.card-completed-overlay');
     if (overlay) overlay.remove();
@@ -1216,7 +1216,7 @@
   });
 
   // Card CTA "Start" → next screen
-  var startCta = document.querySelector('.task-card.card-orange .card-cta');
+  var startCta = document.querySelector('.quest-card.card-orange .card-cta');
   if (startCta) {
     startCta.addEventListener('click', function() {
       current = 1;
@@ -1269,7 +1269,7 @@
     claimCta.addEventListener('click', function() {
       if (gemClaimed) return;
       gemClaimed = true;
-      var claimCard = claimCta.closest('.task-card');
+      var claimCard = claimCta.closest('.quest-card');
       claimCard.classList.add('card-claiming');
       var from = getRelPos(claimCta);
       var to = getRelPos(gemCounter);

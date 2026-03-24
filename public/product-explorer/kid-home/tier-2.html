@@ -6,6 +6,7 @@
 <title>Sprout Product Explorer — Tier 2</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 /* ── Device frame ── */
 .device-wrapper {
@@ -106,18 +107,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  padding: 0 10px 6px;
 }
 .toolbar-trailing {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md, 8px);
+  gap: 4px;
 }
 .btn-util {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
   padding: var(--spacing-lg, 12px);
   background: var(--bg-primary, #ffffff);
   border: 2px solid var(--border-secondary, #e9eaeb);
@@ -128,9 +128,9 @@
 .btn-util-with-label { gap: var(--spacing-md, 8px); }
 .btn-util-label {
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-lg, 18px);
-  line-height: var(--line-height-text-lg, 28px);
-  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-regular, 400);
   color: var(--text-secondary, #414651);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -155,9 +155,9 @@
   flex-direction: column;
 }
 .grass-edge {
-  height: 24px;
+  height: 18px;
   background: var(--bg-grass, #86cb3c);
-  border-radius: 24px 24px 0 0;
+  border-radius: 18px 18px 0 0;
 }
 .grass-fill {
   background: var(--bg-grass, #86cb3c);
@@ -174,7 +174,7 @@
   height: 402px;
   z-index: 2;
   pointer-events: none;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scale(1);
   transform-origin: bottom center;
 }
 .rive-canvas {
@@ -185,11 +185,11 @@
 /* ── Home indicator ── */
 .home-indicator {
   position: absolute;
-  bottom: 8px;
+  bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 134px;
-  height: 5px;
+  width: 108px;
+  height: 4px;
   background: black;
   border-radius: 100px;
   z-index: 10;
@@ -200,7 +200,7 @@
   display: flex;
   gap: var(--spacing-xs, 4px);
   padding: var(--spacing-xs, 4px);
-  margin: 64px 16px 4px;
+  margin: 48px 16px 0;
   background: var(--bg-secondary, #fafafa);
   border-radius: var(--radius-xl, 16px);
   align-items: center;
@@ -211,8 +211,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-md, 8px);
-  padding: 10px 16px;
-  height: 36px;
+  padding: 8px 12px;
+  height: 28px;
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
   line-height: 16px;
@@ -233,12 +233,12 @@
 }
 .home-tab-badge {
   display: inline-flex;
-  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
+  padding: 3px 6px;
   background: var(--gray-200, #e9eaeb);
   color: var(--text-secondary, #414651);
   border-radius: 100px;
-  font-size: var(--font-size-text-xs, 12px);
-  line-height: var(--line-height-text-xs, 16px);
+  font-size: 9px;
+  line-height: 13px;
   font-weight: 400;
 }
 
@@ -247,11 +247,11 @@
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
-  scroll-padding: 0 16px;
+  scroll-padding: 0 12px;
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: 6px;
+  padding: 8px 12px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   position: relative;
@@ -261,7 +261,7 @@
 .carousel-container::after {
   content: '';
   flex-shrink: 0;
-  width: 16px;
+  width: 12px;
 }
 .task-card {
   flex-shrink: 0;
@@ -282,7 +282,7 @@
 /* ── "Now" glow ring ── */
 @keyframes now-glow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5), 0 0 0 0 rgba(11,165,236,0.3); }
-  50% { box-shadow: 0 0 0 5px rgba(255,255,255,0.6), 0 0 0 10px rgba(11,165,236,0.2); }
+  50% { box-shadow: 0 0 0 4px rgba(255,255,255,0.6), 0 0 0 8px rgba(11,165,236,0.2); }
 }
 .task-card.card-now {
   animation: now-glow 2s ease-in-out infinite;
@@ -320,8 +320,8 @@
 .card-content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-top: var(--spacing-md, 8px);
+  gap: var(--spacing-none, 0px);
+  margin-top: 0;
   position: relative;
   z-index: 2;
 }
@@ -358,7 +358,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm, 6px);
+  gap: var(--spacing-md, 8px);
   height: 50px;
   border-radius: var(--radius-2xl, 16px);
   font-family: var(--font-family-body, 'Inter', sans-serif);
@@ -376,7 +376,7 @@
 }
 .card-cta .tf-cta {
   font-family: 'TossFace', sans-serif;
-  font-size: var(--font-size-text-xs, 12px);
+  font-size: 16px;
   line-height: 1;
 }
 .card-cta-disabled {
@@ -425,9 +425,9 @@
 
 /* ── Streak counter glow (after emoji lands) ── */
 @keyframes streak-counter-glow {
-  0% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0.5); }
-  50% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 6px rgba(239,104,32,0.25); }
-  100% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0); }
+  0% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0.5); }
+  50% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 5px rgba(239,104,32,0.25); }
+  100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0); }
 }
 .streak-counter-glow {
   animation: streak-counter-glow 0.35s ease-out;
@@ -439,30 +439,6 @@
   align-items: center;
   justify-content: center;
   margin-top: var(--spacing-5xl, 40px);
-}
-
-/* ── Legend ── */
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-lg, 12px) var(--spacing-3xl, 24px);
-  justify-content: center;
-  margin-top: var(--spacing-xl, 16px);
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-sm, 14px);
-  line-height: var(--line-height-text-sm, 20px);
-  color: var(--text-secondary, #414651);
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm, 6px);
-}
-.legend-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-full, 9999px);
-  flex-shrink: 0;
 }
 
 /* ── Reset button ── */
@@ -498,7 +474,7 @@
 .gem-particle {
   position: absolute;
   font-family: 'TossFace', sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1;
   pointer-events: none;
   z-index: 20;
@@ -506,9 +482,9 @@
 }
 
 @keyframes gem-counter-glow {
-  0% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0.5); }
-  50% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 6px rgba(11,165,236,0.25); }
-  100% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
+  0% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0.5); }
+  50% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 5px rgba(11,165,236,0.25); }
+  100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
 }
 .gem-counter-glow {
   animation: gem-counter-glow 0.35s ease-out;
@@ -544,21 +520,29 @@
   pointer-events: none;
 }
 
-/* Card shrink away */
-@keyframes card-shrink-away {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(0.15); opacity: 0; }
-}
+/* Card claim resolve — scale down + fade, then collapse width so snap re-centers */
 .card-shrink-away {
-  animation: card-shrink-away 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+  animation: card-resolve 0.5s cubic-bezier(0.32, 0.72, 0, 1) forwards;
   pointer-events: none;
+}
+@keyframes card-resolve {
+  0%   { transform: scale(1); opacity: 1; }
+  60%  { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(0.85); opacity: 0; }
 }
 .card-collapsed {
   width: 0 !important;
+  min-width: 0 !important;
+  height: 0 !important;
   padding: 0 !important;
   margin: 0 !important;
   overflow: hidden;
-  transition: width 0.35s cubic-bezier(0.22,1,0.36,1), padding 0.35s, margin 0.35s;
+  border: none !important;
+  flex-shrink: 0;
+  transition: width 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+              height 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+              padding 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+              margin 0.55s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 /* Flying emoji */
@@ -686,8 +670,8 @@
 
 /* ── iPad overrides ── */
 .device-wrapper.ipad .device-screen {
-  width: 480px;
-  height: 640px;
+  width: 640px;
+  height: 854px;
 }
 .device-wrapper.ipad .task-card {
   width: 225px;
@@ -729,12 +713,12 @@
 /* ── Anytime gallery grid ── */
 .anytime-grid {
   display: flex;
-  gap: 8px;
-  padding: 12px 0;
+  gap: 6px;
+  padding: 8px 0;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
-  scroll-padding: 0 16px;
+  scroll-padding: 0 12px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -743,20 +727,20 @@
 .anytime-grid::after {
   content: '';
   flex-shrink: 0;
-  width: 8px;
+  width: 6px;
 }
 .anytime-page {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
-  width: calc(100% - 32px);
+  width: calc(100% - 24px);
   scroll-snap-align: start;
 }
 .anytime-tile {
   border-radius: 16px;
-  padding: 16px;
-  height: 180px;
+  padding: 12px;
+  height: 136px;
   display: flex;
   flex-direction: column;
   color: white;
@@ -771,7 +755,7 @@
 .anytime-tile-content {
   display: flex;
   flex-direction: column;
-  margin-top: var(--spacing-md, 8px);
+  margin-top: 8px;
 }
 .anytime-tile .card-badge {
   background: rgba(255,255,255,0.2);
@@ -788,7 +772,7 @@
   align-items: center;
   justify-content: center;
   font-family: 'TossFace', sans-serif;
-  font-size: 72px;
+  font-size: 56px;
   line-height: 1;
 }
 
@@ -798,7 +782,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 32px;
+  padding: 48px 24px;
   text-align: center;
   font-family: var(--font-family-body, 'Inter', sans-serif);
 }
@@ -815,14 +799,14 @@
   font-size: 18px;
   font-weight: 700;
   color: var(--text-primary, #181d27);
-  line-height: 28px;
-  margin-bottom: 6px;
+  line-height: 24px;
+  margin-bottom: 4px;
 }
 .empty-state-desc {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-tertiary, #535862);
-  line-height: 20px;
-  max-width: 260px;
+  line-height: 18px;
+  max-width: 220px;
 }
 </style>
 </head>
@@ -885,9 +869,9 @@
 
                     <!-- Grass with character -->
                     <div class="grass-container" style="position: relative;">
-                      <div class="sky-spacer" style="height: 202px; position: relative;">
+                      <div class="sky-spacer" style="height: 200px; position: relative;">
                         <div class="rive-wrap" style="position: absolute; bottom: -120px;">
-                          <canvas id="rive-character" class="rive-canvas" width="402" height="402"></canvas>
+                          <canvas id="rive-character" class="rive-canvas" width="804" height="804"></canvas>
                         </div>
                       </div>
 
@@ -1107,18 +1091,11 @@
         </div>
       </div>
 
-      <div class="legend">
-        <div class="legend-item"><span class="legend-dot" style="background:var(--brand-500)"></span> Not Started</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--orange-500)"></span> Rejected</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--violet-500)"></span> Submitted</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--green-500)"></span> Claimable</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--blue-dark-500)"></span> Claimed</div>
-      </div>
 
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Chat — Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat — Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
@@ -1151,6 +1128,7 @@
   var gemLabel = document.getElementById('gem-counter-label');
   var streakCounter = document.getElementById('streak-counter');
   var deviceScreen = document.querySelector('.device-screen');
+  var deviceMockup = document.querySelector('.device-mockup');
   var carousel = document.getElementById('carousel');
   var homeTabs = document.querySelectorAll('.home-tab');
   var homeTabsContainer = document.getElementById('home-tabs');
@@ -1192,7 +1170,7 @@
 
   function getRelPos(el) {
     var elRect = el.getBoundingClientRect();
-    var screenRect = deviceScreen.getBoundingClientRect();
+    var screenRect = deviceMockup.getBoundingClientRect();
     return {
       x: elRect.left - screenRect.left + elRect.width / 2,
       y: elRect.top - screenRect.top + elRect.height / 2
@@ -1215,7 +1193,7 @@
     anytimeGrid.style.display = 'none';
 
     // Clean up flying emojis/particles
-    deviceScreen.querySelectorAll('.flying-emoji, .gem-particle').forEach(function(el) { el.remove(); });
+    deviceMockup.querySelectorAll('.flying-emoji, .gem-particle').forEach(function(el) { el.remove(); });
 
     // Show Today/Anytime tabs always; set default tab
     homeTabsContainer.style.display = '';
@@ -1322,8 +1300,24 @@
     var cardLeft = target.offsetLeft;
     var cardWidth = target.offsetWidth;
     var containerWidth = carousel.offsetWidth;
-    var scrollTarget = cardLeft - (containerWidth - cardWidth) / 2;
-    carousel.scrollTo({ left: Math.max(0, scrollTarget), behavior: 'smooth' });
+    var scrollTarget = Math.max(0, cardLeft - (containerWidth - cardWidth) / 2);
+    smoothScrollTo(carousel, scrollTarget, 550);
+  }
+
+  function smoothScrollTo(el, to, duration) {
+    var from = el.scrollLeft;
+    var diff = to - from;
+    if (Math.abs(diff) < 1) return;
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var t = Math.min((ts - start) / duration, 1);
+      // iOS-style easing
+      var e = 1 - Math.pow(1 - t, 3);
+      el.scrollLeft = from + diff * e;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
   }
 
   // ── Tab filtering ──
@@ -1395,7 +1389,7 @@
         gem.style.left = from.x + 'px';
         gem.style.top = from.y + 'px';
         gem.style.opacity = '0';
-        deviceScreen.appendChild(gem);
+        deviceMockup.appendChild(gem);
 
         var delay = index * 60 + Math.random() * 40;
         var duration = 500 + Math.random() * 200;
@@ -1418,9 +1412,7 @@
           var sy = from.y + spreadY * (1 - e);
           var bx = (1 - e) * (1 - e) * sx + 2 * (1 - e) * e * midX + e * e * to.x;
           var by = (1 - e) * (1 - e) * sy + 2 * (1 - e) * e * midY + e * e * to.y;
-          var scale = 1.2 - 0.6 * e;
-
-          gem.style.transform = 'translate(-50%, -50%) translate(' + (bx - from.x) + 'px,' + (by - from.y) + 'px) scale(' + scale + ')';
+          gem.style.transform = 'translate(-50%, -50%) translate(' + (bx - from.x) + 'px,' + (by - from.y) + 'px)';
           gem.style.opacity = t < 0.1 ? (t / 0.1) : (t > 0.85 ? Math.max(0, 1 - (t - 0.85) / 0.15) : 1);
 
           if (t < 1) {
@@ -1449,6 +1441,7 @@
       setTimeout(function() {
         targetCard.classList.remove('card-celebrate');
 
+        // Fly emoji to streak counter
         var cardEmojiEl = targetCard.querySelector('.card-emoji');
         var emojiFrom = getRelPos(cardEmojiEl);
         var streakTo = getRelPos(streakCounter);
@@ -1462,13 +1455,20 @@
         flyEmoji.style.transform = 'translate(-50%, -50%)';
         deviceScreen.appendChild(flyEmoji);
 
+        // Fade out + collapse the card — scroll-snap auto-centers the next card
         targetCard.classList.remove('card-now');
         targetCard.classList.add('card-shrink-away');
-        targetCard.addEventListener('animationend', function collapseHandler() {
-          targetCard.removeEventListener('animationend', collapseHandler);
+
+        // After fade completes, collapse width so snap pulls the next card in
+        targetCard.addEventListener('animationend', function handler() {
+          targetCard.removeEventListener('animationend', handler);
           targetCard.classList.add('card-collapsed');
-          if (onComplete) onComplete();
         });
+
+        // After everything settles, fire completion (glow the next card, etc.)
+        setTimeout(function() {
+          if (onComplete) onComplete();
+        }, 1100);
 
         var flyStart = null;
         function flyAnimate(ts) {
@@ -1512,9 +1512,9 @@
   // ── Wire up claim CTAs ──
   claimCta.addEventListener('click', function() {
     runClaimAnimation(claimCard, claimCta, '&#x1F3B9;', gemReward, function() {
-      setTimeout(function() {
-        checkShowEmptyState();
-      }, 300);
+      checkShowEmptyState();
+      // Snap has already re-centered; nudge to exact position and add glow
+      scrollToNowCard(currentPreview);
     });
   });
 

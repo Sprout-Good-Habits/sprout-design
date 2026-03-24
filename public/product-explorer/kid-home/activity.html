@@ -447,14 +447,14 @@
 }
 
 /* ── Task list ── */
-.task-list {
+.quest-list {
   padding: 0 16px 40px;
   position: relative;
   z-index: 3;
 }
 
 /* ── Task row ── */
-.task-row {
+.quest-card--t3 {
   display: flex;
   align-items: center;
   gap: var(--spacing-md, 8px);
@@ -465,10 +465,10 @@
   cursor: pointer;
   transition: background 0.15s;
 }
-.task-row:active {
+.quest-card--t3:active {
   background: var(--gray-50, #fafafa);
 }
-.task-emoji-box {
+.quest-emoji-box {
   width: 52px;
   height: 52px;
   border-radius: var(--radius-sm, 6px);
@@ -493,7 +493,7 @@
   font-size: 12px;
   line-height: 1;
 }
-.task-emoji-box .tf-task {
+.quest-emoji-box .tf-quest {
   font-family: 'TossFace', sans-serif;
   font-size: 36px;
   line-height: 1;
@@ -507,11 +507,11 @@
 .emoji-blue-dark { background: var(--blue-dark-500, #2970ff); }
 .emoji-event { background: var(--gray-100, #f5f5f5); }
 
-.task-info {
+.quest-info {
   flex: 1;
   min-width: 0;
 }
-.task-name {
+.quest-name {
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-md, 16px);
   font-weight: var(--font-weight-semibold, 600);
@@ -521,14 +521,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.task-time {
+.quest-time {
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
   font-weight: var(--font-weight-medium, 500);
   color: var(--text-quaternary, #717680);
   line-height: var(--line-height-text-xs, 16px);
 }
-.task-desc {
+.quest-desc {
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
   color: var(--text-tertiary, #535862);
@@ -539,18 +539,18 @@
 }
 
 /* Right side: badges + inline status */
-.task-trailing {
+.quest-trailing {
   display: flex;
   align-items: center;
   gap: var(--spacing-md, 8px);
   flex-shrink: 0;
 }
-.task-badges {
+.quest-badges {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm, 6px);
 }
-.task-badge {
+.quest-badge {
   display: inline-flex;
   align-items: center;
   gap: 2px;
@@ -566,7 +566,7 @@
   min-width: 24px;
   text-align: left;
 }
-.task-badge .tf-badge {
+.quest-badge .tf-badge {
   font-family: 'TossFace', sans-serif;
   font-size: 16px;
   line-height: 1;
@@ -581,10 +581,10 @@
 }
 
 /* Row state: reviewing */
-.task-row-reviewing {
+.quest-card--reviewing {
   cursor: default;
 }
-.task-row-reviewing:active {
+.quest-card--reviewing:active {
   background: var(--bg-primary, #ffffff);
 }
 
@@ -594,13 +594,13 @@
 }
 
 /* ── Rejected card ── */
-.task-card-rejected {
+.quest-card-rejected {
   background: var(--bg-primary, #ffffff);
   border-radius: var(--radius-2xl, 16px);
   margin-bottom: var(--spacing-md, 8px);
   overflow: hidden;
 }
-.task-card-rejected .task-row {
+.quest-card-rejected .quest-card--t3 {
   margin-bottom: 0;
   border: none;
   border-radius: 0;
@@ -609,12 +609,12 @@
   z-index: 1;
   box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
 }
-.task-card-rejected .task-row:active {
+.quest-card-rejected .quest-card--t3:active {
   background: var(--bg-primary, #ffffff);
 }
 
 /* ── Task action area ── */
-.task-action-area {
+.quest-action-area {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -662,14 +662,14 @@
 }
 
 /* ── Claimable card ── */
-.task-card-claim {
+.quest-card-claim {
   background: var(--bg-primary, #ffffff);
   border-radius: var(--radius-2xl, 16px);
   margin-bottom: var(--spacing-md, 8px);
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(10,13,18,0.06);
 }
-.task-card-claim .task-row {
+.quest-card-claim .quest-card--t3 {
   margin-bottom: 0;
   border: none;
   border-radius: 0;
@@ -678,7 +678,7 @@
   z-index: 1;
   box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
 }
-.task-card-claim .task-row:active {
+.quest-card-claim .quest-card--t3:active {
   background: var(--bg-primary, #ffffff);
 }
 .action-label strong {
@@ -859,33 +859,33 @@
                         </div>
 
                         <!-- Task list -->
-                        <div class="task-list">
+                        <div class="quest-list">
 
                           <!-- ── MORNING ── -->
                           <div class="section-label">Morning</div>
 
                           <!-- EVENT: School -->
-                          <div class="task-row event-row">
-                            <div class="task-emoji-box emoji-event"><span class="tf-task">&#x1F4C5;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">8:00 AM to 3:00 PM</div>
-                              <div class="task-name">School</div>
+                          <div class="quest-card quest-card--t3 event-row">
+                            <div class="quest-emoji-box emoji-event"><span class="tf-quest">&#x1F4C5;</span></div>
+                            <div class="quest-info">
+                              <div class="quest-time">8:00 AM to 3:00 PM</div>
+                              <div class="quest-name">School</div>
                             </div>
                           </div>
 
                           <!-- TASK: Brush Teeth (completed) -->
-                          <div class="task-row">
-                            <div class="task-emoji-box emoji-orange">
-                              <span class="tf-task">&#x1FAE7;</span>
+                          <div class="quest-card quest-card--t3">
+                            <div class="quest-emoji-box emoji-orange">
+                              <span class="tf-quest">&#x1FAE7;</span>
                               <span class="emoji-status-badge">&#x2705;</span>
                             </div>
-                            <div class="task-info">
-                              <div class="task-name">Brush Teeth</div>
+                            <div class="quest-info">
+                              <div class="quest-name">Brush Teeth</div>
                             </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">8</span></span>
-                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                            <div class="quest-trailing">
+                              <div class="quest-badges">
+                                <span class="quest-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">8</span></span>
+                                <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
                               </div>
                             </div>
                           </div>
@@ -894,74 +894,74 @@
                           <div class="section-label">Afternoon</div>
 
                           <!-- TASK: Read 20 min (reviewing) -->
-                          <div class="task-row task-row-reviewing">
-                            <div class="task-emoji-box emoji-violet">
-                              <span class="tf-task">&#x1F4D6;</span>
+                          <div class="quest-card quest-card--t3 quest-card--reviewing">
+                            <div class="quest-emoji-box emoji-violet">
+                              <span class="tf-quest">&#x1F4D6;</span>
                               <span class="emoji-status-badge">&#x1F504;</span>
                             </div>
-                            <div class="task-info">
-                              <div class="task-name">Read 20 min</div>
-                              <div class="task-desc">Reviewing...</div>
+                            <div class="quest-info">
+                              <div class="quest-name">Read 20 min</div>
+                              <div class="quest-desc">Reviewing...</div>
                             </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">7</span></span>
-                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
+                            <div class="quest-trailing">
+                              <div class="quest-badges">
+                                <span class="quest-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">7</span></span>
+                                <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">15</span></span>
                               </div>
                             </div>
                           </div>
 
                           <!-- TASK: Homework (rejected with Try Again) -->
-                          <div class="task-card-rejected">
-                            <div class="task-row">
-                              <div class="task-emoji-box emoji-blue-dark">
-                                <span class="tf-task">&#x1F4DD;</span>
+                          <div class="quest-card-rejected">
+                            <div class="quest-card quest-card--t3">
+                              <div class="quest-emoji-box emoji-blue-dark">
+                                <span class="tf-quest">&#x1F4DD;</span>
                                 <span class="emoji-status-badge">&#x274E;</span>
                               </div>
-                              <div class="task-info">
-                                <div class="task-name">Homework</div>
+                              <div class="quest-info">
+                                <div class="quest-name">Homework</div>
                               </div>
-                              <div class="task-trailing">
-                                <div class="task-badges">
-                                  <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">5</span></span>
-                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                              <div class="quest-trailing">
+                                <div class="quest-badges">
+                                  <span class="quest-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">5</span></span>
+                                  <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
                                 </div>
                               </div>
                             </div>
-                            <div class="task-action-area">
-                              <span class="action-label">Take a new photo to complete this task</span>
+                            <div class="quest-action-area">
+                              <span class="action-label">Take a new photo to complete this quest</span>
                               <button class="btn-sprout btn-secondary btn-sm">Try Again</button>
                             </div>
                           </div>
 
                           <!-- EVENT: Soccer Practice -->
-                          <div class="task-row event-row">
-                            <div class="task-emoji-box emoji-event"><span class="tf-task">&#x1F4C5;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">4:00 to 5:30 PM</div>
-                              <div class="task-name">Soccer Practice</div>
+                          <div class="quest-card quest-card--t3 event-row">
+                            <div class="quest-emoji-box emoji-event"><span class="tf-quest">&#x1F4C5;</span></div>
+                            <div class="quest-info">
+                              <div class="quest-time">4:00 to 5:30 PM</div>
+                              <div class="quest-name">Soccer Practice</div>
                             </div>
                           </div>
 
                           <!-- TASK: Practice Piano (claimable) -->
-                          <div class="task-card-claim" id="task-claim-piano">
-                            <div class="task-row">
-                              <div class="task-emoji-box emoji-brand">
-                                <span class="tf-task">&#x1F3B9;</span>
+                          <div class="quest-card-claim" id="task-claim-piano">
+                            <div class="quest-card quest-card--t3">
+                              <div class="quest-emoji-box emoji-brand">
+                                <span class="tf-quest">&#x1F3B9;</span>
                                 <span class="emoji-status-badge">&#x2705;</span>
                               </div>
-                              <div class="task-info">
-                                <div class="task-name">Practice Piano</div>
+                              <div class="quest-info">
+                                <div class="quest-name">Practice Piano</div>
                               </div>
-                              <div class="task-trailing">
-                                <div class="task-badges">
-                                  <span class="task-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
-                                  <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
+                              <div class="quest-trailing">
+                                <div class="quest-badges">
+                                  <span class="quest-badge"><span class="tf-badge">&#x1F525;</span><span class="badge-num">12</span></span>
+                                  <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">20</span></span>
                                 </div>
                               </div>
                             </div>
-                            <div class="task-action-area" id="claim-area">
-                              <span class="action-label">Task complete, claim your reward!</span>
+                            <div class="quest-action-area" id="claim-area">
+                              <span class="action-label">Quest complete, claim your reward!</span>
                               <button class="btn-sprout btn-secondary btn-sm" id="claim-btn"><span class="tf-claim">&#x1F48E;</span> Claim</button>
                             </div>
                           </div>
@@ -970,57 +970,57 @@
                           <div class="section-label">Evening</div>
 
                           <!-- TASK: Talk to Sprout (not started) -->
-                          <div class="task-row">
-                            <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F4AC;</span></div>
-                            <div class="task-info">
-                              <div class="task-name">Talk to Sprout</div>
+                          <div class="quest-card quest-card--t3">
+                            <div class="quest-emoji-box emoji-brand"><span class="tf-quest">&#x1F4AC;</span></div>
+                            <div class="quest-info">
+                              <div class="quest-name">Talk to Sprout</div>
                             </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
-                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
+                            <div class="quest-trailing">
+                              <div class="quest-badges">
+                                <span class="quest-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
+                                <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">10</span></span>
                               </div>
                             </div>
                           </div>
 
                           <!-- EVENT: Family Dinner -->
-                          <div class="task-row event-row">
-                            <div class="task-emoji-box emoji-event"><span class="tf-task">&#x1F4C5;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">6:30 PM</div>
-                              <div class="task-name">Family Dinner</div>
+                          <div class="quest-card quest-card--t3 event-row">
+                            <div class="quest-emoji-box emoji-event"><span class="tf-quest">&#x1F4C5;</span></div>
+                            <div class="quest-info">
+                              <div class="quest-time">6:30 PM</div>
+                              <div class="quest-name">Family Dinner</div>
                             </div>
                           </div>
 
                           <!-- TASK: Brush Teeth PM (not started) -->
-                          <div class="task-row">
-                            <div class="task-emoji-box emoji-orange"><span class="tf-task">&#x1FAE7;</span></div>
-                            <div class="task-info">
-                              <div class="task-name">Brush Teeth PM</div>
+                          <div class="quest-card quest-card--t3">
+                            <div class="quest-emoji-box emoji-orange"><span class="tf-quest">&#x1FAE7;</span></div>
+                            <div class="quest-info">
+                              <div class="quest-name">Brush Teeth PM</div>
                             </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">8</span></span>
-                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                            <div class="quest-trailing">
+                              <div class="quest-badges">
+                                <span class="quest-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">8</span></span>
+                                <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
                               </div>
                             </div>
                           </div>
 
                           <!-- TASK: Pack Backpack (not started) -->
-                          <div class="task-row">
-                            <div class="task-emoji-box emoji-green"><span class="tf-task">&#x1F392;</span></div>
-                            <div class="task-info">
-                              <div class="task-name">Pack Backpack</div>
+                          <div class="quest-card quest-card--t3">
+                            <div class="quest-emoji-box emoji-green"><span class="tf-quest">&#x1F392;</span></div>
+                            <div class="quest-info">
+                              <div class="quest-name">Pack Backpack</div>
                             </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">2</span></span>
-                                <span class="task-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
+                            <div class="quest-trailing">
+                              <div class="quest-badges">
+                                <span class="quest-badge"><span class="tf-badge flame-muted">&#x1F525;</span><span class="badge-num">2</span></span>
+                                <span class="quest-badge"><span class="tf-badge">&#x1F48E;</span><span class="badge-num">5</span></span>
                               </div>
                             </div>
                           </div>
 
-                        </div><!-- /task-list -->
+                        </div><!-- /quest-list -->
                     </div><!-- /activity-content -->
                   </div><!-- /screen-sky-alt -->
 
@@ -1048,7 +1048,7 @@
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Tasks',href:'/product-explorer/task.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/task.html'},{label:'Chat',href:'/product-explorer/task/chat.html'},{label:'Photo',href:'/product-explorer/task/photo.html'},{label:'Quiz',href:'/product-explorer/task/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/task/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/task/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/task/quiz-conversational.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'Quests',href:'/product-explorer/quest.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/quest.html'},{label:'Chat',href:'/product-explorer/quest/chat.html'},{label:'Photo',href:'/product-explorer/quest/photo.html'},{label:'Quiz',href:'/product-explorer/quest/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/quest/quiz-conversational.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 <script>
 (function() {
@@ -1345,8 +1345,8 @@
 
       flyGems(claimBtn, reward, function() {
         setTimeout(function() {
-          var actionArea = claimCard.querySelector('.task-action-area');
-          var row = claimCard.querySelector('.task-row');
+          var actionArea = claimCard.querySelector('.quest-action-area');
+          var row = claimCard.querySelector('.quest-card--t3');
           actionArea.style.transition = 'max-height 0.35s '+ios+', padding 0.35s '+ios+', opacity 0.15s '+ios;
           actionArea.style.maxHeight = actionArea.offsetHeight + 'px';
           actionArea.style.overflow = 'hidden';
