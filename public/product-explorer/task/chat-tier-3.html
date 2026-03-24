@@ -780,6 +780,30 @@
   line-height: var(--line-height-text-md, 24px);
 }
 
+/* ── Camera view ── */
+.camera-view{position:absolute;inset:0;background:#d5d7da;z-index:25;display:none;flex-direction:column}
+.camera-view.open{display:flex}
+.camera-toolbar{position:absolute;top:62px;left:0;right:0;display:flex;align-items:flex-start;padding:0 var(--spacing-xl,16px) var(--spacing-md,8px);z-index:26}
+.camera-top{flex:1;padding:118px 16px 8px}
+.camera-guide{display:flex;gap:16px;align-items:flex-start}
+.camera-sprout{width:120px;height:180px;flex-shrink:0;background:var(--bg-sky,#e0f2fe);border-radius:24px;overflow:hidden;position:relative}
+.camera-sprout img{position:absolute;width:476px;height:476px;left:50%;top:calc(50% + 60px);transform:translate(-50%,-50%);pointer-events:none}
+.camera-message{flex:1;background:rgba(10,13,18,.2);border-radius:24px;padding:12px 16px;font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);color:#fff;align-self:center}
+.camera-bottom{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 42px}
+.btn-capture{width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:var(--bg-primary,#fff);border:2px solid var(--border-secondary,#e9eaeb);border-radius:var(--radius-full,9999px);box-shadow:0 3px 0 0 var(--gray-200,#e9eaeb);cursor:pointer;padding:0;transition:background .15s,box-shadow .15s,transform .15s}
+.btn-capture:hover{background:var(--bg-secondary,#fafafa)}
+.btn-capture:active{box-shadow:none;transform:translateY(3px)}
+.btn-capture svg{width:40px;height:40px;color:var(--text-primary,#181d27)}
+.feedback-banner{position:absolute;bottom:0;left:0;right:0;background:var(--bg-primary,#fff);border-top:1px solid var(--border-primary,#d5d7da);padding:25px var(--spacing-xl,16px) var(--spacing-3xl,24px);display:none;flex-direction:column;gap:var(--spacing-xl,16px);z-index:26}
+.feedback-banner.open{display:flex}
+.feedback-title{font-family:var(--font-family-display,'Inter',sans-serif);font-size:var(--font-size-display-xs,24px);font-weight:var(--font-weight-bold,700);line-height:var(--line-height-display-xs,32px);color:var(--text-primary,#181d27)}
+.feedback-actions{display:flex;gap:10px}
+.btn-fb{flex:1;height:50px;display:flex;align-items:center;justify-content:center;font-family:var(--font-family-body,'Inter',sans-serif);font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-bold,700);line-height:var(--line-height-text-md,24px);border-radius:var(--radius-2xl,16px);cursor:pointer;padding:var(--spacing-lg,12px);transition:background .15s,box-shadow .15s,transform .15s}
+.btn-fb.secondary{background:var(--bg-primary,#fff);border:2px solid var(--border-secondary,#e9eaeb);color:var(--text-secondary,#414651);box-shadow:0 3px 0 0 var(--gray-200,#e9eaeb)}
+.btn-fb.secondary:active{box-shadow:none;transform:translateY(2px)}
+.btn-fb.primary{background:var(--fg-brand-primary,#0ba5ec);border:none;border-bottom:2px solid #0086c9;color:#fff;box-shadow:0 4px 0 0 #0086c9}
+.btn-fb.primary:active{box-shadow:none;transform:translateY(2px)}
+
 /* ── State visibility helpers ── */
 .hidden { display: none !important; }
 
@@ -940,6 +964,50 @@
               <span class="action-tile-label">Photos</span>
             </div>
           </div>
+        </div>
+
+        <!-- Camera view -->
+        <div class="camera-view" id="cameraView">
+          <div class="status-bar">
+            <span class="status-bar-time">9:41</span>
+            <span class="status-bar-icons">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+              <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+            </span>
+          </div>
+          <div class="camera-toolbar">
+            <button class="btn-attach" id="cameraClose" aria-label="Close camera">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="camera-top">
+            <div class="camera-guide">
+              <div class="camera-sprout">
+                <img src="/product-explorer/assets/sprout-character.png" alt="Sprout">
+              </div>
+              <div class="camera-message" id="cameraMsg">Point camera at your completed task</div>
+            </div>
+          </div>
+          <div class="camera-bottom" id="cameraBottom">
+            <button class="btn-attach" aria-label="Toggle flash">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+            </button>
+            <button class="btn-capture" id="btnCapture" aria-label="Take photo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </button>
+            <button class="btn-attach" aria-label="Flip camera">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+            </button>
+          </div>
+          <div class="feedback-banner" id="feedbackBanner">
+            <span class="feedback-title">Ready to share?</span>
+            <div class="feedback-actions">
+              <button class="btn-fb secondary" id="btnRetake">Retake photo</button>
+              <button class="btn-fb primary" id="btnSendPhoto">Send</button>
+            </div>
+          </div>
+          <div class="home-indicator"></div>
         </div>
 
         <!-- Home indicator -->
@@ -1466,15 +1534,38 @@
     }, 5000);
   }
 
-  // Camera tile — adds sample image
+  // ── Camera flow ──
+  var cameraView   = document.getElementById('cameraView');
+  var cameraMsg    = document.getElementById('cameraMsg');
+  var cameraBottom = document.getElementById('cameraBottom');
+  var btnCapture   = document.getElementById('btnCapture');
+  var btnRetake    = document.getElementById('btnRetake');
+  var btnSendPhoto = document.getElementById('btnSendPhoto');
+  var cameraClose  = document.getElementById('cameraClose');
+  var feedbackBnr  = document.getElementById('feedbackBanner');
+
   tileCamera.addEventListener('click', function() {
+    closeSheet();
+    cameraView.classList.add('open');
+    feedbackBnr.classList.remove('open');
+    cameraBottom.style.display = '';
+    cameraMsg.textContent = 'Point camera at your completed task';
+    showStateLabel('Camera');
+  });
+
+  btnCapture.addEventListener('click', function() {
+    cameraView.classList.remove('open');
     var item = { type: 'image', loading: true, bg: 'linear-gradient(135deg, #7cc4fa 0%, #36bffa 50%, #0ba5ec 100%)' };
     mediaItems.push(item);
     scheduleLoad(item);
-    closeSheet();
     renderMedia();
     updateSendMic();
     showStateLabel('Photo Added');
+  });
+
+  cameraClose.addEventListener('click', function() {
+    cameraView.classList.remove('open');
+    feedbackBnr.classList.remove('open');
   });
 
   // Photos tile — adds sample images
