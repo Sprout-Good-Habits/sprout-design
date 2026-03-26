@@ -93,12 +93,18 @@
   pointer-events:none;
 }
 
-/* ── Tablet: reduce overlap ── */
+/* ── Tablet: reduce overlap (excluded from demos which always show mobile) ── */
 @media (min-width:640px) {
   .agc-avatar {
     margin-right:calc(-1 * var(--spacing-xl, 16px));
   }
   .agc-avatar:last-child {
+    margin-right:0;
+  }
+  .agc-demo .agc-avatar {
+    margin-right:calc(-1 * var(--spacing-6xl, 48px));
+  }
+  .agc-demo .agc-avatar:last-child {
     margin-right:0;
   }
 }
@@ -143,8 +149,8 @@
     <div class="prose">
       <ul>
         <li><strong>Card container:</strong> Full width &times; 120px height, <code>--radius-4xl</code> (24px) corners, <code>overflow: clip</code>. Background is always <code>--bg-sky</code> &mdash; it does not change per variant or context.</li>
-        <li><strong>Avatar row:</strong> Horizontally centered, positioned <code>--spacing-3xl</code> (24px) above the top edge so characters overflow into the card. Characters are always <strong>grounded</strong> &mdash; the bottom edge of the card clips their lower body, so they never float in empty space.</li>
-        <li><strong>Avatar slot:</strong> Each avatar is 117&times;167px with <code>--spacing-6xl</code> (48px) negative margin for overlap on mobile. On tablet, overlap reduces to <code>--spacing-xl</code> (16px) to give characters more breathing room. The last avatar has no negative margin.</li>
+        <li><strong>Avatar row:</strong> Horizontally centered, positioned <code>--spacing-3xl</code> (-24px) above the top edge so characters overflow into the card. Characters are always <strong>grounded</strong> &mdash; the bottom edge of the card clips their lower body, so they never float in empty space.</li>
+        <li><strong>Avatar slot:</strong> Each avatar is 117&times;167px with <code>--spacing-6xl</code> (-48px) negative margin for overlap on mobile. On tablet, overlap reduces to <code>--spacing-xl</code> (-16px) to give characters more breathing room. The last avatar has no negative margin.</li>
         <li><strong>Rive character:</strong> Uses <code>character2.4.riv</code> with the <code>Village-character</code> artboard. Each avatar can have unique skin tone, hair, and clothing via state machine inputs. <strong>Always grounded</strong> &mdash; the bottom edge of the container always clips the character. It is never floating in empty space.</li>
       </ul>
     </div>
@@ -220,10 +226,10 @@
     <table class="token-table" style="margin-top:var(--spacing-3xl, 24px);">
       <thead><tr><th>Variant</th><th>Avatars</th><th>Overlap (mobile)</th><th>Overlap (tablet)</th><th>Use when</th></tr></thead>
       <tbody>
-        <tr><td>2 users</td><td>2</td><td><code>--spacing-6xl</code> (48px)</td><td><code>--spacing-xl</code> (16px)</td><td>1-on-1 relationships</td></tr>
-        <tr><td>3 users</td><td>3</td><td><code>--spacing-6xl</code> (48px)</td><td><code>--spacing-xl</code> (16px)</td><td>Small family or trio</td></tr>
-        <tr><td>4 users</td><td>4</td><td><code>--spacing-6xl</code> (48px)</td><td><code>--spacing-xl</code> (16px)</td><td>Family or small team</td></tr>
-        <tr><td>5 users</td><td>5</td><td><code>--spacing-6xl</code> (48px)</td><td><code>--spacing-xl</code> (16px)</td><td>Classroom or full group</td></tr>
+        <tr><td>2 users</td><td>2</td><td><code>--spacing-6xl</code> (-48px)</td><td><code>--spacing-xl</code> (-16px)</td><td>1-on-1 relationships</td></tr>
+        <tr><td>3 users</td><td>3</td><td><code>--spacing-6xl</code> (-48px)</td><td><code>--spacing-xl</code> (-16px)</td><td>Small family or trio</td></tr>
+        <tr><td>4 users</td><td>4</td><td><code>--spacing-6xl</code> (-48px)</td><td><code>--spacing-xl</code> (-16px)</td><td>Family or small team</td></tr>
+        <tr><td>5 users</td><td>5</td><td><code>--spacing-6xl</code> (-48px)</td><td><code>--spacing-xl</code> (-16px)</td><td>Classroom or full group</td></tr>
       </tbody>
     </table>
 
@@ -247,9 +253,9 @@
         <tr><td>Card radius</td><td><code>--radius-4xl</code> (24px)</td></tr>
         <tr><td>Card overflow</td><td><code>clip</code></td></tr>
         <tr><td>Avatar slot size</td><td>117 &times; 167px</td></tr>
-        <tr><td>Avatar overlap (mobile)</td><td><code>--spacing-6xl</code> (48px) negative margin-right</td></tr>
-        <tr><td>Avatar overlap (tablet)</td><td><code>--spacing-xl</code> (16px) negative margin-right</td></tr>
-        <tr><td>Row top offset</td><td><code>--spacing-3xl</code> (24px) negative top</td></tr>
+        <tr><td>Avatar overlap (mobile)</td><td><code>--spacing-6xl</code> (-48px) negative margin-right</td></tr>
+        <tr><td>Avatar overlap (tablet)</td><td><code>--spacing-xl</code> (-16px) negative margin-right</td></tr>
+        <tr><td>Row top offset</td><td><code>--spacing-3xl</code> (-24px) negative top</td></tr>
         <tr><td>Rive file</td><td><code>character2.4.riv</code></td></tr>
         <tr><td>Artboard</td><td><code>Village-character</code></td></tr>
         <tr><td>State machine</td><td><code>State Machine 1</code></td></tr>
