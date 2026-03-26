@@ -251,13 +251,35 @@
 .cat-tab { flex: 1; }
 .cat-tab .tf-icon { font-size: 24px; width: 24px; height: 24px; mix-blend-mode: luminosity; transition: mix-blend-mode 0.2s cubic-bezier(0.25, 0.1, 0.25, 1); }
 .cat-tab:hover { background: var(--bg-primary-hover, #fafafa); }
-.cat-tab.active {
+.cat-tab.active .tf-icon { mix-blend-mode: normal; }
+
+/* ── Sliding pill ── */
+.category-tabs {
+  position: relative;
+}
+.slide-pill {
+  position: absolute;
+  top: var(--spacing-xs, 4px);
+  left: var(--spacing-xs, 4px);
+  height: 44px;
+  border-radius: var(--radius-sm, 6px);
   background: var(--bg-primary, #ffffff);
   box-shadow:
     0 1px 3px 0 rgba(10,13,18,0.1),
     0 1px 2px -1px rgba(10,13,18,0.1);
+  transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+              width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  pointer-events: none;
+  z-index: 0;
 }
-.cat-tab.active .tf-icon { mix-blend-mode: normal; }
+.cat-tab {
+  position: relative;
+  z-index: 1;
+}
+.cat-tab.active {
+  background: transparent;
+  box-shadow: none;
+}
 
 /* ── Panel content ── */
 .panel-content {
@@ -504,6 +526,7 @@
                 <div class="customizer-panel">
                   <!-- Category tabs (TossFace icons) -->
                   <div class="category-tabs" id="category-tabs">
+                    <div class="slide-pill" id="slide-pill"></div>
                     <button class="cat-tab active" data-panel="skin" aria-label="Skin tone" title="Skin tone"><span class="tf-icon">&#x1F600;</span></button>
                     <button class="cat-tab" data-panel="hair" aria-label="Hairstyle" title="Hairstyle"><span class="tf-icon">&#x1FAAE;</span></button>
                   </div>
@@ -704,8 +727,23 @@
     });
   }
 
-  // ── Tab switching ──
+  // ── Tab switching with sliding pill ──
+  var tabContainer = document.getElementById('category-tabs');
+  var pill = document.getElementById('slide-pill');
   var tabs = document.querySelectorAll('.cat-tab');
+
+  function movePill(tab) {
+    var containerRect = tabContainer.getBoundingClientRect();
+    var tabRect = tab.getBoundingClientRect();
+    var offsetLeft = tabRect.left - containerRect.left;
+    pill.style.width = tabRect.width + 'px';
+    pill.style.transform = 'translateX(' + (offsetLeft - 4) + 'px)';
+  }
+
+  // Init pill on first active tab
+  var firstActive = tabContainer.querySelector('.cat-tab.active');
+  if (firstActive && pill) movePill(firstActive);
+
   tabs.forEach(function(tab) {
     tab.addEventListener('click', function() {
       var panel = tab.getAttribute('data-panel');
@@ -714,6 +752,7 @@
       document.querySelectorAll('.panel-section').forEach(function(p) { p.classList.remove('active'); });
       var target = document.getElementById('panel-' + panel);
       if (target) target.classList.add('active');
+      if (pill) movePill(tab);
     });
   });
 
