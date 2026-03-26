@@ -22,6 +22,7 @@
   },
   "variants": [
     { "name": "Default", "useWhen": "Standard navigation with back button", "pairWith": [] },
+    { "name": "Save", "useWhen": "Edit flows with cancel and primary save action", "pairWith": ["ButtonUtility"] },
     { "name": "Chat", "useWhen": "Chat screens with title and avatar group", "pairWith": ["AvatarGroup"] },
     { "name": "Quest", "useWhen": "Exercise flow with progress bar and stat counters", "pairWith": ["ProgressBar", "ButtonUtility"] },
     { "name": "Kid Home", "useWhen": "Home screen with shield and stat display", "pairWith": ["ButtonUtility"] },
@@ -151,6 +152,14 @@
   box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae) !important;
   cursor:not-allowed;
   pointer-events:none;
+}
+.btn-util-primary {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-util-primary:hover {
+  background:var(--brand-400, #36bffa);
 }
 .btn-util-pressed {
   box-shadow:none !important;
@@ -423,7 +432,7 @@
         <span class="demo-label">Compact Large</span>
         <div class="toolbar toolbar-compact-large" style="width:340px;">
           <span class="toolbar-title-display">Explore</span>
-          <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div>
+          <div class="btn-util btn-util-primary"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div>
         </div>
       </div>
       <div class="demo-item">
@@ -431,7 +440,7 @@
         <div class="toolbar toolbar-large-title" style="width:340px;">
           <div class="toolbar-controls">
             <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
-            <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+            <div class="trailing"><div class="btn-util btn-util-primary"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div></div>
           </div>
           <div class="toolbar-title-block">
             <span class="toolbar-title-display">My Family</span>
@@ -444,7 +453,7 @@
         <div class="toolbar toolbar-title-2-line" style="width:340px;">
           <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
           <div class="toolbar-center"><span class="toolbar-center-title">Coach Michaela</span><span class="toolbar-center-subtitle">Math &middot; Reading</span></div>
-          <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-primary"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div></div>
         </div>
       </div>
       <div class="demo-item">
@@ -452,7 +461,7 @@
         <div class="toolbar toolbar-default" style="width:340px;position:relative;">
           <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
           <span class="toolbar-abs-title">Settings</span>
-          <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-primary"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div></div>
         </div>
       </div>
       <div class="demo-item">
@@ -570,14 +579,14 @@
     <!-- 1. Compact Large -->
     <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Compact Large</h3>
     <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Large bold title with a single trailing action. Used for top-level section headers.</p>
-    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> &mdash; &nbsp;&middot;&nbsp; <strong>Center:</strong> Large title (left-aligned) &nbsp;&middot;&nbsp; <strong>Trailing:</strong> 1 symbol</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> &mdash; &nbsp;&middot;&nbsp; <strong>Center:</strong> Large title (left-aligned) &nbsp;&middot;&nbsp; <strong>Trailing:</strong> Primary</p>
     <div class="demo">
       <div class="phone-frame phone-frame-white">
         <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
         <div class="toolbar toolbar-compact-large">
           <span class="toolbar-title-display">Explore</span>
-          <div class="btn-util">
-            <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div>
+          <div class="btn-util btn-util-primary">
+            <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
           </div>
         </div>
         <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
@@ -587,14 +596,14 @@
     <!-- 2. Large Title -->
     <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Large Title</h3>
     <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Two-row layout: icon controls on top, large title + optional subtitle below. Used at the top of scrollable pages that collapse on scroll.</p>
-    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> 1 symbol &nbsp;&middot;&nbsp; <strong>Center:</strong> Large title + subtitle (below) &nbsp;&middot;&nbsp; <strong>Trailing:</strong> 1 symbol</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> 1 symbol &nbsp;&middot;&nbsp; <strong>Center:</strong> Large title + subtitle (below) &nbsp;&middot;&nbsp; <strong>Trailing:</strong> Primary</p>
     <div class="demo" style="gap:24px;">
       <div class="phone-frame phone-frame-white" style="height:240px;">
         <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
         <div class="toolbar toolbar-large-title">
           <div class="toolbar-controls">
             <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
-            <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+            <div class="trailing"><div class="btn-util btn-util-primary"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div></div>
           </div>
           <div class="toolbar-title-block">
             <span class="toolbar-title-display">My Family</span>
@@ -608,14 +617,14 @@
     <!-- 3. Title 2 Line -->
     <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Title 2 Line</h3>
     <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Centered title with optional subtitle, flanked by leading and trailing actions. Used for detail pages with metadata.</p>
-    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Back / icon &nbsp;&middot;&nbsp; <strong>Center:</strong> Centered title + subtitle &nbsp;&middot;&nbsp; <strong>Trailing:</strong> 1 symbol</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> 1 symbol &nbsp;&middot;&nbsp; <strong>Center:</strong> Centered title + subtitle &nbsp;&middot;&nbsp; <strong>Trailing:</strong> Primary</p>
     <div class="demo" style="gap:24px;">
       <div class="phone-frame phone-frame-white">
         <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
         <div class="toolbar toolbar-title-2-line">
-          <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
+          <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
           <div class="toolbar-center"><span class="toolbar-center-title">Coach Michaela</span><span class="toolbar-center-subtitle">Math &middot; Reading</span></div>
-          <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-primary"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div></div>
         </div>
         <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
       </div>
@@ -624,14 +633,30 @@
     <!-- 4. Default -->
     <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Default</h3>
     <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Centered title with leading back button and trailing action. The most common toolbar for drill-in detail screens.</p>
-    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Back &nbsp;&middot;&nbsp; <strong>Center:</strong> Centered title &nbsp;&middot;&nbsp; <strong>Trailing:</strong> 1 symbol</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> 1 symbol &nbsp;&middot;&nbsp; <strong>Center:</strong> Centered title &nbsp;&middot;&nbsp; <strong>Trailing:</strong> Primary</p>
     <div class="demo">
       <div class="phone-frame phone-frame-white">
         <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
         <div class="toolbar toolbar-default">
           <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
           <span class="toolbar-abs-title">Settings</span>
-          <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-primary"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div></div>
+        </div>
+        <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
+      </div>
+    </div>
+
+    <!-- 4b. Save -->
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:32px 0 8px">Save</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Edit flows where the user can cancel or save. Leading cancel (X) paired with a primary-styled save button (checkmark) in the trailing slot.</p>
+    <p style="color:var(--text-tertiary);font-size:12px;margin-bottom:12px"><strong>Leading:</strong> Cancel &nbsp;&middot;&nbsp; <strong>Center:</strong> Centered title &nbsp;&middot;&nbsp; <strong>Trailing:</strong> Primary (save checkmark)</p>
+    <div class="demo">
+      <div class="phone-frame phone-frame-white">
+        <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
+        <div class="toolbar toolbar-default">
+          <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div></div>
+          <span class="toolbar-abs-title">Edit profile</span>
+          <div class="trailing"><div class="btn-util btn-util-primary"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div></div>
         </div>
         <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
       </div>
@@ -951,6 +976,10 @@
     <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Types</h3>
     <div class="state-grid" style="grid-template-columns:repeat(4, 1fr);">
       <div class="state-cell">
+        <span class="state-cell-label">Primary</span>
+        <div class="btn-util btn-util-primary"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div>
+      </div>
+      <div class="state-cell">
         <span class="state-cell-label">Back</span>
         <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div>
       </div>
@@ -1111,11 +1140,11 @@
       <thead><tr><th>Property</th><th>Value</th></tr></thead>
       <tbody>
         <tr><td>Size</td><td>32 &times; 32px</td></tr>
-        <tr><td>Radius</td><td><code>--radius-full</code> (9999px)</td></tr>
-        <tr><td>Border</td><td>2px solid white</td></tr>
-        <tr><td>User background</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
-        <tr><td>Sprout background</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
-        <tr><td>Group overlap</td><td><code>--spacing-md</code> (&minus;8px margin-right per avatar)</td></tr>
+        <tr><td>Radius</td><td><code>--radius-full</code></td></tr>
+        <tr><td>Border</td><td>2px solid <code>--fg-white</code></td></tr>
+        <tr><td>User background</td><td><code>--bg-sky</code></td></tr>
+        <tr><td>Sprout background</td><td><code>--bg-sky</code></td></tr>
+        <tr><td>Group overlap</td><td>&minus;<code>--spacing-md</code></td></tr>
       </tbody>
     </table>
   </div>
@@ -1127,10 +1156,11 @@
     <table class="token-table">
       <thead><tr><th>Style</th><th>Context</th><th>Leading</th><th>Center</th><th>Trailing</th></tr></thead>
       <tbody>
-        <tr><td><strong>Compact Large</strong></td><td>Top-level sections</td><td>&mdash;</td><td>Large title (left)</td><td>1 symbol</td></tr>
-        <tr><td><strong>Large Title</strong></td><td>Scrollable pages</td><td>1 symbol</td><td>Large title + subtitle</td><td>1 symbol</td></tr>
-        <tr><td><strong>Title 2 Line</strong></td><td>Detail + metadata</td><td>Back / icon</td><td>Title + subtitle (centered)</td><td>1 symbol</td></tr>
-        <tr><td><strong>Default</strong></td><td>Standard drill-in</td><td>Back</td><td>Title (centered)</td><td>1 symbol</td></tr>
+        <tr><td><strong>Compact Large</strong></td><td>Top-level sections</td><td>&mdash;</td><td>Large title (left)</td><td>Primary</td></tr>
+        <tr><td><strong>Large Title</strong></td><td>Scrollable pages</td><td>1 symbol</td><td>Large title + subtitle</td><td>Primary</td></tr>
+        <tr><td><strong>Title 2 Line</strong></td><td>Detail + metadata</td><td>1 symbol</td><td>Title + subtitle (centered)</td><td>Primary</td></tr>
+        <tr><td><strong>Default</strong></td><td>Standard drill-in</td><td>1 symbol</td><td>Title (centered)</td><td>Primary</td></tr>
+        <tr><td><strong>Save</strong></td><td>Edit flows</td><td>Cancel (X)</td><td>Title (centered)</td><td>Primary</td></tr>
         <tr><td><strong>Chat</strong></td><td>Messaging threads</td><td>Back</td><td>Title (centered)</td><td>User group</td></tr>
         <tr><td><strong>Kid home</strong></td><td>Kid&rsquo;s main feed</td><td>Shield</td><td>&mdash;</td><td>Stat counters + avatar</td></tr>
         <tr><td><strong>Quest map</strong></td><td>Curriculum world</td><td>Back</td><td>Large title + subtitle</td><td>Stat counters (3)</td></tr>
@@ -1148,7 +1178,7 @@
     <table class="token-table">
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
       <tbody>
-        <tr><td><code>style</code></td><td>Enum</td><td>Default</td><td>Compact Large, Large Title, Title 2 Line, Default, Chat, Kid home, Quest map, Quest, Quest 2</td></tr>
+        <tr><td><code>style</code></td><td>Enum</td><td>Default</td><td>Compact Large, Large Title, Title 2 Line, Default, Save, Chat, Kid home, Quest map, Quest, Quest 2</td></tr>
         <tr><td><code>showSubtitle</code></td><td>Boolean</td><td>true</td><td>Toggle subtitle visibility (Large Title &amp; Title 2 Line only)</td></tr>
       </tbody>
     </table>
@@ -1157,7 +1187,7 @@
     <table class="token-table">
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
       <tbody>
-        <tr><td><code>type</code></td><td>Enum</td><td>Back</td><td>Back, Cancel, 1 symbol, 2 symbol, 3 symbol, User group</td></tr>
+        <tr><td><code>type</code></td><td>Enum</td><td>Back</td><td>Back, Cancel, 1 symbol, 2 symbol, 3 symbol, User group, Primary</td></tr>
         <tr><td><code>icon</code></td><td>Icon slot</td><td>circle</td><td>Swappable icon content (1/2/3 symbol types)</td></tr>
       </tbody>
     </table>
@@ -1177,22 +1207,26 @@
     <table class="token-table">
       <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
       <tbody>
-        <tr><td>Horizontal padding</td><td><code>--spacing-xl</code></td><td>16px</td></tr>
-        <tr><td>Bottom padding</td><td><code>--spacing-md</code></td><td>8px</td></tr>
-        <tr><td>Button background</td><td><code>--bg-primary</code></td><td>#ffffff</td></tr>
-        <tr><td>Button border</td><td><code>--border-secondary</code></td><td>#e9eaeb (2px solid)</td></tr>
-        <tr><td>Button shadow</td><td>shadow-secondary</td><td>0 3px 0 0 <code>--gray-200</code></td></tr>
-        <tr><td>Button radius</td><td><code>--radius-full</code></td><td>9999px</td></tr>
-        <tr><td>Button padding</td><td><code>--spacing-lg</code></td><td>12px</td></tr>
-        <tr><td>Button padding (sm)</td><td><code>--spacing-md</code></td><td>8px</td></tr>
-        <tr><td>Icon size</td><td>&mdash;</td><td>24 &times; 24px</td></tr>
-        <tr><td>Display title</td><td>Heading 1/Bold</td><td>display-md (36/44px), bold, &minus;0.72px</td></tr>
-        <tr><td>Center title</td><td>Text md/Semibold</td><td>text-md (16/24px), semibold</td></tr>
-        <tr><td>Abs title</td><td>Text lg/Semibold</td><td>text-lg (18/28px), semibold</td></tr>
-        <tr><td>Subtitle</td><td>Text xs/Medium</td><td>text-xs (12/18px), <code>--text-secondary</code></td></tr>
-        <tr><td>Stat label</td><td>Text lg/Medium</td><td>text-lg (18/28px), <code>--text-secondary</code></td></tr>
-        <tr><td>Quest background</td><td><code>--bg-sky</code></td><td>#e0f2fe</td></tr>
-        <tr><td>Quest close icon</td><td>&mdash;</td><td>40 &times; 40px, x-close</td></tr>
+        <tr><td>Horizontal padding</td><td><code>--spacing-xl</code></td><td></td></tr>
+        <tr><td>Bottom padding</td><td><code>--spacing-md</code></td><td></td></tr>
+        <tr><td>Button background</td><td><code>--bg-primary</code></td><td></td></tr>
+        <tr><td>Button background (primary)</td><td><code>--fg-brand-primary</code> / <code>--brand-500</code></td><td></td></tr>
+        <tr><td>Button border</td><td><code>--border-secondary</code></td><td>2px solid</td></tr>
+        <tr><td>Button border (primary)</td><td><code>--brand-600</code></td><td>2px solid</td></tr>
+        <tr><td>Button shadow</td><td><code>shadow-secondary</code></td><td>0 3px 0 0 <code>--gray-200</code></td></tr>
+        <tr><td>Button shadow (primary)</td><td><code>shadow-brand</code></td><td>0 4px 0 0 <code>--brand-600</code></td></tr>
+        <tr><td>Button radius</td><td><code>--radius-full</code></td><td></td></tr>
+        <tr><td>Button padding</td><td><code>--spacing-lg</code></td><td></td></tr>
+        <tr><td>Button padding (sm)</td><td><code>--spacing-md</code></td><td></td></tr>
+        <tr><td>Icon size</td><td></td><td>24 &times; 24px</td></tr>
+        <tr><td>Icon color (primary)</td><td><code>--fg-white</code></td><td></td></tr>
+        <tr><td>Display title</td><td><code>--font-size-display-md</code> / <code>--font-weight-bold</code></td><td></td></tr>
+        <tr><td>Center title</td><td><code>--font-size-text-md</code> / <code>--font-weight-semibold</code></td><td></td></tr>
+        <tr><td>Abs title</td><td><code>--font-size-text-lg</code> / <code>--font-weight-semibold</code></td><td></td></tr>
+        <tr><td>Subtitle</td><td><code>--font-size-text-xs</code> / <code>--font-weight-medium</code></td><td><code>--text-secondary</code></td></tr>
+        <tr><td>Stat label</td><td><code>--font-size-text-md</code> / <code>--font-weight-regular</code></td><td><code>--text-secondary</code></td></tr>
+        <tr><td>Quest background</td><td><code>--bg-sky</code></td><td></td></tr>
+        <tr><td>Quest close icon</td><td></td><td>40 &times; 40px, x-close</td></tr>
       </tbody>
     </table>
   </div>
@@ -1218,7 +1252,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 <script>

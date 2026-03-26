@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Avatar Row</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "AvatarRow",
+  "slug": "avatar-row",
+  "intent": {
+    "purpose": "Display a horizontal list of labeled avatars representing family or group members",
+    "taskContext": ["family-view", "participant-display", "group-selection"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["avatar", "text-label"],
+    "allows": ["rive-character", "silhouette-svg", "user-initial", "sprout-character"],
+    "forbids": ["button"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Showing labeled avatars in a row" },
+    { "name": "Mixed", "useWhen": "Combining character types (Rive, initials, silhouette)" },
+    { "name": "Scrollable", "useWhen": "Items exceed container width" }
+  ],
+  "sizes": [
+    { "name": "XS", "useWhen": "Compact contexts — 24px avatars" },
+    { "name": "SM", "useWhen": "Default — 32px avatars" },
+    { "name": "MD", "useWhen": "Prominent contexts — 40px avatars" }
+  ],
+  "context": {
+    "density": ["default", "compact"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["family-view", "challenge-participants", "coaching-session"]
+  },
+  "relationships": {
+    "related": ["Avatar", "AvatarGroup"],
+    "escalatesTo": [],
+    "degradesTo": ["AvatarGroup"],
+    "groupsWith": []
+  },
+  "states": ["default", "scrollable"],
+  "accessibility": {
+    "role": "list",
+    "keyboard": [],
+    "ariaAttributes": ["aria-label"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+/* ── Avatar (reused from avatar component) ── */
+.avatar {
+  border-radius:var(--radius-full, 9999px);
+  background:var(--bg-sky, #e0f2fe);
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-weight:var(--font-weight-medium, 500);
+  color:var(--text-brand-secondary, #026aa2);
+  line-height:1;
+  overflow:hidden;
+  position:relative;
+}
+
+/* ── Avatar sizes ── */
+.avatar-xs { width:24px; height:24px; font-size:var(--font-size-text-xs, 12px); }
+.avatar-sm { width:32px; height:32px; font-size:var(--font-size-text-sm, 14px); }
+.avatar-md { width:40px; height:40px; font-size:var(--font-size-text-md, 16px); }
+
+/* ── Rive user character ── */
+.avatar-user { background:var(--bg-sky, #e0f2fe); display:block; }
+.avatar-user canvas {
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  display:block; pointer-events:none;
+}
+.avatar-xs.avatar-user canvas { width:35px;  height:50px;  top:-14px; }
+.avatar-sm.avatar-user canvas { width:46px;  height:66px;  top:-19px; }
+.avatar-md.avatar-user canvas { width:58px;  height:83px;  top:-23px; }
+
+/* ── Rive sprout ── */
+.avatar-sprout { background:var(--bg-sky, #e0f2fe); display:block; }
+.avatar-sprout canvas {
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  display:block;
+}
+.avatar-xs.avatar-sprout canvas { width:64px;  height:92px;  top:-27px; }
+.avatar-sm.avatar-sprout canvas { width:86px;  height:124px; top:-36px; }
+.avatar-md.avatar-sprout canvas { width:108px; height:155px; top:-45px; }
+
+/* ── Silhouette ── */
+.avatar .silhouette-img {
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  pointer-events:none;
+}
+.avatar-xs .silhouette-img { width:39px; height:35px; bottom:-8px; }
+.avatar-sm .silhouette-img { width:53px; height:47px; bottom:-10px; }
+.avatar-md .silhouette-img { width:66px; height:58px; bottom:-13px; }
+
+/* ── Avatar Item (avatar + label) ── */
+.avatar-item {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.avatar-item-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-primary, #181d27);
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  width:100%;
+}
+
+/* ── Avatar Item sizes ── */
+.avatar-item-xs {
+  gap:var(--spacing-xxs, 2px);
+  max-width:40px;
+}
+.avatar-item-xs .avatar-item-label {
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:var(--line-height-text-xs, 16px);
+}
+.avatar-item-sm {
+  gap:var(--spacing-xxs, 2px);
+  max-width:52px;
+}
+.avatar-item-sm .avatar-item-label {
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:var(--line-height-text-xs, 16px);
+}
+.avatar-item-md {
+  gap:var(--spacing-xs, 4px);
+  max-width:64px;
+}
+.avatar-item-md .avatar-item-label {
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+}
+
+/* ── Avatar Row ── */
+.avatar-row {
+  display:flex;
+  align-items:flex-start;
+}
+.avatar-row-xs { gap:var(--spacing-md, 8px); }
+.avatar-row-sm { gap:var(--spacing-md, 8px); }
+.avatar-row-md { gap:var(--spacing-lg, 12px); }
+
+/* Scrollable variant */
+.avatar-row-scroll {
+  overflow-x:auto;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.avatar-row-scroll::-webkit-scrollbar { display:none; }
+
+/* ── Add action button ── */
+.avatar-add {
+  background:var(--bg-primary, #ffffff);
+  border:2px dashed var(--border-secondary, #e9eaeb);
+  cursor:pointer;
+  transition:background 0.15s, border-color 0.15s;
+}
+.avatar-add:hover {
+  background:var(--gray-50, #fafafa);
+  border-color:var(--gray-400, #98a2b3);
+}
+.avatar-add svg {
+  width:40%; height:40%;
+  stroke:var(--text-quaternary, #717680);
+  stroke-width:2.5;
+  stroke-linecap:round;
+}
+
+/* ── Background colors (from avatar) ── */
+.avatar-bg-blue      { background:#b9e6fe; }
+.avatar-bg-violet    { background:#ddd6fe; }
+.avatar-bg-pink      { background:#fcceee; }
+.avatar-bg-green     { background:#abefc6; }
+.avatar-bg-yellow    { background:#feee95; }
+.avatar-bg-orange    { background:#f9dbaf; }
+
+/* ── Anatomy diagram ── */
+.anatomy-diagram {
+  display:flex; align-items:center; gap:var(--spacing-4xl, 32px);
+  padding:var(--spacing-3xl, 24px); justify-content:center;
+}
+.anatomy-callout {
+  display:flex; flex-direction:column; gap:var(--spacing-md, 8px);
+}
+.anatomy-callout-item {
+  display:flex; align-items:center; gap:var(--spacing-md, 8px);
+  font-size:var(--font-size-text-sm, 14px);
+  color:var(--text-secondary, #414651);
+}
+.anatomy-callout-dot {
+  width:8px; height:8px; border-radius:var(--radius-full, 9999px);
+  flex-shrink:0;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Avatar Row</div>
+    <div class="sec-desc">A horizontal list of labeled <a href="/components/avatar.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">Avatars</a> representing family or group members. Each item pairs an avatar with a short name label, making it easy to identify and select people at a glance.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use to display <strong>family members</strong> in the village or family view.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use to show <strong>participants</strong> in challenges, coaching sessions, or activities.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Keep labels <strong>short</strong> &mdash; first name or role (Mom, Dad, Nana).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use the <strong>scrollable</strong> variant when items may exceed the container width.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for overlapping/stacked avatars &mdash; use <a href="/components/avatar-group.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar Group</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix avatar sizes within a single row.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="avatar-row avatar-row-sm">
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Olivia</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Liam</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Mom</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Dad</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-sprout"><canvas class="rive-sprout" width="128" height="184"></canvas></div><span class="avatar-item-label">Sprout</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Variants ════ -->
+  <div class="doc-section">
+    <h2>Variants</h2>
+    <p>Avatar rows support different avatar types within the same row pattern.</p>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 4px">Default</h3>
+    <p style="font-size:var(--font-size-text-sm, 14px);color:var(--text-tertiary, #535862);margin:0 0 12px">Showing labeled Rive character avatars in a row. The primary variant when users have customized their village characters.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <div class="avatar-row avatar-row-sm">
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Olivia</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Liam</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Mom</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Dad</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Nana</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 4px">Silhouettes</h3>
+    <p style="font-size:var(--font-size-text-sm, 14px);color:var(--text-tertiary, #535862);margin:0 0 12px">Default placeholder before users customize their characters. Shows who is in the group without a personalized avatar.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <div class="avatar-row avatar-row-sm">
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div><span class="avatar-item-label">Olivia</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div><span class="avatar-item-label">Liam</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div><span class="avatar-item-label">Mom</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div><span class="avatar-item-label">Dad</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div><span class="avatar-item-label">Nana</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 4px">User initials</h3>
+    <p style="font-size:var(--font-size-text-sm, 14px);color:var(--text-tertiary, #535862);margin:0 0 12px">Fallback when neither character nor silhouette data is available. Shows the first letter of the user&rsquo;s name.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <div class="avatar-row avatar-row-sm">
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm">O</div><span class="avatar-item-label">Olivia</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm">L</div><span class="avatar-item-label">Liam</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm">M</div><span class="avatar-item-label">Mom</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm">D</div><span class="avatar-item-label">Dad</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm">N</div><span class="avatar-item-label">Nana</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 4px">Mixed</h3>
+    <p style="font-size:var(--font-size-text-sm, 14px);color:var(--text-tertiary, #535862);margin:0 0 12px">Combines Rive characters with the Sprout mascot. Use when Sprout is a participant alongside family members.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <div class="avatar-row avatar-row-sm">
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Olivia</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Liam</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Mom</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-sprout"><canvas class="rive-sprout" width="128" height="184"></canvas></div><span class="avatar-item-label">Sprout</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 4px">With add action</h3>
+    <p style="font-size:var(--font-size-text-sm, 14px);color:var(--text-tertiary, #535862);margin:0 0 12px">A dashed circle at the end of the row invites the user to add a new member. Use for friend lists, family setup, or any context where adding people is a primary action.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <div class="avatar-row avatar-row-sm">
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Olivia</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Liam</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Mom</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Dad</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-add" aria-label="Add member"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14"/></svg></div><span class="avatar-item-label">Add</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Sizes ════ -->
+  <div class="doc-section">
+    <h2>Sizes</h2>
+    <p>Three sizes scale the avatar, label, spacing, and max-width proportionally.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">XS &middot; 24px</span>
+        <div class="avatar-row avatar-row-xs">
+          <div class="avatar-item avatar-item-xs"><div class="avatar avatar-xs avatar-user"><canvas class="rive-user" width="70" height="100"></canvas></div><span class="avatar-item-label">Olivia</span></div>
+          <div class="avatar-item avatar-item-xs"><div class="avatar avatar-xs avatar-user"><canvas class="rive-user" width="70" height="100"></canvas></div><span class="avatar-item-label">Liam</span></div>
+          <div class="avatar-item avatar-item-xs"><div class="avatar avatar-xs avatar-user"><canvas class="rive-user" width="70" height="100"></canvas></div><span class="avatar-item-label">Mom</span></div>
+          <div class="avatar-item avatar-item-xs"><div class="avatar avatar-xs avatar-user"><canvas class="rive-user" width="70" height="100"></canvas></div><span class="avatar-item-label">Dad</span></div>
+          <div class="avatar-item avatar-item-xs"><div class="avatar avatar-xs avatar-sprout"><canvas class="rive-sprout" width="128" height="184"></canvas></div><span class="avatar-item-label">Sprout</span></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">SM &middot; 32px</span>
+        <div class="avatar-row avatar-row-sm">
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Olivia</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Liam</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Mom</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Dad</span></div>
+          <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-sprout"><canvas class="rive-sprout" width="128" height="184"></canvas></div><span class="avatar-item-label">Sprout</span></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">MD &middot; 40px</span>
+        <div class="avatar-row avatar-row-md">
+          <div class="avatar-item avatar-item-md"><div class="avatar avatar-md avatar-user"><canvas class="rive-user" width="116" height="166"></canvas></div><span class="avatar-item-label">Olivia</span></div>
+          <div class="avatar-item avatar-item-md"><div class="avatar avatar-md avatar-user"><canvas class="rive-user" width="116" height="166"></canvas></div><span class="avatar-item-label">Liam</span></div>
+          <div class="avatar-item avatar-item-md"><div class="avatar avatar-md avatar-user"><canvas class="rive-user" width="116" height="166"></canvas></div><span class="avatar-item-label">Mom</span></div>
+          <div class="avatar-item avatar-item-md"><div class="avatar avatar-md avatar-user"><canvas class="rive-user" width="116" height="166"></canvas></div><span class="avatar-item-label">Dad</span></div>
+          <div class="avatar-item avatar-item-md"><div class="avatar avatar-md avatar-sprout"><canvas class="rive-sprout" width="128" height="184"></canvas></div><span class="avatar-item-label">Sprout</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Scrollable ════ -->
+  <div class="doc-section">
+    <h2>Scrollable</h2>
+    <p>When the row exceeds its container width, it scrolls horizontally. Use a constrained container to demonstrate.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Scrollable (constrained to 240px)</span>
+        <div style="width:240px; overflow:hidden; border:1px dashed var(--border-secondary, #e9eaeb); border-radius:var(--radius-md, 8px); padding:var(--spacing-md, 8px);">
+          <div class="avatar-row avatar-row-sm avatar-row-scroll">
+            <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Olivia</span></div>
+            <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Liam</span></div>
+            <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Mom</span></div>
+            <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Dad</span></div>
+            <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-user"><canvas class="rive-user" width="92" height="132"></canvas></div><span class="avatar-item-label">Nana</span></div>
+            <div class="avatar-item avatar-item-sm"><div class="avatar avatar-sm avatar-sprout"><canvas class="rive-sprout" width="128" height="184"></canvas></div><span class="avatar-item-label">Sprout</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="anatomy-diagram">
+      <div class="avatar-row avatar-row-md" style="transform:scale(1.75);transform-origin:center left;margin-right:60px;">
+        <div class="avatar-item avatar-item-md" style="outline:2px dashed var(--brand-300);outline-offset:3px;">
+          <div class="avatar avatar-md avatar-user" style="outline:2px dashed var(--violet-300);outline-offset:2px;"><canvas class="rive-user" width="116" height="166"></canvas></div>
+          <span class="avatar-item-label" style="outline:1px dashed var(--green-400);outline-offset:1px;">Olivia</span>
+        </div>
+        <div class="avatar-item avatar-item-md">
+          <div class="avatar avatar-md avatar-user"><canvas class="rive-user" width="116" height="166"></canvas></div>
+          <span class="avatar-item-label">Liam</span>
+        </div>
+      </div>
+      <div class="anatomy-callout">
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--brand-300);"></div> Avatar Item (column container)</div>
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--violet-300);"></div> Avatar (XS / SM / MD)</div>
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--green-400);"></div> Name label (truncated)</div>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Avatar Row</strong> &mdash; Horizontal flex container with consistent gap between items. Supports scrollable overflow.</li>
+        <li><strong>Avatar Item</strong> &mdash; A column that stacks an <a href="/components/avatar.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar</a> above a name label, centered and constrained to a max-width.</li>
+        <li><strong>Avatar</strong> &mdash; Reuses the existing <a href="/components/avatar.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar</a> component (Rive character, silhouette, initial, or Sprout).</li>
+        <li><strong>Name label</strong> &mdash; Short text (first name or role) centered below the avatar. Truncated with ellipsis when it exceeds the item max-width.</li>
+        <li><strong>Add action</strong> (optional) &mdash; A dashed-border circle with a <code>+</code> icon at the end of the row. Invites the user to add a new member. Uses <code>--border-secondary</code> dashed border and <code>--text-quaternary</code> icon color.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Avatar Item</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>XS (24px)</th><th>SM (32px)</th><th>MD (40px)</th></tr></thead>
+      <tbody>
+        <tr><td>Avatar size</td><td>24 &times; 24px</td><td>32 &times; 32px</td><td>40 &times; 40px</td></tr>
+        <tr><td>Item gap</td><td><code>--spacing-xxs</code> (2px)</td><td><code>--spacing-xxs</code> (2px)</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Item max-width</td><td>40px</td><td>52px</td><td>64px</td></tr>
+        <tr><td>Label font size</td><td><code>--font-size-text-xs</code> (12px)</td><td><code>--font-size-text-xs</code> (12px)</td><td><code>--font-size-text-sm</code> (14px)</td></tr>
+        <tr><td>Label line height</td><td><code>--line-height-text-xs</code> (16px)</td><td><code>--line-height-text-xs</code> (16px)</td><td><code>--line-height-text-sm</code> (20px)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Row layout</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>XS</th><th>SM</th><th>MD</th></tr></thead>
+      <tbody>
+        <tr><td>Row gap</td><td><code>--spacing-md</code> (8px)</td><td><code>--spacing-md</code> (8px)</td><td><code>--spacing-lg</code> (12px)</td></tr>
+        <tr><td>Direction</td><td colspan="3">Horizontal (flex row)</td></tr>
+        <tr><td>Alignment</td><td colspan="3"><code>flex-start</code></td></tr>
+        <tr><td>Overflow</td><td colspan="3">Scrollable (hidden scrollbar)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Name label</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Color</td><td><code>--text-primary</code> (#181d27)</td></tr>
+        <tr><td>Font weight</td><td><code>--font-weight-regular</code> (400)</td></tr>
+        <tr><td>Font family</td><td><code>--font-family-body</code></td></tr>
+        <tr><td>Alignment</td><td>Center</td></tr>
+        <tr><td>Overflow</td><td><code>text-overflow: ellipsis</code>, single line</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>The row container should have <code>role="list"</code> and a descriptive <code>aria-label</code> (e.g., <code>"Family members"</code>).</li>
+        <li>Each avatar item should have <code>role="listitem"</code>.</li>
+        <li>The visible name label provides the accessible name &mdash; no additional <code>aria-label</code> is needed on the avatar when the label is present.</li>
+        <li>For scrollable rows, ensure focus navigation works with keyboard (left/right arrow keys).</li>
+        <li>Rive <code>&lt;canvas&gt;</code> elements should have <code>pointer-events: none</code> to prevent capturing touch events.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Avatar Row',href:'/components/avatar-row.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+var SM_NAME = 'State Machine 1';
+
+function initRowRive(canvas, opts) {
+  var w = parseInt(canvas.getAttribute('width'), 10) || 92;
+  var h = parseInt(canvas.getAttribute('height'), 10) || 132;
+  canvas.width = w;
+  canvas.height = h;
+  var r;
+  try {
+    r = new rive.Rive({
+      src: opts.src,
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: SM_NAME,
+      artboard: opts.artboard || undefined,
+      fit: rive.Fit.Contain,
+      alignment: opts.alignment || rive.Alignment.Center,
+      onLoad: function() {
+        if (!r) return;
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM_NAME);
+          if (inputs && opts.state) {
+            inputs.forEach(function(inp) {
+              if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+            });
+          }
+        } catch(e) {}
+      }
+    });
+  } catch(e) {
+    console.warn('Rive avatar init failed', e);
+  }
+}
+
+/* Varied user states for demo diversity */
+var userIdx = 0;
+var userStates = [
+  { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
+  { skinID:5,  hairID:0, hairshadeID:0, beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:2 },
+  { skinID:8,  hairID:5, hairshadeID:5, beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1 },
+  { skinID:3,  hairID:1, hairshadeID:7, beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:0 },
+  { skinID:14, hairID:3, hairshadeID:9, beardID:0, beardshadeID:0, clothingcolourID:3, clothingID:5 },
+  { skinID:9,  hairID:6, hairshadeID:2, beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:3 }
+];
+
+document.querySelectorAll('.rive-user').forEach(function(canvas) {
+  initRowRive(canvas, {
+    src: '/character2.4.riv',
+    artboard: 'Village-character',
+    alignment: rive.Alignment.Center,
+    state: userStates[userIdx % userStates.length]
+  });
+  userIdx++;
+});
+
+document.querySelectorAll('.rive-sprout').forEach(function(canvas) {
+  initRowRive(canvas, {
+    src: '/sprout-character.riv',
+    alignment: rive.Alignment.TopCenter,
+    state: { hairID: 1 }
+  });
+});
+</script>
+</body>
+</html>

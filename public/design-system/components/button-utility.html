@@ -26,7 +26,8 @@
     { "name": "1 symbol + value", "useWhen": "Stat counter display (fire streak, gems)", "pairWith": [] },
     { "name": "2 symbol", "useWhen": "Dual icon display", "pairWith": [] },
     { "name": "3 symbol", "useWhen": "Triple icon display", "pairWith": [] },
-    { "name": "User group", "useWhen": "Avatar cluster showing participants", "pairWith": [] }
+    { "name": "User group", "useWhen": "Avatar cluster showing participants", "pairWith": [] },
+    { "name": "Primary", "useWhen": "Confirm or save action with brand emphasis (e.g. checkmark save)", "pairWith": [] }
   ],
   "sizes": [
     { "name": "Standard", "useWhen": "Default — 12px padding" },
@@ -105,8 +106,33 @@
   pointer-events:none;
 }
 
+/* ── Primary variant ── */
+.btn-util-primary {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-util-primary:hover {
+  background:var(--brand-400, #36bffa);
+}
+.btn-util-primary:active {
+  background:var(--brand-500, #0ba5ec);
+  box-shadow:none;
+  transform:translateY(2px);
+}
+.btn-util-primary.btn-util-disabled {
+  background:var(--gray-300, #d5d7da);
+  border-color:var(--gray-400, #a4a7ae);
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);
+}
+
 /* ── Pressed state (for demo) ── */
 .btn-util-pressed {
+  box-shadow:none;
+  transform:translateY(2px);
+}
+.btn-util-primary.btn-util-pressed {
+  background:var(--brand-500, #0ba5ec);
   box-shadow:none;
   transform:translateY(2px);
 }
@@ -190,6 +216,12 @@
   <div class="variant-overview">
     <div class="demo">
       <div class="demo-item">
+        <span class="demo-label">Primary</span>
+        <div class="btn-util btn-util-primary">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        </div>
+      </div>
+      <div class="demo-item">
         <span class="demo-label">Back</span>
         <div class="btn-util">
           <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
@@ -262,6 +294,13 @@
     <p>The utility button comes in seven content configurations. All share the same container, shadow, and state behavior.</p>
 
     <div class="state-grid" style="grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));">
+      <!-- Primary -->
+      <div class="state-cell">
+        <span class="state-cell-label">Primary</span>
+        <div class="btn-util btn-util-primary">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        </div>
+      </div>
       <!-- Back -->
       <div class="state-cell">
         <span class="state-cell-label">Back</span>
@@ -330,6 +369,27 @@
       <div class="state-cell"><span class="state-cell-label">Hover</span></div>
       <div class="state-cell"><span class="state-cell-label">Active / Pressed</span></div>
       <div class="state-cell"><span class="state-cell-label">Disabled</span></div>
+
+      <div class="state-cell">
+        <div class="btn-util btn-util-primary">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-primary" style="background:var(--brand-400, #36bffa);">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-primary btn-util-pressed">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="btn-util btn-util-primary btn-util-disabled">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        </div>
+      </div>
 
       <div class="state-cell">
         <div class="btn-util">
@@ -446,6 +506,12 @@
           <span class="tf-icon">&#x1F600;</span>
         </div>
       </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Save (primary)</span>
+        <div class="btn-util btn-util-primary">
+          <div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -467,6 +533,7 @@
         <tr><td>Quest</td><td>Cancel</td><td>&mdash;</td></tr>
         <tr><td>Quest - Transparent</td><td>Cancel</td><td>&mdash;</td></tr>
         <tr><td>Quest map</td><td>Back</td><td>Fire + Lightning + Medal</td></tr>
+        <tr><td>Edit profile</td><td>Cancel</td><td>Primary (checkmark save)</td></tr>
       </tbody>
     </table>
   </div>
@@ -481,18 +548,30 @@
     <table class="token-table">
       <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
       <tbody>
-        <tr><td>Background (default)</td><td><code>--bg-primary</code> (white)</td></tr>
-        <tr><td>Background (hover)</td><td><code>--bg-primary-hover</code> (#fafafa)</td></tr>
-        <tr><td>Background (disabled)</td><td><code>--fg-disabled-subtle</code> (#d5d7da)</td></tr>
-        <tr><td>Border</td><td>2px solid <code>--border-secondary</code> (#e9eaeb)</td></tr>
-        <tr><td>Border (disabled)</td><td>2px solid <code>--gray-400</code> (#a4a7ae)</td></tr>
-        <tr><td>Radius</td><td><code>--radius-full</code> (9999px)</td></tr>
-        <tr><td>Padding (icon-only, Back, Cancel)</td><td><code>--spacing-lg</code> (12px)</td></tr>
-        <tr><td>Padding (multi-symbol, icon+value)</td><td><code>--spacing-lg</code> (12px), gap <code>--spacing-md</code> (8px)</td></tr>
-        <tr><td>Padding (user group)</td><td><code>--spacing-md</code> (8px)</td></tr>
-        <tr><td>Shadow (default)</td><td>0 3px 0 0 <code>--gray-200</code> (#e9eaeb)</td></tr>
-        <tr><td>Shadow (disabled)</td><td>0 4px 0 0 <code>--gray-400</code> (#a4a7ae)</td></tr>
+        <tr><td>Background (default)</td><td><code>--bg-primary</code></td></tr>
+        <tr><td>Background (hover)</td><td><code>--bg-primary-hover</code></td></tr>
+        <tr><td>Background (disabled)</td><td><code>--gray-300</code></td></tr>
+        <tr><td>Border</td><td>2px solid <code>--border-secondary</code></td></tr>
+        <tr><td>Border (disabled)</td><td>2px solid <code>--gray-400</code></td></tr>
+        <tr><td>Radius</td><td><code>--radius-full</code></td></tr>
+        <tr><td>Padding (icon-only, Back, Cancel)</td><td><code>--spacing-lg</code></td></tr>
+        <tr><td>Padding (multi-symbol, icon+value)</td><td><code>--spacing-lg</code>, gap <code>--spacing-md</code></td></tr>
+        <tr><td>Padding (user group)</td><td><code>--spacing-md</code></td></tr>
+        <tr><td>Shadow (default)</td><td><code>shadow-secondary</code> &mdash; 0 3px 0 0 <code>--gray-200</code></td></tr>
+        <tr><td>Shadow (disabled)</td><td>0 4px 0 0 <code>--gray-400</code></td></tr>
         <tr><td>Shadow (pressed)</td><td>none</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Primary variant</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Background (default)</td><td><code>--fg-brand-primary</code> / <code>--brand-500</code></td></tr>
+        <tr><td>Background (hover)</td><td><code>--brand-400</code></td></tr>
+        <tr><td>Border</td><td>2px solid <code>--brand-600</code></td></tr>
+        <tr><td>Shadow</td><td><code>shadow-brand</code> &mdash; 0 4px 0 0 <code>--brand-600</code></td></tr>
+        <tr><td>Icon color</td><td><code>--fg-white</code> (white)</td></tr>
       </tbody>
     </table>
 
@@ -501,11 +580,11 @@
       <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
       <tbody>
         <tr><td>Icon size</td><td>24 &times; 24px</td></tr>
-        <tr><td>Value font</td><td>Text lg / Medium (18px / 28px)</td></tr>
-        <tr><td>Value color</td><td><code>--text-secondary</code> (#414651)</td></tr>
+        <tr><td>Value font</td><td><code>--font-size-text-md</code> / <code>--font-weight-regular</code></td></tr>
+        <tr><td>Value color</td><td><code>--text-secondary</code></td></tr>
         <tr><td>Avatar size</td><td>32 &times; 32px, <code>--radius-full</code></td></tr>
-        <tr><td>Avatar border</td><td>2px solid white</td></tr>
-        <tr><td>Avatar overlap</td><td>&minus;8px (<code>--spacing-md</code>)</td></tr>
+        <tr><td>Avatar border</td><td>2px solid <code>--fg-white</code></td></tr>
+        <tr><td>Avatar overlap</td><td>&minus;<code>--spacing-md</code></td></tr>
       </tbody>
     </table>
   </div>
@@ -518,7 +597,7 @@
     <table class="token-table">
       <thead><tr><th>Property</th><th>Options</th><th>Default</th></tr></thead>
       <tbody>
-        <tr><td><strong>type</strong></td><td>Back · Cancel · 1 symbol · 2 symbol · 3 symbol · User group · 1 symbol + Value</td><td>Back</td></tr>
+        <tr><td><strong>type</strong></td><td>Back · Cancel · 1 symbol · 2 symbol · 3 symbol · User group · 1 symbol + Value · Primary</td><td>Back</td></tr>
         <tr><td><strong>state</strong></td><td>Default · Hover · Active/Pressed · Disabled</td><td>Default</td></tr>
         <tr><td>1 symbol</td><td>Any 24px icon or emoji</td><td>circle placeholder</td></tr>
         <tr><td>2 symbol</td><td>Second icon/emoji slot</td><td>circle placeholder</td></tr>
@@ -549,7 +628,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 </body>

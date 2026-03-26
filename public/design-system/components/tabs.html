@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Tabs</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Tabs",
+  "slug": "tabs",
+  "intent": {
+    "purpose": "Allow users to switch between related views or categories within the same context",
+    "taskContext": ["content-filtering", "category-switching", "view-toggling"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["tab-button"],
+    "allows": ["icon", "label", "badge"],
+    "forbids": ["nested-tabs"]
+  },
+  "variants": [
+    { "name": "Icon + Label", "useWhen": "Space allows and labels aid comprehension", "pairWith": [] },
+    { "name": "Icon only", "useWhen": "Many tabs or space is limited, icons are self-explanatory", "pairWith": [] },
+    { "name": "Icon + Active Label", "useWhen": "Space is limited but the active tab benefits from a text label", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Medium", "useWhen": "Default — 44px touch target" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline"]
+  },
+  "relationships": {
+    "related": ["Sheet"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": []
+  },
+  "states": ["default", "hover", "current", "active-pressed", "disabled"],
+  "accessibility": {
+    "role": "tablist + tab",
+    "keyboard": ["ArrowLeft", "ArrowRight", "Tab", "Enter", "Space"],
+    "ariaAttributes": ["aria-selected", "aria-controls", "aria-label", "role"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+/* ── TossFace emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Tabs container ── */
+.tabs-container {
+  display:flex;
+  gap:var(--spacing-xs, 4px);
+  padding:var(--spacing-xs, 4px);
+  background:var(--bg-secondary, #fafafa);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-lg, 10px);
+  align-items:center;
+}
+
+/* ── Equal-width: tabs stretch to fill ── */
+.tabs-equal .cat-tab { flex:1; }
+
+/* ── Content-width: tabs size to content, scroll if needed ── */
+.tabs-content-width {
+  overflow-x:auto;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.tabs-content-width::-webkit-scrollbar { display:none; }
+.tabs-content-width .cat-tab { flex:none; }
+
+/* ── Tab button base ── */
+.cat-tab {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--spacing-md, 8px);
+  height:44px;
+  padding:var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-radius:var(--radius-sm, 6px);
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:background 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+             box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  -webkit-tap-highlight-color:transparent;
+  position:relative;
+}
+
+/* ── Icon ── */
+.cat-tab .tf-icon {
+  font-family:'TossFace', sans-serif;
+  font-size:24px;
+  line-height:1;
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  mix-blend-mode:luminosity;
+  transition:mix-blend-mode 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ── Label ── */
+.cat-tab .tab-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-quaternary, #717680);
+  white-space:nowrap;
+  transition:color 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ── States ── */
+
+/* Default — transparent, desaturated icon, muted label */
+.cat-tab:hover {
+  background:var(--bg-primary-hover, #fafafa);
+}
+
+/* Current (selected) */
+.cat-tab.current {
+  background:var(--bg-primary, #ffffff);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.cat-tab.current .tf-icon { mix-blend-mode:normal; }
+.cat-tab.current .tab-label { color:var(--text-secondary, #414651); }
+
+/* Active / Pressed */
+.cat-tab.state-pressed {
+  background:var(--bg-primary, #ffffff);
+  box-shadow:none;
+}
+.cat-tab.state-pressed .tf-icon { mix-blend-mode:normal; }
+.cat-tab.state-pressed .tab-label { color:var(--text-secondary, #414651); }
+
+/* Disabled */
+.cat-tab.state-disabled {
+  cursor:not-allowed;
+  pointer-events:none;
+  opacity:0.5;
+}
+.cat-tab.state-disabled .tf-icon { mix-blend-mode:luminosity; }
+
+/* ── Active label only (icon+active-label variant) ── */
+.tabs-active-label .cat-tab .tab-label { display:none; }
+.tabs-active-label .cat-tab.current .tab-label { display:block; }
+
+/* ── Sliding pill (hero demo) ── */
+.tabs-sliding {
+  position:relative;
+}
+.tabs-sliding .slide-pill {
+  position:absolute;
+  top:var(--spacing-xs, 4px);
+  left:var(--spacing-xs, 4px);
+  height:44px;
+  border-radius:var(--radius-sm, 6px);
+  background:var(--bg-primary, #ffffff);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
+  transition:transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+             width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  pointer-events:none;
+  z-index:0;
+}
+.tabs-sliding .cat-tab {
+  position:relative;
+  z-index:1;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+/* ── Demo helpers ── */
+.demo-tabs-wrap {
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-3xl, 24px);
+}
+.demo-tabs-row {
+  max-width:500px;
+}
+.demo-tabs-row-wide {
+  max-width:700px;
+}
+.hero-demo-hint {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  color:var(--text-quaternary, #717680);
+  margin-top:var(--spacing-lg, 12px);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Tabs</div>
+    <div class="sec-desc">Horizontal segmented control for switching between related views or categories. Uses a pill-in-container pattern with iOS-style sliding transitions.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use tabs when content can be separated into related categories that share the same hierarchy level.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use tabs for sequential steps or navigation between unrelated pages &mdash; use a navigation bar instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Hero demo ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Interactive &middot; tap to switch</span>
+        <div class="demo-tabs-row-wide">
+          <div class="tabs-container tabs-equal tabs-sliding" id="hero-tabs" role="tablist">
+            <div class="slide-pill" id="hero-pill"></div>
+            <button class="cat-tab current" role="tab" aria-selected="true" data-hero-tab="0"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Skin tone</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" data-hero-tab="1"><span class="tf-icon">&#x1FAAE;</span><span class="tab-label">Hairstyle</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" data-hero-tab="2"><span class="tf-icon">&#x1F9E2;</span><span class="tab-label">Headwear</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" data-hero-tab="3"><span class="tf-icon">&#x1F45A;</span><span class="tab-label">Clothing</span></button>
+          </div>
+          <p class="hero-demo-hint">Click any tab to see the iOS-style sliding pill animation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Variants ════ -->
+  <div class="doc-section">
+    <h2>Variants</h2>
+    <p>Tabs come in three display variants depending on the available space and the clarity of the icons used.</p>
+
+    <h3>Icon + Label</h3>
+    <p>The default variant. Each tab shows a TossFace icon alongside a text label. Use when space allows and labels help users understand the categories.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when you have 2&ndash;4 tabs and enough horizontal space for labels.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t truncate labels &mdash; switch to icon-only if space is tight.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Icon + Label</span>
+        <div class="demo-tabs-row">
+          <div class="tabs-container tabs-equal" role="tablist">
+            <button class="cat-tab current" role="tab" aria-selected="true"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Skin tone</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false"><span class="tf-icon">&#x1FAAE;</span><span class="tab-label">Hairstyle</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Icon only</h3>
+    <p>Shows only TossFace icons with no labels. Use when you have many tabs (5+) or when the icons are universally understood. Always provide an <code>aria-label</code> for accessibility.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for 5+ tabs where labels would cause overflow, or for universally understood icons.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use icon-only if the icons are ambiguous &mdash; labels prevent misinterpretation.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Icon only &middot; 7 tabs</span>
+        <div class="demo-tabs-row-wide">
+          <div class="tabs-container tabs-equal" role="tablist">
+            <button class="cat-tab current" role="tab" aria-selected="true" aria-label="Skin tone"><span class="tf-icon">&#x1F600;</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Eyes"><span class="tf-icon">&#x1F440;</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Hair"><span class="tf-icon">&#x1FAAE;</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Facial hair"><span class="tf-icon">&#x1F453;</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Headwear"><span class="tf-icon">&#x1F9E2;</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Clothing"><span class="tf-icon">&#x1F45A;</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Background"><span class="tf-icon">&#x1FA9F;</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Icon + Active Label</h3>
+    <p>Shows icons for all tabs but reveals a text label only on the currently selected tab. A good middle ground when you have 3&ndash;5 tabs and want to confirm the user&rsquo;s selection without cluttering inactive tabs.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when 3&ndash;5 tabs and you want to reinforce which tab is active with a label.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix with icon+label &mdash; pick one variant per tab bar.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Icon + Active Label</span>
+        <div class="demo-tabs-row-wide">
+          <div class="tabs-container tabs-equal tabs-active-label" role="tablist">
+            <button class="cat-tab current" role="tab" aria-selected="true"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Skin tone</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Eyes"><span class="tf-icon">&#x1F440;</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Hair"><span class="tf-icon">&#x1FAAE;</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Headwear"><span class="tf-icon">&#x1F9E2;</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false" aria-label="Clothing"><span class="tf-icon">&#x1F45A;</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Layout ════ -->
+  <div class="doc-section">
+    <h2>Layout</h2>
+    <p>Tabs support two layout modes that control how tabs distribute within the container.</p>
+
+    <h3>Equal width</h3>
+    <p>Each tab stretches equally to fill the container. Use when you have a fixed number of tabs (2&ndash;5) and want a balanced, symmetrical appearance.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Equal width &middot; 3 tabs</span>
+        <div class="demo-tabs-row">
+          <div class="tabs-container tabs-equal" role="tablist">
+            <button class="cat-tab current" role="tab" aria-selected="true"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Face</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false"><span class="tf-icon">&#x1FAAE;</span><span class="tab-label">Hair</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false"><span class="tf-icon">&#x1F45A;</span><span class="tab-label">Outfit</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use equal width when all tabs are roughly the same length and the count is low (2&ndash;5).</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t force equal width on 6+ tabs &mdash; the touch targets become too narrow.</li>
+      </ul>
+    </div>
+
+    <h3>Content width</h3>
+    <p>Each tab sizes to its content. The container scrolls horizontally with a hidden scrollbar when tabs overflow. Use when tab labels vary in length or you have many tabs.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Content width &middot; scrollable</span>
+        <div class="demo-tabs-row" style="max-width:360px;">
+          <div class="tabs-container tabs-content-width" role="tablist">
+            <button class="cat-tab current" role="tab" aria-selected="true"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Skin tone</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false"><span class="tf-icon">&#x1FAAE;</span><span class="tab-label">Hairstyle</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false"><span class="tf-icon">&#x1F453;</span><span class="tab-label">Facial hair</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false"><span class="tf-icon">&#x1F9E2;</span><span class="tab-label">Headwear</span></button>
+            <button class="cat-tab" role="tab" aria-selected="false"><span class="tf-icon">&#x1F45A;</span><span class="tab-label">Clothing</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use content width when tab labels vary significantly in length or when you have 5+ tabs.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t hide the scroll affordance entirely &mdash; ensure the last visible tab is partially clipped to hint at scrollability.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>Each tab button has five states. The selected tab uses a white pill with a subtle shadow to lift it from the container, following iOS segmented control conventions.</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(5, 1fr);">
+      <div class="state-cell"><span class="state-cell-label">Default</span></div>
+      <div class="state-cell"><span class="state-cell-label">Hover</span></div>
+      <div class="state-cell"><span class="state-cell-label">Current</span></div>
+      <div class="state-cell"><span class="state-cell-label">Pressed</span></div>
+      <div class="state-cell"><span class="state-cell-label">Disabled</span></div>
+
+      <div class="state-cell">
+        <button class="cat-tab" style="pointer-events:none"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Label</span></button>
+      </div>
+      <div class="state-cell">
+        <button class="cat-tab" style="pointer-events:none;background:var(--bg-primary-hover, #fafafa)"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Label</span></button>
+      </div>
+      <div class="state-cell">
+        <button class="cat-tab current" style="pointer-events:none"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Label</span></button>
+      </div>
+      <div class="state-cell">
+        <button class="cat-tab state-pressed" style="pointer-events:none"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Label</span></button>
+      </div>
+      <div class="state-cell">
+        <button class="cat-tab state-disabled" style="pointer-events:none"><span class="tf-icon">&#x1F600;</span><span class="tab-label">Label</span></button>
+      </div>
+    </div>
+
+    <table class="token-table" style="margin-top:var(--spacing-3xl, 24px);">
+      <thead><tr><th>Property</th><th>Default</th><th>Hover</th><th>Current</th><th>Pressed</th><th>Disabled</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td>transparent</td><td><code>--bg-primary-hover</code></td><td><code>--bg-primary</code></td><td><code>--bg-primary</code></td><td>transparent</td></tr>
+        <tr><td>Shadow</td><td>none</td><td><code>shadow-sm</code></td><td><code>shadow-sm</code></td><td>none</td><td>none</td></tr>
+        <tr><td>Icon blend</td><td>luminosity</td><td>luminosity</td><td>normal</td><td>normal</td><td>luminosity</td></tr>
+        <tr><td>Label color</td><td><code>--text-quaternary</code></td><td><code>--text-quaternary</code></td><td><code>--text-secondary</code></td><td><code>--text-secondary</code></td><td><code>--text-quaternary</code></td></tr>
+        <tr><td>Opacity</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0.5</td></tr>
+        <tr><td>Cursor</td><td>pointer</td><td>pointer</td><td>pointer</td><td>pointer</td><td>not-allowed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Animation ════ -->
+  <div class="doc-section">
+    <h2>Animation</h2>
+    <p>Tab switching follows iOS segmented control principles: the active pill slides smoothly to the newly selected tab rather than snapping instantly. This gives spatial continuity and helps users track which tab they selected.</p>
+
+    <h3>Transition spec</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Duration</td><td><strong>200ms</strong></td><td>Fast enough to feel responsive, slow enough to be perceived</td></tr>
+        <tr><td>Easing</td><td><code>cubic-bezier(0.25, 0.1, 0.25, 1.0)</code></td><td>iOS standard ease &mdash; smooth deceleration</td></tr>
+        <tr><td>Properties</td><td><code>background, box-shadow</code></td><td>Only visual properties, no layout shift</td></tr>
+        <tr><td>Reduced motion</td><td><code>duration: 0ms</code></td><td>Respect <code>prefers-reduced-motion: reduce</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Implementation</h3>
+    <p>For a true iOS-style sliding pill, position a pseudo-element behind the tabs and animate its <code>transform: translateX()</code> to the selected tab&rsquo;s position. This avoids animating <code>width</code> or <code>left</code> (which trigger layout) and runs entirely on the compositor for 60fps.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>CSS approach:</strong> Apply <code>transition: background 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)</code> on each tab button. The active background and shadow will crossfade smoothly.</li>
+        <li><strong>Sliding pill approach (advanced):</strong> Use an absolutely positioned <code>::before</code> on the container whose <code>width</code> and <code>transform</code> are set via CSS custom properties (<code>--tab-left</code>, <code>--tab-width</code>) updated by JavaScript on tab change. Animate with <code>transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)</code>.</li>
+        <li><strong>Reduced motion:</strong> Wrap transitions in <code>@media (prefers-reduced-motion: no-preference) { }</code>. When motion is reduced, the pill should snap instantly.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Overflow ════ -->
+  <div class="doc-section">
+    <h2>Overflow &amp; Scrolling</h2>
+    <p>When the tab count exceeds the available width (typically 5+ with labels, or 8+ icon-only), the container scrolls horizontally with a hidden scrollbar.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Hidden scrollbar:</strong> Use <code>scrollbar-width: none</code> and <code>::-webkit-scrollbar { display: none }</code> to hide the browser scrollbar while keeping swipe/drag scrolling functional.</li>
+        <li><strong>Clip hint:</strong> The last partially visible tab acts as a scroll affordance &mdash; do not add padding that hides this clipping.</li>
+        <li><strong>Scroll-into-view:</strong> When a tab is selected programmatically or via keyboard, scroll it into view with <code>scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })</code>.</li>
+        <li><strong>Touch:</strong> Use <code>-webkit-overflow-scrolling: touch</code> for momentum scrolling on iOS.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token Reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All tab styles map to Sprout design tokens.</p>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Container background</td><td><code>--bg-secondary</code> (#fafafa)</td></tr>
+        <tr><td>Container border</td><td><code>1px solid --border-secondary</code></td></tr>
+        <tr><td>Container radius</td><td><code>--radius-lg</code> (10px)</td></tr>
+        <tr><td>Container padding</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Tab gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Tab height</td><td>44px</td></tr>
+        <tr><td>Tab padding</td><td><code>--spacing-md</code> (8px) &times; <code>--spacing-lg</code> (12px)</td></tr>
+        <tr><td>Tab radius</td><td><code>--radius-sm</code> (6px)</td></tr>
+        <tr><td>Tab gap (icon&ndash;label)</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Icon size</td><td>24 &times; 24px (TossFace)</td></tr>
+        <tr><td>Font</td><td><code>--font-family-body</code> / <code>--font-weight-semibold</code> (600)</td></tr>
+        <tr><td>Font size</td><td><code>--font-size-text-md</code> (16px)</td></tr>
+        <tr><td>Line height</td><td><code>--line-height-text-md</code> (24px)</td></tr>
+        <tr><td>Active shadow</td><td><code>shadow-sm</code> (0 1px 3px, 0 1px 2px)</td></tr>
+        <tr><td>Transition</td><td>200ms <code>cubic-bezier(0.25, 0.1, 0.25, 1)</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Roles:</strong> The container must have <code>role="tablist"</code>. Each tab button must have <code>role="tab"</code>. Each associated panel must have <code>role="tabpanel"</code>.</li>
+        <li><strong>ARIA:</strong> Set <code>aria-selected="true"</code> on the active tab, <code>"false"</code> on all others. Link tabs to panels with <code>aria-controls="panel-id"</code> and panels back with <code>aria-labelledby="tab-id"</code>.</li>
+        <li><strong>Keyboard:</strong> Use roving <code>tabindex</code> &mdash; the active tab has <code>tabindex="0"</code>, all others <code>tabindex="-1"</code>. <kbd>ArrowLeft</kbd> / <kbd>ArrowRight</kbd> move focus between tabs. <kbd>Home</kbd> / <kbd>End</kbd> jump to first/last. <kbd>Enter</kbd> or <kbd>Space</kbd> activate the focused tab.</li>
+        <li><strong>Icon-only:</strong> When labels are hidden, every tab <strong>must</strong> have an <code>aria-label</code> describing the category (e.g. <code>aria-label="Skin tone"</code>).</li>
+        <li><strong>Touch targets:</strong> The 44px tab height meets the minimum 44&times;44px touch target guideline (Apple HIG / WCAG 2.5.8).</li>
+        <li><strong>Motion:</strong> All transitions respect <code>prefers-reduced-motion</code>. Wrap animation declarations in <code>@media (prefers-reduced-motion: no-preference)</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+(function() {
+  var container = document.getElementById('hero-tabs');
+  var pill = document.getElementById('hero-pill');
+  var tabs = container.querySelectorAll('.cat-tab');
+  if (!container || !pill || !tabs.length) return;
+
+  function movePill(tab) {
+    var containerRect = container.getBoundingClientRect();
+    var tabRect = tab.getBoundingClientRect();
+    var offsetLeft = tabRect.left - containerRect.left;
+    pill.style.width = tabRect.width + 'px';
+    pill.style.transform = 'translateX(' + (offsetLeft - 4) + 'px)';
+  }
+
+  // Init pill position
+  movePill(tabs[0]);
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) {
+        t.classList.remove('current');
+        t.setAttribute('aria-selected', 'false');
+        t.querySelector('.tf-icon').style.mixBlendMode = 'luminosity';
+        var label = t.querySelector('.tab-label');
+        if (label) label.style.color = '';
+      });
+      tab.classList.add('current');
+      tab.setAttribute('aria-selected', 'true');
+      tab.querySelector('.tf-icon').style.mixBlendMode = 'normal';
+      var label = tab.querySelector('.tab-label');
+      if (label) label.style.color = 'var(--text-secondary, #414651)';
+      movePill(tab);
+    });
+  });
+
+  // Reposition on resize
+  window.addEventListener('resize', function() {
+    var active = container.querySelector('.cat-tab.current');
+    if (active) movePill(active);
+  });
+})();
+</script>
+</body>
+</html>

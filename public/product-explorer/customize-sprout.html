@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer — Customize Sprout</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<style>
+/* ── Device frame ── */
+.device-wrapper {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 32px;
+  padding: 4px;
+  box-shadow:
+    0 12px 16px -4px rgba(10,13,18,0.08),
+    0 4px 6px -2px rgba(10,13,18,0.03),
+    0 2px 2px -1px rgba(10,13,18,0.04);
+}
+.device-inner-shadow {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 28px;
+  padding: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.device-inner-shadow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 6px 2px rgba(10,13,18,0.08),
+    inset 0 0 4px 2px rgba(10,13,18,0.03);
+  z-index: 6;
+}
+.device-mockup {
+  background: var(--bg-sky, #e0f2fe);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 24px;
+  clip-path: inset(0 round 24px);
+  position: relative;
+}
+.device-screen {
+  width: 402px;
+  height: 874px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-grass, #86cb3c);
+}
+
+/* ── Status bar ── */
+.phone-status {
+  height: 54px;
+  padding: 14px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #181d27);
+  flex-shrink: 0;
+  background: var(--bg-sky, #e0f2fe);
+  position: relative;
+  z-index: 5;
+}
+.phone-status-icons { display: flex; gap: 4px; align-items: center; }
+.phone-status-icons svg { width: 16px; height: 16px; }
+
+/* ── TossFace ── */
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+.tf-icon {
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px; line-height: 1;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Sky + character area ── */
+.screen-sky {
+  background: var(--bg-sky, #e0f2fe);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 4;
+}
+.toolbar-default {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.toolbar-default .leading,
+.toolbar-default .trailing {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+.toolbar-default .trailing {
+  justify-content: flex-end;
+}
+.toolbar-abs-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+}
+.btn-util {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: var(--spacing-lg, 12px);
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.btn-util:hover { background: var(--gray-50, #fafafa); }
+.btn-util:active { box-shadow: none; transform: translateY(2px); }
+.btn-util-primary {
+  background: var(--brand-500, #0ba5ec);
+  border-color: var(--brand-600, #0086c9);
+  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-util-primary:hover { background: var(--brand-400, #36bffa); }
+.btn-util-primary:active { background: var(--brand-500, #0ba5ec); box-shadow: none; transform: translateY(2px); }
+.btn-util-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.btn-util-icon svg { width: 100%; height: 100%; }
+
+/* ── Grass container ── */
+.grass-container {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.sky-spacer {
+  height: 200px;
+  position: relative;
+}
+.grass-edge {
+  height: 18px;
+  background: var(--bg-grass, #86cb3c);
+  border-radius: 18px 18px 0 0;
+}
+.grass-fill {
+  background: var(--bg-grass, #86cb3c);
+  width: 100%;
+  padding-bottom: 0;
+  flex: 1;
+}
+
+/* ── Character (absolute, feet on grass edge) ── */
+.rive-wrap {
+  position: absolute;
+  left: 50%;
+  width: 402px;
+  height: 402px;
+  z-index: 2;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+  bottom: -120px;
+}
+.rive-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Bottom panel ── */
+.customizer-panel {
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+  position: relative;
+  z-index: 4;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+  height: 460px;
+}
+
+/* ── Category tabs (Tabs component) ── */
+.category-tabs {
+  display: flex;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px);
+  margin: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0;
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-lg, 10px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex-shrink: 0;
+}
+.category-tabs::-webkit-scrollbar { display: none; }
+.cat-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md, 8px);
+  height: 44px;
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-radius: var(--radius-sm, 6px);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+              box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+.cat-tab { flex: 1; }
+.cat-tab .tf-icon { font-size: 24px; width: 24px; height: 24px; mix-blend-mode: luminosity; transition: mix-blend-mode 0.2s cubic-bezier(0.25, 0.1, 0.25, 1); }
+.cat-tab:hover { background: var(--bg-primary-hover, #fafafa); }
+.cat-tab.active {
+  background: var(--bg-primary, #ffffff);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.cat-tab.active .tf-icon { mix-blend-mode: normal; }
+
+/* ── Panel content ── */
+.panel-content {
+  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  min-height: 0;
+}
+.panel-content::-webkit-scrollbar { display: none; }
+.panel-section { display: none; }
+.panel-section.active { display: block; }
+
+.panel-subsection {
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.panel-subsection:last-child { margin-bottom: 0; }
+
+.panel-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  margin-bottom: var(--spacing-lg, 12px);
+}
+
+/* ── Color swatches (sm selection tile) ── */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: var(--spacing-md, 8px);
+  margin: 0;
+  padding: 0 0 var(--spacing-xs, 4px);
+}
+.swatch-grid::-webkit-scrollbar { display: none; }
+.swatch {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-xl, 12px);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  background: var(--bg-primary, #ffffff);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  box-sizing: border-box;
+  padding: var(--spacing-lg, 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.swatch-color {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md, 8px);
+  flex-shrink: 0;
+}
+.swatch:active { box-shadow: none; transform: translateY(2px); }
+.swatch.selected {
+  background: var(--brand-100, #e0f2fe);
+  border-color: #7cd4fd;
+  box-shadow: 0 3px 0 0 #7cd4fd;
+}
+
+/* ── Style cards (lg selection tile) ── */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.style-card {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-xl, 12px);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  background: var(--bg-primary, #ffffff);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-tertiary, #535862);
+  box-sizing: border-box;
+  padding: 0;
+  overflow: clip;
+  position: relative;
+}
+.style-card:active { box-shadow: none; transform: translateY(2px); }
+.style-card.selected {
+  background: var(--brand-100, #e0f2fe);
+  border-color: #7cd4fd;
+  box-shadow: 0 3px 0 0 #7cd4fd;
+}
+
+/* ── Controls row ── */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.device-toggle {
+  display: flex;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px);
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-lg, 10px);
+}
+.device-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  height: 36px;
+  border-radius: var(--radius-sm, 6px);
+  border: none;
+  background: transparent;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-quaternary, #717680);
+  cursor: pointer;
+  transition: all 0.15s;
+  box-sizing: border-box;
+}
+.device-btn:hover { color: var(--text-tertiary, #535862); }
+.device-btn.active {
+  background: var(--bg-primary, #fff);
+  color: var(--text-secondary, #414651);
+  box-shadow: 0 1px 3px 0 rgba(10,13,18,0.1), 0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.device-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.device-btn .device-icon { stroke: var(--text-quaternary, #717680); transition: stroke 0.15s; }
+.device-btn.active .device-icon { stroke: var(--text-secondary, #414651); }
+.viewer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── iPad overrides ── */
+.device-wrapper.ipad .device-screen {
+  width: 640px;
+  height: 960px;
+}
+.device-wrapper.ipad .style-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* ── Home indicator ── */
+.home-indicator {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-md, 8px) 0 var(--spacing-sm, 6px);
+  background: transparent;
+  flex-shrink: 0;
+  z-index: 4;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.home-indicator-bar {
+  width: 108px;
+  height: 4px;
+  background: var(--text-primary, #181d27);
+  border-radius: 100px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="page-header">
+        <div class="sec-title">Customize Sprout</div>
+        <div class="sec-desc">Interactive prototype for Sprout character customization. Users can personalize their Sprout's skin tone and hairstyle.</div>
+      </div>
+
+      <div class="controls-row">
+        <div class="device-toggle">
+          <button class="device-btn" data-device="ipad"><svg viewBox="0 0 18 22" fill="none"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
+          <button class="device-btn active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
+        </div>
+      </div>
+
+      <div class="viewer">
+        <div class="device-wrapper" id="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen">
+                <!-- Status bar -->
+                <div class="phone-status">
+                  <span>9:41</span>
+                  <div class="phone-status-icons">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M7.4 2.3c.3-.3.9-.3 1.2 0l5.1 5.1c.3.3.3.9 0 1.2l-5.1 5.1c-.3.3-.9.3-1.2 0L2.3 8.6c-.3-.3-.3-.9 0-1.2L7.4 2.3z" opacity=".3"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="3" height="9" rx="0.5" opacity=".3"/><rect x="5" y="3" width="3" height="10" rx="0.5" opacity=".5"/><rect x="9" y="1" width="3" height="12" rx="0.5" opacity=".7"/><rect x="13" y="0" width="3" height="13" rx="0.5"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="14.5" y="6" width="1.5" height="4" rx="0.5"/><rect x="1.5" y="5.5" width="10" height="5" rx="0.5"/></svg>
+                  </div>
+                </div>
+
+                <!-- Sky area with character -->
+                <div class="screen-sky">
+                  <!-- Toolbar -->
+                  <nav class="toolbar toolbar-default" aria-label="Customize Sprout toolbar">
+                    <div class="leading">
+                      <button class="btn-util" aria-label="Close">
+                        <div class="btn-util-icon">
+                          <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        </div>
+                      </button>
+                    </div>
+                    <span class="toolbar-abs-title">Customize Sprout</span>
+                    <div class="trailing">
+                      <button class="btn-util btn-util-primary" aria-label="Save" id="btn-save">
+                        <div class="btn-util-icon">
+                          <svg fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                        </div>
+                      </button>
+                    </div>
+                  </nav>
+
+                  <!-- Grass with character -->
+                  <div class="grass-container">
+                    <div class="sky-spacer">
+                      <!-- Character — absolute, feet on grass edge -->
+                      <div class="rive-wrap">
+                        <canvas id="sprout-rive" class="rive-canvas" width="804" height="804"></canvas>
+                      </div>
+                    </div>
+                    <div class="grass-edge"></div>
+                    <div class="grass-fill"></div>
+                  </div><!-- /grass-container -->
+                </div><!-- /screen-sky -->
+
+                <!-- Customizer panel -->
+                <div class="customizer-panel">
+                  <!-- Category tabs (TossFace icons) -->
+                  <div class="category-tabs" id="category-tabs">
+                    <button class="cat-tab active" data-panel="skin" aria-label="Skin tone" title="Skin tone"><span class="tf-icon">&#x1F600;</span></button>
+                    <button class="cat-tab" data-panel="hair" aria-label="Hairstyle" title="Hairstyle"><span class="tf-icon">&#x1FAAE;</span></button>
+                  </div>
+
+                  <!-- Panel sections -->
+                  <div class="panel-content">
+
+                    <!-- 1. Skin tone -->
+                    <div class="panel-section active" id="panel-skin">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Skin tone</div>
+                        <div class="swatch-grid" id="skin-swatches"></div>
+                      </div>
+                    </div>
+
+                    <!-- 2. Hairstyle -->
+                    <div class="panel-section" id="panel-hair">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Hairstyle</div>
+                        <div class="style-grid" id="hair-styles"></div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Home indicator -->
+                <div class="home-indicator">
+                  <div class="home-indicator-bar"></div>
+                </div>
+
+              </div><!-- /device-screen -->
+            </div>
+          </div>
+        </div>
+      </div><!-- /viewer -->
+
+    </div>
+  </div>
+  <div class="toc-sidebar" id="toc"></div>
+</div>
+
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'New Activity',href:'/product-explorer/kid-home/new-activity.html',dot:'var(--orange-400)'},{label:'Quests',href:'/product-explorer/quest.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/quest.html'},{label:'Photo',href:'/product-explorer/quest/photo.html'},{label:'Quiz',href:'/product-explorer/quest/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Chat',href:'/product-explorer/task/chat-tier-2.html',dot:'var(--violet-500)',children:[{label:'Chat Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat Tier 3',href:'/product-explorer/task/chat-tier-3.html'}]},{label:'Customize Avatar',href:'/product-explorer/customize-avatar.html',dot:'var(--violet-400)'},{label:'Customize Sprout',href:'/product-explorer/customize-sprout.html',dot:'var(--sprout-400)'}];</script>
+<script src="/product-explorer/shell.js"></script>
+<script>
+(function() {
+  // ── Data ──
+  // Skin colors in display order, mapped to sprout-character.riv skinID
+  var SKINS = [
+    { hex: '#36bffa', id: 7 }, // Blue light/400
+    { hex: '#528bff', id: 6 }, // Blue dark/400
+    { hex: '#a48afb', id: 8 }, // Violet/400
+    { hex: '#f670c7', id: 2 }, // Pink/400
+    { hex: '#f97066', id: 1 }, // Red/400
+    { hex: '#47cd89', id: 5 }, // Green/400
+    { hex: '#acdc79', id: 0 }, // Sprout/300
+    { hex: '#fac515', id: 4 }, // Yellow/400
+    { hex: '#f38744', id: 3 }  // Orange/400
+  ];
+
+  var HAIR_STYLES = [
+    'Style 1','Style 2','Style 3','Style 4','Style 5','Style 6','Style 7','Style 8','Style 9'
+  ];
+
+  // ── State ──
+  var state = {
+    skinID: 0,
+    hairID: 0
+  };
+  var riveInstance = null;
+  var riveInputs = null;
+  var previews = [];
+
+  // ── Rive init ──
+  function initRive() {
+    try {
+      riveInstance = new rive.Rive({
+        src: '/design-system/sprout-character.riv',
+        canvas: document.getElementById('sprout-rive'),
+        autoplay: true,
+        stateMachines: 'State Machine 1',
+        fit: rive.Fit.Contain,
+        alignment: rive.Alignment.Center,
+        onLoad: function() {
+          riveInstance.resizeDrawingSurfaceToCanvas();
+          try {
+            riveInputs = riveInstance.stateMachineInputs('State Machine 1');
+            applyAllInputs();
+          } catch(e) { console.warn('Rive inputs error', e); }
+        }
+      });
+    } catch(e) {
+      console.warn('Rive init failed', e);
+    }
+  }
+
+  function setRiveInput(name, value) {
+    if (!riveInputs) return;
+    for (var i = 0; i < riveInputs.length; i++) {
+      if (riveInputs[i].name === name) {
+        riveInputs[i].value = value;
+        return;
+      }
+    }
+  }
+
+  function applyAllInputs() {
+    setRiveInput('skinID', state.skinID);
+    setRiveInput('hairID', state.hairID);
+  }
+
+  function syncPreviews() {
+    previews.forEach(function(p) {
+      if (!p.inputs) return;
+      p.inputs.forEach(function(inp) {
+        if (inp.name === p.stateKey) {
+          inp.value = p.value;
+        } else if (state.hasOwnProperty(inp.name)) {
+          inp.value = state[inp.name];
+        }
+      });
+    });
+  }
+
+  // ── Build swatches (small color tiles) ──
+  function buildSwatches(containerId, items, stateKey) {
+    var container = document.getElementById(containerId);
+    items.forEach(function(item) {
+      var riveId = item.id;
+      var el = document.createElement('button');
+      el.className = 'swatch' + (riveId === state[stateKey] ? ' selected' : '');
+      el.setAttribute('aria-label', stateKey + ' ' + riveId);
+      var inner = document.createElement('span');
+      inner.className = 'swatch-color';
+      inner.style.background = item.hex;
+      el.appendChild(inner);
+      el.addEventListener('click', function() {
+        state[stateKey] = riveId;
+        setRiveInput(stateKey, riveId);
+        container.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('selected'); });
+        el.classList.add('selected');
+        syncPreviews();
+      });
+      container.appendChild(el);
+    });
+  }
+
+  // ── Build style cards (big tiles with Rive previews) ──
+  function buildStyleCards(containerId, labels, stateKey) {
+    var container = document.getElementById(containerId);
+    labels.forEach(function(label, i) {
+      var el = document.createElement('button');
+      el.className = 'style-card' + (i === state[stateKey] ? ' selected' : '');
+
+      var canvas = document.createElement('canvas');
+      canvas.width = 222;
+      canvas.height = 222;
+      canvas.style.cssText = 'width:132%;height:132%;pointer-events:none;position:absolute;top:calc(-10% - 16px);left:50%;transform:translateX(-50%);';
+      el.appendChild(canvas);
+
+      try {
+        (function(opts) {
+          var r = new rive.Rive({
+            src: '/design-system/sprout-character.riv',
+            canvas: canvas,
+            autoplay: true,
+            stateMachines: 'State Machine 1',
+            fit: rive.Fit.Contain,
+            alignment: rive.Alignment.TopCenter,
+            onLoad: function() {
+              r.resizeDrawingSurfaceToCanvas();
+              try {
+                var inputs = r.stateMachineInputs('State Machine 1');
+                if (inputs) {
+                  previews.push({ rive: r, inputs: inputs, stateKey: opts.stateKey, value: opts.value });
+                  inputs.forEach(function(inp) {
+                    if (inp.name === opts.stateKey) {
+                      inp.value = opts.value;
+                    } else if (state.hasOwnProperty(inp.name)) {
+                      inp.value = state[inp.name];
+                    }
+                  });
+                }
+              } catch(e) {}
+            }
+          });
+        })({ stateKey: stateKey, value: i });
+      } catch(e) {}
+
+      el.addEventListener('click', function() {
+        state[stateKey] = i;
+        setRiveInput(stateKey, i);
+        container.querySelectorAll('.style-card').forEach(function(s) { s.classList.remove('selected'); });
+        el.classList.add('selected');
+        syncPreviews();
+      });
+      container.appendChild(el);
+    });
+  }
+
+  // ── Tab switching ──
+  var tabs = document.querySelectorAll('.cat-tab');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var panel = tab.getAttribute('data-panel');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      document.querySelectorAll('.panel-section').forEach(function(p) { p.classList.remove('active'); });
+      var target = document.getElementById('panel-' + panel);
+      if (target) target.classList.add('active');
+    });
+  });
+
+  // ── Populate panels ──
+  buildSwatches('skin-swatches', SKINS, 'skinID');
+  buildStyleCards('hair-styles', HAIR_STYLES, 'hairID');
+
+  // ── Device toggle ──
+  var deviceBtns = document.querySelectorAll('.device-btn');
+  var deviceWrapper = document.getElementById('device-wrapper');
+  deviceBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var device = btn.getAttribute('data-device');
+      deviceBtns.forEach(function(b) { b.classList.toggle('active', b === btn); });
+      if (device === 'ipad') {
+        deviceWrapper.classList.add('ipad');
+      } else {
+        deviceWrapper.classList.remove('ipad');
+      }
+    });
+  });
+
+  // ── Init Rive ──
+  initRive();
+})();
+</script>
+</body>
+</html>
