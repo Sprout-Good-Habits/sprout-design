@@ -57,7 +57,7 @@
 .spinner-circle {
   display:inline-block;
   flex-shrink:0;
-  animation:spinner-rotate 0.8s linear infinite;
+  animation:spinner-rotate 1.0s linear infinite;
 }
 @keyframes spinner-rotate { to { transform:rotate(360deg); } }
 
@@ -80,46 +80,113 @@
   text-align:center;
 }
 
-/* ── Full-screen loading preview ── */
-.fullscreen-preview {
-  width:200px; height:434px;
-  border-radius:var(--radius-xl, 12px);
-  overflow:hidden;
-  position:relative;
-  background:var(--bg-sky, #e0f2fe);
-  border:1px solid var(--border-secondary, #e9eaeb);
+/* ── Device frame ── */
+.device-wrapper {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 32px;
+  padding: 4px;
+  box-shadow:
+    0 12px 16px -4px rgba(10,13,18,0.08),
+    0 4px 6px -2px rgba(10,13,18,0.03),
+    0 2px 2px -1px rgba(10,13,18,0.04);
+  display: inline-block;
 }
-.fullscreen-preview .fs-loading {
-  position:absolute;
-  top:calc(50% - 70px);
-  left:50%; transform:translate(-50%, -50%);
-  display:flex; flex-direction:column; align-items:center;
-  gap:var(--spacing-lg, 12px); z-index:2;
+.device-inner-shadow {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 28px;
+  padding: 4px;
+  overflow: hidden;
+  position: relative;
 }
-.fullscreen-preview .fs-loading-text {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:10px; line-height:14px;
-  color:var(--text-secondary, #414651);
+.device-inner-shadow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 6px 2px rgba(10,13,18,0.08),
+    inset 0 0 4px 2px rgba(10,13,18,0.03);
+  z-index: 6;
 }
-.fullscreen-preview .fs-rive {
-  position:absolute;
-  top:96px; left:50%;
-  transform:translateX(-50%) scale(0.28);
-  width:912px; height:972px;
-  z-index:1;
+.device-mockup {
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 24px;
+  clip-path: inset(0 round 24px);
+  position: relative;
 }
-.fullscreen-preview .fs-grass {
-  position:absolute;
-  bottom:0; left:0; width:100%;
-  z-index:0;
+.device-screen {
+  width: 402px;
+  height: 874px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-.fullscreen-preview .fs-grass-edge {
-  height:24px; background:var(--bg-grass, #86cb3c);
-  border-radius:var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+
+/* ── Status bar ── */
+.phone-status {
+  height: 54px;
+  padding: 14px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #181d27);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
 }
-.fullscreen-preview .fs-grass-fill {
-  background:var(--bg-grass, #86cb3c);
-  height:17px;
+.phone-status-icons { display: flex; gap: 4px; align-items: center; }
+.phone-status-icons svg { width: 16px; height: 16px; }
+
+/* ── Full-screen loading content ── */
+.fs-screen {
+  flex: 1;
+  background: var(--bg-sky, #e0f2fe);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.fs-loading {
+  position: absolute;
+  top: 35%;
+  left: 50%; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--spacing-xl, 16px);
+  z-index: 3;
+}
+.fs-loading-text {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-secondary, #414651);
+}
+.fs-rive {
+  position: absolute;
+  bottom: -46px; left: 50%;
+  transform: translateX(-50%) scale(1.25);
+  transform-origin: bottom center;
+  width: 302px; height: 302px;
+  z-index: 2;
+  pointer-events: none;
+}
+.fs-grass {
+  position: absolute;
+  bottom: 0; left: 0; width: 100%;
+  z-index: 0;
+}
+.fs-grass-edge {
+  height: 18px;
+  background: var(--bg-grass, #86cb3c);
+  border-radius: 18px 18px 0 0;
+}
+.fs-grass-fill {
+  background: var(--bg-grass, #86cb3c);
+  height: 32px;
 }
 </style>
 </head>
@@ -170,18 +237,35 @@
     <h2>Full-screen</h2>
     <p>The full-screen loading state uses the Main Background with a centered spinner and &ldquo;Loading...&rdquo; text. The Sprout character sits on the grass below, adding personality to the wait.</p>
 
-    <div class="demo">
+    <div class="demo" style="justify-content:center;">
       <div class="demo-item">
         <span class="demo-label">Full-screen loading</span>
-        <div class="fullscreen-preview">
-          <div class="fs-loading">
-            <img src="/brand/assets/loading-circle.svg" alt="Loading" width="14" height="14" class="spinner-circle" style="border:none">
-            <span class="fs-loading-text">Loading...</span>
-          </div>
-          <canvas id="rive-fs-loading" class="fs-rive" width="912" height="972"></canvas>
-          <div class="fs-grass">
-            <div class="fs-grass-edge"></div>
-            <div class="fs-grass-fill"></div>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup" style="background:var(--bg-sky, #e0f2fe);">
+              <div class="device-screen">
+                <div class="phone-status" style="background:var(--bg-sky, #e0f2fe);">
+                  <span>9:41</span>
+                  <div class="phone-status-icons">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="10" width="2" height="4" rx="0.5"/><rect x="4.5" y="7" width="2" height="7" rx="0.5"/><rect x="8" y="4" width="2" height="10" rx="0.5"/><rect x="11.5" y="1" width="2" height="13" rx="0.5"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.6c2 0 3.8.8 5.1 2.1l1.3-1.3C12.7 2.7 10.5 1.8 8 1.8S3.3 2.7 1.6 4.4l1.3 1.3C4.2 4.4 6 3.6 8 3.6zm0 3.6c1.2 0 2.3.5 3.1 1.2l1.3-1.3c-1.1-1-2.7-1.7-4.4-1.7s-3.3.6-4.4 1.7l1.3 1.3C5.7 7.7 6.8 7.2 8 7.2zm0 3.6c.5 0 1 .2 1.3.5l1.3-1.3c-.7-.6-1.6-1-2.6-1s-1.9.4-2.6 1l1.3 1.3c.3-.3.8-.5 1.3-.5zM8 14l1.5-1.5c-.4-.4-.9-.6-1.5-.6s-1.1.2-1.5.6L8 14z"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="14.5" y="6" width="1.5" height="4" rx="0.5"/><rect x="1.5" y="5.5" width="10" height="5" rx="0.5"/></svg>
+                  </div>
+                </div>
+                <div class="fs-screen">
+                  <div class="fs-loading">
+                    <svg class="spinner-circle" viewBox="0 0 28 28" fill="none" width="28" height="28"><circle cx="14" cy="14" r="11" stroke="var(--border-primary, #d5d7da)" stroke-width="3" stroke-linecap="round"/><path d="M14 3a11 11 0 0 1 11 11" stroke="var(--fg-brand-primary, #0ba5ec)" stroke-width="3" stroke-linecap="round"/></svg>
+                    <span class="fs-loading-text">Loading...</span>
+                  </div>
+                  <canvas id="rive-fs-loading" class="fs-rive" width="604" height="604"></canvas>
+                  <div class="fs-grass">
+                    <div class="fs-grass-edge"></div>
+                    <div class="fs-grass-fill"></div>
+                  </div>
+                </div>
+                <div style="display:flex; justify-content:center; padding:8px 0 6px; background:var(--bg-grass, #86cb3c);"><div style="width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:100px;"></div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -313,7 +397,7 @@
         <tr><td>Size (md)</td><td colspan="2">24px</td></tr>
         <tr><td>Size (sm)</td><td colspan="2">20px</td></tr>
         <tr><td>Stroke caps</td><td colspan="2">Round</td></tr>
-        <tr><td>Animation</td><td colspan="2">Rotate 360deg, 0.8s linear infinite</td></tr>
+        <tr><td>Animation</td><td colspan="2">Rotate 360deg, 1.0s linear infinite</td></tr>
         <tr><td>Text</td><td colspan="2">text-lg regular (18px/28px), <code>--text-secondary</code></td></tr>
         <tr><td>Text gap</td><td colspan="2"><code>--spacing-xl</code> (16px)</td></tr>
       </tbody>
@@ -352,7 +436,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/nav.js"></script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 <script>
@@ -360,22 +444,19 @@
 (function() {
   var canvas = document.getElementById('rive-fs-loading');
   if (!canvas || typeof rive === 'undefined') return;
+  canvas.width = 604;
+  canvas.height = 604;
   try {
     var r = new rive.Rive({
-      src: '/brand/assets/sprot2.5.riv',
+      src: '/sprout-character.riv',
       canvas: canvas,
       autoplay: true,
       stateMachines: 'State Machine 1',
-      fit: rive.Fit.Cover,
-      alignment: rive.Alignment.Center,
+      fit: rive.Fit.Contain,
       onLoad: function() {
-        r.resizeDrawingSurfaceToCanvas();
         try {
           var inputs = r.stateMachineInputs('State Machine 1');
-          if (inputs) {
-            inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
-            inputs.forEach(function(inp) { if (inp.name === 'looking') inp.value = 0; });
-          }
+          if (inputs) inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
         } catch(e) {}
       }
     });

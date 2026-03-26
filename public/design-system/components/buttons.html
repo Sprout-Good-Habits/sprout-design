@@ -65,7 +65,7 @@
   gap:var(--spacing-md, 8px);
   padding:var(--spacing-lg, 12px);
   border-radius:var(--radius-2xl, 16px);
-  transition:background 0.15s, box-shadow 0.15s, transform 0.1s;
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
   user-select:none; white-space:nowrap;
   -webkit-tap-highlight-color:transparent;
   width:320px;
@@ -206,7 +206,7 @@
 /* ── Loading spinner ── */
 .spinner {
   display:inline-block; width:var(--spacing-2xl, 20px); height:var(--spacing-2xl, 20px);
-  border-radius:50%; animation:spin 0.7s linear infinite;
+  border-radius:50%; animation:spin 1.0s linear infinite;
 }
 .btn-primary .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:var(--fg-white, #ffffff); }
 .btn-secondary .spinner { border:2.5px solid rgba(11,165,236,0.2); border-top-color:var(--brand-500, #0ba5ec); }
@@ -653,6 +653,9 @@
         <tr><td>Font size (md)</td><td colspan="5"><code>--font-size-text-md</code> (16px)</td></tr>
         <tr><td>Height (lg)</td><td>50px</td><td>54px</td><td>50px</td><td>50px</td><td>50px</td></tr>
         <tr><td>Height (md)</td><td>46px</td><td>50px</td><td>46px</td><td>46px</td><td>46px</td></tr>
+        <tr><td>Hover/focus transition</td><td colspan="5">0.1s <code>cubic-bezier(0.25, 0.1, 0.25, 1)</code> &mdash; background, box-shadow</td></tr>
+        <tr><td>Active state</td><td colspan="5"><code>box-shadow: none; transform: translateY(Npx)</code> &mdash; matches shadow offset</td></tr>
+        <tr><td>Spinner</td><td colspan="5">1.0s linear infinite (rotate 360deg)</td></tr>
       </tbody>
     </table>
   </div>
@@ -706,7 +709,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/nav.js"></script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 </body>

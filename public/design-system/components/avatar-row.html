@@ -53,58 +53,8 @@
 </script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/avatar.css">
 <style>
-/* ── Avatar (reused from avatar component) ── */
-.avatar {
-  border-radius:var(--radius-full, 9999px);
-  background:var(--bg-sky, #e0f2fe);
-  flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-weight:var(--font-weight-medium, 500);
-  color:var(--text-brand-secondary, #026aa2);
-  line-height:1;
-  overflow:hidden;
-  position:relative;
-}
-
-/* ── Avatar sizes ── */
-.avatar-xs { width:24px; height:24px; font-size:var(--font-size-text-xs, 12px); }
-.avatar-sm { width:32px; height:32px; font-size:var(--font-size-text-sm, 14px); }
-.avatar-md { width:40px; height:40px; font-size:var(--font-size-text-md, 16px); }
-
-/* ── Rive user character ── */
-.avatar-user { background:var(--bg-sky, #e0f2fe); display:block; }
-.avatar-user canvas {
-  position:absolute;
-  left:50%; transform:translateX(-50%);
-  display:block; pointer-events:none;
-}
-.avatar-xs.avatar-user canvas { width:35px;  height:50px;  top:-14px; }
-.avatar-sm.avatar-user canvas { width:46px;  height:66px;  top:-19px; }
-.avatar-md.avatar-user canvas { width:58px;  height:83px;  top:-23px; }
-
-/* ── Rive sprout ── */
-.avatar-sprout { background:var(--bg-sky, #e0f2fe); display:block; }
-.avatar-sprout canvas {
-  position:absolute;
-  left:50%; transform:translateX(-50%);
-  display:block;
-}
-.avatar-xs.avatar-sprout canvas { width:64px;  height:92px;  top:-27px; }
-.avatar-sm.avatar-sprout canvas { width:86px;  height:124px; top:-36px; }
-.avatar-md.avatar-sprout canvas { width:108px; height:155px; top:-45px; }
-
-/* ── Silhouette ── */
-.avatar .silhouette-img {
-  position:absolute;
-  left:50%; transform:translateX(-50%);
-  pointer-events:none;
-}
-.avatar-xs .silhouette-img { width:39px; height:35px; bottom:-8px; }
-.avatar-sm .silhouette-img { width:53px; height:47px; bottom:-10px; }
-.avatar-md .silhouette-img { width:66px; height:58px; bottom:-13px; }
-
 /* ── Avatar Item (avatar + label) ── */
 .avatar-item {
   display:flex;
@@ -172,7 +122,7 @@
   background:var(--bg-primary, #ffffff);
   border:2px dashed var(--border-secondary, #e9eaeb);
   cursor:pointer;
-  transition:background 0.15s, border-color 0.15s;
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .avatar-add:hover {
   background:var(--gray-50, #fafafa);
@@ -475,7 +425,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Avatar Row',href:'/components/avatar-row.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/nav.js"></script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 <script>
@@ -514,16 +464,19 @@ function initRowRive(canvas, opts) {
   }
 }
 
-/* Varied user states for demo diversity */
-var userIdx = 0;
-var userStates = [
-  { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
-  { skinID:5,  hairID:0, hairshadeID:0, beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:2 },
-  { skinID:8,  hairID:5, hairshadeID:5, beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1 },
-  { skinID:3,  hairID:1, hairshadeID:7, beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:0 },
-  { skinID:14, hairID:3, hairshadeID:9, beardID:0, beardshadeID:0, clothingcolourID:3, clothingID:5 },
-  { skinID:9,  hairID:6, hairshadeID:2, beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:3 }
+/* ── Presets (shared village character identities) ── */
+var PRESETS = [
+  { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },  // Shane
+  { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2 },  // Zeev
+  { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1 },  // Mali
+  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5 },  // Grandpa
+  { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10},  // Coach Eli
+  { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3 },  // Ms. Chen
+  { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0 }   // Liam
 ];
+
+var userIdx = 0;
+var userStates = PRESETS;
 
 document.querySelectorAll('.rive-user').forEach(function(canvas) {
   initRowRive(canvas, {

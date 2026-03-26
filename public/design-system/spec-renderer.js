@@ -229,6 +229,10 @@
       desc: 'Contextual prompts with CTAs',
       thumb: '<div class="thumb-action-prompt"><div class="thumb-action-prompt-header"><span class="thumb-action-prompt-emoji">\u2B50</span><div class="thumb-action-prompt-text"><span></span><span></span></div></div><div class="thumb-action-prompt-btns"><span></span><span></span></div></div>'
     },
+    'Avatar': {
+      desc: 'Customizable user and character circles',
+      thumb: '<div class="thumb-avatar-group"><span style="background:var(--brand-200,#b9e6fe)"></span></div>'
+    },
     'AvatarGroup': {
       desc: 'Stacked user avatars',
       thumb: '<div class="thumb-avatar-group"><span style="background:var(--brand-200,#b9e6fe)"></span><span style="background:var(--sprout-200,#ceeab0)"></span><span style="background:var(--violet-200,#ddd6fe)"></span></div>'
@@ -253,8 +257,8 @@
       desc: 'Text fields and form controls',
       thumb: '<div class="thumb-input"><div class="thumb-input-label"></div><div class="thumb-input-field"><div class="thumb-input-cursor"></div></div></div>'
     },
-    'ListItem': {
-      desc: 'Rows with icons, labels, actions',
+    'Tile': {
+      desc: 'Bordered selection cards with icons, labels, actions',
       thumb: '<div class="thumb-list-item"><div class="thumb-list-row"><div class="thumb-list-icon">\u2B50</div><div class="thumb-list-lines"><span></span><span></span></div><span class="thumb-list-chevron">\u203A</span></div><div class="thumb-list-row"><div class="thumb-list-icon">\uD83C\uDFAF</div><div class="thumb-list-lines"><span></span><span></span></div><span class="thumb-list-chevron">\u203A</span></div></div>'
     },
     'Loading': {

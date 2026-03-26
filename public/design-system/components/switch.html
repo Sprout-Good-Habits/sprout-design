@@ -57,7 +57,7 @@
   border-radius:var(--radius-full, 9999px);
   background:var(--bg-secondary, #fafafa);
   cursor:pointer;
-  transition:background 0.2s, justify-content 0.2s;
+  transition:background 0.25s cubic-bezier(0.5, 1.8, 0.3, 0.8), justify-content 0.25s cubic-bezier(0.5, 1.8, 0.3, 0.8);
   box-sizing:border-box;
   flex-shrink:0;
 }
@@ -65,7 +65,7 @@
   width:20px; height:20px;
   border-radius:var(--radius-full, 9999px);
   background:var(--fg-white, #ffffff);
-  transition:transform 0.2s;
+  transition:transform 0.25s cubic-bezier(0.5, 1.8, 0.3, 0.8);
 }
 .switch.checked {
   background:var(--brand-500, #0ba5ec);
@@ -111,6 +111,12 @@
   line-height:var(--line-height-text-sm, 20px);
   font-weight:var(--font-weight-regular, 400);
   color:var(--text-secondary, #414651);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .switch { transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1); }
+  .switch .switch-thumb { transition:none; }
 }
 </style>
 </head>
@@ -303,6 +309,8 @@
         <tr><td>Demo width</td><td>370px (production: fluid / parent width)</td></tr>
         <tr><td>Label</td><td>text-md regular (16px/24px), <code>--text-primary</code></td></tr>
         <tr><td>Description</td><td>text-sm regular (14px/20px), <code>--text-secondary</code></td></tr>
+        <tr><td>Toggle transition</td><td>0.25s <code>cubic-bezier(0.5, 1.8, 0.3, 0.8)</code> (spring) &mdash; background, thumb position</td></tr>
+        <tr><td>Reduced motion</td><td>Falls back to 0.1s <code>easeInOut</code>, no spring overshoot</td></tr>
       </tbody>
     </table>
   </div>
@@ -326,7 +334,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/nav.js"></script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 </body>

@@ -13,7 +13,7 @@
 /* ── Easing cards ── */
 .easing-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: var(--spacing-xl, 16px);
   margin: var(--spacing-xl, 16px) 0 var(--spacing-3xl, 24px);
 }
@@ -56,10 +56,11 @@
   transition-property: left;
   transition-duration: 0.5s;
 }
-.easing-dot[data-ease="ease-out"]   { transition-timing-function: ease-out; }
-.easing-dot[data-ease="ease-in"]    { transition-timing-function: ease-in; }
+.easing-dot[data-ease="easeInOut"]  { transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1); }
+.easing-dot[data-ease="easeOut"]    { transition-timing-function: cubic-bezier(0, 0, 0.58, 1); }
+.easing-dot[data-ease="easeIn"]     { transition-timing-function: cubic-bezier(0.42, 0, 1, 1); }
+.easing-dot[data-ease="spring"]     { transition-timing-function: cubic-bezier(0.5, 1.8, 0.3, 0.8); }
 .easing-dot[data-ease="linear"]     { transition-timing-function: linear; }
-.easing-dot[data-ease="spring"]     { transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
 .easing-card:hover .easing-dot { left: calc(100% - 14px); }
 
 /* ── Spinner demos ── */
@@ -84,7 +85,7 @@
   border-radius: var(--radius-full, 9999px);
   border-style: solid;
   border-width: 3px;
-  animation: spin 0.8s linear infinite;
+  animation: spin 1.0s linear infinite;
 }
 .spinner-lg { width: 28px; height: 28px; }
 .spinner-md { width: 24px; height: 24px; }
@@ -155,23 +156,25 @@
   <div class="breadcrumb" id="breadcrumb"></div>
   <div class="page-header">
     <div class="sec-title">Transitions</div>
-    <div class="sec-desc">Timing reference, easing curves, loading spinners, and motion guidelines for consistent, purposeful transitions across Sprout.</div>
+    <div class="sec-desc">Timing reference, easing curves, loading spinners, and motion guidelines for consistent, purposeful transitions across Sprout. Follows Apple Human Interface Guidelines for motion.</div>
   </div>
 
   <!-- ── Timing Reference ── -->
   <div class="doc-section">
     <h2>Timing Reference</h2>
-    <p>Standard durations used across the system. Use these values consistently &mdash; never invent custom timings.</p>
+    <p>Standard durations aligned with iOS system timing. Use these values consistently &mdash; never invent custom timings.</p>
     <table class="token-table">
-      <thead><tr><th>Use</th><th>Duration</th><th>Easing</th></tr></thead>
+      <thead><tr><th>Use</th><th>Duration</th><th>Easing</th><th>iOS equivalent</th></tr></thead>
       <tbody>
-        <tr><td class="timing-use">Fast feedback</td><td><code>0.15s</code></td><td>Default (ease)</td></tr>
-        <tr><td class="timing-use">Switch toggle</td><td><code>0.2s</code></td><td>Default (ease)</td></tr>
-        <tr><td class="timing-use">Sheet enter</td><td><code>300ms</code></td><td><code>ease-out</code></td></tr>
-        <tr><td class="timing-use">Sheet exit</td><td><code>250ms</code></td><td><code>ease-in</code></td></tr>
-        <tr><td class="timing-use">Progress bar</td><td><code>0.4s</code></td><td><code>cubic-bezier(0.22, 1, 0.36, 1)</code> (spring)</td></tr>
-        <tr><td class="timing-use">Loading spinner</td><td><code>0.8s</code></td><td><code>linear infinite</code></td></tr>
-        <tr><td class="timing-use">Delight</td><td><code>0.55s</code></td><td><code>cubic-bezier(0.22, 1, 0.36, 1)</code> (spring)</td></tr>
+        <tr><td class="timing-use">Fast feedback</td><td><code>0.1s</code></td><td><code>easeInOut</code></td><td><code>UIView.animate</code> highlight</td></tr>
+        <tr><td class="timing-use">Switch toggle</td><td><code>0.25s</code></td><td><code>spring</code></td><td><code>UISwitch</code> toggle</td></tr>
+        <tr><td class="timing-use">Sheet enter</td><td><code>0.5s</code></td><td><code>spring</code></td><td><code>UISheetPresentationController</code> present</td></tr>
+        <tr><td class="timing-use">Sheet exit</td><td><code>0.35s</code></td><td><code>easeIn</code></td><td><code>UISheetPresentationController</code> dismiss</td></tr>
+        <tr><td class="timing-use">Navigation push</td><td><code>0.35s</code></td><td><code>spring</code></td><td><code>UINavigationController</code> push</td></tr>
+        <tr><td class="timing-use">Navigation pop</td><td><code>0.35s</code></td><td><code>easeIn</code></td><td><code>UINavigationController</code> pop</td></tr>
+        <tr><td class="timing-use">Progress bar</td><td><code>0.35s</code></td><td><code>spring</code></td><td><code>UIProgressView</code></td></tr>
+        <tr><td class="timing-use">Loading spinner</td><td><code>1.0s</code></td><td><code>linear infinite</code></td><td><code>UIActivityIndicatorView</code></td></tr>
+        <tr><td class="timing-use">Delight / bounce</td><td><code>0.5s</code></td><td><code>spring</code></td><td><code>UISpringTimingParameters</code></td></tr>
       </tbody>
     </table>
   </div>
@@ -179,27 +182,32 @@
   <!-- ── Easing Curves ── -->
   <div class="doc-section">
     <h2>Easing Curves</h2>
-    <p>Hover each card to see the easing in action. The dot slides from left to right using the given timing function.</p>
+    <p>iOS system curves mapped to CSS. Hover each card to see the easing in action. Spring is the default &mdash; use it for anything entering the screen or responding to user input.</p>
     <div class="easing-grid">
       <div class="easing-card">
-        <div class="easing-card-label">ease-out</div>
-        <div class="easing-card-value">cubic-bezier(0, 0, 0.58, 1)</div>
-        <div class="easing-track"><div class="easing-dot" data-ease="ease-out"></div></div>
+        <div class="easing-card-label">spring (default)</div>
+        <div class="easing-card-value">cubic-bezier(0.5, 1.8, 0.3, 0.8)</div>
+        <div class="easing-track"><div class="easing-dot" data-ease="spring"></div></div>
       </div>
       <div class="easing-card">
-        <div class="easing-card-label">ease-in</div>
+        <div class="easing-card-label">easeInOut</div>
+        <div class="easing-card-value">cubic-bezier(0.25, 0.1, 0.25, 1)</div>
+        <div class="easing-track"><div class="easing-dot" data-ease="easeInOut"></div></div>
+      </div>
+      <div class="easing-card">
+        <div class="easing-card-label">easeOut</div>
+        <div class="easing-card-value">cubic-bezier(0, 0, 0.58, 1)</div>
+        <div class="easing-track"><div class="easing-dot" data-ease="easeOut"></div></div>
+      </div>
+      <div class="easing-card">
+        <div class="easing-card-label">easeIn</div>
         <div class="easing-card-value">cubic-bezier(0.42, 0, 1, 1)</div>
-        <div class="easing-track"><div class="easing-dot" data-ease="ease-in"></div></div>
+        <div class="easing-track"><div class="easing-dot" data-ease="easeIn"></div></div>
       </div>
       <div class="easing-card">
         <div class="easing-card-label">linear</div>
         <div class="easing-card-value">cubic-bezier(0, 0, 1, 1)</div>
         <div class="easing-track"><div class="easing-dot" data-ease="linear"></div></div>
-      </div>
-      <div class="easing-card">
-        <div class="easing-card-label">spring</div>
-        <div class="easing-card-value">cubic-bezier(0.22, 1, 0.36, 1)</div>
-        <div class="easing-track"><div class="easing-dot" data-ease="spring"></div></div>
       </div>
     </div>
   </div>
@@ -207,7 +215,7 @@
   <!-- ── Loading Spinner ── -->
   <div class="doc-section">
     <h2>Loading Spinner</h2>
-    <p>Three sizes with two color variants. The spinner uses <code>@keyframes spin</code> at <code>0.8s linear infinite</code>.</p>
+    <p>Three sizes with two color variants. Matches <code>UIActivityIndicatorView</code> using <code>@keyframes spin</code> at <code>1.0s linear infinite</code>.</p>
 
     <h3 style="font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary,#181d27);margin:var(--spacing-xl,16px) 0 var(--spacing-md,8px);">Primary</h3>
     <div class="spinner-grid">
@@ -254,7 +262,7 @@
         <tr><td>Arc</td><td><code>#ffffff</code> &mdash; white</td></tr>
         <tr><td colspan="2"><strong>Sizes</strong></td><td>lg = 28px, md = 24px, sm = 20px</td></tr>
         <tr><td colspan="2"><strong>Border width</strong></td><td>3px</td></tr>
-        <tr><td colspan="2"><strong>Animation</strong></td><td><code>0.8s linear infinite</code></td></tr>
+        <tr><td colspan="2"><strong>Animation</strong></td><td><code>1.0s linear infinite</code></td></tr>
       </tbody>
     </table>
   </div>
@@ -262,13 +270,13 @@
   <!-- ── Guidelines ── -->
   <div class="doc-section">
     <h2>Guidelines</h2>
-    <p>Guiding principles for motion in Sprout.</p>
+    <p>Motion principles following Apple Human Interface Guidelines.</p>
 
     <div class="guideline-card">
       <div class="guideline-icon">1</div>
       <div class="guideline-text">
-        <h4>Transitions must be functional</h4>
-        <p>Every transition should serve a purpose &mdash; guide attention, confirm an action, or show state change. Avoid decorative motion that adds no information.</p>
+        <h4>Spring is the default</h4>
+        <p>iOS uses spring animations as the primary motion curve. Use <code>cubic-bezier(0.5, 1.8, 0.3, 0.8)</code> for anything entering the screen, responding to touches, or changing state. Spring creates natural, physical motion that feels alive. Only fall back to <code>easeInOut</code> for subtle property changes like opacity or color.</p>
       </div>
     </div>
 
@@ -276,7 +284,7 @@
       <div class="guideline-icon">2</div>
       <div class="guideline-text">
         <h4>Respect reduced motion</h4>
-        <p>Wrap non-essential transitions in <code>@media (prefers-reduced-motion: no-preference)</code>. Essential state indicators (spinners, progress) should remain but may reduce intensity.</p>
+        <p>Honor <code>@media (prefers-reduced-motion: reduce)</code> &mdash; the CSS equivalent of <code>UIAccessibility.isReduceMotionEnabled</code>. Replace springs and slides with simple crossfades. Essential state indicators (spinners, progress) should remain but may reduce intensity.</p>
       </div>
     </div>
 
@@ -284,15 +292,23 @@
       <div class="guideline-icon">3</div>
       <div class="guideline-text">
         <h4>Active state pattern</h4>
-        <p>Pressed/active states always use <code>box-shadow: none; transform: translateY(Npx)</code> where N matches the resting shadow offset. This creates a physical &ldquo;push&rdquo; feel.</p>
+        <p>Pressed/active states use <code>box-shadow: none; transform: translateY(Npx)</code> where N matches the resting shadow offset. This creates a physical &ldquo;push&rdquo; feel that complements Sprout&rsquo;s 3D button style. The press transition uses <code>0.1s easeInOut</code>.</p>
       </div>
     </div>
 
     <div class="guideline-card">
       <div class="guideline-icon">4</div>
       <div class="guideline-text">
-        <h4>Enter/exit asymmetry</h4>
-        <p>Elements enter with <code>ease-out</code> (fast start, gentle land) and exit with <code>ease-in</code> (gentle start, fast departure). Exits are slightly shorter than enters &mdash; e.g., sheet enter 300ms vs. exit 250ms.</p>
+        <h4>Enter with spring, exit with easeIn</h4>
+        <p>Elements enter using <code>spring</code> (fast overshoot, settle into place) and exit with <code>easeIn</code> (gentle start, fast departure). Exits are shorter than enters &mdash; e.g., sheet present 0.5s spring vs. dismiss 0.35s easeIn. This matches <code>UIViewController</code> presentation.</p>
+      </div>
+    </div>
+
+    <div class="guideline-card">
+      <div class="guideline-icon">5</div>
+      <div class="guideline-text">
+        <h4>Motion builds spatial awareness</h4>
+        <p>Transitions should reinforce where things live in the interface. Navigation pushes slide in from the right; sheets rise from the bottom; alerts scale up from center. Consistent spatial relationships help users build a mental map of the app, following iOS's emphasis on depth and hierarchy.</p>
       </div>
     </div>
   </div>
@@ -302,7 +318,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/nav.js"></script>
 <script src="/shell.js"></script>
 </body>
 </html>

@@ -1,0 +1,76 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Avatar Component CSS
+   Shared styles for the Avatar component.
+   Import this file in any page that composes with Avatar.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Avatar base ── */
+.avatar {
+  border-radius:var(--radius-full, 9999px);
+  background:var(--bg-sky, #e0f2fe);
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-brand-secondary, #026aa2);
+  line-height:1;
+  overflow:hidden;
+  position:relative;
+}
+
+/* ── Sizes ── */
+.avatar-xs { width:24px; height:24px; font-size:var(--font-size-text-xs, 12px); }
+.avatar-sm { width:32px; height:32px; font-size:var(--font-size-text-sm, 14px); }
+.avatar-md { width:40px; height:40px; font-size:var(--font-size-text-md, 16px); }
+.avatar-lg { width:48px; height:48px; font-size:var(--font-size-text-lg, 18px); }
+.avatar-xl { width:56px; height:56px; font-size:var(--font-size-text-xl, 20px); }
+
+/* ── Rive character canvas (used for Avatar & Sprout variants) ── */
+.avatar canvas {
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  display:block;
+  pointer-events:none;
+}
+
+/* Rive canvas sizing per avatar size — top offset positions head in circle */
+.avatar-xs canvas.rive-user { width:35px;  height:50px;  top:-14px; }
+.avatar-sm canvas.rive-user { width:46px;  height:66px;  top:-19px; }
+.avatar-md canvas.rive-user { width:58px;  height:83px;  top:-23px; }
+.avatar-lg canvas.rive-user { width:69px;  height:99px;  top:-28px; }
+.avatar-xl canvas.rive-user { width:81px;  height:116px; top:-33px; }
+/* Sprout */
+.avatar-xs canvas.rive-sprout { width:64px;  height:92px;  top:-27px; }
+.avatar-sm canvas.rive-sprout { width:86px;  height:124px; top:-36px; }
+.avatar-md canvas.rive-sprout { width:108px; height:155px; top:-45px; }
+.avatar-lg canvas.rive-sprout { width:130px; height:186px; top:-54px; }
+.avatar-xl canvas.rive-sprout { width:150px; height:217px; top:-63px; }
+
+/* ── Silhouette SVG (positioned bottom-center, same as Rive) ── */
+.avatar .silhouette-img {
+  position:absolute;
+  bottom:0; left:50%; transform:translateX(-50%);
+  pointer-events:none;
+}
+.avatar-xs .silhouette-img { width:39px;  height:35px; bottom:-8px; }
+.avatar-sm .silhouette-img { width:53px;  height:47px; bottom:-10px; }
+.avatar-md .silhouette-img { width:66px;  height:58px; bottom:-13px; }
+.avatar-lg .silhouette-img { width:79px;  height:70px; bottom:-15px; }
+.avatar-xl .silhouette-img { width:92px;  height:82px; bottom:-18px; }
+
+/* ── Border for grouped avatars ── */
+.avatar-bordered {
+  border:2px solid var(--fg-white, #ffffff);
+}
+
+/* ── Background colors ── */
+.avatar-bg-blue      { background:#b9e6fe; }
+.avatar-bg-blue-dark { background:#b2ccff; }
+.avatar-bg-violet    { background:#ddd6fe; }
+.avatar-bg-pink      { background:#fcceee; }
+.avatar-bg-red       { background:#fecdca; }
+.avatar-bg-green     { background:#abefc6; }
+.avatar-bg-sprout    { background:#ceeab0; }
+.avatar-bg-yellow    { background:#feee95; }
+.avatar-bg-orange    { background:#f9dbaf; }
+.avatar-bg-gray      { background:#e9eaeb; }

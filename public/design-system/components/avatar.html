@@ -56,79 +56,8 @@
 </script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/avatar.css">
 <style>
-/* ── Avatar base ── */
-.avatar {
-  border-radius:var(--radius-full, 9999px);
-  background:var(--bg-sky, #e0f2fe);
-  flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-weight:var(--font-weight-regular, 400);
-  color:var(--text-brand-secondary, #026aa2);
-  line-height:1;
-  overflow:hidden;
-  position:relative;
-}
-
-/* ── Sizes ── */
-.avatar-xs { width:24px; height:24px; font-size:var(--font-size-text-xs, 12px); }
-.avatar-sm { width:32px; height:32px; font-size:var(--font-size-text-sm, 14px); }
-.avatar-md { width:40px; height:40px; font-size:var(--font-size-text-md, 16px); }
-.avatar-lg { width:48px; height:48px; font-size:var(--font-size-text-lg, 18px); }
-.avatar-xl { width:56px; height:56px; font-size:var(--font-size-text-xl, 20px); }
-
-/* ── Rive character canvas (used for Avatar & Sprout variants) ── */
-.avatar canvas {
-  position:absolute;
-  left:50%; transform:translateX(-50%);
-  display:block;
-  pointer-events:none;
-}
-
-/* Rive canvas sizing per avatar size — top offset positions head in circle */
-/* Avatar (user character) — sized to show head + upper body, anchored top-center */
-.avatar-xs canvas.rive-user { width:35px;  height:50px;  top:-14px; }
-.avatar-sm canvas.rive-user { width:46px;  height:66px;  top:-19px; }
-.avatar-md canvas.rive-user { width:58px;  height:83px;  top:-23px; }
-.avatar-lg canvas.rive-user { width:69px;  height:99px;  top:-28px; }
-.avatar-xl canvas.rive-user { width:81px;  height:116px; top:-33px; }
-/* Sprout — original offsets */
-.avatar-xs canvas.rive-sprout { width:64px;  height:92px;  top:-27px; }
-.avatar-sm canvas.rive-sprout { width:86px;  height:124px; top:-36px; }
-.avatar-md canvas.rive-sprout { width:108px; height:155px; top:-45px; }
-.avatar-lg canvas.rive-sprout { width:130px; height:186px; top:-54px; }
-.avatar-xl canvas.rive-sprout { width:150px; height:217px; top:-63px; }
-
-/* ── Silhouette SVG (positioned bottom-center, same as Rive) ── */
-.avatar .silhouette-img {
-  position:absolute;
-  bottom:0; left:50%; transform:translateX(-50%);
-  pointer-events:none;
-}
-.avatar-xs .silhouette-img { width:39px;  height:35px; bottom:-8px; }
-.avatar-sm .silhouette-img { width:53px;  height:47px; bottom:-10px; }
-.avatar-md .silhouette-img { width:66px;  height:58px; bottom:-13px; }
-.avatar-lg .silhouette-img { width:79px;  height:70px; bottom:-15px; }
-.avatar-xl .silhouette-img { width:92px;  height:82px; bottom:-18px; }
-
-/* ── Border for grouped avatars ── */
-.avatar-bordered {
-  border:2px solid var(--fg-white, #ffffff);
-}
-
-/* ── Background colors ── */
-.avatar-bg-blue      { background:#b9e6fe; }
-.avatar-bg-blue-dark { background:#b2ccff; }
-.avatar-bg-violet    { background:#ddd6fe; }
-.avatar-bg-pink      { background:#fcceee; }
-.avatar-bg-red       { background:#fecdca; }
-.avatar-bg-green     { background:#abefc6; }
-.avatar-bg-sprout    { background:#ceeab0; }
-.avatar-bg-yellow    { background:#feee95; }
-.avatar-bg-orange    { background:#f9dbaf; }
-.avatar-bg-gray      { background:#e9eaeb; }
-
 /* ── Demo layout helpers ── */
 .size-row {
   display:flex; align-items:center; gap:var(--spacing-3xl, 24px);
@@ -594,7 +523,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Avatar Row',href:'/components/avatar-row.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/nav.js"></script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 <script>
@@ -604,16 +533,17 @@ var RIVE_SPROUT_SRC = '/sprout-character.riv';
 var ARTBOARD = 'Village-character';
 var SM_NAME = 'State Machine 1';
 
-/* Default user character state */
-var USER_STATE = {
-  skinID: 11,
-  hairID: 4,
-  hairshadeID: 3,
-  beardID: 0,
-  beardshadeID: 0,
-  clothingcolourID: 0,
-  clothingID: 0
+/* ── Presets (shared village character identities) ── */
+var PRESETS = {
+  shane:    { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
+  zeev:     { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2 },
+  mali:     { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1 },
+  grandpa:  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5 },
+  coachEli: { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10},
+  msChen:   { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3 },
+  liam:     { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0 }
 };
+var USER_STATE = PRESETS.shane;
 
 function initRive(canvas, opts) {
   var w = parseInt(canvas.getAttribute('width'), 10) || 132;
@@ -651,13 +581,13 @@ function initRive(canvas, opts) {
   }
 }
 
-/* Per-avatar states for background demos (different hairstyles + skin tones) */
+/* Per-avatar states for background demos (using presets) */
 var BG_STATES = {
-  'bg-blue':   { skinID:3,  hairID:0, hairshadeID:0, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
-  'bg-violet': { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:0 },
-  'bg-pink':   { skinID:8,  hairID:5, hairshadeID:5, beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:0 },
-  'bg-green':  { skinID:9,  hairID:1, hairshadeID:7, beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:0 },
-  'bg-yellow': { skinID:5,  hairID:3, hairshadeID:2, beardID:0, beardshadeID:0, clothingcolourID:3, clothingID:0 }
+  'bg-blue':   PRESETS.coachEli,
+  'bg-violet': PRESETS.shane,
+  'bg-pink':   PRESETS.mali,
+  'bg-green':  PRESETS.liam,
+  'bg-yellow': PRESETS.zeev
 };
 
 /* Init all user avatar canvases (Avatar variant — character2.4.riv with Village-character artboard) */

@@ -41,6 +41,52 @@
   },
   {
     "@type": "DesignComponent",
+    "name": "Avatar",
+    "slug": "avatar",
+    "intent": {
+      "purpose": "Display a single circular avatar representing a user or the Sprout character, with customizable village character, initials fallback, or Sprout mascot",
+      "taskContext": ["identity-display", "participant-display", "personalization"],
+      "sentiment": ["neutral"]
+    },
+    "composition": {
+      "requires": ["circle-container"],
+      "allows": ["rive-character", "silhouette-svg", "user-initial", "sprout-character", "custom-background"],
+      "forbids": ["text-label", "badge", "nested-avatar"]
+    },
+    "variants": [
+      { "name": "Avatar", "useWhen": "Displaying a user's customized village character via Rive", "pairWith": [] },
+      { "name": "Silhouette", "useWhen": "Default placeholder when the user has not customized their character", "pairWith": [] },
+      { "name": "User initial", "useWhen": "Fallback showing the user's first-name initial", "pairWith": [] },
+      { "name": "Sprout", "useWhen": "Displaying the Sprout mascot character via Rive", "pairWith": [] }
+    ],
+    "sizes": [
+      { "name": "XS", "useWhen": "Tight inline contexts — 24px" },
+      { "name": "SM", "useWhen": "Inside avatar groups and compact layouts — 32px" },
+      { "name": "MD", "useWhen": "Standard UI contexts — 40px" },
+      { "name": "LG", "useWhen": "Profile headers and prominent displays — 48px" },
+      { "name": "XL", "useWhen": "Customization preview and hero contexts — 64px" }
+    ],
+    "context": {
+      "density": ["default", "compact"],
+      "modality": ["mobile", "tablet"],
+      "placement": ["inline", "inside-avatar-group", "inside-button-utility", "profile-header"]
+    },
+    "relationships": {
+      "related": ["AvatarGroup", "ButtonUtility"],
+      "escalatesTo": [],
+      "degradesTo": [],
+      "groupsWith": ["AvatarGroup", "Toolbar"]
+    },
+    "states": ["default"],
+    "accessibility": {
+      "role": "img",
+      "keyboard": [],
+      "ariaAttributes": ["aria-label", "alt"],
+      "minTouchTarget": "N/A"
+    }
+  },
+  {
+    "@type": "DesignComponent",
     "name": "AvatarGroup",
     "slug": "avatar-group",
     "intent": {
@@ -235,7 +281,7 @@
       "placement": ["inline"]
     },
     "relationships": {
-      "related": ["Radio", "Switch", "ListItem"],
+      "related": ["Radio", "Switch", "Tile"],
       "escalatesTo": [],
       "degradesTo": [],
       "groupsWith": ["Button", "Input"]
@@ -335,17 +381,17 @@
   },
   {
     "@type": "DesignComponent",
-    "name": "ListItem",
-    "slug": "list-item",
+    "name": "Tile",
+    "slug": "tile",
     "intent": {
-      "purpose": "Let users review or select options from a dynamic list",
-      "taskContext": ["selection", "navigation", "settings"],
+      "purpose": "Let users choose between options presented as distinct, tappable cards",
+      "taskContext": ["selection", "exercises", "onboarding"],
       "sentiment": ["neutral"]
     },
     "composition": {
       "requires": ["label"],
       "allows": ["icon", "description", "chevron", "radio-indicator", "checkbox-indicator"],
-      "forbids": ["button", "nested-list-item"]
+      "forbids": ["button", "nested-tile"]
     },
     "variants": [
       { "name": "Navigation", "useWhen": "Navigating to a sub-screen, shows chevron", "pairWith": [] },
@@ -524,7 +570,7 @@
       "placement": ["inline"]
     },
     "relationships": {
-      "related": ["Checkbox", "ListItem"],
+      "related": ["Checkbox", "Tile"],
       "escalatesTo": [],
       "degradesTo": [],
       "groupsWith": ["Button", "Input"]
@@ -567,7 +613,7 @@
       "related": ["ActionPrompt", "Toast"],
       "escalatesTo": [],
       "degradesTo": ["ActionPrompt"],
-      "groupsWith": ["Button", "ListItem", "EmptyStates"]
+      "groupsWith": ["Button", "Tile", "EmptyStates"]
     },
     "states": ["entering", "open", "scrolling", "exiting"],
     "accessibility": {

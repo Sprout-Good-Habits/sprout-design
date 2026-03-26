@@ -33,7 +33,7 @@
     "placement": ["carousel", "list"]
   },
   "relationships": {
-    "related": ["Badges", "Buttons", "Toolbar", "Progress Bar", "List Item"],
+    "related": ["Badges", "Buttons", "Toolbar", "Progress Bar", "Tile"],
     "escalatesTo": [],
     "degradesTo": [],
     "groupsWith": []
@@ -154,7 +154,7 @@
   position: relative;
   z-index: 2;
   flex-shrink: 0;
-  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  transition: background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
@@ -409,7 +409,7 @@
       <ul>
         <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For recurring daily tasks kids complete on their home screen</li>
         <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When you need a visual overview of what a kid needs to do today</li>
-        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Not for one-off actions or navigation. Use <a href="/design-system/components/list-item.html" style="color:var(--brand-600)">List Item</a> or <a href="/design-system/components/buttons.html" style="color:var(--brand-600)">Buttons</a> instead</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Not for one-off actions or navigation. Use <a href="/design-system/components/tile.html" style="color:var(--brand-600)">Tile</a> or <a href="/design-system/components/buttons.html" style="color:var(--brand-600)">Buttons</a> instead</li>
         <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Not for interactive elements inside the card other than the CTA. Use a <a href="/design-system/components/sheet.html" style="color:var(--brand-600)">Sheet</a> for additional actions</li>
       </ul>
     </div>
@@ -943,7 +943,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/design-system/',dot:'var(--gray-400)'},{label:'Foundations',href:'/design-system/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/design-system/foundations.html'},{label:'Color',href:'/design-system/foundations/color.html'},{label:'Icons',href:'/design-system/foundations/icons.html'},{label:'Logo',href:'/design-system/foundations/logo.html'},{label:'Padding',href:'/design-system/foundations/padding.html'},{label:'Radius',href:'/design-system/foundations/radius.html'},{label:'Spacing',href:'/design-system/foundations/spacing.html'},{label:'Transitions',href:'/design-system/foundations/transitions.html'},{label:'Typography',href:'/design-system/foundations/typography.html'},{label:'Background',href:'/design-system/foundations/background.html'},{label:'Character',href:'/design-system/foundations/character.html'}]},{label:'Components',href:'/design-system/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/design-system/components.html'},{label:'Action Prompt',href:'/design-system/components/action-prompt.html'},{label:'Avatar Group',href:'/design-system/components/avatar-group.html'},{label:'Button Utility',href:'/design-system/components/button-utility.html'},{label:'Buttons',href:'/design-system/components/buttons.html'},{label:'Checkbox',href:'/design-system/components/checkbox.html'},{label:'Feedback Banner',href:'/design-system/components/feedback-banner.html'},{label:'Input',href:'/design-system/components/inputs.html'},{label:'Input Passcode',href:'/design-system/components/passcode-input.html'},{label:'List Item',href:'/design-system/components/list-item.html'},{label:'Loading',href:'/design-system/components/loading.html'},{label:'Progress Bar',href:'/design-system/components/progress-bar.html'},{label:'Radio',href:'/design-system/components/radio.html'},{label:'Sheet',href:'/design-system/components/sheet.html'},{label:'Social Buttons',href:'/design-system/components/social-buttons.html'},{label:'Switch',href:'/design-system/components/switch.html'},{label:'Quest Card',href:'/design-system/components/quest-card.html'},{label:'Toast',href:'/design-system/components/toast.html'},{label:'Toolbar',href:'/design-system/components/toolbar.html'}]},{label:'Patterns',href:'/design-system/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/design-system/patterns.html'},{label:'Empty States',href:'/design-system/patterns/empty-states.html'},{label:'Error Screen',href:'/design-system/patterns/error-screen.html'},{label:'Notifications',href:'/design-system/patterns/notifications.html'},{label:'Success Screen',href:'/design-system/patterns/success-screen.html'}]},{label:'Resources',href:'/design-system/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/design-system/resources.html'},{label:'Rive File',href:'/design-system/resources/rive-file.html'},{label:'Tokens CSS',href:'/design-system/resources/tokens-css.html'},{label:'Tokens JSON',href:'/design-system/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/design-system/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/design-system/nav.js"></script>
 <script src="/design-system/spec-renderer.js"></script>
 <script src="/design-system/shell.js"></script>
 </body>

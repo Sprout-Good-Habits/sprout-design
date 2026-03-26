@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Avatar Group Card</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "AvatarGroupCard",
+  "slug": "avatar-group-card",
+  "intent": {
+    "purpose": "Display a group of Rive character avatars in a card to represent relationships between individuals",
+    "taskContext": ["relationship-display", "family-group", "classroom-group", "team-display"],
+    "sentiment": ["neutral", "positive"]
+  },
+  "composition": {
+    "requires": ["rive-avatar"],
+    "allows": ["2-5 avatars"],
+    "forbids": ["text-label", "nested-card"]
+  },
+  "variants": [
+    { "name": "2 users", "useWhen": "Teacher + kid, parent + kid, or 1-on-1 relationship", "pairWith": [] },
+    { "name": "3 users", "useWhen": "Small family or small group", "pairWith": [] },
+    { "name": "4 users", "useWhen": "Family or team", "pairWith": [] },
+    { "name": "5 users", "useWhen": "Full group, classroom, or extended family", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 370×120px card" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline", "tile", "profile-header"]
+  },
+  "relationships": {
+    "related": ["Avatar", "AvatarGroup", "AvatarRow"],
+    "escalatesTo": [],
+    "degradesTo": ["AvatarGroup"],
+    "groupsWith": ["Tile"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "img",
+    "keyboard": [],
+    "ariaAttributes": ["aria-label"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+/* ── Avatar Group Card ── */
+.agc {
+  width:100%;
+  height:120px;
+  background:var(--bg-sky, #e0f2fe);
+  border-radius:var(--radius-4xl, 24px);
+  overflow:clip;
+  position:relative;
+}
+
+/* ── Demo fixed width ── */
+.agc-demo { width:370px; }
+
+/* ── Avatar row inside card ── */
+.agc-avatars {
+  position:absolute;
+  top:calc(-1 * var(--spacing-3xl, 24px));
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+}
+
+/* ── Individual avatar slot ── */
+.agc-avatar {
+  width:117px;
+  height:167px;
+  overflow:clip;
+  position:relative;
+  flex-shrink:0;
+  margin-right:calc(-1 * var(--spacing-6xl, 48px));
+}
+.agc-avatar:last-child {
+  margin-right:0;
+}
+.agc-avatar canvas {
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+
+/* ── Tablet: reduce overlap ── */
+@media (min-width:640px) {
+  .agc-avatar {
+    margin-right:calc(-1 * var(--spacing-xl, 16px));
+  }
+  .agc-avatar:last-child {
+    margin-right:0;
+  }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Avatar Group Card</div>
+    <div class="sec-desc">A card displaying 2&ndash;5 Rive character avatars to represent relationships between individuals &mdash; teacher + kid, coach + kid, family, classroom, and more.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use to visually represent a group of people who share a relationship, like a family or a class.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for anonymous user counts or when individual identity doesn&rsquo;t matter &mdash; use Avatar Group instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Use cases ════ -->
+  <div class="doc-section">
+    <h2>Use cases</h2>
+    <p>Avatar Group Card is designed to represent real relationships between people in the app.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Teacher + Kid (2)</strong> &mdash; Coaching or mentoring relationship in an education context.</li>
+        <li><strong>Parent + Kid (2)</strong> &mdash; Family pairing for parent-managed accounts.</li>
+        <li><strong>Small family (3)</strong> &mdash; Parent and two children, or two parents and one child.</li>
+        <li><strong>Family (4)</strong> &mdash; A household with parents and children.</li>
+        <li><strong>Classroom / group (5)</strong> &mdash; A teacher with a group of students, or an extended family.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>The component is composed of a sky-blue card container and a row of overlapping Rive character avatars.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Card container:</strong> Full width &times; 120px height, <code>--radius-4xl</code> (24px) corners, <code>overflow: clip</code>. Background is always <code>--bg-sky</code> &mdash; it does not change per variant or context.</li>
+        <li><strong>Avatar row:</strong> Horizontally centered, positioned <code>--spacing-3xl</code> (24px) above the top edge so characters overflow into the card. Characters are always <strong>grounded</strong> &mdash; the bottom edge of the card clips their lower body, so they never float in empty space.</li>
+        <li><strong>Avatar slot:</strong> Each avatar is 117&times;167px with <code>--spacing-6xl</code> (48px) negative margin for overlap on mobile. On tablet, overlap reduces to <code>--spacing-xl</code> (16px) to give characters more breathing room. The last avatar has no negative margin.</li>
+        <li><strong>Rive character:</strong> Uses <code>character2.4.riv</code> with the <code>Village-character</code> artboard. Each avatar can have unique skin tone, hair, and clothing via state machine inputs. <strong>Always grounded</strong> &mdash; the bottom edge of the container always clips the character. It is never floating in empty space.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variants ════ -->
+  <div class="doc-section">
+    <h2>Variants</h2>
+    <p>The card supports 2&ndash;5 avatars. The avatar row automatically centers within the card regardless of count. More avatars compress naturally via the overlap.</p>
+
+    <h3>2 users</h3>
+    <p>Use for 1-on-1 relationships: teacher + kid, parent + kid, coach + player.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">2 users &middot; Teacher + Kid</span>
+        <div class="agc agc-demo agc-2" role="img" aria-label="Teacher and kid">
+          <div class="agc-avatars">
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="0" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="1" width="234" height="334"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>3 users</h3>
+    <p>Use for small families or trios: two parents and a child, or a teacher with two kids.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">3 users &middot; Small family</span>
+        <div class="agc agc-demo agc-3" role="img" aria-label="Family of three">
+          <div class="agc-avatars">
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="2" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="3" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="4" width="234" height="334"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>4 users</h3>
+    <p>Use for a household: parents and children, or a small team.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">4 users &middot; Family</span>
+        <div class="agc agc-demo agc-4" role="img" aria-label="Family of four">
+          <div class="agc-avatars">
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="5" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="6" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="7" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="8" width="234" height="334"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>5 users</h3>
+    <p>Use for classrooms, extended families, or full groups. Maximum count &mdash; beyond 5, characters become unrecognizable.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">5 users &middot; Classroom</span>
+        <div class="agc agc-demo agc-5" role="img" aria-label="Classroom of five">
+          <div class="agc-avatars">
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="9" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="10" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="11" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="12" width="234" height="334"></canvas></div>
+            <div class="agc-avatar"><canvas class="rive-card" data-idx="13" width="234" height="334"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="token-table" style="margin-top:var(--spacing-3xl, 24px);">
+      <thead><tr><th>Variant</th><th>Avatars</th><th>Overlap (mobile)</th><th>Overlap (tablet)</th><th>Use when</th></tr></thead>
+      <tbody>
+        <tr><td>2 users</td><td>2</td><td><code>--spacing-6xl</code> (48px)</td><td><code>--spacing-xl</code> (16px)</td><td>1-on-1 relationships</td></tr>
+        <tr><td>3 users</td><td>3</td><td><code>--spacing-6xl</code> (48px)</td><td><code>--spacing-xl</code> (16px)</td><td>Small family or trio</td></tr>
+        <tr><td>4 users</td><td>4</td><td><code>--spacing-6xl</code> (48px)</td><td><code>--spacing-xl</code> (16px)</td><td>Family or small team</td></tr>
+        <tr><td>5 users</td><td>5</td><td><code>--spacing-6xl</code> (48px)</td><td><code>--spacing-xl</code> (16px)</td><td>Classroom or full group</td></tr>
+      </tbody>
+    </table>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use diverse character appearances (skin tones, hairstyles, clothing) to represent real users.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use more than 5 avatars &mdash; the overlap becomes too tight and characters become unrecognizable.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Card width</td><td>100% (fills container)</td></tr>
+        <tr><td>Card height</td><td>120px</td></tr>
+        <tr><td>Card background</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
+        <tr><td>Card radius</td><td><code>--radius-4xl</code> (24px)</td></tr>
+        <tr><td>Card overflow</td><td><code>clip</code></td></tr>
+        <tr><td>Avatar slot size</td><td>117 &times; 167px</td></tr>
+        <tr><td>Avatar overlap (mobile)</td><td><code>--spacing-6xl</code> (48px) negative margin-right</td></tr>
+        <tr><td>Avatar overlap (tablet)</td><td><code>--spacing-xl</code> (16px) negative margin-right</td></tr>
+        <tr><td>Row top offset</td><td><code>--spacing-3xl</code> (24px) negative top</td></tr>
+        <tr><td>Rive file</td><td><code>character2.4.riv</code></td></tr>
+        <tr><td>Artboard</td><td><code>Village-character</code></td></tr>
+        <tr><td>State machine</td><td><code>State Machine 1</code></td></tr>
+        <tr><td>Fit</td><td><code>Contain</code></td></tr>
+        <tr><td>Alignment</td><td><code>Center</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>The card container must have <code>role="img"</code> and an <code>aria-label</code> describing the group (e.g., <code>aria-label="Mom, Dad, and Alex"</code> or <code>aria-label="Ms. Chen's class"</code>).</li>
+        <li>Individual Rive canvases should have <code>pointer-events: none</code> &mdash; they are decorative within the card context.</li>
+        <li>When the card is inside an interactive container (e.g., a list item or button), the card is decorative and the container provides the accessible label.</li>
+        <li>Ensure sufficient contrast between characters and the <code>--bg-sky</code> background. The light blue works well with all character skin tones.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+/* ── Rive avatar initialization ── */
+var RIVE_SRC = '/character2.4.riv';
+var ARTBOARD = 'Village-character';
+var SM_NAME = 'State Machine 1';
+
+/* Diverse character states for demo avatars */
+var CHAR_STATES = [
+  /* 0–1: 2-user card (teacher + kid) */
+  { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
+  { skinID:3,  hairID:1, hairshadeID:0, beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:0 },
+  /* 2–4: 3-user card (small family) */
+  { skinID:8,  hairID:5, hairshadeID:5, beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:0 },
+  { skinID:9,  hairID:0, hairshadeID:7, beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:0 },
+  { skinID:5,  hairID:3, hairshadeID:2, beardID:0, beardshadeID:0, clothingcolourID:3, clothingID:0 },
+  /* 5–8: 4-user card (family) */
+  { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
+  { skinID:11, hairID:5, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:0 },
+  { skinID:3,  hairID:1, hairshadeID:0, beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:0 },
+  { skinID:3,  hairID:2, hairshadeID:0, beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:0 },
+  /* 9–13: 5-user card (classroom) */
+  { skinID:5,  hairID:3, hairshadeID:2, beardID:0, beardshadeID:0, clothingcolourID:3, clothingID:0 },
+  { skinID:8,  hairID:5, hairshadeID:5, beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:0 },
+  { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
+  { skinID:9,  hairID:0, hairshadeID:7, beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:0 },
+  { skinID:3,  hairID:1, hairshadeID:0, beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:0 }
+];
+
+document.querySelectorAll('.rive-card').forEach(function(canvas) {
+  var idx = parseInt(canvas.getAttribute('data-idx'), 10);
+  var state = CHAR_STATES[idx] || CHAR_STATES[0];
+  var w = parseInt(canvas.getAttribute('width'), 10) || 234;
+  var h = parseInt(canvas.getAttribute('height'), 10) || 334;
+  canvas.width = w;
+  canvas.height = h;
+  try {
+    var r = new rive.Rive({
+      src: RIVE_SRC,
+      canvas: canvas,
+      autoplay: true,
+      artboard: ARTBOARD,
+      stateMachines: SM_NAME,
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.Center,
+      onLoad: function() {
+        if (!r) return;
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM_NAME);
+          if (inputs) {
+            inputs.forEach(function(inp) {
+              if (state[inp.name] !== undefined) inp.value = state[inp.name];
+            });
+          }
+        } catch(e) {}
+      }
+    });
+  } catch(e) {
+    console.warn('Rive card avatar init failed', e);
+  }
+});
+</script>
+</body>
+</html>

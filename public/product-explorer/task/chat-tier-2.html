@@ -179,7 +179,7 @@
   border:2px solid rgba(217,45,32,0.7);
   border-radius:inherit;
   pointer-events:none;
-  animation:recording-ring 2s cubic-bezier(0.22,1,0.36,1) infinite;
+  animation:recording-ring 2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
 }
 .mic-btn[data-state="stop-default"]::before{background:#f04438}
 .mic-btn[data-state="stop-default"]:hover::before{background:#f97066}
@@ -203,7 +203,7 @@
 .mic-btn.disabled{border-color:#a4a7ae;box-shadow:0 4px 0 0 #a4a7ae}
 
 /* ── Spinner animation ── */
-.spinner{animation:spin .8s linear infinite}
+.spinner{animation:spin 1.0s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── Mic glow (pulse after Sprout finishes talking) ── */
@@ -211,13 +211,13 @@
   0%,100%{box-shadow:0 4px 0 0 #0086c9,0 2px 0 0 rgba(255,255,255,0.5),0 2px 0 0 rgba(11,165,236,0.3)}
   50%{box-shadow:0 4px 0 0 #0086c9,0 2px 0 4px rgba(255,255,255,0.6),0 2px 0 8px rgba(11,165,236,0.2)}
 }
-.mic-btn.glow{animation:mic-glow 2s cubic-bezier(0.22,1,0.36,1) infinite}
+.mic-btn.glow{animation:mic-glow 2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite}
 
 /* ── Sheet ── */
 /* ── Sheet (per design system) ── */
 .sheet-scrim{position:absolute;inset:0;background:var(--bg-overlay,rgba(10,13,18,.2));z-index:15;opacity:0;pointer-events:none;transition:opacity .25s}
 .sheet-scrim.open{opacity:1;pointer-events:auto}
-.sheet{position:absolute;bottom:0;left:0;right:0;background:var(--bg-primary,#fff);border-radius:var(--radius-4xl,24px) var(--radius-4xl,24px) 0 0;z-index:16;transform:translateY(100%);transition:transform .3s ease-out;padding-bottom:var(--spacing-4xl,32px);display:flex;flex-direction:column}
+.sheet{position:absolute;bottom:0;left:0;right:0;background:var(--bg-primary,#fff);border-radius:var(--radius-4xl,24px) var(--radius-4xl,24px) 0 0;z-index:16;transform:translateY(100%);transition:transform 0.5s cubic-bezier(0.5, 1.8, 0.3, 0.8);padding-bottom:var(--spacing-4xl,32px);display:flex;flex-direction:column}
 .sheet.open{transform:translateY(0)}
 .sheet-top{padding:var(--spacing-xl,16px);flex-shrink:0;display:flex;flex-direction:column;gap:16px;align-items:center}
 .sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--gray-300,#d5d7da)}
@@ -264,6 +264,7 @@
 
 /* ── State label ── */
 .state-label{display:none}
+@media(prefers-reduced-motion:reduce){.typing-dot,.spinner,.mic-btn.glow,.mic-btn[data-state="stop-default"]::after{animation:none !important}.sheet{transition:opacity 0.1s cubic-bezier(0.25, 0.1, 0.25, 1) !important}.chat-thread-fade{transition:opacity 0.1s !important}}
 </style>
 </head>
 <body>

@@ -89,7 +89,7 @@
   top: 0;
   z-index: 4;
   transition:
-    background 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    background 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
   -webkit-backdrop-filter: blur(0px);
   backdrop-filter: blur(0px);
 }
@@ -616,9 +616,9 @@
 /* All cards share transition */
 .done-stack-items .task-row {
   transition:
-    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
-    opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1),
-    margin-bottom 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+    transform 0.5s cubic-bezier(0.42, 0, 1, 1),
+    opacity 0.4s cubic-bezier(0.42, 0, 1, 1),
+    margin-bottom 0.5s cubic-bezier(0.42, 0, 1, 1);
   margin-bottom: 0;
 }
 /* Collapsed: thin strips peeking below */
@@ -707,7 +707,7 @@
   width: 10px;
   height: 10px;
   color: var(--text-tertiary, #535862);
-  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.5s cubic-bezier(0.42, 0, 1, 1);
 }
 .done-toggle-chevron.expanded {
   transform: rotate(180deg);
@@ -785,7 +785,7 @@
   100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
 }
 .gem-counter-glow {
-  animation: gem-counter-glow 0.35s ease-out;
+  animation: gem-counter-glow 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
 }
 
 /* ── Preview tabs (time of day) ── */
@@ -943,6 +943,12 @@
   color: var(--text-tertiary, #535862);
   line-height: 18px;
   max-width: 220px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gem-counter-glow, .task-card {
+    animation: none !important;
+    transition: opacity 0.1s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  }
 }
 </style>
 </head>
@@ -1425,7 +1431,7 @@
   var deviceMockup = document.querySelector('.device-mockup');
   var doneStack = document.getElementById('done-stack');
   var doneItems = doneStack ? doneStack.querySelector('.done-stack-items') : null;
-  var ios = 'cubic-bezier(0.32, 0.72, 0, 1)';
+  var spring = 'cubic-bezier(0.5, 1.8, 0.3, 0.8)';
   var emptyState = document.getElementById('empty-state');
   var todayCount = document.getElementById('today-count');
 
@@ -1494,7 +1500,7 @@
       setTimeout(function() {
         var actionArea = card.querySelector('.task-action-area');
         var row = card.querySelector('.task-row');
-        actionArea.style.transition = 'max-height 0.35s '+ios+', padding 0.35s '+ios+', opacity 0.15s '+ios;
+        actionArea.style.transition = 'max-height 0.35s '+spring+', padding 0.35s '+spring+', opacity 0.15s '+spring;
         actionArea.style.maxHeight = actionArea.offsetHeight + 'px';
         actionArea.style.overflow = 'hidden';
         void actionArea.offsetWidth;
@@ -1508,14 +1514,14 @@
           b.textContent = '\u2705';
           emojiBox.appendChild(b);
         }
-        row.style.transition = 'box-shadow 0.35s '+ios;
+        row.style.transition = 'box-shadow 0.35s '+spring;
         row.style.boxShadow = 'none';
         row.style.cursor = 'default';
 
         setTimeout(function() {
           if (isNightCard) {
             // In night mode, after claiming the last task, show empty state
-            card.style.transition = 'opacity 0.35s '+ios+', max-height 0.35s '+ios;
+            card.style.transition = 'opacity 0.35s '+spring+', max-height 0.35s '+spring;
             card.style.opacity = '0';
             card.style.maxHeight = card.offsetHeight + 'px';
             void card.offsetWidth;
@@ -1525,7 +1531,7 @@
             var sectionLabels = document.querySelectorAll('.section-label[data-show]');
             sectionLabels.forEach(function(lbl) {
               if (lbl.dataset.show.indexOf('night') !== -1 && !lbl.id) {
-                lbl.style.transition = 'opacity 0.35s '+ios;
+                lbl.style.transition = 'opacity 0.35s '+spring;
                 lbl.style.opacity = '0';
                 setTimeout(function() { lbl.style.display = 'none'; }, 350);
               }

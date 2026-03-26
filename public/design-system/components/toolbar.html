@@ -137,7 +137,7 @@
   flex-shrink:0;
   overflow:hidden;
   cursor:pointer;
-  transition:background 0.15s, box-shadow 0.15s, transform 0.1s, border-color 0.15s;
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .btn-util:hover {
   background:var(--gray-50, #fafafa);
@@ -341,7 +341,7 @@
   padding:var(--spacing-xs, 4px) var(--spacing-md, 8px);
   box-sizing:border-box;
   position:relative;
-  transition:width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:width 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
 }
 .progress-fill::after {
   content:'';
@@ -399,6 +399,12 @@
 .demo-col { flex-direction:column; gap:var(--spacing-3xl, 24px); }
 @media(max-width:768px) {
   .phone-frame { width:100%; }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill { transition:none; }
+  .btn-util { transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1); }
 }
 </style>
 </head>
@@ -795,7 +801,7 @@
             <div class="toolbar-title-display scroll-demo-inline-title" style="flex:1;display:none;font-size:18px;line-height:28px;font-weight:600;letter-spacing:0;text-align:center;">My Family</div>
             <div class="trailing"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div></div></div>
           </div>
-          <div class="toolbar-title-block scroll-demo-title-block" style="transition:opacity 0.3s, max-height 0.3s, margin 0.3s;overflow:hidden;">
+          <div class="toolbar-title-block scroll-demo-title-block" style="transition:opacity 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), max-height 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), margin 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);overflow:hidden;">
             <span class="toolbar-title-display">My Family</span>
             <span class="toolbar-subtitle">Anderson household</span>
           </div>
@@ -870,7 +876,7 @@
       <div class="phone-frame phone-frame-tall" style="height:380px;padding:0;">
         <div id="kid-alt-scroll" style="width:100%;height:100%;overflow-y:auto;scrollbar-width:none;background:var(--bg-sky, #e0f2fe);">
           <!-- Sticky toolbar -->
-          <div id="kid-alt-toolbar" style="position:sticky;top:0;z-index:4;transition:background 0.35s cubic-bezier(0.32, 0.72, 0, 1);">
+          <div id="kid-alt-toolbar" style="position:sticky;top:0;z-index:4;transition:background 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);">
             <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg></div></div>
             <div class="toolbar toolbar-kid-home">
               <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
@@ -1227,6 +1233,10 @@
         <tr><td>Stat label</td><td><code>--font-size-text-md</code> / <code>--font-weight-regular</code></td><td><code>--text-secondary</code></td></tr>
         <tr><td>Quest background</td><td><code>--bg-sky</code></td><td></td></tr>
         <tr><td>Quest close icon</td><td></td><td>40 &times; 40px, x-close</td></tr>
+        <tr><td>Button transition</td><td colspan="2">0.1s <code>cubic-bezier(0.25, 0.1, 0.25, 1)</code> &mdash; background, box-shadow, border-color</td></tr>
+        <tr><td>Progress fill</td><td colspan="2">0.35s <code>cubic-bezier(0.5, 1.8, 0.3, 0.8)</code> (spring)</td></tr>
+        <tr><td>Title block scroll</td><td colspan="2">0.35s <code>cubic-bezier(0.25, 0.1, 0.25, 1)</code> &mdash; opacity, max-height, margin</td></tr>
+        <tr><td>Background transition</td><td colspan="2">0.35s <code>cubic-bezier(0.5, 1.8, 0.3, 0.8)</code> (spring)</td></tr>
       </tbody>
     </table>
   </div>
@@ -1252,7 +1262,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/nav.js"></script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 <script>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Tile</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Tile",
+  "slug": "tile",
+  "intent": {
+    "purpose": "Let users choose between options presented as distinct, tappable cards",
+    "taskContext": ["selection", "exercises", "onboarding"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["label"],
+    "allows": ["icon", "avatar", "description", "chevron", "radio-indicator", "checkbox-indicator"],
+    "forbids": ["button", "nested-tile"]
+  },
+  "variants": [
+    { "name": "Navigation", "useWhen": "Navigating to a sub-screen, shows chevron", "pairWith": [] },
+    { "name": "Radio", "useWhen": "Single-select from a list, shows radio indicator", "pairWith": [] },
+    { "name": "Checkbox", "useWhen": "Multi-select from a list, shows checkbox indicator", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 56px height minimum" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline", "inside-sheet"]
+  },
+  "relationships": {
+    "related": ["Avatar", "Checkbox", "Radio", "Sheet"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Sheet"]
+  },
+  "states": ["unchecked", "checked", "hover"],
+  "accessibility": {
+    "role": "option",
+    "keyboard": ["Enter", "Space", "ArrowUp", "ArrowDown"],
+    "ariaAttributes": ["aria-selected", "aria-checked"],
+    "minTouchTarget": "56x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/avatar.css">
+<style>
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Tile component ── */
+.tile {
+  display:flex; align-items:center; gap:var(--spacing-xl, 16px);
+  box-sizing:border-box;
+  width:354px;
+  padding:var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-xl, 12px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor:pointer;
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.tile:hover {
+  border-color:var(--gray-300, #d5d7da);
+}
+.tile.checked {
+  background:var(--bg-brand-secondary, #e0f2fe);
+  border-color:var(--brand-300, #7cd4fd);
+  box-shadow:0 3px 0 0 var(--brand-300, #7cd4fd);
+}
+
+/* Icon (Toss Face emoji) */
+.tile-icon {
+  width:44px; height:44px;
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'TossFace', sans-serif;
+  font-size:36px; line-height:1;
+}
+
+
+/* Content */
+.tile-content { flex:1; min-width:0; }
+.tile-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+}
+.tile-desc {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651);
+}
+
+/* ── Trailing indicators ── */
+
+/* Checkbox (rounded square) */
+.tile-checkbox {
+  width:24px; height:24px; flex-shrink:0;
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-sm, 6px);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg-primary, #ffffff);
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.checked .tile-checkbox {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-500, #0ba5ec);
+}
+.tile-check-icon {
+  display:none; width:14px; height:14px;
+  stroke:var(--fg-white, #ffffff); stroke-width:2.5; fill:none;
+}
+.checked .tile-check-icon { display:block; }
+
+/* Radio (circle) */
+.tile-radio {
+  width:24px; height:24px; flex-shrink:0;
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-full, 9999px);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg-primary, #ffffff);
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.checked .tile-radio {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-500, #0ba5ec);
+}
+.tile-radio-dot {
+  display:none; width:8px; height:8px;
+  border-radius:var(--radius-full, 9999px);
+  background:var(--fg-white, #ffffff);
+}
+.checked .tile-radio-dot { display:block; }
+
+/* Navigation (chevron) */
+.tile-chevron {
+  width:24px; height:24px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text-tertiary, #535862);
+}
+.checked .tile-chevron {
+  color:var(--brand-500, #0ba5ec);
+}
+.tile-chevron svg {
+  width:12px; height:12px; stroke:currentColor;
+  stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round;
+}
+
+/* ── State grid: let list items fill cells ── */
+.state-cell .tile { width:100%; }
+
+@media(max-width:768px) {
+  .tile { width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Tile</div>
+    <div class="sec-desc">Tiles are bordered, tappable cards that let users choose between options. Each tile is visually distinct with its own border and shadow, making it ideal for selection flows, exercises, and onboarding.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a tile when you want the user to pick from a set of distinct, card-like options.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Navigation</span>
+        <div class="tile">
+          <div class="tile-icon">&#128218;</div>
+          <div class="tile-content">
+            <div class="tile-label">Reading corner</div>
+            <div class="tile-desc">Stories and adventures</div>
+          </div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Radio</span>
+        <div class="tile">
+          <div class="tile-icon">&#127793;</div>
+          <div class="tile-content">
+            <div class="tile-label">Plant a garden</div>
+            <div class="tile-desc">Grow your own vegetables</div>
+          </div>
+          <div class="tile-radio">
+            <div class="tile-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Checkbox</span>
+        <div class="tile">
+          <div class="tile-icon">&#127912;</div>
+          <div class="tile-content">
+            <div class="tile-label">Draw and paint</div>
+            <div class="tile-desc">Express yourself with colors</div>
+          </div>
+          <div class="tile-checkbox">
+            <svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Leading element ════ -->
+  <div class="doc-section">
+    <h2>Leading element</h2>
+    <p>The leading element is optional. Use an <strong>icon</strong> for activities or categories, and an <strong>avatar</strong> (MD size) when the tile represents a person.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Icon</span>
+        <div class="tile">
+          <div class="tile-icon">&#128218;</div>
+          <div class="tile-content">
+            <div class="tile-label">Reading corner</div>
+            <div class="tile-desc">Stories and adventures</div>
+          </div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Avatar</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-green" id="demo-avatar-nav"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Shane</div>
+            <div class="tile-desc">Soccer drill &mdash; dribbling</div>
+          </div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Usage guidelines ════ -->
+  <div class="doc-section">
+    <h2>Usage guidelines</h2>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:0 0 8px">Types</h3>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Navigation</strong> when making a choice navigates to another screen or step in a flow.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Radio</strong> to select a single item from a mutually exclusive list.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Checkbox</strong> to select multiple items from a list.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use section headers to separate lists with different types on the same page.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix different types in the same list.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use Navigation when the user needs to choose options within a form &mdash; use Radio or Checkbox instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use a tile when there is just one primary option &mdash; use a button instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use Radio or Checkbox directly in a form, unless used as a full screen.</li>
+      </ul>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Leading element</h3>
+    <p>The leading element is optional and can be either an <strong>icon</strong> (Toss Face emoji) or an <strong>avatar</strong> (MD size, 40px).</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a Toss Face <strong>icon</strong> for activity or category lists.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use an <strong>avatar</strong> when the tile represents a person &mdash; family members, leaderboard entries, participants.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Always respect the user&rsquo;s profile <strong>background color</strong> on the avatar.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix icons and avatars in the same list.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t hard-code avatar background colors &mdash; always use the color from the user&rsquo;s profile.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>A tile is composed of up to four parts. Only the <strong>label</strong> is required; the leading element, description, and trailing indicator are all optional.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Full anatomy (icon)</span>
+        <div class="tile">
+          <div class="tile-icon">&#127912;</div>
+          <div class="tile-content">
+            <div class="tile-label">Draw and paint</div>
+            <div class="tile-desc">Express yourself with colors</div>
+          </div>
+          <div class="tile-checkbox">
+            <svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Full anatomy (avatar)</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-green" id="anatomy-avatar"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Shane</div>
+            <div class="tile-desc">Soccer drill &mdash; dribbling</div>
+          </div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Label only</span>
+        <div class="tile">
+          <div class="tile-content">
+            <div class="tile-label">Draw and paint</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Leading element</strong> (optional) &mdash; Either a 44px Toss Face emoji <strong>icon</strong> or a 40px circular <strong>avatar</strong>. Use icon for categories, avatar for people.</li>
+        <li><strong>Label</strong> (required) &mdash; Bold, text-md (16px/24px). The primary option name.</li>
+        <li><strong>Description</strong> (optional) &mdash; Regular, text-sm (14px/20px). Extra context when the label alone isn&rsquo;t enough.</li>
+        <li><strong>Trailing indicator</strong> (optional) &mdash; 24px. Checkbox, radio, or chevron depending on the type.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>Each type has two states &mdash; <strong>unchecked</strong> (default) and <strong>checked</strong> (selected). The checked state uses the brand blue palette to clearly indicate selection.</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(2, 1fr);">
+      <div class="state-cell"><span class="state-cell-label">Unchecked</span></div>
+      <div class="state-cell"><span class="state-cell-label">Checked</span></div>
+
+      <div class="state-cell">
+        <div class="tile">
+          <div class="tile-icon">&#127912;</div>
+          <div class="tile-content">
+            <div class="tile-label">Draw and paint</div>
+            <div class="tile-desc">Express yourself with colors</div>
+          </div>
+          <div class="tile-checkbox">
+            <svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile checked">
+          <div class="tile-icon">&#127912;</div>
+          <div class="tile-content">
+            <div class="tile-label">Draw and paint</div>
+            <div class="tile-desc">Express yourself with colors</div>
+          </div>
+          <div class="tile-checkbox">
+            <svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-cell">
+        <div class="tile">
+          <div class="tile-icon">&#127793;</div>
+          <div class="tile-content">
+            <div class="tile-label">Plant a garden</div>
+            <div class="tile-desc">Grow your own vegetables</div>
+          </div>
+          <div class="tile-radio">
+            <div class="tile-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile checked">
+          <div class="tile-icon">&#127793;</div>
+          <div class="tile-content">
+            <div class="tile-label">Plant a garden</div>
+            <div class="tile-desc">Grow your own vegetables</div>
+          </div>
+          <div class="tile-radio">
+            <div class="tile-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-cell">
+        <div class="tile">
+          <div class="tile-icon">&#128218;</div>
+          <div class="tile-content">
+            <div class="tile-label">Reading corner</div>
+            <div class="tile-desc">Stories and adventures</div>
+          </div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile checked">
+          <div class="tile-icon">&#128218;</div>
+          <div class="tile-content">
+            <div class="tile-label">Reading corner</div>
+            <div class="tile-desc">Stories and adventures</div>
+          </div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Content guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <p>Tile copy should:</p>
+    <div class="prose">
+      <ul>
+        <li>Keep labels short &mdash; ideally 2&ndash;4 words</li>
+        <li>Start with a verb or noun that names the option</li>
+        <li>Use sentence case (only capitalise the first letter of the first word)</li>
+        <li>Use the description for extra context only when the label isn&rsquo;t self-explanatory</li>
+        <li>Avoid ending labels or descriptions with a period</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All tile styles map to Sprout design tokens. The container is identical across all three types &mdash; only the trailing indicator differs.</p>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Unchecked (default)</th><th>Checked (selected)</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>--bg-primary</code></td><td><code>--bg-brand-secondary</code> (#e0f2fe)</td></tr>
+        <tr><td>Border</td><td><code>2px solid --border-secondary</code></td><td><code>2px solid --brand-300</code> (#7cd4fd)</td></tr>
+        <tr><td>Shadow</td><td><code>0 3px 0 --gray-200</code></td><td><code>0 3px 0 --brand-300</code></td></tr>
+        <tr><td>Border radius</td><td colspan="2"><code>--radius-xl</code> (12px)</td></tr>
+        <tr><td>Padding</td><td colspan="2">16px vertical, 20px horizontal</td></tr>
+        <tr><td>Gap</td><td colspan="2">16px (icon / content / indicator)</td></tr>
+        <tr><td>Width</td><td colspan="2">354px</td></tr>
+        <tr><td>Label</td><td colspan="2">text-md bold (16px/24px), <code>--text-primary</code></td></tr>
+        <tr><td>Description</td><td colspan="2">text-sm regular (14px/20px), <code>--text-secondary</code></td></tr>
+        <tr><td>Icon</td><td colspan="2">44px Toss Face emoji</td></tr>
+        <tr><td>Avatar</td><td colspan="2">40px circle, <code>--bg-sky</code> default, user profile background color</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Trailing indicators</h3>
+    <table class="token-table">
+      <thead><tr><th>Type</th><th>Size</th><th>Radius</th><th>Unchecked</th><th>Checked</th></tr></thead>
+      <tbody>
+        <tr><td>Checkbox</td><td>24px</td><td><code>--radius-sm</code> (6px)</td><td>Border <code>--border-secondary</code></td><td>Filled <code>--brand-500</code>, white check icon</td></tr>
+        <tr><td>Radio</td><td>24px</td><td><code>--radius-full</code> (9999px)</td><td>Border <code>--border-secondary</code></td><td>Filled <code>--brand-500</code>, 8px white dot</td></tr>
+        <tr><td>Navigation</td><td>24px</td><td>&mdash;</td><td>Chevron in <code>--text-tertiary</code></td><td>Chevron in <code>--brand-500</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <p>Tiles are interactive selection controls. They must be usable by all input methods.</p>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Checkbox type &rarr; use <code>role="option"</code> in a <code>role="listbox"</code>, or native <code>&lt;input type="checkbox"&gt;</code>. Radio type &rarr; use <code>role="radio"</code> in a <code>role="radiogroup"</code>, or native <code>&lt;input type="radio"&gt;</code>. Navigation type &rarr; use <code>&lt;a&gt;</code> or <code>role="link"</code>.</li>
+        <li><strong>Keyboard:</strong> Items must be selectable with <kbd>Enter</kbd> or <kbd>Space</kbd>. Arrow keys should move focus between items.</li>
+        <li><strong>Focus ring:</strong> A visible <code>2px</code> focus ring appears on keyboard navigation. Do not remove <code>:focus-visible</code> outlines.</li>
+        <li><strong>ARIA state:</strong> Use <code>aria-selected="true"</code> for checked items and <code>aria-selected="false"</code> for unchecked. Radio groups should use <code>aria-checked</code>.</li>
+        <li><strong>Contrast:</strong> Labels (<code>--text-primary</code> on <code>--bg-primary</code>) and descriptions (<code>--text-secondary</code> on <code>--bg-primary</code>) both pass WCAG AA.</li>
+        <li><strong>Touch targets:</strong> The entire row (minimum 56px tall) is the tap target, exceeding the 44&times;44px guideline.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+/* ── Rive avatar initialization (matches avatar component) ── */
+var RIVE_USER_SRC = '/character2.4.riv';
+var ARTBOARD = 'Village-character';
+var SM_NAME = 'State Machine 1';
+var USER_STATE = { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 };
+
+function initRive(canvas, opts) {
+  var w = parseInt(canvas.getAttribute('width'), 10) || 132;
+  var h = parseInt(canvas.getAttribute('height'), 10) || 120;
+  canvas.width = w;
+  canvas.height = h;
+  var r;
+  var config = {
+    src: opts.src,
+    canvas: canvas,
+    autoplay: true,
+    stateMachines: SM_NAME,
+    fit: rive.Fit.Contain,
+    alignment: rive.Alignment.Center,
+    onLoad: function() {
+      if (!r) return;
+      r.resizeDrawingSurfaceToCanvas();
+      try {
+        var inputs = r.stateMachineInputs(SM_NAME);
+        if (inputs && opts.state) {
+          inputs.forEach(function(inp) {
+            if (opts.state.hasOwnProperty(inp.name)) inp.value = opts.state[inp.name];
+          });
+        }
+      } catch(e) {}
+    }
+  };
+  if (opts.artboard) config.artboard = opts.artboard;
+  r = new rive.Rive(config);
+}
+
+document.querySelectorAll('.rive-user').forEach(function(canvas) {
+  initRive(canvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: USER_STATE });
+});
+</script>
+</body>
+</html>

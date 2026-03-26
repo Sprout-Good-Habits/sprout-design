@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Village Character</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--spacing-xl, 16px) 0;
+  font-size: var(--font-size-text-sm, 14px);
+}
+.ref-table th, .ref-table td {
+  text-align: left;
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.ref-table th {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  font-size: var(--font-size-text-xs, 12px);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ref-table td {
+  color: var(--text-secondary, #414651);
+}
+.color-swatch {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-xs, 4px);
+  border: 1px solid rgba(0,0,0,0.08);
+  vertical-align: middle;
+  margin-right: var(--spacing-sm, 6px);
+}
+.info-note {
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid var(--brand-200, #b9e6fe);
+  border-radius: var(--radius-md, 8px);
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm, 20px);
+  margin: var(--spacing-xl, 16px) 0;
+}
+.info-note strong { color: var(--brand-700, #026aa2); }
+.anatomy-list {
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  padding: var(--spacing-xl, 16px) var(--spacing-3xl, 24px);
+  margin: var(--spacing-xl, 16px) 0 var(--spacing-3xl, 24px);
+}
+.anatomy-list ul {
+  list-style: none;
+  padding: 0;
+}
+.anatomy-list li {
+  padding: var(--spacing-md, 8px) 0;
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.anatomy-list li:last-child { border-bottom: none; }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Village Character</div>
+    <div class="sec-desc">A complete reference for the Rive Village Character file &mdash; every input, index value, and color mapping you need to customize the character programmatically.</div>
+  </div>
+
+  <!-- State Machine -->
+  <div class="doc-section">
+    <h2>State machine</h2>
+    <p>The Village Character is driven by a single Rive state machine.</p>
+    <div class="anatomy-list">
+      <ul>
+        <li><strong>State machine name</strong> &mdash; <code>State Machine 1</code></li>
+        <li><strong>Artboard name</strong> &mdash; <code>Village-character</code></li>
+      </ul>
+    </div>
+    <div class="info-note">
+      <strong>Tip:</strong> Use these exact names when initializing the Rive runtime. The state machine name is case-sensitive.
+    </div>
+  </div>
+
+  <!-- Inputs -->
+  <div class="doc-section">
+    <h2>Inputs overview</h2>
+    <p>The state machine exposes the following inputs for controlling the character's appearance and mouth animation.</p>
+    <table class="ref-table">
+      <thead><tr><th>Input Name</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>skinID</code></td><td>Number (0&ndash;15)</td><td>Skin color index</td></tr>
+        <tr><td><code>hairID</code></td><td>Number (0&ndash;6)</td><td>Hair style index</td></tr>
+        <tr><td><code>hairshadeID</code></td><td>Number (0&ndash;12)</td><td>Hair colour index</td></tr>
+        <tr><td><code>beardID</code></td><td>Number (0&ndash;7)</td><td>Beard type index</td></tr>
+        <tr><td><code>beardshadeID</code></td><td>Number (0&ndash;12)</td><td>Beard colour index</td></tr>
+        <tr><td><code>clothingcolourID</code></td><td>Number (0&ndash;10)</td><td>Clothing colour index</td></tr>
+        <tr><td><code>mouthselector</code></td><td>Number (0&ndash;20)</td><td>Mouth shape / viseme ID</td></tr>
+        <tr><td><code>talkingmouth toggle</code></td><td>Boolean</td><td>Enable or disable mouth movement</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Skin Colors -->
+  <div class="doc-section">
+    <h2>Skin colors</h2>
+    <p>Set <code>skinID</code> to one of the following values.</p>
+    <table class="ref-table">
+      <thead><tr><th>skinID</th><th>Color</th><th>HEX</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td><span class="color-swatch" style="background:#FFB497"></span> Skin 0</td><td><code>#FFB497</code></td></tr>
+        <tr><td>1</td><td><span class="color-swatch" style="background:#6E3D3A"></span> Skin 1</td><td><code>#6E3D3A</code></td></tr>
+        <tr><td>2</td><td><span class="color-swatch" style="background:#7D4A3F"></span> Skin 2</td><td><code>#7D4A3F</code></td></tr>
+        <tr><td>3</td><td><span class="color-swatch" style="background:#8C4A25"></span> Skin 3</td><td><code>#8C4A25</code></td></tr>
+        <tr><td>4</td><td><span class="color-swatch" style="background:#97513F"></span> Skin 4</td><td><code>#97513F</code></td></tr>
+        <tr><td>5</td><td><span class="color-swatch" style="background:#985C30"></span> Skin 5</td><td><code>#985C30</code></td></tr>
+        <tr><td>6</td><td><span class="color-swatch" style="background:#A46648"></span> Skin 6</td><td><code>#A46648</code></td></tr>
+        <tr><td>7</td><td><span class="color-swatch" style="background:#B76E45"></span> Skin 7</td><td><code>#B76E45</code></td></tr>
+        <tr><td>8</td><td><span class="color-swatch" style="background:#C6775C"></span> Skin 8</td><td><code>#C6775C</code></td></tr>
+        <tr><td>9</td><td><span class="color-swatch" style="background:#E18E70"></span> Skin 9</td><td><code>#E18E70</code></td></tr>
+        <tr><td>10</td><td><span class="color-swatch" style="background:#E59D65"></span> Skin 10</td><td><code>#E59D65</code></td></tr>
+        <tr><td>11</td><td><span class="color-swatch" style="background:#F2A07D"></span> Skin 11</td><td><code>#F2A07D</code></td></tr>
+        <tr><td>12</td><td><span class="color-swatch" style="background:#FFB89D"></span> Skin 12</td><td><code>#FFB89D</code></td></tr>
+        <tr><td>13</td><td><span class="color-swatch" style="background:#FFC6B7"></span> Skin 13</td><td><code>#FFC6B7</code></td></tr>
+        <tr><td>14</td><td><span class="color-swatch" style="background:#FFCBA3"></span> Skin 14</td><td><code>#FFCBA3</code></td></tr>
+        <tr><td>15</td><td><span class="color-swatch" style="background:#FFE2D6"></span> Skin 15</td><td><code>#FFE2D6</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Hair Styles -->
+  <div class="doc-section">
+    <h2>Hair styles</h2>
+    <p>Set <code>hairID</code> to one of the following values.</p>
+    <table class="ref-table">
+      <thead><tr><th>hairID</th><th>Style</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>Short</td></tr>
+        <tr><td>1</td><td>Short curly</td></tr>
+        <tr><td>2</td><td>Buzz cut</td></tr>
+        <tr><td>3</td><td>Side part</td></tr>
+        <tr><td>4</td><td>Curly</td></tr>
+        <tr><td>5</td><td>Long</td></tr>
+        <tr><td>6</td><td>Ponytail</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Hair Colors -->
+  <div class="doc-section">
+    <h2>Hair colours</h2>
+    <p>Set <code>hairshadeID</code> to one of the following values.</p>
+    <table class="ref-table">
+      <thead><tr><th>hairshadeID</th><th>Color</th><th>HEX</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td><span class="color-swatch" style="background:#3F3F3F"></span> Black</td><td><code>#3F3F3F</code></td></tr>
+        <tr><td>1</td><td><span class="color-swatch" style="background:#3D3D3D"></span> Charcoal Black</td><td><code>#3D3D3D</code></td></tr>
+        <tr><td>2</td><td><span class="color-swatch" style="background:#553629"></span> Dark Espresso</td><td><code>#553629</code></td></tr>
+        <tr><td>3</td><td><span class="color-swatch" style="background:#662C2C"></span> Deep Burgundy</td><td><code>#662C2C</code></td></tr>
+        <tr><td>4</td><td><span class="color-swatch" style="background:#753A23"></span> Chestnut Brown</td><td><code>#753A23</code></td></tr>
+        <tr><td>5</td><td><span class="color-swatch" style="background:#A34242"></span> Auburn Red</td><td><code>#A34242</code></td></tr>
+        <tr><td>6</td><td><span class="color-swatch" style="background:#947872"></span> Muted Taupe</td><td><code>#947872</code></td></tr>
+        <tr><td>7</td><td><span class="color-swatch" style="background:#BB6A20"></span> Golden Bronze</td><td><code>#BB6A20</code></td></tr>
+        <tr><td>8</td><td><span class="color-swatch" style="background:#CA6049"></span> Copper Red</td><td><code>#CA6049</code></td></tr>
+        <tr><td>9</td><td><span class="color-swatch" style="background:#F5AF62"></span> Soft Amber</td><td><code>#F5AF62</code></td></tr>
+        <tr><td>10</td><td><span class="color-swatch" style="background:#FFDEBB"></span> Pale Blonde</td><td><code>#FFDEBB</code></td></tr>
+        <tr><td>11</td><td><span class="color-swatch" style="background:#E4DDD6"></span> Ash Platinum</td><td><code>#E4DDD6</code></td></tr>
+        <tr><td>12</td><td><span class="color-swatch" style="background:#ECF0F1"></span> Cool White</td><td><code>#ECF0F1</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Clothing Colours -->
+  <div class="doc-section">
+    <h2>Clothing colours</h2>
+    <p>Set <code>clothingcolourID</code> to one of the following values.</p>
+    <table class="ref-table">
+      <thead><tr><th>clothingcolourID</th><th>Color</th><th>HEX</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td><span class="color-swatch" style="background:#3EBBF6"></span> Default Blue</td><td><code>#3EBBF6</code></td></tr>
+        <tr><td>1</td><td><span class="color-swatch" style="background:#717680"></span> Slate Grey</td><td><code>#717680</code></td></tr>
+        <tr><td>2</td><td><span class="color-swatch" style="background:#17B26A"></span> Emerald Green</td><td><code>#17B26A</code></td></tr>
+        <tr><td>3</td><td><span class="color-swatch" style="background:#669F2A"></span> Olive Green</td><td><code>#669F2A</code></td></tr>
+        <tr><td>4</td><td><span class="color-swatch" style="background:#9E77ED"></span> Sky Blue</td><td><code>#9E77ED</code></td></tr>
+        <tr><td>5</td><td><span class="color-swatch" style="background:#2970FF"></span> Royal Blue</td><td><code>#2970FF</code></td></tr>
+        <tr><td>6</td><td><span class="color-swatch" style="background:#875BF7"></span> Medium Purple</td><td><code>#875BF7</code></td></tr>
+        <tr><td>7</td><td><span class="color-swatch" style="background:#EE46BC"></span> Magenta Pink</td><td><code>#EE46BC</code></td></tr>
+        <tr><td>8</td><td><span class="color-swatch" style="background:#F04438"></span> Coral Red</td><td><code>#F04438</code></td></tr>
+        <tr><td>9</td><td><span class="color-swatch" style="background:#EF6820"></span> Deep Orange</td><td><code>#EF6820</code></td></tr>
+        <tr><td>10</td><td><span class="color-swatch" style="background:#F79009"></span> Amber Gold</td><td><code>#F79009</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Clothing Types -->
+  <div class="doc-section">
+    <h2>Clothing types</h2>
+    <p>Set <code>clothingID</code> to one of the following values.</p>
+    <table class="ref-table">
+      <thead><tr><th>clothingID</th><th>Style</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>Default T-shirt</td></tr>
+        <tr><td>1</td><td>Cardigan</td></tr>
+        <tr><td>2</td><td>Blazer</td></tr>
+        <tr><td>3</td><td>Blazer &amp; Tie</td></tr>
+        <tr><td>4</td><td>Flannel</td></tr>
+        <tr><td>5</td><td>Turtle neck</td></tr>
+        <tr><td>6</td><td>Hoodie</td></tr>
+        <tr><td>7</td><td>Shirt (full sleeve)</td></tr>
+        <tr><td>8</td><td>Shirt (half sleeve)</td></tr>
+        <tr><td>9</td><td>Polo T-shirt</td></tr>
+        <tr><td>10</td><td>T-shirt (full sleeve)</td></tr>
+        <tr><td>11</td><td>Puffer jacket</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Beard Types -->
+  <div class="doc-section">
+    <h2>Beard types</h2>
+    <p>Set <code>beardID</code> to one of the following values.</p>
+    <table class="ref-table">
+      <thead><tr><th>beardID</th><th>Style</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>None</td></tr>
+        <tr><td>1</td><td>Long beard</td></tr>
+        <tr><td>2</td><td>Light stubble</td></tr>
+        <tr><td>3</td><td>Jawline beard</td></tr>
+        <tr><td>4</td><td>Goatee</td></tr>
+        <tr><td>5</td><td>Goatee 2</td></tr>
+        <tr><td>6</td><td>Full beard</td></tr>
+        <tr><td>7</td><td>Mustache</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Beard Colours -->
+  <div class="doc-section">
+    <h2>Beard colours</h2>
+    <p>Set <code>beardshadeID</code> to one of the following values. These use the same palette as hair colours.</p>
+    <table class="ref-table">
+      <thead><tr><th>beardshadeID</th><th>Color</th><th>HEX</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td><span class="color-swatch" style="background:#3F3F3F"></span> Black</td><td><code>#3F3F3F</code></td></tr>
+        <tr><td>1</td><td><span class="color-swatch" style="background:#3D3D3D"></span> Charcoal Black</td><td><code>#3D3D3D</code></td></tr>
+        <tr><td>2</td><td><span class="color-swatch" style="background:#553629"></span> Dark Espresso</td><td><code>#553629</code></td></tr>
+        <tr><td>3</td><td><span class="color-swatch" style="background:#662C2C"></span> Deep Burgundy</td><td><code>#662C2C</code></td></tr>
+        <tr><td>4</td><td><span class="color-swatch" style="background:#753A23"></span> Chestnut Brown</td><td><code>#753A23</code></td></tr>
+        <tr><td>5</td><td><span class="color-swatch" style="background:#A34242"></span> Auburn Red</td><td><code>#A34242</code></td></tr>
+        <tr><td>6</td><td><span class="color-swatch" style="background:#947872"></span> Muted Taupe</td><td><code>#947872</code></td></tr>
+        <tr><td>7</td><td><span class="color-swatch" style="background:#BB6A20"></span> Golden Bronze</td><td><code>#BB6A20</code></td></tr>
+        <tr><td>8</td><td><span class="color-swatch" style="background:#CA6049"></span> Copper Red</td><td><code>#CA6049</code></td></tr>
+        <tr><td>9</td><td><span class="color-swatch" style="background:#F5AF62"></span> Soft Amber</td><td><code>#F5AF62</code></td></tr>
+        <tr><td>10</td><td><span class="color-swatch" style="background:#FFDEBB"></span> Pale Blonde</td><td><code>#FFDEBB</code></td></tr>
+        <tr><td>11</td><td><span class="color-swatch" style="background:#E4DDD6"></span> Ash Platinum</td><td><code>#E4DDD6</code></td></tr>
+        <tr><td>12</td><td><span class="color-swatch" style="background:#ECF0F1"></span> Cool White</td><td><code>#ECF0F1</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mouth Shapes -->
+  <div class="doc-section">
+    <h2>Mouth shapes</h2>
+    <p>Set <code>mouthselector</code> to a value between <strong>0&ndash;20</strong> (21 shapes total).</p>
+    <table class="ref-table">
+      <thead><tr><th>Value</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>0</code></td><td>Closed mouth (default / rest position)</td></tr>
+        <tr><td><code>1&ndash;20</code></td><td>Open mouth variations mapped to viseme phonemes</td></tr>
+      </tbody>
+    </table>
+    <div class="info-note">
+      <strong>Talking animation:</strong> Set <code>talkingmouth toggle</code> to <code>true</code> to enable automatic mouth movement. When enabled, the mouth animates independently. When disabled, use <code>mouthselector</code> to manually set specific mouth shapes (useful for lip-sync or static expressions).
+    </div>
+  </div>
+
+  <!-- Usage example -->
+  <div class="doc-section">
+    <h2>Usage example</h2>
+    <p>Initialize the Rive file and set character inputs programmatically.</p>
+    <pre><code>const r = new rive.Rive({
+  src: 'village-character.riv',
+  canvas: document.getElementById('character-canvas'),
+  autoplay: true,
+  stateMachines: 'State Machine 1',
+  artboard: 'Village-character',
+  onLoad: () => {
+    const inputs = r.stateMachineInputs('State Machine 1');
+    inputs.forEach(input => {
+      switch (input.name) {
+        case 'skinID':            input.value = 3;     break;
+        case 'hairID':            input.value = 4;     break;
+        case 'hairshadeID':       input.value = 7;     break;
+        case 'clothingcolourID':  input.value = 2;     break;
+        case 'beardID':           input.value = 0;     break;
+        case 'talkingmouth toggle': input.value = true; break;
+      }
+    });
+  }
+});</code></pre>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

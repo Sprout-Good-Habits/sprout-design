@@ -43,7 +43,9 @@ TossFace emoji font (used instead of system emoji everywhere):
 4. **44px minimum touch target** on all interactive elements.
 5. **Pair font size + line height tokens.** E.g. `font-size: var(--font-size-text-md)` with `line-height: var(--line-height-text-md)`.
 6. **Always include the Sprout character** on screens with the branded background.
-7. **Inside Sheets, only use documented components.** Never create custom or ad-hoc components (e.g. pills, chips, custom buttons). Always translate the design intent through the Component Lookup table — use ListItem for selections, Button for actions, Input for text entry, etc.
+7. **Inside Sheets, only use documented components.** Never create custom or ad-hoc components (e.g. pills, chips, custom buttons). Always translate the design intent through the Component Lookup table — use Tile for selections, Button for actions, Input for text entry, etc.
+8. **Always reference existing implementations first.** Before writing character positioning, canvas sizing, or Rive init code, search the codebase for a working example (e.g. `product-explorer/kid-home/timeline.html` for Sprout, `components/avatar.html` for Village Character). Copy the exact values — never guess.
+9. **Characters are always grounded.** The bottom edge of the container always clips the character. It is never floating in empty space. This applies everywhere — avatars, profile banners, loading screens, home screens.
 
 ---
 
@@ -139,6 +141,72 @@ new rive.Rive({
 ```
 
 **CORS note:** The Rive file must be served from the same origin. For local dev, copy it locally. For deployed prototypes, include it in the project's public assets.
+
+### Village Character (Rive)
+
+The Village Character represents family members. It uses a different Rive file from Sprout with deep customization (skin, hair, beard, clothing).
+
+**Rive file:** `/character2.4.riv` — artboard: `Village-character`, state machine: `State Machine 1`.
+
+**IMPORTANT — Reference implementations:**
+- **Avatars (XS–XL):** See `components/avatar.html` for exact canvas sizes and top offsets per size
+- **Profile banner:** See `components/avatar-profile.html` for the full-width hero placement
+- **Customizer:** See `product-explorer/customize-avatar.html` for the full character view
+
+**Avatar circle positioning — exact spec:**
+```css
+/* Base rule */
+.avatar canvas {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  display: block; pointer-events: none;
+}
+/* Per-size (width, height, top offset) */
+.avatar-xs canvas { width:35px;  height:50px;  top:-14px; }
+.avatar-sm canvas { width:46px;  height:66px;  top:-19px; }
+.avatar-md canvas { width:58px;  height:83px;  top:-23px; }
+.avatar-lg canvas { width:69px;  height:99px;  top:-28px; }
+.avatar-xl canvas { width:81px;  height:116px; top:-33px; }
+```
+
+**Rive initialization:**
+```js
+var r;
+r = new rive.Rive({
+  src: '/character2.4.riv',
+  canvas: canvasElement,
+  autoplay: true,
+  artboard: 'Village-character',
+  stateMachines: 'State Machine 1',
+  fit: rive.Fit.Contain,
+  alignment: rive.Alignment.Center,
+  onLoad: function() {
+    if (!r) return;
+    r.resizeDrawingSurfaceToCanvas();
+    var inputs = r.stateMachineInputs('State Machine 1');
+    if (inputs) {
+      inputs.forEach(function(inp) {
+        if (state[inp.name] !== undefined) inp.value = state[inp.name];
+      });
+    }
+  }
+});
+```
+
+**Customization inputs:** `skinID` (0–15), `hairID` (0–6), `hairshadeID` (0–12), `beardID` (0–7), `beardshadeID` (0–12), `clothingcolourID` (0–10), `clothingID` (0–11).
+
+**Presets (quick-start character combos):**
+| Name | skinID | hairID | hairshadeID | beardID | clothingcolourID | clothingID |
+|------|--------|--------|-------------|---------|-----------------|------------|
+| Shane (Kid, 8) | 11 | 4 | 3 | 0 | 0 | 0 |
+| Zeev (Dad) | 5 | 0 | 0 | 6 | 5 | 2 |
+| Mali (Mom) | 8 | 5 | 5 | 0 | 7 | 1 |
+| Grandpa | 14 | 3 | 11 | 7 | 1 | 5 |
+| Coach Eli | 3 | 1 | 7 | 0 | 2 | 10 |
+| Ms. Chen | 9 | 6 | 2 | 0 | 4 | 3 |
+| Liam (Kid, 4) | 6 | 2 | 9 | 0 | 8 | 0 |
+
+**Background colors (user-selected):** `--bg-sky` (default), `--brand-200`, `--blue-dark-200`, `--violet-200`, `--pink-200`, `--red-200`, `--green-200`, `--sprout-200`, `--yellow-200`, `--orange-200`.
 
 ---
 
@@ -348,12 +416,12 @@ Pill-shaped utility button. Used in Toolbar for navigation, stats, and actions.
 }
 ```
 
-### ListItem
+### Tile
 
 56px rows with optional icon, description, and trailing indicator (radio, checkbox, or chevron). Used inside Sheets for selection lists.
 
 ```css
-.list-item {
+.tile {
   display: flex; align-items: center; gap: var(--spacing-xl, 16px);
   box-sizing: border-box;
   width: 100%;
@@ -367,15 +435,15 @@ Pill-shaped utility button. Used in Toolbar for navigation, stats, and actions.
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
-.list-item:hover { border-color: var(--gray-300, #d5d7da); }
-.list-item.checked {
+.tile:hover { border-color: var(--gray-300, #d5d7da); }
+.tile.checked {
   background: var(--bg-brand-secondary, #e0f2fe);
   border-color: var(--brand-300, #7cd4fd);
   box-shadow: 0 3px 0 0 var(--brand-300, #7cd4fd);
 }
 
 /* Icon (TossFace emoji) */
-.list-item-icon {
+.tile-icon {
   width: 44px; height: 44px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   font-family: 'TossFace', sans-serif;
@@ -383,14 +451,14 @@ Pill-shaped utility button. Used in Toolbar for navigation, stats, and actions.
 }
 
 /* Content */
-.list-item-content { flex: 1; min-width: 0; }
-.list-item-label {
+.tile-content { flex: 1; min-width: 0; }
+.tile-label {
   font-size: var(--font-size-text-md, 16px);
   line-height: var(--line-height-text-md, 24px);
   font-weight: var(--font-weight-bold, 700);
   color: var(--text-primary, #181d27);
 }
-.list-item-desc {
+.tile-desc {
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
   font-weight: var(--font-weight-regular, 400);
@@ -398,7 +466,7 @@ Pill-shaped utility button. Used in Toolbar for navigation, stats, and actions.
 }
 
 /* Radio indicator */
-.list-item-radio {
+.tile-radio {
   width: 24px; height: 24px; flex-shrink: 0;
   border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: var(--radius-full, 9999px);
@@ -406,19 +474,19 @@ Pill-shaped utility button. Used in Toolbar for navigation, stats, and actions.
   background: var(--bg-primary, #ffffff);
   transition: background 0.15s, border-color 0.15s;
 }
-.checked .list-item-radio {
+.checked .tile-radio {
   background: var(--brand-500, #0ba5ec);
   border-color: var(--brand-500, #0ba5ec);
 }
-.list-item-radio-dot {
+.tile-radio-dot {
   display: none; width: 8px; height: 8px;
   border-radius: var(--radius-full, 9999px);
   background: #ffffff;
 }
-.checked .list-item-radio-dot { display: block; }
+.checked .tile-radio-dot { display: block; }
 
 /* Checkbox indicator */
-.list-item-checkbox {
+.tile-checkbox {
   width: 24px; height: 24px; flex-shrink: 0;
   border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: var(--radius-sm, 6px);
@@ -426,33 +494,33 @@ Pill-shaped utility button. Used in Toolbar for navigation, stats, and actions.
   background: var(--bg-primary, #ffffff);
   transition: background 0.15s, border-color 0.15s;
 }
-.checked .list-item-checkbox {
+.checked .tile-checkbox {
   background: var(--brand-500, #0ba5ec);
   border-color: var(--brand-500, #0ba5ec);
 }
-.list-item-check-icon {
+.tile-check-icon {
   display: none; width: 14px; height: 14px;
   stroke: #ffffff; stroke-width: 2.5; fill: none;
 }
-.checked .list-item-check-icon { display: block; }
+.checked .tile-check-icon { display: block; }
 ```
 
 **Markup (Radio inside Sheet):**
 ```html
-<div class="list-item-group" role="radiogroup" aria-label="Options">
-  <div class="list-item" role="radio" aria-checked="false" onclick="selectRadio(this)">
-    <div class="list-item-content">
-      <div class="list-item-label">Option A</div>
-      <div class="list-item-desc">Description text</div>
+<div class="tile-group" role="radiogroup" aria-label="Options">
+  <div class="tile" role="radio" aria-checked="false" onclick="selectRadio(this)">
+    <div class="tile-content">
+      <div class="tile-label">Option A</div>
+      <div class="tile-desc">Description text</div>
     </div>
-    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+    <div class="tile-radio"><div class="tile-radio-dot"></div></div>
   </div>
-  <div class="list-item checked" role="radio" aria-checked="true" onclick="selectRadio(this)">
-    <div class="list-item-content">
-      <div class="list-item-label">Option B</div>
-      <div class="list-item-desc">Description text</div>
+  <div class="tile checked" role="radio" aria-checked="true" onclick="selectRadio(this)">
+    <div class="tile-content">
+      <div class="tile-label">Option B</div>
+      <div class="tile-desc">Description text</div>
     </div>
-    <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+    <div class="tile-radio"><div class="tile-radio-dot"></div></div>
   </div>
 </div>
 ```
@@ -460,7 +528,7 @@ Pill-shaped utility button. Used in Toolbar for navigation, stats, and actions.
 **Radio selection JS:**
 ```js
 function selectRadio(el) {
-  el.parentElement.querySelectorAll('.list-item').forEach(function(item) {
+  el.parentElement.querySelectorAll('.tile').forEach(function(item) {
     item.classList.remove('checked');
     item.setAttribute('aria-checked', 'false');
   });
@@ -1275,11 +1343,11 @@ Pick components by **what the user needs to do**, not by what it looks like.
 |------|-----------|------------|
 | Free text (name, email, search) | **Input** | 56px height, 16px radius. Focus = blue border. Error = red border + message below. |
 | 4-digit PIN | **PasscodeInput** | 4 cells (48×56px), auto-advance on entry. Focus=blue border, error=red border. |
-| Pick one from options (in a Sheet) | **ListItem (Radio)** | 56px rows with radio indicator. ALWAYS use ListItem inside Sheets — never custom chips/pills. |
+| Pick one from options (in a Sheet) | **Tile (Radio)** | 56px rows with radio indicator. ALWAYS use Tile inside Sheets — never custom chips/pills. |
 | Pick one from options (standalone) | **Radio** | Mutually exclusive. Use when not inside a Sheet. |
 | Pick multiple options | **Checkbox** | Independent toggles. Can include description text. |
 | On/off toggle (instant effect) | **Switch** | For settings that take effect immediately. Don't use for form submissions. |
-| Pick from a long list | **ListItem (Radio/Checkbox)** | 56px rows with selection indicators. Put inside a Sheet if overlay needed. |
+| Pick from a long list | **Tile (Radio/Checkbox)** | 56px rows with selection indicators. Put inside a Sheet if overlay needed. |
 
 ### Showing Feedback
 
@@ -1309,7 +1377,7 @@ Pick components by **what the user needs to do**, not by what it looks like.
 - **EmptyStates** pairs with **Background** (full-screen) or **Sheet** (compact variant)
 - **ProgressBar** always lives inside **Toolbar** (quest variant)
 - **ButtonUtility** always lives inside **Toolbar** (leading or trailing slots)
-- **ListItem** groups with **Sheet** for overlay selection lists
+- **Tile** groups with **Sheet** for overlay selection lists
 
 ## Composition Rules
 
@@ -1325,7 +1393,7 @@ Before putting something inside a component, check what's allowed:
 | Toast | title | icon, description, action-link, close-button, progress-bar | nested-toast, image, button |
 | Toolbar | leading-slot | center-slot, trailing-slot, progress-bar, title, subtitle | nested-toolbar |
 | EmptyStates | icon, title | description, primary-button, secondary-button | nested-empty-state, image |
-| ListItem | label | icon, description, chevron, radio-indicator, checkbox-indicator | button, nested-list-item |
+| Tile | label | icon, description, chevron, radio-indicator, checkbox-indicator | button, nested-tile |
 
 ## Tokens Quick Reference
 

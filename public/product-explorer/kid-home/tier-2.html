@@ -88,7 +88,7 @@
   position: sticky;
   top: 0;
   z-index: 4;
-  transition: background 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: background 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
   -webkit-backdrop-filter: blur(0px);
   backdrop-filter: blur(0px);
 }
@@ -195,14 +195,15 @@
   z-index: 10;
 }
 
-/* ── Today / Anytime Tabs (pill style) ── */
+/* ── Today / Anytime Tabs (design-system tabs component) ── */
 .home-tabs {
   display: flex;
   gap: var(--spacing-xs, 4px);
   padding: var(--spacing-xs, 4px);
   margin: 48px 16px 0;
   background: var(--bg-secondary, #fafafa);
-  border-radius: var(--radius-xl, 16px);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-lg, 10px);
   align-items: center;
 }
 .home-tab {
@@ -211,25 +212,54 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-md, 8px);
-  padding: 8px 12px;
-  height: 28px;
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  height: 44px;
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-xs, 12px);
-  line-height: 16px;
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--text-secondary, #414651);
+  color: var(--text-quaternary, #717680);
   cursor: pointer;
-  border-radius: var(--radius-xl, 12px);
-  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  border-radius: var(--radius-sm, 6px);
+  border: none;
+  background: transparent;
+  transition: background 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+              box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  -webkit-tap-highlight-color: transparent;
   white-space: nowrap;
   overflow: hidden;
 }
+.home-tab:hover {
+  background: var(--bg-primary-hover, #fafafa);
+}
 .home-tab.active {
-  background: var(--bg-primary, #ffffff);
   color: var(--text-secondary, #414651);
+}
+
+/* ── Sliding pill ── */
+.home-tabs {
+  position: relative;
+}
+.home-tabs .slide-pill {
+  position: absolute;
+  top: var(--spacing-xs, 4px);
+  left: var(--spacing-xs, 4px);
+  height: 44px;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--bg-primary, #ffffff);
   box-shadow:
     0 1px 3px 0 rgba(10,13,18,0.1),
     0 1px 2px -1px rgba(10,13,18,0.1);
+  transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+              width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+.home-tab {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 .home-tab-badge {
   display: inline-flex;
@@ -276,7 +306,7 @@
   scroll-snap-align: center;
   position: relative;
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  transition: opacity 0.4s ease, filter 0.4s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
+  transition: opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), filter 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.5s cubic-bezier(0.5, 1.8, 0.3, 0.8);
 }
 
 /* ── "Now" glow ring ── */
@@ -285,7 +315,7 @@
   50% { box-shadow: 0 0 0 4px rgba(255,255,255,0.6), 0 0 0 8px rgba(11,165,236,0.2); }
 }
 .task-card.card-now {
-  animation: now-glow 2s ease-in-out infinite;
+  animation: now-glow 2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
 }
 
 /* Card layout */
@@ -430,7 +460,7 @@
   100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0); }
 }
 .streak-counter-glow {
-  animation: streak-counter-glow 0.35s ease-out;
+  animation: streak-counter-glow 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
 }
 
 /* ── Layout ── */
@@ -487,7 +517,7 @@
   100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
 }
 .gem-counter-glow {
-  animation: gem-counter-glow 0.35s ease-out;
+  animation: gem-counter-glow 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
 }
 
 /* Card claim transition */
@@ -505,7 +535,7 @@
   100% { transform: scale(1); }
 }
 .card-celebrate {
-  animation: card-celebrate 0.4s cubic-bezier(0.22,1,0.36,1);
+  animation: card-celebrate 0.5s cubic-bezier(0.5, 1.8, 0.3, 0.8);
 }
 
 /* Hidden card (filtered out by tab) */
@@ -522,7 +552,7 @@
 
 /* Card claim resolve — scale down + fade, then collapse width so snap re-centers */
 .card-shrink-away {
-  animation: card-resolve 0.5s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  animation: card-resolve 0.5s cubic-bezier(0.42, 0, 1, 1) forwards;
   pointer-events: none;
 }
 @keyframes card-resolve {
@@ -539,10 +569,10 @@
   overflow: hidden;
   border: none !important;
   flex-shrink: 0;
-  transition: width 0.55s cubic-bezier(0.32, 0.72, 0, 1),
-              height 0.55s cubic-bezier(0.32, 0.72, 0, 1),
-              padding 0.55s cubic-bezier(0.32, 0.72, 0, 1),
-              margin 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: width 0.5s cubic-bezier(0.42, 0, 1, 1),
+              height 0.5s cubic-bezier(0.42, 0, 1, 1),
+              padding 0.5s cubic-bezier(0.42, 0, 1, 1),
+              margin 0.5s cubic-bezier(0.42, 0, 1, 1);
 }
 
 /* Flying emoji */
@@ -808,6 +838,17 @@
   line-height: 18px;
   max-width: 220px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .task-card, .card-cta, .card-celebrate, .card-shrink-away, .card-collapse-slot,
+  .streak-counter-glow, .gem-counter-glow {
+    animation: none !important;
+    transition: opacity 0.1s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  }
+  .task-card.card-now {
+    animation: none !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -879,9 +920,10 @@
                       <div class="grass-fill">
 
                         <!-- Today / Anytime Tabs -->
-                        <div class="home-tabs" id="home-tabs">
-                          <div class="home-tab active" data-filter="today">Today <span class="home-tab-badge" id="today-count">6</span></div>
-                          <div class="home-tab" data-filter="anytime">Anytime</div>
+                        <div class="home-tabs" id="home-tabs" role="tablist">
+                          <div class="slide-pill" id="home-pill"></div>
+                          <button class="home-tab active" role="tab" aria-selected="true" data-filter="today">Today <span class="home-tab-badge" id="today-count">6</span></button>
+                          <button class="home-tab" role="tab" aria-selected="false" data-filter="anytime">Anytime</button>
                         </div>
 
                         <!-- Card Carousel -->
@@ -1132,9 +1174,33 @@
   var carousel = document.getElementById('carousel');
   var homeTabs = document.querySelectorAll('.home-tab');
   var homeTabsContainer = document.getElementById('home-tabs');
+  var homePill = document.getElementById('home-pill');
   var allCards = document.querySelectorAll('.task-card');
   var previewTabs = document.querySelectorAll('.preview-tab');
   var emptyState = document.getElementById('empty-state');
+
+  // ── Sliding pill logic ──
+  function moveHomePill(tab) {
+    if (!homePill || !homeTabsContainer) return;
+    var containerRect = homeTabsContainer.getBoundingClientRect();
+    var tabRect = tab.getBoundingClientRect();
+    var offsetLeft = tabRect.left - containerRect.left;
+    homePill.style.width = tabRect.width + 'px';
+    homePill.style.transform = 'translateX(' + (offsetLeft - 4) + 'px)';
+  }
+  // Init pill on first active tab
+  var firstActiveTab = homeTabsContainer.querySelector('.home-tab.active');
+  if (firstActiveTab) {
+    // Disable transition for initial position
+    homePill.style.transition = 'none';
+    moveHomePill(firstActiveTab);
+    // Re-enable after paint
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        homePill.style.transition = '';
+      });
+    });
+  }
 
   var gemReward = 20;
   var gemCount = 8;
@@ -1199,13 +1265,19 @@
     homeTabsContainer.style.display = '';
     if (state === 'night') {
       homeTabs.forEach(function(t) {
-        t.classList.toggle('active', t.getAttribute('data-filter') === 'anytime');
+        var isActive = t.getAttribute('data-filter') === 'anytime';
+        t.classList.toggle('active', isActive);
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        if (isActive) moveHomePill(t);
       });
       carousel.style.display = 'none';
       anytimeGrid.style.display = '';
     } else {
       homeTabs.forEach(function(t) {
-        t.classList.toggle('active', t.getAttribute('data-filter') === 'today');
+        var isActive = t.getAttribute('data-filter') === 'today';
+        t.classList.toggle('active', isActive);
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        if (isActive) moveHomePill(t);
       });
     }
 
@@ -1325,7 +1397,10 @@
 
   function filterByTab(tab) {
     homeTabs.forEach(function(t) {
-      t.classList.toggle('active', t.getAttribute('data-filter') === tab);
+      var isActive = t.getAttribute('data-filter') === tab;
+      t.classList.toggle('active', isActive);
+      t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      if (isActive) moveHomePill(t);
     });
     if (tab === 'anytime') {
       carousel.style.display = 'none';

@@ -96,7 +96,7 @@
 
 /* ── Toolbar ── */
 .toolbar-wrap {
-  transition: background 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: background 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
 }
 
 /* ── Toolbar: Default variant ── */
@@ -147,7 +147,7 @@
 .date-chevron {
   width: 16px;
   height: 16px;
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
   flex-shrink: 0;
 }
 .date-chevron.expanded { transform: rotate(180deg); }
@@ -209,8 +209,8 @@
   padding: 6px 12px 12px;
   max-height: 100px;
   overflow: hidden;
-  transition: max-height 0.35s cubic-bezier(0.32, 0.72, 0, 1),
-              padding 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: max-height 0.35s cubic-bezier(0.42, 0, 1, 1),
+              padding 0.35s cubic-bezier(0.42, 0, 1, 1);
 }
 .week-strip.hidden {
   max-height: 0;
@@ -269,7 +269,7 @@
 .calendar-expanded {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: max-height 0.5s cubic-bezier(0.5, 1.8, 0.3, 0.8);
   padding: 0 12px;
 }
 .calendar-expanded.open {
@@ -391,7 +391,7 @@
   color: var(--brand-500, #0ba5ec);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.25s, transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: opacity 0.25s, transform 0.25s cubic-bezier(0.5, 1.8, 0.3, 0.8);
   opacity: 1;
   transform: translateY(0);
 }
@@ -754,14 +754,14 @@
   100% { box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
 }
 .gem-counter-glow {
-  animation: gem-counter-glow 0.35s ease-out;
+  animation: gem-counter-glow 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
 }
 
 /* ── Swipe transitions ── */
-.week-strip.swipe-left { animation: stripSlideLeft 0.2s ease-out; }
-.week-strip.swipe-right { animation: stripSlideRight 0.2s ease-out; }
-.activity-content.swipe-left { animation: contentSlideLeft 0.2s ease-out; }
-.activity-content.swipe-right { animation: contentSlideRight 0.2s ease-out; }
+.week-strip.swipe-left { animation: stripSlideLeft 0.2s cubic-bezier(0.42, 0, 1, 1); }
+.week-strip.swipe-right { animation: stripSlideRight 0.2s cubic-bezier(0.42, 0, 1, 1); }
+.activity-content.swipe-left { animation: contentSlideLeft 0.2s cubic-bezier(0.42, 0, 1, 1); }
+.activity-content.swipe-right { animation: contentSlideRight 0.2s cubic-bezier(0.42, 0, 1, 1); }
 
 @keyframes stripSlideLeft {
   from { transform: translateX(0); opacity: 1; }
@@ -778,6 +778,15 @@
 @keyframes contentSlideRight {
   from { transform: translateX(0); opacity: 1; }
   to { transform: translateX(16px); opacity: 0.4; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toolbar-wrap, .chevron-icon, .week-strip, .calendar-body,
+  .quest-card--t3, .gem-counter-glow,
+  .week-strip.swipe-left, .week-strip.swipe-right,
+  .activity-content.swipe-left, .activity-content.swipe-right {
+    animation: none !important;
+    transition: opacity 0.1s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  }
 }
 </style>
 </head>
@@ -1053,7 +1062,7 @@
 <script>
 (function() {
   // ── Constants ──
-  var ios = 'cubic-bezier(0.32, 0.72, 0, 1)';
+  var spring = 'cubic-bezier(0.5, 1.8, 0.3, 0.8)';
   var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var DAY_LETTERS = ['M','T','W','T','F','S','S'];
   var TODAY = new Date(2026, 2, 17); // Mar 17, 2026
@@ -1347,14 +1356,14 @@
         setTimeout(function() {
           var actionArea = claimCard.querySelector('.quest-action-area');
           var row = claimCard.querySelector('.quest-card--t3');
-          actionArea.style.transition = 'max-height 0.35s '+ios+', padding 0.35s '+ios+', opacity 0.15s '+ios;
+          actionArea.style.transition = 'max-height 0.35s '+spring+', padding 0.35s '+spring+', opacity 0.15s '+spring;
           actionArea.style.maxHeight = actionArea.offsetHeight + 'px';
           actionArea.style.overflow = 'hidden';
           void actionArea.offsetWidth;
           actionArea.style.opacity = '0';
           actionArea.style.maxHeight = '0';
           actionArea.style.padding = '0 12px';
-          row.style.transition = 'box-shadow 0.35s '+ios;
+          row.style.transition = 'box-shadow 0.35s '+spring;
           row.style.boxShadow = 'none';
           row.style.cursor = 'default';
         }, 150);

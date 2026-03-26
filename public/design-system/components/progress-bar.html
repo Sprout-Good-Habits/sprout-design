@@ -146,7 +146,7 @@
   padding:var(--spacing-xs, 4px) var(--spacing-md, 8px);
   box-sizing:border-box;
   position:relative;
-  transition:width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:width 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
   display:flex; flex-direction:column;
   align-items:flex-start;
 }
@@ -189,7 +189,7 @@
   border-radius:var(--radius-xxs, 2px);
   background:var(--c, var(--brand-500, #0ba5ec));
   transform:rotate(45deg);
-  animation:sparkle-pop var(--dur, 0.55s) cubic-bezier(0.22,1,0.36,1) forwards;
+  animation:sparkle-pop var(--dur, 0.55s) cubic-bezier(0.5,1.8,0.3,0.8) forwards;
   animation-delay:var(--d, 0s);
 }
 
@@ -200,8 +200,15 @@
   top:0;
   background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
   border-radius:var(--radius-full, 9999px);
-  animation:sparkle-shimmer 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+  animation:sparkle-shimmer 0.5s cubic-bezier(0.5,1.8,0.3,0.8) forwards;
   pointer-events:none;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill { transition:none; }
+  .sparkle { animation:none; display:none; }
+  .sparkle-shimmer { animation:none; display:none; }
 }
 
 /* ── Interactive demo ── */
@@ -218,7 +225,7 @@
   background:var(--brand-500, #0ba5ec);
   border:none; border-radius:var(--radius-sm, 6px);
   cursor:pointer;
-  transition:background 0.15s;
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .demo-btn:hover { background:var(--brand-600, #0086c9); }
 .demo-btn-secondary {
@@ -435,7 +442,7 @@
   <!-- Animation: Fill -->
   <div class="doc-section">
     <h2>Animation: Fill transition</h2>
-    <p>When progress advances, the fill width animates smoothly with <code>cubic-bezier(0.22, 1, 0.36, 1)</code> over <strong>400ms</strong>. The animation is triggered by updating the fill&rsquo;s width value.</p>
+    <p>When progress advances, the fill width animates smoothly with <code>cubic-bezier(0.5, 1.8, 0.3, 0.8)</code> (spring) over <strong>350ms</strong>. The animation is triggered by updating the fill&rsquo;s width value.</p>
 
     <div class="demo demo-col demo-transparent" style="gap:16px;">
       <div style="width:323px;">
@@ -454,7 +461,7 @@
     <div class="prose">
       <ul>
         <li><strong>Duration:</strong> 400ms</li>
-        <li><strong>Easing:</strong> <code>cubic-bezier(0.22, 1, 0.36, 1)</code> &mdash; fast snap followed by smooth deceleration (spring-like feel)</li>
+        <li><strong>Easing:</strong> <code>cubic-bezier(0.5, 1.8, 0.3, 0.8)</code> &mdash; fast snap followed by smooth deceleration (spring-like feel)</li>
         <li><strong>Trigger:</strong> On correct answer / exercise step completion</li>
         <li><strong>Direction:</strong> Always left-to-right. Progress never decreases during a quest session.</li>
       </ul>
@@ -485,7 +492,7 @@
         <li><strong>Behavior:</strong> Each particle pops into place at a random offset around the fill edge, holds briefly, then fades out. No outward flight &mdash; they appear in position like a momentary sparkle.</li>
         <li><strong>Colors:</strong> Particles randomly pick from <code>--brand-500</code>, <code>--brand-200</code>, <code>--brand-300</code>, and white.</li>
         <li><strong>Duration:</strong> 400&ndash;600ms with 30ms stagger between particles.</li>
-        <li><strong>Easing:</strong> <code>cubic-bezier(0.22, 1, 0.36, 1)</code> &mdash; same spring-snap feel as the fill.</li>
+        <li><strong>Easing:</strong> <code>cubic-bezier(0.5, 1.8, 0.3, 0.8)</code> &mdash; same spring-snap feel as the fill.</li>
         <li><strong>Timing:</strong> Spark fires at the <em>end</em> of the fill animation (after the 400ms width transition completes).</li>
       </ul>
     </div>
@@ -557,7 +564,7 @@
         <tr><td>Fill padding</td><td><code>--spacing-xs</code> / <code>--spacing-md</code></td><td>4px top/bottom, 8px left/right</td></tr>
         <tr><td>Fill radius</td><td><code>--radius-full</code></td><td>9999px</td></tr>
         <tr><td>Inner highlight</td><td>&mdash;</td><td>4px tall, white 50% opacity, full radius</td></tr>
-        <tr><td>Fill transition</td><td>&mdash;</td><td>400ms cubic-bezier(0.22, 1, 0.36, 1)</td></tr>
+        <tr><td>Fill transition</td><td>&mdash;</td><td>350ms cubic-bezier(0.5, 1.8, 0.3, 0.8) (spring)</td></tr>
         <tr><td>Spark duration</td><td>&mdash;</td><td>500&ndash;600ms with staggered particles</td></tr>
         <tr><td>Message font</td><td>text-xs / bold</td><td>12px / 16px, 700</td></tr>
         <tr><td>Message color</td><td><code>--brand-500</code></td><td>#0ba5ec</td></tr>
@@ -599,7 +606,7 @@
 </div>
 <div class="toc-sidebar" id="toc"></div>
 </div>
-<script>window.DS_NAV=[{label:'Home',href:'/',dot:'var(--gray-400)'},{label:'Foundations',href:'/foundations.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/foundations.html'},{label:'Color',href:'/foundations/color.html'},{label:'Icons',href:'/foundations/icons.html'},{label:'Logo',href:'/foundations/logo.html'},{label:'Padding',href:'/foundations/padding.html'},{label:'Radius',href:'/foundations/radius.html'},{label:'Spacing',href:'/foundations/spacing.html'},{label:'Transitions',href:'/foundations/transitions.html'},{label:'Typography',href:'/foundations/typography.html'},{label:'Background',href:'/foundations/background.html'},{label:'Character',href:'/foundations/character.html'}]},{label:'Components',href:'/components.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/components.html'},{label:'Action Prompt',href:'/components/action-prompt.html'},{label:'Avatar',href:'/components/avatar.html'},{label:'Avatar Group',href:'/components/avatar-group.html'},{label:'Button Utility',href:'/components/button-utility.html'},{label:'Buttons',href:'/components/buttons.html'},{label:'Checkbox',href:'/components/checkbox.html'},{label:'Feedback Banner',href:'/components/feedback-banner.html'},{label:'Tabs',href:'/components/tabs.html'},{label:'Task Card',href:'/components/task-card.html'},{label:'Input',href:'/components/inputs.html'},{label:'Input Passcode',href:'/components/passcode-input.html'},{label:'List Item',href:'/components/list-item.html'},{label:'Loading',href:'/components/loading.html'},{label:'Message Bubble',href:'/components/message-bubble.html'},{label:'Message Composer',href:'/components/message-composer.html'},{label:'Progress Bar',href:'/components/progress-bar.html'},{label:'Radio',href:'/components/radio.html'},{label:'Sheet',href:'/components/sheet.html'},{label:'Social Buttons',href:'/components/social-buttons.html'},{label:'Switch',href:'/components/switch.html'},{label:'Toast',href:'/components/toast.html'},{label:'Toolbar',href:'/components/toolbar.html'}]},{label:'Patterns',href:'/patterns.html',dot:'var(--violet-500)',children:[{label:'Overview',href:'/patterns.html'},{label:'Empty States',href:'/patterns/empty-states.html'},{label:'Error Screen',href:'/patterns/error-screen.html'},{label:'Notifications',href:'/patterns/notifications.html'},{label:'Success Screen',href:'/patterns/success-screen.html'}]},{label:'Resources',href:'/resources.html',dot:'var(--orange-500)',children:[{label:'Overview',href:'/resources.html'},{label:'Rive File',href:'/resources/rive-file.html'},{label:'Village Character',href:'/resources/village-character.html'},{label:'Tokens CSS',href:'/resources/tokens-css.html'},{label:'Tokens JSON',href:'/resources/tokens-json.html'},{label:'Sprout UI Skill',href:'/resources/sprout-ui-skill.html'}]}];</script>
+<script src="/nav.js"></script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
 <script>
