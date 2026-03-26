@@ -66,24 +66,12 @@
   background: var(--bg-primary, #ffffff);
   border-radius: 28px;
   padding: 4px;
-  overflow: hidden;
   position: relative;
-}
-.device-inner-shadow::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  box-shadow:
-    inset 0 0 6px 2px rgba(10,13,18,0.08),
-    inset 0 0 4px 2px rgba(10,13,18,0.03);
-  z-index: 6;
 }
 .device-mockup {
   border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: 24px;
-  clip-path: inset(0 round 24px);
+  overflow: hidden;
   position: relative;
 }
 .device-screen {
@@ -206,7 +194,7 @@
   padding: var(--spacing-3xl, 24px) var(--spacing-xl, 16px);
   position: relative;
   z-index: 3;
-  margin-top: -24px;
+  margin-top: 0;
 }
 .placeholder-bar {
   height: 12px;
@@ -427,6 +415,7 @@
           <div class="avatar-profile" id="color-preview" style="background:var(--bg-sky, #e0f2fe);">
             <canvas class="rive-profile" width="418" height="598"></canvas>
           </div>
+          <div style="height:40px; background:var(--bg-primary, #ffffff);"></div>
         </div>
       </div>
     </div>
@@ -441,6 +430,7 @@
           <div style="position:absolute; inset:0; border:2px dashed var(--green-400); border-radius:0; z-index:2; pointer-events:none;"></div>
           <canvas class="rive-profile" width="418" height="598" style="outline:2px dashed var(--violet-300); outline-offset:-2px;"></canvas>
         </div>
+        <div style="height:40px; background:var(--bg-primary, #ffffff);"></div>
       </div>
       <div class="anatomy-callout">
         <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--brand-300);"></div> Container (full-width, 264px tall)</div>
