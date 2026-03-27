@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quest Card States — Comparison</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/design-system/components/buttons.css">
 <style>
 @font-face {
   font-family: 'TossFace';
@@ -286,36 +287,8 @@ body {
   font-weight: 700;
 }
 
-/* btn-sprout system */
-.btn-sprout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: 100%;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 16px;
-  user-select: none;
-  white-space: nowrap;
-}
-.btn-sm { height: 32px; font-size: 11px; }
-.btn-primary {
-  background: var(--brand-500, #0ba5ec);
-  color: #fff;
-  border-bottom: 2px solid var(--brand-600, #0086c9);
-  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
-}
-.btn-warning {
-  background: var(--orange-500, #ef6820);
-  color: #fff;
-  border-bottom: 2px solid var(--orange-600, #e04f16);
-  box-shadow: 0 4px 0 0 var(--orange-600, #e04f16);
-}
+/* ── btn-sprout overrides (base from buttons.css) ── */
+.btn-sprout { width: 100%; }
 .btn-sprout .tf-cl {
   font-family: 'TossFace', sans-serif;
   font-size: 11px;

@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 8000;
 const PUBLIC = path.join(__dirname, 'public');
 
 // Rewrites from vercel.json

@@ -6,6 +6,7 @@
 <title>Sprout Product Explorer — Home (Tabs)</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/tabs.css">
 <style>
 /* ── Device frame ── */
 .device-wrapper {
@@ -614,37 +615,12 @@
   line-height: 1;
 }
 
-/* ── Device toggle ── */
-.device-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 16px;
-}
-.device-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #fff);
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-sm, 14px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-secondary, #535862);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.device-btn:hover {
-  border-color: var(--border-primary, #d5d7da);
-}
-.device-btn.active {
-  background: var(--gray-50, #fafafa);
-  border-color: var(--border-primary, #d5d7da);
-  color: var(--text-primary, #181d27);
-  font-weight: var(--font-weight-semibold, 600);
-}
+/* ── Device toggle (uses shared tabs.css) ── */
+.device-toggle { justify-content: center; margin-bottom: 16px; }
+.device-toggle .cat-tab { height: 36px; }
+.device-toggle .cat-tab svg { width: 20px; height: 20px; flex-shrink: 0; }
+.device-toggle .cat-tab .device-icon { stroke: var(--text-quaternary, #717680); transition: stroke 0.15s; }
+.device-toggle .cat-tab.active .device-icon { stroke: var(--text-secondary, #414651); }
 
 /* ── iPad overrides ── */
 .device-wrapper.ipad .device-screen {
@@ -731,9 +707,9 @@
         <button class="preview-tab" data-preview="night"><span class="preview-tab-emoji">&#x1F319;</span> Night</button>
       </div>
 
-      <div class="device-toggle">
-        <button class="device-btn active" data-device="iphone">iPhone</button>
-        <button class="device-btn" data-device="ipad">iPad</button>
+      <div class="tabs-container tabs-equal device-toggle">
+        <button class="cat-tab active" data-device="iphone">iPhone</button>
+        <button class="cat-tab" data-device="ipad">iPad</button>
       </div>
 
       <div class="viewer">
@@ -1352,7 +1328,7 @@
   });
 
   // ── Device toggle ──
-  var deviceBtns = document.querySelectorAll('.device-btn');
+  var deviceBtns = document.querySelectorAll('.device-toggle .cat-tab');
   var deviceWrapper = document.querySelector('.device-wrapper');
   deviceBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {

@@ -6,6 +6,8 @@
 <title>Sprout Product Explorer — Quiz — Conversational</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/buttons.css">
+<link rel="stylesheet" href="/design-system/components/tile.css">
 <style>
 /* ── Prototype viewer ── */
 .proto-viewer {
@@ -338,28 +340,8 @@
   bottom: 22px; left: 12px; right: 12px;
   z-index: 4;
 }
-.btn-sprout {
-  display: flex; align-items: center; justify-content: center;
-  box-sizing: border-box; width: 100%;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-weight: var(--font-weight-bold, 700);
-  border: none; cursor: pointer;
-  gap: var(--spacing-md, 8px);
-  padding: var(--spacing-lg, 12px);
-  border-radius: var(--radius-2xl, 16px);
-  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
-  user-select: none; white-space: nowrap;
-}
-.btn-md { height: 44px; font-size: var(--font-size-text-md, 16px); line-height: var(--line-height-text-md, 24px); }
-.btn-primary {
-  background: var(--brand-500, #0ba5ec); color: #ffffff;
-  border-bottom: 2px solid var(--brand-600, #0086c9);
-  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
-}
-.btn-primary:active {
-  background: var(--brand-500, #0ba5ec); border-bottom: none;
-  box-shadow: none; transform: translateY(4px);
-}
+/* ── btn-sprout overrides (base from buttons.css) ── */
+.btn-sprout { width: 100%; }
 
 /* ── Quiz screen ── */
 .quiz-screen {
@@ -456,75 +438,8 @@
   box-shadow: none; border-bottom: none; transform: translateY(3px);
 }
 
-/* ── List items (answer options) ── */
-.list-item-group { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
-.list-item {
-  display: flex; align-items: center; gap: 12px;
-  box-sizing: border-box; width: 100%;
-  padding: 12px 14px;
-  background: var(--bg-primary, #ffffff);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-xl, 12px);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.list-item:hover { border-color: var(--gray-300, #d5d7da); }
-.list-item.checked {
-  background: var(--bg-brand-secondary, #e0f2fe);
-  border-color: var(--brand-300, #7cd4fd);
-  box-shadow: 0 3px 0 0 var(--brand-300, #7cd4fd);
-}
-.list-item-icon {
-  width: 32px; height: 32px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'TossFace', sans-serif;
-  font-size: 28px; line-height: 1;
-}
-.list-item-content { flex: 1; min-width: 0; }
-.list-item-label {
-  font-size: 14px; line-height: 20px;
-  font-weight: var(--font-weight-bold, 700);
-  color: var(--text-primary, #181d27);
-}
-.list-item-radio {
-  width: 20px; height: 20px; flex-shrink: 0;
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-full, 9999px);
-  display: flex; align-items: center; justify-content: center;
-  background: var(--bg-primary, #ffffff);
-  transition: background 0.15s, border-color 0.15s;
-}
-.checked .list-item-radio {
-  background: var(--brand-500, #0ba5ec);
-  border-color: var(--brand-500, #0ba5ec);
-}
-.list-item-radio-dot {
-  display: none; width: 6px; height: 6px;
-  border-radius: var(--radius-full, 9999px);
-  background: #ffffff;
-}
-.checked .list-item-radio-dot { display: block; }
-.list-item-checkbox {
-  width: 20px; height: 20px; flex-shrink: 0;
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-sm, 6px);
-  display: flex; align-items: center; justify-content: center;
-  background: var(--bg-primary, #ffffff);
-  transition: background 0.15s, border-color 0.15s;
-}
-.checked .list-item-checkbox {
-  background: var(--brand-500, #0ba5ec);
-  border-color: var(--brand-500, #0ba5ec);
-}
-.list-item-check-icon {
-  display: none; width: 12px; height: 12px;
-  stroke: #ffffff; stroke-width: 2.5; fill: none;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.checked .list-item-check-icon { display: block; }
+/* ── Tile list ── */
+.tile-group { display: flex; flex-direction: column; gap: var(--spacing-xl, 16px); }
 
 /* ── Success screen ── */
 .success-screen {
@@ -757,26 +672,26 @@
                         <div class="chat-quiz-messages">
                           <div class="chat-bubble bubble-sprout">Let's test what you know about healthy habits! 4 quick questions — ready?</div>
                           <div class="chat-bubble bubble-sprout">Why is drinking water important? Choose the best answer!</div>
-                          <div class="list-item-group q-options" role="radiogroup">
-                            <div class="list-item" role="radio" aria-checked="false" data-idx="0">
-                              <div class="list-item-icon">🍬</div>
-                              <div class="list-item-content"><div class="list-item-label">It makes candy taste better</div></div>
-                              <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                          <div class="tile-group q-options" role="radiogroup">
+                            <div class="tile tile-sm" role="radio" aria-checked="false" data-idx="0">
+                              <div class="tile-leading tile-leading-icon">🍬</div>
+                              <div class="tile-content"><div class="tile-label">It makes candy taste better</div></div>
+                              <div class="tile-radio"><div class="tile-radio-dot"></div></div>
                             </div>
-                            <div class="list-item" role="radio" aria-checked="false" data-idx="1">
-                              <div class="list-item-icon">💪</div>
-                              <div class="list-item-content"><div class="list-item-label">It keeps your body strong and healthy</div></div>
-                              <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                            <div class="tile tile-sm" role="radio" aria-checked="false" data-idx="1">
+                              <div class="tile-leading tile-leading-icon">💪</div>
+                              <div class="tile-content"><div class="tile-label">It keeps your body strong and healthy</div></div>
+                              <div class="tile-radio"><div class="tile-radio-dot"></div></div>
                             </div>
-                            <div class="list-item" role="radio" aria-checked="false" data-idx="2">
-                              <div class="list-item-icon">🎮</div>
-                              <div class="list-item-content"><div class="list-item-label">It helps you play video games</div></div>
-                              <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                            <div class="tile tile-sm" role="radio" aria-checked="false" data-idx="2">
+                              <div class="tile-leading tile-leading-icon">🎮</div>
+                              <div class="tile-content"><div class="tile-label">It helps you play video games</div></div>
+                              <div class="tile-radio"><div class="tile-radio-dot"></div></div>
                             </div>
-                            <div class="list-item" role="radio" aria-checked="false" data-idx="3">
-                              <div class="list-item-icon">😴</div>
-                              <div class="list-item-content"><div class="list-item-label">It makes you sleepy</div></div>
-                              <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                            <div class="tile tile-sm" role="radio" aria-checked="false" data-idx="3">
+                              <div class="tile-leading tile-leading-icon">😴</div>
+                              <div class="tile-content"><div class="tile-label">It makes you sleepy</div></div>
+                              <div class="tile-radio"><div class="tile-radio-dot"></div></div>
                             </div>
                           </div>
                         </div>
@@ -793,26 +708,26 @@
                         </div>
                         <div class="chat-quiz-messages">
                           <div class="chat-bubble bubble-sprout">Which foods help you grow strong? Select all that apply!</div>
-                          <div class="list-item-group q-options">
-                            <div class="list-item" data-idx="0">
-                              <div class="list-item-icon">🥦</div>
-                              <div class="list-item-content"><div class="list-item-label">Broccoli</div></div>
-                              <div class="list-item-checkbox"><svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
+                          <div class="tile-group q-options">
+                            <div class="tile tile-sm" data-idx="0">
+                              <div class="tile-leading tile-leading-icon">🥦</div>
+                              <div class="tile-content"><div class="tile-label">Broccoli</div></div>
+                              <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
                             </div>
-                            <div class="list-item" data-idx="1">
-                              <div class="list-item-icon">🍭</div>
-                              <div class="list-item-content"><div class="list-item-label">Lollipops</div></div>
-                              <div class="list-item-checkbox"><svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
+                            <div class="tile tile-sm" data-idx="1">
+                              <div class="tile-leading tile-leading-icon">🍭</div>
+                              <div class="tile-content"><div class="tile-label">Lollipops</div></div>
+                              <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
                             </div>
-                            <div class="list-item" data-idx="2">
-                              <div class="list-item-icon">🍎</div>
-                              <div class="list-item-content"><div class="list-item-label">Apples</div></div>
-                              <div class="list-item-checkbox"><svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
+                            <div class="tile tile-sm" data-idx="2">
+                              <div class="tile-leading tile-leading-icon">🍎</div>
+                              <div class="tile-content"><div class="tile-label">Apples</div></div>
+                              <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
                             </div>
-                            <div class="list-item" data-idx="3">
-                              <div class="list-item-icon">🍩</div>
-                              <div class="list-item-content"><div class="list-item-label">Donuts</div></div>
-                              <div class="list-item-checkbox"><svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
+                            <div class="tile tile-sm" data-idx="3">
+                              <div class="tile-leading tile-leading-icon">🍩</div>
+                              <div class="tile-content"><div class="tile-label">Donuts</div></div>
+                              <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
                             </div>
                           </div>
                         </div>
@@ -829,26 +744,26 @@
                         </div>
                         <div class="chat-quiz-messages">
                           <div class="chat-bubble bubble-sprout">Why do we need sleep? Choose the best answer!</div>
-                          <div class="list-item-group q-options" role="radiogroup">
-                            <div class="list-item" role="radio" aria-checked="false" data-idx="0">
-                              <div class="list-item-icon">📺</div>
-                              <div class="list-item-content"><div class="list-item-label">So we can watch more TV</div></div>
-                              <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                          <div class="tile-group q-options" role="radiogroup">
+                            <div class="tile tile-sm" role="radio" aria-checked="false" data-idx="0">
+                              <div class="tile-leading tile-leading-icon">📺</div>
+                              <div class="tile-content"><div class="tile-label">So we can watch more TV</div></div>
+                              <div class="tile-radio"><div class="tile-radio-dot"></div></div>
                             </div>
-                            <div class="list-item" role="radio" aria-checked="false" data-idx="1">
-                              <div class="list-item-icon">🧸</div>
-                              <div class="list-item-content"><div class="list-item-label">Because our stuffed animals get lonely</div></div>
-                              <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                            <div class="tile tile-sm" role="radio" aria-checked="false" data-idx="1">
+                              <div class="tile-leading tile-leading-icon">🧸</div>
+                              <div class="tile-content"><div class="tile-label">Because our stuffed animals get lonely</div></div>
+                              <div class="tile-radio"><div class="tile-radio-dot"></div></div>
                             </div>
-                            <div class="list-item" role="radio" aria-checked="false" data-idx="2">
-                              <div class="list-item-icon">🧠</div>
-                              <div class="list-item-content"><div class="list-item-label">It helps our brain rest and grow</div></div>
-                              <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                            <div class="tile tile-sm" role="radio" aria-checked="false" data-idx="2">
+                              <div class="tile-leading tile-leading-icon">🧠</div>
+                              <div class="tile-content"><div class="tile-label">It helps our brain rest and grow</div></div>
+                              <div class="tile-radio"><div class="tile-radio-dot"></div></div>
                             </div>
-                            <div class="list-item" role="radio" aria-checked="false" data-idx="3">
-                              <div class="list-item-icon">🌙</div>
-                              <div class="list-item-content"><div class="list-item-label">Because the moon tells us to</div></div>
-                              <div class="list-item-radio"><div class="list-item-radio-dot"></div></div>
+                            <div class="tile tile-sm" role="radio" aria-checked="false" data-idx="3">
+                              <div class="tile-leading tile-leading-icon">🌙</div>
+                              <div class="tile-content"><div class="tile-label">Because the moon tells us to</div></div>
+                              <div class="tile-radio"><div class="tile-radio-dot"></div></div>
                             </div>
                           </div>
                         </div>
@@ -865,26 +780,26 @@
                         </div>
                         <div class="chat-quiz-messages">
                           <div class="chat-bubble bubble-sprout">Which activities are exercise? Select all that apply!</div>
-                          <div class="list-item-group q-options">
-                            <div class="list-item" data-idx="0">
-                              <div class="list-item-icon">🏃</div>
-                              <div class="list-item-content"><div class="list-item-label">Running</div></div>
-                              <div class="list-item-checkbox"><svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
+                          <div class="tile-group q-options">
+                            <div class="tile tile-sm" data-idx="0">
+                              <div class="tile-leading tile-leading-icon">🏃</div>
+                              <div class="tile-content"><div class="tile-label">Running</div></div>
+                              <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
                             </div>
-                            <div class="list-item" data-idx="1">
-                              <div class="list-item-icon">🏊</div>
-                              <div class="list-item-content"><div class="list-item-label">Swimming</div></div>
-                              <div class="list-item-checkbox"><svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
+                            <div class="tile tile-sm" data-idx="1">
+                              <div class="tile-leading tile-leading-icon">🏊</div>
+                              <div class="tile-content"><div class="tile-label">Swimming</div></div>
+                              <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
                             </div>
-                            <div class="list-item" data-idx="2">
-                              <div class="list-item-icon">📱</div>
-                              <div class="list-item-content"><div class="list-item-label">Watching videos</div></div>
-                              <div class="list-item-checkbox"><svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
+                            <div class="tile tile-sm" data-idx="2">
+                              <div class="tile-leading tile-leading-icon">📱</div>
+                              <div class="tile-content"><div class="tile-label">Watching videos</div></div>
+                              <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
                             </div>
-                            <div class="list-item" data-idx="3">
-                              <div class="list-item-icon">🚴</div>
-                              <div class="list-item-content"><div class="list-item-label">Riding a bike</div></div>
-                              <div class="list-item-checkbox"><svg class="list-item-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
+                            <div class="tile tile-sm" data-idx="3">
+                              <div class="tile-leading tile-leading-icon">🚴</div>
+                              <div class="tile-content"><div class="tile-label">Riding a bike</div></div>
+                              <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10 11.5 4"/></svg></div>
                             </div>
                           </div>
                         </div>
@@ -1024,8 +939,8 @@
         msgs.querySelectorAll('.bubble-kid, .typing-indicator, .bubble-feedback-correct, .bubble-feedback-wrong, .bubble-feedback-partial, .chat-send-btn').forEach(function(el) { el.remove(); });
 
         var bubbles = Array.from(msgs.querySelectorAll(':scope > .chat-bubble'));
-        var listItems = Array.from(msgs.querySelectorAll(':scope > .list-item-group > .list-item'));
-        var group = msgs.querySelector('.list-item-group');
+        var listItems = Array.from(msgs.querySelectorAll(':scope > .tile-group > .tile'));
+        var group = msgs.querySelector('.tile-group');
 
         // Hide all static elements
         bubbles.concat(listItems).forEach(function(el) {
@@ -1117,11 +1032,11 @@
     // Selection logic
     options.addEventListener('click', function(e) {
       if (submitted) return;
-      var item = e.target.closest('.list-item');
+      var item = e.target.closest('.tile');
       if (!item) return;
 
       if (type === 'radio') {
-        options.querySelectorAll('.list-item').forEach(function(li) {
+        options.querySelectorAll('.tile').forEach(function(li) {
           li.classList.remove('checked');
           if (li.getAttribute('role')) li.setAttribute('aria-checked', 'false');
         });
@@ -1132,7 +1047,7 @@
       } else {
         item.classList.toggle('checked');
         // Show/hide send button
-        var hasSelection = options.querySelector('.list-item.checked');
+        var hasSelection = options.querySelector('.tile.checked');
         if (sendBtn) {
           if (hasSelection) {
             sendBtn.classList.remove('msg-hidden');
@@ -1148,12 +1063,12 @@
     function handleSubmit() {
       submitted = true;
 
-      var selectedItems = options.querySelectorAll('.list-item.checked');
+      var selectedItems = options.querySelectorAll('.tile.checked');
       var selectedIdxs = [];
       var selectedTexts = [];
       selectedItems.forEach(function(si) {
         selectedIdxs.push(si.getAttribute('data-idx'));
-        var label = si.querySelector('.list-item-label');
+        var label = si.querySelector('.tile-label');
         selectedTexts.push(label ? label.textContent.trim() : '');
       });
 
@@ -1166,7 +1081,7 @@
       if (sendBtn) { sendBtn.classList.add('msg-hidden'); sendBtn.classList.remove('msg-in'); }
 
       // Lock options
-      options.querySelectorAll('.list-item').forEach(function(li) {
+      options.querySelectorAll('.tile').forEach(function(li) {
         li.style.pointerEvents = 'none';
       });
 
@@ -1214,7 +1129,7 @@
     }
 
     function styleOptions(isCorrect, isPartial, selectedIdxs) {
-      options.querySelectorAll('.list-item').forEach(function(li) {
+      options.querySelectorAll('.tile').forEach(function(li) {
         var idx = li.getAttribute('data-idx');
         var isSelected = li.classList.contains('checked');
         var isAnswerItem = correctIdxs.indexOf(idx) !== -1;
@@ -1228,7 +1143,7 @@
             li.style.borderColor = 'var(--border-error, #f04438)';
             li.style.boxShadow = '0 3px 0 0 var(--red-300, #fda29b)';
             li.style.background = 'var(--bg-error-secondary, #fee4e2)';
-            var indicator = li.querySelector('.list-item-radio, .list-item-checkbox');
+            var indicator = li.querySelector('.tile-radio, .tile-checkbox');
             if (indicator) { indicator.style.background = 'var(--red-500, #f04438)'; indicator.style.borderColor = 'var(--red-500, #f04438)'; }
           } else if (!isAnswerItem) {
             li.style.opacity = '0.5';
@@ -1262,7 +1177,7 @@
       // Remove any leftover typing indicators
       messagesContainer.querySelectorAll('.typing-indicator').forEach(function(el) { el.remove(); });
 
-      options.querySelectorAll('.list-item').forEach(function(li) {
+      options.querySelectorAll('.tile').forEach(function(li) {
         li.style.pointerEvents = '';
         li.style.borderColor = '';
         li.style.boxShadow = '';
@@ -1274,13 +1189,13 @@
           li.classList.remove('checked');
           if (li.getAttribute('role')) li.setAttribute('aria-checked', 'false');
         }
-        var indicator = li.querySelector('.list-item-radio, .list-item-checkbox');
+        var indicator = li.querySelector('.tile-radio, .tile-checkbox');
         if (indicator) { indicator.style.background = ''; indicator.style.borderColor = ''; }
       });
 
       // Re-show send button for checkbox if there are still selections
       if (sendBtn) {
-        var hasSelection = options.querySelector('.list-item.checked');
+        var hasSelection = options.querySelector('.tile.checked');
         if (hasSelection) {
           sendBtn.classList.remove('msg-hidden');
           sendBtn.classList.add('msg-in');
@@ -1295,7 +1210,7 @@
       messagesContainer.querySelectorAll('.bubble-kid, .typing-indicator, .bubble-feedback-correct, .bubble-feedback-wrong, .bubble-feedback-partial').forEach(function(el) { el.remove(); });
       if (sendBtn && sendBtn.parentNode) sendBtn.remove();
 
-      options.querySelectorAll('.list-item').forEach(function(li) {
+      options.querySelectorAll('.tile').forEach(function(li) {
         li.classList.remove('checked', 'msg-hidden', 'msg-in');
         li.style.pointerEvents = '';
         li.style.borderColor = '';
@@ -1303,7 +1218,7 @@
         li.style.background = '';
         li.style.opacity = '';
         if (li.getAttribute('role')) li.setAttribute('aria-checked', 'false');
-        var indicator = li.querySelector('.list-item-radio, .list-item-checkbox');
+        var indicator = li.querySelector('.tile-radio, .tile-checkbox');
         if (indicator) { indicator.style.background = ''; indicator.style.borderColor = ''; }
       });
 
@@ -1354,7 +1269,7 @@
   // Tap navigation
   var deviceScreen = document.querySelector('.device-screen');
   deviceScreen.addEventListener('click', function(e) {
-    if (e.target.closest('.card-cta, .btn-sprout, .list-item, .chat-send-btn, .success-bottom-btn, .btn-util, .quest-close, .intro-cta')) return;
+    if (e.target.closest('.card-cta, .btn-sprout, .tile, .chat-send-btn, .success-bottom-btn, .btn-util, .quest-close, .intro-cta')) return;
     var rect = deviceScreen.getBoundingClientRect();
     var x = e.clientX - rect.left;
     if (x > rect.width / 2) {

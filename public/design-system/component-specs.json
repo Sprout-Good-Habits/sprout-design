@@ -87,6 +87,47 @@
   },
   {
     "@type": "DesignComponent",
+    "name": "AvatarPortrait",
+    "slug": "avatar-portrait",
+    "intent": {
+      "purpose": "Display a portrait-oriented rectangular avatar showing more of the character at a larger scale, used inside Conversational Feedback",
+      "taskContext": ["conversational-feedback", "character-display"],
+      "sentiment": ["neutral", "positive"]
+    },
+    "composition": {
+      "requires": ["rectangle-container"],
+      "allows": ["rive-character", "silhouette-svg", "sprout-character"],
+      "forbids": ["text-label", "badge", "custom-background", "user-initial"]
+    },
+    "variants": [
+      { "name": "Avatar", "useWhen": "Displaying a user's customized village character via Rive in a portrait frame", "pairWith": [] },
+      { "name": "Sprout", "useWhen": "Displaying the Sprout mascot character via Rive in a portrait frame", "pairWith": [] },
+      { "name": "Silhouette", "useWhen": "Default placeholder before character customization", "pairWith": [] }
+    ],
+    "sizes": [
+      { "name": "Default", "useWhen": "All contexts — 120 × 176px" }
+    ],
+    "context": {
+      "density": ["default"],
+      "modality": ["mobile", "tablet"],
+      "placement": ["inside-conversational-feedback"]
+    },
+    "relationships": {
+      "related": ["Avatar", "ConversationalFeedback"],
+      "escalatesTo": [],
+      "degradesTo": ["Avatar"],
+      "groupsWith": ["ConversationalFeedback"]
+    },
+    "states": ["default"],
+    "accessibility": {
+      "role": "img",
+      "keyboard": [],
+      "ariaAttributes": ["aria-label"],
+      "minTouchTarget": "N/A"
+    }
+  },
+  {
+    "@type": "DesignComponent",
     "name": "AvatarGroup",
     "slug": "avatar-group",
     "intent": {
@@ -233,12 +274,14 @@
     ],
     "sizes": [
       { "name": "Large", "useWhen": "Bottom-of-page CTAs, full-width mobile" },
-      { "name": "Medium", "useWhen": "Inline content, paired buttons" }
+      { "name": "Medium", "useWhen": "Inline content, paired buttons" },
+      { "name": "Small", "useWhen": "Card actions, compact forms, tighter layouts" },
+      { "name": "Extra Small", "useWhen": "Compact inline actions in list items and dense contexts" }
     ],
     "context": {
-      "density": ["default"],
+      "density": ["default", "compact"],
       "modality": ["mobile", "tablet"],
-      "placement": ["inline", "pinned-bottom"]
+      "placement": ["inline", "pinned-bottom", "inside-card", "inside-list-item"]
     },
     "relationships": {
       "related": ["ButtonUtility"],
@@ -292,6 +335,46 @@
       "keyboard": ["Space", "Tab"],
       "ariaAttributes": ["aria-checked", "aria-labelledby"],
       "minTouchTarget": "44x44px"
+    }
+  },
+  {
+    "@type": "DesignComponent",
+    "name": "ConversationalFeedback",
+    "slug": "conversational-feedback",
+    "intent": {
+      "purpose": "Pair a character avatar with a text message to create a conversational moment — used for encouragement, coaching nudges, and contextual feedback",
+      "taskContext": ["encouragement", "coaching", "streak-celebration", "conversational-feedback"],
+      "sentiment": ["positive", "neutral"]
+    },
+    "composition": {
+      "requires": ["Subtitles"],
+      "allows": ["AvatarPortrait", "Avatar"],
+      "forbids": ["button", "nested-conversational-feedback"]
+    },
+    "variants": [
+      { "name": "Conversational", "useWhen": "Character speaks to the user with presence — uses Avatar Portrait and centered Subtitles", "pairWith": ["AvatarPortrait", "Subtitles"] },
+      { "name": "Feedback", "useWhen": "Compact feedback with an icon — uses circular Avatar and left-aligned Subtitles with leading icon", "pairWith": ["Avatar", "Subtitles"] }
+    ],
+    "sizes": [
+      { "name": "Default", "useWhen": "Fill container width" }
+    ],
+    "context": {
+      "density": ["default"],
+      "modality": ["mobile", "tablet"],
+      "placement": ["inline", "overlay"]
+    },
+    "relationships": {
+      "related": ["AvatarPortrait", "Avatar", "Subtitles"],
+      "escalatesTo": [],
+      "degradesTo": ["Subtitles"],
+      "groupsWith": []
+    },
+    "states": ["default"],
+    "accessibility": {
+      "role": "status",
+      "keyboard": [],
+      "ariaAttributes": ["aria-label", "aria-live"],
+      "minTouchTarget": "N/A"
     }
   },
   {
@@ -389,20 +472,20 @@
       "sentiment": ["neutral"]
     },
     "composition": {
-      "requires": ["label"],
-      "allows": ["icon", "description", "chevron", "radio-indicator", "checkbox-indicator", "swatch", "image-thumb"],
+      "requires": [],
+      "allows": ["leading-avatar", "leading-icon", "leading-swatch", "label", "description", "chevron", "radio-indicator", "checkbox-indicator", "image-thumb"],
       "forbids": ["button", "nested-tile"]
     },
     "variants": [
       { "name": "Navigation", "useWhen": "Navigating to a sub-screen, shows chevron", "pairWith": [] },
       { "name": "Radio", "useWhen": "Single-select from a list, shows radio indicator", "pairWith": [] },
       { "name": "Checkbox", "useWhen": "Multi-select from a list, shows checkbox indicator", "pairWith": [] },
-      { "name": "Swatch", "useWhen": "Color selection from a palette, compact square with color fill", "pairWith": [] },
+      { "name": "None", "useWhen": "Selection without a trailing indicator, avatar + label only", "pairWith": [] },
       { "name": "Image", "useWhen": "Image or photo selection from a grid, square with image fill", "pairWith": [] }
     ],
     "sizes": [
       { "name": "Default", "useWhen": "All contexts — 56px height minimum" },
-      { "name": "Square", "useWhen": "Swatch and Image types — compact square layout" }
+      { "name": "Square", "useWhen": "Image type — compact square layout" }
     ],
     "context": {
       "density": ["default"],
@@ -624,6 +707,47 @@
       "keyboard": ["Escape", "Tab"],
       "ariaAttributes": ["aria-modal", "aria-labelledby"],
       "minTouchTarget": "44x44px"
+    }
+  },
+  {
+    "@type": "DesignComponent",
+    "name": "Subtitles",
+    "slug": "subtitles",
+    "intent": {
+      "purpose": "Display a text bubble for conversational or feedback messages that rotate like subtitles, used standalone or composed inside Conversational Feedback",
+      "taskContext": ["conversational-feedback", "encouragement", "inline-messaging"],
+      "sentiment": ["neutral", "positive"]
+    },
+    "composition": {
+      "requires": ["text"],
+      "allows": ["leading-icon"],
+      "forbids": ["avatar", "button", "nested-subtitles"]
+    },
+    "variants": [
+      { "name": "Centered", "useWhen": "Default conversational messages — text is centered", "pairWith": [] },
+      { "name": "Left aligned", "useWhen": "Messages that benefit from left-aligned reading flow", "pairWith": [] },
+      { "name": "Left aligned + icon", "useWhen": "Messages with a leading emoji or icon for added context", "pairWith": [] }
+    ],
+    "sizes": [
+      { "name": "Default", "useWhen": "Fill container width, flexible height" }
+    ],
+    "context": {
+      "density": ["default"],
+      "modality": ["mobile", "tablet"],
+      "placement": ["inline", "inside-conversational-feedback", "overlay"]
+    },
+    "relationships": {
+      "related": ["ConversationalFeedback", "Toast", "MessageBubble"],
+      "escalatesTo": [],
+      "degradesTo": [],
+      "groupsWith": ["AvatarPortrait", "Avatar"]
+    },
+    "states": ["default"],
+    "accessibility": {
+      "role": "status",
+      "keyboard": [],
+      "ariaAttributes": ["aria-label", "aria-live"],
+      "minTouchTarget": "N/A"
     }
   },
   {

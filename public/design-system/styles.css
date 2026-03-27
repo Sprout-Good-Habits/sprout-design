@@ -762,9 +762,9 @@ code {
 /* Buttons */
 .thumb-buttons { display:flex; flex-direction:column; gap:6px; align-items:center; }
 .thumb-buttons span { width:100px; height:24px; border-radius:10px; display:block; }
-.thumb-btn-primary { background:var(--brand-500,#0ba5ec); box-shadow:0 3px 0 0 var(--brand-600,#0086c9); }
-.thumb-btn-secondary { background:#fff; border:1.5px solid var(--gray-200,#e9eaeb); box-shadow:0 3px 0 0 var(--gray-200,#e9eaeb); }
-.thumb-btn-destructive { background:var(--red-500,#f04438); box-shadow:0 3px 0 0 var(--red-600,#d92d20); }
+.thumb-btn-primary { background:var(--brand-500,#0ba5ec); box-shadow:0 4px 0 0 var(--brand-600,#0086c9); }
+.thumb-btn-secondary { background:#fff; border:1.5px solid var(--gray-200,#e9eaeb); box-shadow:0 4px 0 0 var(--gray-200,#e9eaeb); }
+.thumb-btn-destructive { background:var(--red-500,#f04438); box-shadow:0 4px 0 0 var(--red-600,#d92d20); }
 
 /* Checkbox */
 .thumb-checkbox { display:flex; gap:10px; align-items:center; }

@@ -1,0 +1,143 @@
+/* ============================================
+   Sprout Tabs Component
+   Shared styles — import in any page that uses tabs-container
+   ============================================ */
+
+/* ── TossFace emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Tabs container ── */
+.tabs-container {
+  display:flex;
+  gap:var(--spacing-xs, 4px);
+  padding:var(--spacing-xs, 4px);
+  background:var(--bg-secondary, #fafafa);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-lg, 10px);
+  align-items:center;
+}
+
+/* ── Equal-width: tabs stretch to fill ── */
+.tabs-equal .cat-tab { flex:1; }
+
+/* ── Content-width: tabs size to content, scroll if needed ── */
+.tabs-content-width {
+  overflow-x:auto;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.tabs-content-width::-webkit-scrollbar { display:none; }
+.tabs-content-width .cat-tab { flex:none; }
+
+/* ── Tab button base ── */
+.cat-tab {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--spacing-md, 8px);
+  height:44px;
+  padding:var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-radius:var(--radius-sm, 6px);
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:background 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+             box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  -webkit-tap-highlight-color:transparent;
+  position:relative;
+}
+
+/* ── Icon ── */
+.cat-tab .tf-icon {
+  font-family:'TossFace', sans-serif;
+  font-size:24px;
+  line-height:1;
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  mix-blend-mode:luminosity;
+  transition:mix-blend-mode 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ── Label ── */
+.cat-tab .tab-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-quaternary, #717680);
+  white-space:nowrap;
+  transition:color 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ── States ── */
+
+/* Default — transparent, desaturated icon, muted label */
+.cat-tab:hover {
+  background:var(--bg-primary-hover, #fafafa);
+}
+
+/* Current (selected) — .active alias for product explorer compat */
+.cat-tab.current,
+.cat-tab.active {
+  background:var(--bg-primary, #ffffff);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.cat-tab.current .tf-icon,
+.cat-tab.active .tf-icon { mix-blend-mode:normal; }
+.cat-tab.current .tab-label,
+.cat-tab.active .tab-label { color:var(--text-secondary, #414651); }
+
+/* Active / Pressed */
+.cat-tab.state-pressed {
+  background:var(--bg-primary, #ffffff);
+  box-shadow:none;
+}
+.cat-tab.state-pressed .tf-icon { mix-blend-mode:normal; }
+.cat-tab.state-pressed .tab-label { color:var(--text-secondary, #414651); }
+
+/* Disabled */
+.cat-tab.state-disabled {
+  cursor:not-allowed;
+  pointer-events:none;
+  opacity:0.5;
+}
+.cat-tab.state-disabled .tf-icon { mix-blend-mode:luminosity; }
+
+/* ── Active label only (icon+active-label variant) ── */
+.tabs-active-label .cat-tab .tab-label { display:none; }
+.tabs-active-label .cat-tab.current .tab-label,
+.tabs-active-label .cat-tab.active .tab-label { display:block; }
+
+/* ── Sliding pill ── */
+.tabs-sliding {
+  position:relative;
+}
+.tabs-sliding .slide-pill {
+  position:absolute;
+  top:var(--spacing-xs, 4px);
+  left:var(--spacing-xs, 4px);
+  height:44px;
+  border-radius:var(--radius-sm, 6px);
+  background:var(--bg-primary, #ffffff);
+  box-shadow:
+    0 1px 3px 0 rgba(10,13,18,0.1),
+    0 1px 2px -1px rgba(10,13,18,0.1);
+  transition:transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+             width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  pointer-events:none;
+  z-index:0;
+}
+.tabs-sliding .cat-tab {
+  position:relative;
+  z-index:1;
+  background:transparent !important;
+  box-shadow:none !important;
+}

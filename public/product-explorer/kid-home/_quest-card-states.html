@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quest Card States — All Tiers</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/design-system/components/buttons.css">
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -343,29 +344,8 @@ body {
   color: var(--text-primary, #181d27);
 }
 
-/* Button */
-.btn-sprout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: 100%;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-weight: var(--font-weight-bold, 700);
-  border: none;
-  cursor: pointer;
-  gap: var(--spacing-sm, 6px);
-  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
-  border-radius: var(--radius-2xl, 16px);
-  white-space: nowrap;
-}
-.btn-sm { height: 50px; font-size: var(--font-size-text-md, 16px); }
-.btn-secondary {
-  background: var(--bg-primary, #ffffff);
-  color: var(--text-secondary, #414651);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-}
+/* ── btn-sprout overrides (base from buttons.css) ── */
+.btn-sprout { width: 100%; }
 .btn-sprout .tf-claim {
   font-family: 'TossFace', sans-serif;
   font-size: 11px;

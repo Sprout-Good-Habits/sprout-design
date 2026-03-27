@@ -6,6 +6,7 @@
 <title>Sprout Product Explorer — Chat Tier 2</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/tabs.css">
 <style>
 /* ── Device ── */
 .device-wrapper{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:32px;padding:4px;box-shadow:0 12px 16px -4px rgba(10,13,18,.08),0 4px 6px -2px rgba(10,13,18,.03),0 2px 2px -1px rgba(10,13,18,.04)}
@@ -17,13 +18,11 @@
 
 /* ── Controls row + device toggle ── */
 .controls-row{display:flex;align-items:center;justify-content:flex-end;margin-bottom:16px}
-.device-toggle{display:flex;gap:4px;padding:4px;background:#fafafa;border:1px solid #e9eaeb;border-radius:10px}
-.device-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;height:36px;border-radius:6px;border:none;background:transparent;font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:600;color:#717680;cursor:pointer;transition:all .15s}
-.device-btn:hover{color:#535862}
-.device-btn.active{background:#fff;color:#414651;box-shadow:0 1px 3px 0 rgba(10,13,18,.1),0 1px 2px -1px rgba(10,13,18,.1)}
-.device-btn svg{width:20px;height:20px;flex-shrink:0}
-.device-btn .device-icon{stroke:#717680;transition:stroke .15s}
-.device-btn.active .device-icon{stroke:#414651}
+/* ── Device toggle (uses shared tabs.css) ── */
+.device-toggle .cat-tab{height:36px}
+.device-toggle .cat-tab svg{width:20px;height:20px;flex-shrink:0}
+.device-toggle .cat-tab .device-icon{stroke:var(--text-quaternary,#717680);transition:stroke .15s}
+.device-toggle .cat-tab.active .device-icon{stroke:var(--text-secondary,#414651)}
 
 /* ── iPad overrides ── */
 .device-wrapper.ipad .device-screen{width:640px;height:854px}
@@ -281,9 +280,9 @@
       </div>
 
       <div class="controls-row">
-        <div class="device-toggle">
-          <button class="device-btn" data-device="ipad"><svg viewBox="0 0 18 22" fill="none"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 9 16C9.27614 16 9.5 16.2239 9.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
-          <button class="device-btn active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
+        <div class="tabs-container tabs-equal device-toggle">
+          <button class="cat-tab" data-device="ipad"><svg viewBox="0 0 18 22" fill="none"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 9 16C9.27614 16 9.5 16.2239 9.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
+          <button class="cat-tab active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
         </div>
       </div>
 
@@ -822,7 +821,7 @@
 </script>
 
 <script>
-  var deviceBtns = document.querySelectorAll('.device-btn');
+  var deviceBtns = document.querySelectorAll('.device-toggle .cat-tab');
   var deviceWrapper = document.querySelector('.device-wrapper');
   deviceBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {

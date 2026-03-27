@@ -50,6 +50,7 @@
 </script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/buttons.css">
 <style>
 /* ── Toss Face emoji font ── */
 @font-face {
@@ -98,39 +99,6 @@
   gap:var(--spacing-md, 8px);
   width:100%;
 }
-
-/* ── Button base (from documented Buttons component) ── */
-.btn-sprout {
-  display:flex; align-items:center; justify-content:center;
-  box-sizing:border-box;
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-weight:var(--font-weight-bold, 700);
-  letter-spacing:0;
-  border:none; cursor:pointer;
-  padding:var(--spacing-lg, 12px);
-  border-radius:var(--radius-2xl, 16px);
-  user-select:none; white-space:nowrap;
-  -webkit-tap-highlight-color:transparent;
-}
-.btn-lg { height:50px; font-size:var(--font-size-text-lg, 18px); line-height:var(--line-height-text-lg, 28px); }
-.btn-md { height:46px; font-size:var(--font-size-text-md, 16px); line-height:var(--line-height-text-md, 24px); }
-.btn-primary {
-  background:var(--brand-500, #0ba5ec); color:var(--text-white, #ffffff);
-  border-bottom:2px solid var(--brand-600, #0086c9);
-  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
-}
-.btn-primary.state-disabled {
-  background:var(--gray-300, #d5d7da); color:var(--text-disabled, #717680);
-  border-bottom:2px solid var(--gray-400, #a4a7ae);
-  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae); cursor:not-allowed; pointer-events:none;
-}
-.btn-secondary {
-  background:var(--bg-primary, #ffffff); color:var(--text-secondary, #414651);
-  border:2px solid var(--border-secondary, #e9eaeb);
-  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
-}
-.btn-secondary.btn-lg { height:54px; }
-.btn-secondary.btn-md { height:50px; }
 
 /* Full-width buttons inside empty state */
 .empty-state-actions .btn-sprout { width:100%; }

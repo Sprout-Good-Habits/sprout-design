@@ -6,6 +6,7 @@
 <title>Sprout Product Explorer — Activity</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/buttons.css">
 <style>
 /* ── Device frame ── */
 .device-wrapper {
@@ -631,35 +632,8 @@
   text-align: center;
 }
 
-/* ── btn-sprout system ── */
-.btn-sprout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: 100%;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-weight: var(--font-weight-bold, 700);
-  border: none;
-  cursor: pointer;
-  gap: var(--spacing-sm, 6px);
-  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
-  border-radius: var(--radius-2xl, 16px);
-  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
-  user-select: none;
-  white-space: nowrap;
-}
-.btn-sm { height: 44px; font-size: var(--font-size-text-md, 16px); }
-.btn-secondary {
-  background: var(--bg-primary, #ffffff);
-  color: var(--text-secondary, #414651);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-}
-.btn-secondary:active {
-  box-shadow: none;
-  transform: translateY(3px);
-}
+/* ── btn-sprout overrides (base from buttons.css) ── */
+.btn-sprout { width: 100%; }
 
 /* ── Claimable card ── */
 .quest-card-claim {

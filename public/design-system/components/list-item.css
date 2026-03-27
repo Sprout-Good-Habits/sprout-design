@@ -1,0 +1,97 @@
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ============================================
+   Sprout List Item Component
+   Flat row for content lists — no card chrome.
+   Requires: tokens.css, avatar.css
+   ============================================ */
+
+/* ── List item base ── */
+.list-item {
+  display:flex; align-items:center; gap:var(--spacing-lg, 12px);
+  box-sizing:border-box;
+  width:100%;
+  padding:var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  background:transparent;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* ── Leading element ── */
+.list-item-leading {
+  width:40px; height:40px;
+  flex-shrink:0;
+  position:relative;
+}
+
+/* Leading: Icon (Toss Face emoji or slot) */
+.list-item-leading-icon {
+  display:flex; align-items:center; justify-content:center;
+  font-family:'TossFace', sans-serif;
+  font-size:32px; line-height:1;
+}
+
+/* ── Content ── */
+.list-item-content {
+  flex:1; min-width:0;
+  display:flex; flex-direction:column; gap:2px;
+  overflow:hidden;
+}
+
+.list-item-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+}
+
+.list-item-desc {
+  display:flex; align-items:center; gap:var(--spacing-xs, 4px);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-tertiary, #535862);
+}
+
+.list-item-desc-icon {
+  width:20px; height:20px;
+  flex-shrink:0;
+  overflow:hidden;
+}
+
+/* ── Trailing: Checkbox — reuses .checkbox from checkbox.css ── */
+/* ── Trailing: Radio — reuses .radio from radio.css ── */
+
+/* ── Trailing: Chevron ── */
+.list-item-chevron {
+  width:24px; height:24px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text-tertiary, #535862);
+}
+.list-item-chevron svg {
+  width:12px; height:12px; stroke:currentColor;
+  stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round;
+}
+
+/* ── Trailing: Metadata ── */
+.list-item-meta {
+  flex-shrink:0;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-secondary, #414651);
+  white-space:nowrap;
+}
+
+/* ── Trailing: Button (uses btn-sprout btn-primary btn-xs) ── */
+.list-item .btn-sprout {
+  width:auto;
+  flex-shrink:0;
+}

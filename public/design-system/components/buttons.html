@@ -29,7 +29,9 @@
   ],
   "sizes": [
     { "name": "Large", "useWhen": "Bottom-of-page CTAs, full-width mobile" },
-    { "name": "Medium", "useWhen": "Inline content, paired buttons" }
+    { "name": "Medium", "useWhen": "Inline content, paired buttons" },
+    { "name": "Small", "useWhen": "Card actions, compact forms, tighter layouts" },
+    { "name": "Extra Small", "useWhen": "Compact inline actions in list items and dense contexts" }
   ],
   "context": {
     "density": ["default"],
@@ -53,168 +55,8 @@
 </script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/buttons.css">
 <style>
-/* ── Button base ── */
-.btn-sprout {
-  display:flex; align-items:center; justify-content:center;
-  box-sizing:border-box;
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-weight:var(--font-weight-bold, 700);
-  letter-spacing:0;
-  border:none; cursor:pointer;
-  gap:var(--spacing-md, 8px);
-  padding:var(--spacing-lg, 12px);
-  border-radius:var(--radius-2xl, 16px);
-  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
-  user-select:none; white-space:nowrap;
-  -webkit-tap-highlight-color:transparent;
-  width:320px;
-}
-.btn-lg { height:48px; font-size:var(--font-size-text-lg, 18px); line-height:var(--line-height-text-lg, 28px); }
-.btn-md { height:44px; font-size:var(--font-size-text-md, 16px); line-height:var(--line-height-text-md, 24px); }
-
-/* ── Primary ── */
-.btn-primary {
-  background:var(--brand-500, #0ba5ec); color:var(--text-white, #ffffff);
-  border-bottom:2px solid var(--brand-600, #0086c9);
-  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
-}
-.btn-primary.btn-lg { height:50px; }
-.btn-primary.btn-md { height:46px; }
-.btn-primary:hover { background:var(--brand-400, #36bffa); }
-.btn-primary:active, .btn-primary.state-active {
-  background:var(--brand-500, #0ba5ec); border-bottom:none;
-  box-shadow:none; transform:translateY(4px);
-}
-.btn-primary:active.btn-lg, .btn-primary.state-active.btn-lg { height:48px; }
-.btn-primary:active.btn-md, .btn-primary.state-active.btn-md { height:44px; }
-.btn-primary.state-disabled {
-  background:var(--gray-300, #d5d7da); color:var(--text-disabled, #717680);
-  border-bottom:2px solid var(--gray-400, #a4a7ae);
-  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae); cursor:not-allowed; pointer-events:none;
-}
-.btn-primary.state-loading {
-  background:var(--brand-500, #0ba5ec);
-  border-bottom:2px solid var(--brand-600, #0086c9);
-  box-shadow:0 4px 0 0 var(--brand-600, #0086c9); cursor:wait;
-}
-
-/* ── Secondary ── */
-.btn-secondary {
-  background:var(--bg-primary, #ffffff); color:var(--text-secondary, #414651);
-  border:2px solid var(--border-secondary, #e9eaeb);
-  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
-}
-.btn-secondary.btn-lg { height:54px; }
-.btn-secondary.btn-md { height:50px; }
-.btn-secondary:hover { background:var(--bg-secondary, #fafafa); }
-.btn-secondary:active, .btn-secondary.state-active {
-  background:var(--bg-primary, #ffffff); box-shadow:none;
-  border:2px solid var(--border-secondary, #e9eaeb); transform:translateY(3px);
-}
-.btn-secondary.state-disabled {
-  background:var(--gray-300, #d5d7da); color:var(--text-disabled, #717680);
-  border:none; border-bottom:2px solid var(--gray-400, #a4a7ae);
-  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae); cursor:not-allowed; pointer-events:none;
-}
-.btn-secondary.state-disabled.btn-lg { height:50px; }
-.btn-secondary.state-disabled.btn-md { height:46px; }
-.btn-secondary.state-loading {
-  background:var(--bg-primary, #ffffff); color:var(--text-secondary, #414651);
-  border:2px solid var(--border-secondary, #e9eaeb);
-  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb); cursor:wait;
-}
-
-/* ── Destructive ── */
-.btn-destructive {
-  background:var(--fg-destructive-primary, #f04438); color:var(--text-white, #ffffff);
-  border-bottom:2px solid var(--red-600, #d92d20);
-  box-shadow:0 4px 0 0 var(--red-600, #d92d20);
-}
-.btn-destructive.btn-lg { height:50px; }
-.btn-destructive.btn-md { height:46px; }
-.btn-destructive:hover { background:var(--red-400, #f97066); }
-.btn-destructive:active, .btn-destructive.state-active {
-  background:var(--fg-destructive-primary, #f04438); border-bottom:none;
-  box-shadow:none; transform:translateY(4px);
-}
-.btn-destructive:active.btn-lg, .btn-destructive.state-active.btn-lg { height:48px; }
-.btn-destructive:active.btn-md, .btn-destructive.state-active.btn-md { height:44px; }
-.btn-destructive.state-disabled {
-  background:var(--gray-300, #d5d7da); color:var(--text-disabled, #717680);
-  border-bottom:2px solid var(--gray-400, #a4a7ae);
-  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae); cursor:not-allowed; pointer-events:none;
-}
-.btn-destructive.state-loading {
-  background:var(--fg-destructive-primary, #f04438);
-  border-bottom:2px solid var(--red-600, #d92d20);
-  box-shadow:0 4px 0 0 var(--red-600, #d92d20); cursor:wait;
-}
-
-/* ── Warning ── */
-.btn-warning {
-  background:var(--yellow-500, #eaaa08); color:var(--text-white, #ffffff);
-  border-bottom:2px solid var(--yellow-600, #ca8504);
-  box-shadow:0 4px 0 0 var(--yellow-600, #ca8504);
-}
-.btn-warning.btn-lg { height:50px; }
-.btn-warning.btn-md { height:46px; }
-.btn-warning:hover { background:var(--yellow-400, #fac515); }
-.btn-warning:active, .btn-warning.state-active {
-  background:var(--yellow-500, #eaaa08); border-bottom:none;
-  box-shadow:none; transform:translateY(4px);
-}
-.btn-warning:active.btn-lg, .btn-warning.state-active.btn-lg { height:48px; }
-.btn-warning:active.btn-md, .btn-warning.state-active.btn-md { height:44px; }
-.btn-warning.state-disabled {
-  background:var(--gray-300, #d5d7da); color:var(--text-disabled, #717680);
-  border-bottom:2px solid var(--gray-400, #a4a7ae);
-  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae); cursor:not-allowed; pointer-events:none;
-}
-.btn-warning.state-loading {
-  background:var(--yellow-500, #eaaa08);
-  border-bottom:2px solid var(--yellow-600, #ca8504);
-  box-shadow:0 4px 0 0 var(--yellow-600, #ca8504); cursor:wait;
-}
-
-/* ── Success ── */
-.btn-success {
-  background:var(--green-500, #17b26a); color:var(--text-white, #ffffff);
-  border-bottom:2px solid var(--green-600, #079455);
-  box-shadow:0 4px 0 0 var(--green-600, #079455);
-}
-.btn-success.btn-lg { height:50px; }
-.btn-success.btn-md { height:46px; }
-.btn-success:hover { background:var(--green-400, #47cd89); }
-.btn-success:active, .btn-success.state-active {
-  background:var(--green-500, #17b26a); border-bottom:none;
-  box-shadow:none; transform:translateY(4px);
-}
-.btn-success:active.btn-lg, .btn-success.state-active.btn-lg { height:48px; }
-.btn-success:active.btn-md, .btn-success.state-active.btn-md { height:44px; }
-.btn-success.state-disabled {
-  background:var(--gray-300, #d5d7da); color:var(--text-disabled, #717680);
-  border-bottom:2px solid var(--gray-400, #a4a7ae);
-  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae); cursor:not-allowed; pointer-events:none;
-}
-.btn-success.state-loading {
-  background:var(--green-500, #17b26a);
-  border-bottom:2px solid var(--green-600, #079455);
-  box-shadow:0 4px 0 0 var(--green-600, #079455); cursor:wait;
-}
-
-/* ── Loading spinner ── */
-.spinner {
-  display:inline-block; width:var(--spacing-2xl, 20px); height:var(--spacing-2xl, 20px);
-  border-radius:50%; animation:spin 1.0s linear infinite;
-}
-.btn-primary .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:var(--fg-white, #ffffff); }
-.btn-secondary .spinner { border:2.5px solid rgba(11,165,236,0.2); border-top-color:var(--brand-500, #0ba5ec); }
-.btn-destructive .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:var(--fg-white, #ffffff); }
-.btn-warning .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:var(--fg-white, #ffffff); }
-.btn-success .spinner { border:2.5px solid rgba(255,255,255,0.3); border-top-color:var(--fg-white, #ffffff); }
-@keyframes spin { to { transform:rotate(360deg); } }
-
 /* ── Sentiment tags ── */
 .sentiment-tag {
   display:inline-block;
@@ -341,6 +183,14 @@
         <span class="demo-label">Medium</span>
         <button class="btn-sprout btn-primary btn-md">Continue</button>
       </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-primary btn-sm">Continue</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-primary btn-xs">Add</button>
+      </div>
     </div>
 
     <h3>Secondary <span class="sentiment-tag sentiment-neutral">Neutral</span></h3>
@@ -359,6 +209,14 @@
       <div class="demo-item">
         <span class="demo-label">Medium</span>
         <button class="btn-sprout btn-secondary btn-md">Go back</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-secondary btn-sm">Go back</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-secondary btn-xs">Edit</button>
       </div>
     </div>
 
@@ -379,6 +237,14 @@
         <span class="demo-label">Medium</span>
         <button class="btn-sprout btn-destructive btn-md">Delete account</button>
       </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-destructive btn-sm">Delete</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-destructive btn-xs">Remove</button>
+      </div>
     </div>
 
     <h3>Warning <span class="sentiment-tag sentiment-warning">Warning</span></h3>
@@ -397,6 +263,14 @@
       <div class="demo-item">
         <span class="demo-label">Medium</span>
         <button class="btn-sprout btn-warning btn-md">Got it</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-warning btn-sm">Got it</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-warning btn-xs">Skip</button>
       </div>
     </div>
 
@@ -417,13 +291,21 @@
         <span class="demo-label">Medium</span>
         <button class="btn-sprout btn-success btn-md">Continue</button>
       </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-success btn-sm">Continue</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-success btn-xs">Done</button>
+      </div>
     </div>
   </div>
 
   <!-- ════ Sizes ════ -->
   <div class="doc-section">
     <h2>Sizes</h2>
-    <p>There are two different button sizes &mdash; <strong>medium</strong> and <strong>large</strong> &mdash; each used for different purposes.</p>
+    <p>There are four button sizes &mdash; <strong>large</strong>, <strong>medium</strong>, <strong>small</strong>, and <strong>extra small</strong> &mdash; each used for different purposes.</p>
 
     <h3>Large</h3>
     <p>The large button is used to move users forward in a flow. It&rsquo;s used at full width on mobile. Large supports Toss Face icon left.</p>
@@ -451,6 +333,48 @@
         <span class="demo-label">Medium &middot; 44px &middot; 16px</span>
         <button class="btn-sprout btn-secondary btn-md">Cancel</button>
       </div>
+    </div>
+
+    <h3>Small</h3>
+    <p>The small button is used for card actions, compact forms, and tighter layouts. It uses a 12px border radius and 14px font to stay proportional. Small supports Toss Face icon left.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Small &middot; 36px &middot; 14px</span>
+        <button class="btn-sprout btn-primary btn-sm">Save changes</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Small &middot; 36px &middot; 14px</span>
+        <button class="btn-sprout btn-secondary btn-sm">Cancel</button>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use small buttons in cards, compact forms, or secondary actions in tighter layouts.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use small buttons as the main page-level CTA &mdash; use large or medium instead.</li>
+      </ul>
+    </div>
+
+    <h3>Extra Small</h3>
+    <p>The extra small button is a compact, content-width button for inline actions inside list items and dense layouts. It uses an 8px border radius and content-fit width, signaling a different context from the full-width sizes.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Extra Small &middot; 28px &middot; 14px</span>
+        <button class="btn-sprout btn-primary btn-xs">Add</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small &middot; 28px &middot; 14px</span>
+        <button class="btn-sprout btn-secondary btn-xs">Edit</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small &middot; 28px &middot; 14px</span>
+        <button class="btn-sprout btn-success btn-xs">Done</button>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use extra small buttons for inline actions in list items or compact layouts where a full-width button would be too heavy.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use extra small buttons as standalone CTAs &mdash; they are designed for inline contexts only.</li>
+      </ul>
     </div>
   </div>
 
@@ -644,15 +568,24 @@
         <tr><td>Disabled text</td><td colspan="5"><code>--text-disabled</code></td></tr>
         <tr><td>Border</td><td>none</td><td><code>2px --border-secondary</code></td><td>none</td><td>none</td><td>none</td></tr>
         <tr><td>Shadow</td><td><code>--brand-600</code></td><td><code>--gray-200</code></td><td><code>--red-600</code></td><td><code>--yellow-600</code></td><td><code>--green-600</code></td></tr>
-        <tr><td>Shadow offset</td><td>4px</td><td>3px</td><td>4px</td><td>4px</td><td>4px</td></tr>
+        <tr><td>Shadow offset</td><td>4px</td><td>4px</td><td>4px</td><td>4px</td><td>4px</td></tr>
         <tr><td>Shadow (active)</td><td colspan="5">none</td></tr>
-        <tr><td>Border radius</td><td colspan="5"><code>--radius-2xl</code> (16px)</td></tr>
-        <tr><td>Padding</td><td colspan="5"><code>--spacing-lg</code> (12px) vertical, <code>--spacing-3xl</code> (24px) horizontal</td></tr>
-        <tr><td>Font weight</td><td colspan="5"><code>--font-weight-bold</code> (700)</td></tr>
+        <tr><td>Border radius (lg, md)</td><td colspan="5"><code>--radius-2xl</code> (16px)</td></tr>
+        <tr><td>Border radius (sm)</td><td colspan="5"><code>--radius-xl</code> (12px)</td></tr>
+        <tr><td>Border radius (xs)</td><td colspan="5"><code>--radius-md</code> (8px)</td></tr>
+        <tr><td>Padding (lg)</td><td colspan="5"><code>--spacing-lg</code> (12px)</td></tr>
+        <tr><td>Padding (md)</td><td colspan="5"><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Padding (sm)</td><td colspan="5"><code>--spacing-sm</code> (6px)</td></tr>
+        <tr><td>Padding (xs)</td><td colspan="5"><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Font weight</td><td><code>--font-weight-bold</code> (700)</td><td><code>--font-weight-semibold</code> (600)</td><td><code>--font-weight-bold</code> (700)</td><td><code>--font-weight-bold</code> (700)</td><td><code>--font-weight-bold</code> (700)</td></tr>
         <tr><td>Font size (lg)</td><td colspan="5"><code>--font-size-text-lg</code> (18px)</td></tr>
         <tr><td>Font size (md)</td><td colspan="5"><code>--font-size-text-md</code> (16px)</td></tr>
+        <tr><td>Font size (sm, xs)</td><td colspan="5"><code>--font-size-text-sm</code> (14px)</td></tr>
         <tr><td>Height (lg)</td><td>50px</td><td>54px</td><td>50px</td><td>50px</td><td>50px</td></tr>
         <tr><td>Height (md)</td><td>46px</td><td>50px</td><td>46px</td><td>46px</td><td>46px</td></tr>
+        <tr><td>Height (sm)</td><td>38px</td><td>42px</td><td>38px</td><td>38px</td><td>38px</td></tr>
+        <tr><td>Height (xs)</td><td>30px</td><td>34px</td><td>30px</td><td>30px</td><td>30px</td></tr>
+        <tr><td>Width (xs)</td><td colspan="5">Content-fit (auto)</td></tr>
         <tr><td>Hover/focus transition</td><td colspan="5">0.1s <code>cubic-bezier(0.25, 0.1, 0.25, 1)</code> &mdash; background, box-shadow</td></tr>
         <tr><td>Active state</td><td colspan="5"><code>box-shadow: none; transform: translateY(Npx)</code> &mdash; matches shadow offset</td></tr>
         <tr><td>Spinner</td><td colspan="5">1.0s linear infinite (rotate 360deg)</td></tr>
@@ -698,7 +631,7 @@
         <li><strong>Focus ring:</strong> Buttons show a visible <code>2px</code> focus ring on keyboard navigation. Do not remove <code>:focus-visible</code> outlines.</li>
         <li><strong>ARIA:</strong> Use <code>aria-disabled="true"</code> instead of the <code>disabled</code> attribute when the button should still be discoverable by screen readers. Add <code>aria-busy="true"</code> during loading states.</li>
         <li><strong>Contrast:</strong> Primary buttons (white on <code>--brand-500</code>) pass AA for large text. Secondary buttons (<code>--brand-500</code> on white) pass AA at all sizes. Disabled buttons are exempt from contrast requirements.</li>
-        <li><strong>Touch targets:</strong> Both sizes (44px, 48px) meet the 44&times;44px minimum touch target guideline.</li>
+        <li><strong>Touch targets:</strong> Large and medium sizes (44px, 48px) meet the 44&times;44px minimum touch target guideline. Small (36px) is close and should be used with sufficient surrounding spacing. Extra small (28px) relies on surrounding padding in its list-item context to meet the 44&times;44px tap area &mdash; ensure at least 8px padding around extra small buttons.</li>
         <li><strong>Motion:</strong> The press animation (<code>translateY</code>) respects <code>prefers-reduced-motion</code> &mdash; wrap transitions in a media query.</li>
       </ul>
     </div>

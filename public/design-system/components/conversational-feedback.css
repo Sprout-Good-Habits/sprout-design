@@ -1,0 +1,14 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Conversational Feedback CSS
+   Composes Avatar Portrait or Avatar with Subtitles
+   into a directional conversational moment.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Base ── */
+.conversational-feedback {
+  display:flex;
+  align-items:center;
+  gap:var(--spacing-md, 8px);
+  width:100%;
+  position:relative;
+}

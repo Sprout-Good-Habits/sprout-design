@@ -6,6 +6,7 @@
 <title>Sprout Product Explorer — Tier 2</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/tabs.css">
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 /* ── Device frame ── */
@@ -195,71 +196,9 @@
   z-index: 10;
 }
 
-/* ── Today / Anytime Tabs (design-system tabs component) ── */
+/* ── Today / Anytime Tabs (page-specific overrides; base from tabs.css) ── */
 .home-tabs {
-  display: flex;
-  gap: var(--spacing-xs, 4px);
-  padding: var(--spacing-xs, 4px);
   margin: 48px 16px 0;
-  background: var(--bg-secondary, #fafafa);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-lg, 10px);
-  align-items: center;
-}
-.home-tab {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-md, 8px);
-  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
-  height: 44px;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-md, 16px);
-  line-height: var(--line-height-text-md, 24px);
-  font-weight: var(--font-weight-semibold, 600);
-  color: var(--text-quaternary, #717680);
-  cursor: pointer;
-  border-radius: var(--radius-sm, 6px);
-  border: none;
-  background: transparent;
-  transition: background 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
-              box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
-  -webkit-tap-highlight-color: transparent;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.home-tab:hover {
-  background: var(--bg-primary-hover, #fafafa);
-}
-.home-tab.active {
-  color: var(--text-secondary, #414651);
-}
-
-/* ── Sliding pill ── */
-.home-tabs {
-  position: relative;
-}
-.home-tabs .slide-pill {
-  position: absolute;
-  top: var(--spacing-xs, 4px);
-  left: var(--spacing-xs, 4px);
-  height: 44px;
-  border-radius: var(--radius-sm, 6px);
-  background: var(--bg-primary, #ffffff);
-  box-shadow:
-    0 1px 3px 0 rgba(10,13,18,0.1),
-    0 1px 2px -1px rgba(10,13,18,0.1);
-  transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
-              width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
-  pointer-events: none;
-  z-index: 0;
-}
-.home-tab {
-  position: relative;
-  z-index: 1;
-  background: transparent !important;
-  box-shadow: none !important;
 }
 .home-tab-badge {
   display: inline-flex;
@@ -601,7 +540,7 @@
     width: 100%;
   }
   .controls-row .preview-tab,
-  .controls-row .device-btn {
+  .controls-row .device-toggle .cat-tab {
     flex: 1;
     justify-content: center;
   }
@@ -649,52 +588,21 @@
   line-height: 1;
 }
 
-/* ── Device toggle ── */
-.device-toggle {
-  display: flex;
-  gap: var(--spacing-xs, 4px);
-  padding: var(--spacing-xs, 4px);
-  background: var(--bg-secondary_alt, #fafafa);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-lg, 10px);
-}
-.device-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md, 8px);
-  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+/* ── Device toggle (page-specific overrides; base from tabs.css) ── */
+.device-toggle .cat-tab {
   height: 36px;
-  border-radius: var(--radius-sm, 6px);
-  border: none;
-  background: transparent;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: var(--font-weight-semibold, 600);
-  color: var(--text-quaternary, #717680);
-  cursor: pointer;
-  transition: all 0.15s;
-  box-sizing: border-box;
 }
-.device-btn:hover {
-  color: var(--text-tertiary, #535862);
-}
-.device-btn.active {
-  background: var(--bg-primary_alt, #fff);
-  color: var(--text-secondary, #414651);
-  box-shadow:
-    0 1px 3px 0 rgba(10,13,18,0.1),
-    0 1px 2px -1px rgba(10,13,18,0.1);
-}
-.device-btn svg {
+.device-toggle .cat-tab svg {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
 }
-.device-btn .device-icon {
+.device-toggle .cat-tab .device-icon {
   stroke: var(--text-quaternary, #717680);
   transition: stroke 0.15s;
 }
-.device-btn.active .device-icon {
+.device-toggle .cat-tab.active .device-icon {
   stroke: var(--text-secondary, #414651);
 }
 
@@ -875,9 +783,9 @@
           <button class="preview-tab" data-preview="night"><span class="preview-tab-emoji">&#x1F319;</span> Night</button>
         </div>
 
-        <div class="device-toggle">
-          <button class="device-btn" data-device="ipad"><svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 9 16C9.27614 16 9.5 16.2239 9.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
-          <button class="device-btn active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
+        <div class="tabs-container tabs-equal device-toggle">
+          <button class="cat-tab" data-device="ipad"><svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 9 16C9.27614 16 9.5 16.2239 9.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
+          <button class="cat-tab active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
         </div>
       </div>
 
@@ -920,10 +828,10 @@
                       <div class="grass-fill">
 
                         <!-- Today / Anytime Tabs -->
-                        <div class="home-tabs" id="home-tabs" role="tablist">
+                        <div class="tabs-container tabs-equal tabs-sliding home-tabs" id="home-tabs" role="tablist">
                           <div class="slide-pill" id="home-pill"></div>
-                          <button class="home-tab active" role="tab" aria-selected="true" data-filter="today">Today <span class="home-tab-badge" id="today-count">6</span></button>
-                          <button class="home-tab" role="tab" aria-selected="false" data-filter="anytime">Anytime</button>
+                          <button class="cat-tab active" role="tab" aria-selected="true" data-filter="today">Today <span class="home-tab-badge" id="today-count">6</span></button>
+                          <button class="cat-tab" role="tab" aria-selected="false" data-filter="anytime">Anytime</button>
                         </div>
 
                         <!-- Card Carousel -->
@@ -1172,7 +1080,7 @@
   var deviceScreen = document.querySelector('.device-screen');
   var deviceMockup = document.querySelector('.device-mockup');
   var carousel = document.getElementById('carousel');
-  var homeTabs = document.querySelectorAll('.home-tab');
+  var homeTabs = document.querySelectorAll('#home-tabs .cat-tab');
   var homeTabsContainer = document.getElementById('home-tabs');
   var homePill = document.getElementById('home-pill');
   var allCards = document.querySelectorAll('.task-card');
@@ -1189,7 +1097,7 @@
     homePill.style.transform = 'translateX(' + (offsetLeft - 4) + 'px)';
   }
   // Init pill on first active tab
-  var firstActiveTab = homeTabsContainer.querySelector('.home-tab.active');
+  var firstActiveTab = homeTabsContainer.querySelector('.cat-tab.active');
   if (firstActiveTab) {
     // Disable transition for initial position
     homePill.style.transition = 'none';
@@ -1603,7 +1511,7 @@
   }
 
   // ── Device toggle ──
-  var deviceBtns = document.querySelectorAll('.device-btn');
+  var deviceBtns = document.querySelectorAll('.device-toggle .cat-tab');
   var deviceWrapper = document.querySelector('.device-wrapper');
   deviceBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {

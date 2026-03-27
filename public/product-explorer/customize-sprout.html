@@ -6,6 +6,8 @@
 <title>Sprout Product Explorer — Customize Sprout</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/tabs.css">
+<link rel="stylesheet" href="/design-system/components/tile.css">
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <style>
 /* ── Device frame ── */
@@ -217,69 +219,8 @@
   height: 460px;
 }
 
-/* ── Category tabs (Tabs component) ── */
-.category-tabs {
-  display: flex;
-  gap: var(--spacing-xs, 4px);
-  padding: var(--spacing-xs, 4px);
-  margin: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0;
-  background: var(--bg-secondary, #fafafa);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-lg, 10px);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  flex-shrink: 0;
-}
-.category-tabs::-webkit-scrollbar { display: none; }
-.cat-tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-md, 8px);
-  height: 44px;
-  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
-  border-radius: var(--radius-sm, 6px);
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
-              box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
-  -webkit-tap-highlight-color: transparent;
-}
-.cat-tab { flex: 1; }
-.cat-tab .tf-icon { font-size: 24px; width: 24px; height: 24px; mix-blend-mode: luminosity; transition: mix-blend-mode 0.2s cubic-bezier(0.25, 0.1, 0.25, 1); }
-.cat-tab:hover { background: var(--bg-primary-hover, #fafafa); }
-.cat-tab.active .tf-icon { mix-blend-mode: normal; }
-
-/* ── Sliding pill ── */
-.category-tabs {
-  position: relative;
-}
-.slide-pill {
-  position: absolute;
-  top: var(--spacing-xs, 4px);
-  left: var(--spacing-xs, 4px);
-  height: 44px;
-  border-radius: var(--radius-sm, 6px);
-  background: var(--bg-primary, #ffffff);
-  box-shadow:
-    0 1px 3px 0 rgba(10,13,18,0.1),
-    0 1px 2px -1px rgba(10,13,18,0.1);
-  transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
-              width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
-  pointer-events: none;
-  z-index: 0;
-}
-.cat-tab {
-  position: relative;
-  z-index: 1;
-}
-.cat-tab.active {
-  background: transparent;
-  box-shadow: none;
-}
+/* ── Category tabs (page-specific margin) ── */
+#category-tabs { margin: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0; }
 
 /* ── Panel content ── */
 .panel-content {
@@ -306,7 +247,7 @@
   margin-bottom: var(--spacing-lg, 12px);
 }
 
-/* ── Color swatches (tile-swatch from design system) ── */
+/* ── Swatch grid (uses tile-leading-swatch as standalone tile) ── */
 .swatch-grid {
   display: grid;
   grid-template-columns: repeat(5, auto);
@@ -316,64 +257,13 @@
   padding: 0 0 var(--spacing-xs, 4px);
 }
 .swatch-grid::-webkit-scrollbar { display: none; }
-.tile.tile-swatch {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-xl, 12px);
-  background: var(--bg-primary, #ffffff);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  padding: var(--spacing-md, 8px);
-  gap: 0;
-  overflow: clip;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
-}
-.tile-swatch-color {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md, 8px);
-  flex-shrink: 0;
-}
-.tile.tile-swatch:active { box-shadow: none; transform: translateY(2px); }
-.tile.tile-swatch.selected {
-  background: var(--brand-100, #e0f2fe);
-  border-color: #7cd4fd;
-  box-shadow: 0 3px 0 0 #7cd4fd;
-}
 
-/* ── Style cards (tile-image from design system) ── */
+/* ── Style grid ── */
 .style-grid {
   display: grid;
   grid-template-columns: repeat(3, auto);
   justify-content: space-between;
   row-gap: var(--spacing-lg, 12px);
-}
-.tile.tile-image {
-  width: 112px;
-  height: 112px;
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-xl, 12px);
-  background: var(--bg-primary, #ffffff);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  padding: var(--spacing-md, 8px);
-  gap: 0;
-  overflow: clip;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  position: relative;
-}
-.tile.tile-image:active { box-shadow: none; transform: translateY(2px); }
-.tile.tile-image.selected {
-  background: var(--brand-100, #e0f2fe);
-  border-color: #7cd4fd;
-  box-shadow: 0 3px 0 0 #7cd4fd;
 }
 
 /* ── Controls row ── */
@@ -383,40 +273,10 @@
   justify-content: flex-end;
   margin-bottom: var(--spacing-xl, 16px);
 }
-.device-toggle {
-  display: flex;
-  gap: var(--spacing-xs, 4px);
-  padding: var(--spacing-xs, 4px);
-  background: var(--bg-secondary, #fafafa);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-lg, 10px);
-}
-.device-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md, 8px);
-  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
-  height: 36px;
-  border-radius: var(--radius-sm, 6px);
-  border: none;
-  background: transparent;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-sm, 14px);
-  font-weight: var(--font-weight-semibold, 600);
-  color: var(--text-quaternary, #717680);
-  cursor: pointer;
-  transition: all 0.15s;
-  box-sizing: border-box;
-}
-.device-btn:hover { color: var(--text-tertiary, #535862); }
-.device-btn.active {
-  background: var(--bg-primary, #fff);
-  color: var(--text-secondary, #414651);
-  box-shadow: 0 1px 3px 0 rgba(10,13,18,0.1), 0 1px 2px -1px rgba(10,13,18,0.1);
-}
-.device-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
-.device-btn .device-icon { stroke: var(--text-quaternary, #717680); transition: stroke 0.15s; }
-.device-btn.active .device-icon { stroke: var(--text-secondary, #414651); }
+.device-toggle .cat-tab { height: 36px; }
+.device-toggle .cat-tab svg { width: 20px; height: 20px; flex-shrink: 0; }
+.device-toggle .cat-tab .device-icon { stroke: var(--text-quaternary, #717680); transition: stroke 0.15s; }
+.device-toggle .cat-tab.active .device-icon { stroke: var(--text-secondary, #414651); }
 .viewer {
   display: flex;
   align-items: center;
@@ -469,9 +329,9 @@
       </div>
 
       <div class="controls-row">
-        <div class="device-toggle">
-          <button class="device-btn" data-device="ipad"><svg viewBox="0 0 18 22" fill="none"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
-          <button class="device-btn active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
+        <div class="tabs-container tabs-equal device-toggle">
+          <button class="cat-tab" data-device="ipad"><svg viewBox="0 0 18 22" fill="none"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
+          <button class="cat-tab active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
         </div>
       </div>
 
@@ -527,7 +387,7 @@
                 <!-- Customizer panel -->
                 <div class="customizer-panel">
                   <!-- Category tabs (TossFace icons) -->
-                  <div class="category-tabs" id="category-tabs">
+                  <div class="tabs-container tabs-equal tabs-sliding" id="category-tabs">
                     <div class="slide-pill" id="slide-pill"></div>
                     <button class="cat-tab active" data-panel="skin" aria-label="Skin tone" title="Skin tone"><span class="tf-icon">&#x1F600;</span></button>
                     <button class="cat-tab" data-panel="hair" aria-label="Hairstyle" title="Hairstyle"><span class="tf-icon">&#x1FAAE;</span></button>
@@ -763,7 +623,7 @@
   buildStyleCards('hair-styles', HAIR_STYLES, 'hairID');
 
   // ── Device toggle ──
-  var deviceBtns = document.querySelectorAll('.device-btn');
+  var deviceBtns = document.querySelectorAll('.device-toggle .cat-tab');
   var deviceWrapper = document.getElementById('device-wrapper');
   deviceBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {

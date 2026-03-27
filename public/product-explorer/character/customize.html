@@ -6,6 +6,8 @@
 <title>Sprout Product Explorer — Character Customizer</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/tile.css">
+<link rel="stylesheet" href="/design-system/components/tabs.css">
 <style>
 /* ── TossFace emoji font ── */
 @font-face {
@@ -172,50 +174,6 @@
   gap: 16px;
 }
 
-/* ── Horizontal tabs ── */
-.category-tabs {
-  display: flex;
-  gap: var(--spacing-xs, 4px);
-  align-items: center;
-  padding: var(--spacing-xs, 4px);
-  background: var(--bg-secondary-alt, #fafafa);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-lg, 10px);
-  flex-shrink: 0;
-}
-.cat-tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 36px;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm, 6px);
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-.cat-tab .tab-emoji {
-  font-family: 'TossFace', sans-serif;
-  font-size: 20px;
-  line-height: 1;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: grayscale(1) opacity(0.5);
-}
-.cat-tab.active {
-  background: var(--bg-primary-alt, #ffffff);
-  box-shadow:
-    0 1px 3px 0 rgba(10,13,18,0.1),
-    0 1px 2px -1px rgba(10,13,18,0.1);
-}
-.cat-tab.active .tab-emoji {
-  filter: none;
-}
-
 /* ── Tab panels ── */
 .tab-panels {
   flex: 1;
@@ -255,51 +213,16 @@
 }
 .swatch-row::-webkit-scrollbar { display: none; }
 
-/* ── Button (color swatch) ── */
-.btn-swatch {
-  display: flex;
-  align-items: center;
-  padding: var(--spacing-lg, 12px);
-  border-radius: var(--radius-xl, 12px);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #ffffff);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-}
-.btn-swatch .swatch-color {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md, 8px);
-  flex-shrink: 0;
-}
-.btn-swatch.selected {
-  background: var(--bg-brand-secondary, #e0f2fe);
-  border-color: var(--blue-light-300, #7cd4fd);
-  box-shadow: 0 3px 0 0 var(--blue-light-300, #7cd4fd);
-}
+/* ── Swatch tile tweaks ── */
+.tile.tile-swatch { flex-shrink: 0; }
 
-/* ── Button (thumbnail) ── */
+/* ── Thumbnail grid ── */
 .thumb-grid {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-lg, 12px);
 }
-.btn-thumb {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-lg, 12px);
-  border-radius: var(--radius-xl, 12px);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #ffffff);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-}
-.btn-thumb .thumb-inner {
+.thumb-inner {
   width: 91px;
   height: 91px;
   border-radius: var(--radius-md, 8px);
@@ -311,11 +234,6 @@
   font-size: 14px;
   font-weight: 500;
   color: var(--text-tertiary, #535862);
-}
-.btn-thumb.selected {
-  background: var(--bg-brand-secondary, #e0f2fe);
-  border-color: var(--blue-light-300, #7cd4fd);
-  box-shadow: 0 3px 0 0 var(--blue-light-300, #7cd4fd);
 }
 
 /* ── Coming soon ── */
@@ -412,14 +330,14 @@
                   <div class="panel-body">
 
                     <!-- Category tabs -->
-                    <div class="category-tabs" id="category-tabs">
-                      <button class="cat-tab active" data-tab="0"><span class="tab-emoji">\u{1F600}</span></button>
-                      <button class="cat-tab" data-tab="1"><span class="tab-emoji">\u{1F440}</span></button>
-                      <button class="cat-tab" data-tab="2"><span class="tab-emoji">\u{1FAAE}</span></button>
-                      <button class="cat-tab" data-tab="3"><span class="tab-emoji">\u{1F453}</span></button>
-                      <button class="cat-tab" data-tab="4"><span class="tab-emoji">\u{1F9E2}</span></button>
-                      <button class="cat-tab" data-tab="5"><span class="tab-emoji">\u{1F45A}</span></button>
-                      <button class="cat-tab" data-tab="6"><span class="tab-emoji">\u{1FA9F}</span></button>
+                    <div class="tabs-container tabs-equal" id="category-tabs">
+                      <button class="cat-tab active" data-tab="0"><span class="tf-icon">\u{1F600}</span></button>
+                      <button class="cat-tab" data-tab="1"><span class="tf-icon">\u{1F440}</span></button>
+                      <button class="cat-tab" data-tab="2"><span class="tf-icon">\u{1FAAE}</span></button>
+                      <button class="cat-tab" data-tab="3"><span class="tf-icon">\u{1F453}</span></button>
+                      <button class="cat-tab" data-tab="4"><span class="tf-icon">\u{1F9E2}</span></button>
+                      <button class="cat-tab" data-tab="5"><span class="tf-icon">\u{1F45A}</span></button>
+                      <button class="cat-tab" data-tab="6"><span class="tf-icon">\u{1FA9F}</span></button>
                     </div>
 
                     <!-- Tab panels -->
@@ -429,12 +347,12 @@
                       <div class="tab-panel active" data-panel="0">
                         <div class="section-label">Skin tone</div>
                         <div class="swatch-row" id="skin-swatches">
-                          <button class="btn-swatch selected" data-input="skinID" data-value="0"><div class="swatch-color" style="background:#FFC7BA"></div></button>
-                          <button class="btn-swatch" data-input="skinID" data-value="1"><div class="swatch-color" style="background:#F5A68C"></div></button>
-                          <button class="btn-swatch" data-input="skinID" data-value="2"><div class="swatch-color" style="background:#E08B6A"></div></button>
-                          <button class="btn-swatch" data-input="skinID" data-value="3"><div class="swatch-color" style="background:#C47040"></div></button>
-                          <button class="btn-swatch" data-input="skinID" data-value="4"><div class="swatch-color" style="background:#8D5524"></div></button>
-                          <button class="btn-swatch" data-input="skinID" data-value="5"><div class="swatch-color" style="background:#5C3A1E"></div></button>
+                          <button class="tile tile-swatch selected" data-input="skinID" data-value="0"><div class="tile-swatch-color" style="background:#FFC7BA"></div></button>
+                          <button class="tile tile-swatch" data-input="skinID" data-value="1"><div class="tile-swatch-color" style="background:#F5A68C"></div></button>
+                          <button class="tile tile-swatch" data-input="skinID" data-value="2"><div class="tile-swatch-color" style="background:#E08B6A"></div></button>
+                          <button class="tile tile-swatch" data-input="skinID" data-value="3"><div class="tile-swatch-color" style="background:#C47040"></div></button>
+                          <button class="tile tile-swatch" data-input="skinID" data-value="4"><div class="tile-swatch-color" style="background:#8D5524"></div></button>
+                          <button class="tile tile-swatch" data-input="skinID" data-value="5"><div class="tile-swatch-color" style="background:#5C3A1E"></div></button>
                         </div>
                         <div class="section-label">Body</div>
                         <div class="coming-soon">
@@ -456,24 +374,24 @@
                       <div class="tab-panel" data-panel="2">
                         <div class="section-label">Main hair color</div>
                         <div class="swatch-row">
-                          <button class="btn-swatch" data-group="haircolor" data-value="0"><div class="swatch-color" style="background:#3B3B3A"></div></button>
-                          <button class="btn-swatch" data-group="haircolor" data-value="1"><div class="swatch-color" style="background:#6B3A2A"></div></button>
-                          <button class="btn-swatch selected" data-group="haircolor" data-value="2"><div class="swatch-color" style="background:#A0522D"></div></button>
-                          <button class="btn-swatch" data-group="haircolor" data-value="3"><div class="swatch-color" style="background:#E8C872"></div></button>
-                          <button class="btn-swatch" data-group="haircolor" data-value="4"><div class="swatch-color" style="background:#C04030"></div></button>
-                          <button class="btn-swatch" data-group="haircolor" data-value="5"><div class="swatch-color" style="background:#A0A0A0"></div></button>
+                          <button class="tile tile-swatch" data-group="haircolor" data-value="0"><div class="tile-swatch-color" style="background:#3B3B3A"></div></button>
+                          <button class="tile tile-swatch" data-group="haircolor" data-value="1"><div class="tile-swatch-color" style="background:#6B3A2A"></div></button>
+                          <button class="tile tile-swatch selected" data-group="haircolor" data-value="2"><div class="tile-swatch-color" style="background:#A0522D"></div></button>
+                          <button class="tile tile-swatch" data-group="haircolor" data-value="3"><div class="tile-swatch-color" style="background:#E8C872"></div></button>
+                          <button class="tile tile-swatch" data-group="haircolor" data-value="4"><div class="tile-swatch-color" style="background:#C04030"></div></button>
+                          <button class="tile tile-swatch" data-group="haircolor" data-value="5"><div class="tile-swatch-color" style="background:#A0A0A0"></div></button>
                         </div>
                         <div class="section-label">Hairstyle</div>
                         <div class="thumb-grid" id="hair-thumbs">
-                          <button class="btn-thumb" data-input="hairID" data-value="0"><div class="thumb-inner">1</div></button>
-                          <button class="btn-thumb selected" data-input="hairID" data-value="1"><div class="thumb-inner">2</div></button>
-                          <button class="btn-thumb" data-input="hairID" data-value="2"><div class="thumb-inner">3</div></button>
-                          <button class="btn-thumb" data-input="hairID" data-value="3"><div class="thumb-inner">4</div></button>
-                          <button class="btn-thumb" data-input="hairID" data-value="4"><div class="thumb-inner">5</div></button>
-                          <button class="btn-thumb" data-input="hairID" data-value="5"><div class="thumb-inner">6</div></button>
-                          <button class="btn-thumb" data-input="hairID" data-value="6"><div class="thumb-inner">7</div></button>
-                          <button class="btn-thumb" data-input="hairID" data-value="7"><div class="thumb-inner">8</div></button>
-                          <button class="btn-thumb" data-input="hairID" data-value="8"><div class="thumb-inner">9</div></button>
+                          <button class="tile tile-image" data-input="hairID" data-value="0"><div class="thumb-inner">1</div></button>
+                          <button class="tile tile-image selected" data-input="hairID" data-value="1"><div class="thumb-inner">2</div></button>
+                          <button class="tile tile-image" data-input="hairID" data-value="2"><div class="thumb-inner">3</div></button>
+                          <button class="tile tile-image" data-input="hairID" data-value="3"><div class="thumb-inner">4</div></button>
+                          <button class="tile tile-image" data-input="hairID" data-value="4"><div class="thumb-inner">5</div></button>
+                          <button class="tile tile-image" data-input="hairID" data-value="5"><div class="thumb-inner">6</div></button>
+                          <button class="tile tile-image" data-input="hairID" data-value="6"><div class="thumb-inner">7</div></button>
+                          <button class="tile tile-image" data-input="hairID" data-value="7"><div class="thumb-inner">8</div></button>
+                          <button class="tile tile-image" data-input="hairID" data-value="8"><div class="thumb-inner">9</div></button>
                         </div>
                       </div>
 
@@ -481,12 +399,12 @@
                       <div class="tab-panel" data-panel="3">
                         <div class="section-label">Facial hair color</div>
                         <div class="swatch-row">
-                          <button class="btn-swatch selected" data-group="fhcolor" data-value="0"><div class="swatch-color" style="background:#3B3B3A"></div></button>
-                          <button class="btn-swatch" data-group="fhcolor" data-value="1"><div class="swatch-color" style="background:#6B3A2A"></div></button>
-                          <button class="btn-swatch" data-group="fhcolor" data-value="2"><div class="swatch-color" style="background:#A0522D"></div></button>
-                          <button class="btn-swatch" data-group="fhcolor" data-value="3"><div class="swatch-color" style="background:#E8C872"></div></button>
-                          <button class="btn-swatch" data-group="fhcolor" data-value="4"><div class="swatch-color" style="background:#C04030"></div></button>
-                          <button class="btn-swatch" data-group="fhcolor" data-value="5"><div class="swatch-color" style="background:#A0A0A0"></div></button>
+                          <button class="tile tile-swatch selected" data-group="fhcolor" data-value="0"><div class="tile-swatch-color" style="background:#3B3B3A"></div></button>
+                          <button class="tile tile-swatch" data-group="fhcolor" data-value="1"><div class="tile-swatch-color" style="background:#6B3A2A"></div></button>
+                          <button class="tile tile-swatch" data-group="fhcolor" data-value="2"><div class="tile-swatch-color" style="background:#A0522D"></div></button>
+                          <button class="tile tile-swatch" data-group="fhcolor" data-value="3"><div class="tile-swatch-color" style="background:#E8C872"></div></button>
+                          <button class="tile tile-swatch" data-group="fhcolor" data-value="4"><div class="tile-swatch-color" style="background:#C04030"></div></button>
+                          <button class="tile tile-swatch" data-group="fhcolor" data-value="5"><div class="tile-swatch-color" style="background:#A0A0A0"></div></button>
                         </div>
                         <div class="section-label">Facial hair</div>
                         <div class="coming-soon">
@@ -528,28 +446,28 @@
                       <div class="tab-panel" data-panel="5">
                         <div class="section-label">Clothing color</div>
                         <div class="swatch-row">
-                          <button class="btn-swatch selected" data-group="clothcolor" data-value="0"><div class="swatch-color" style="background:#2970FF"></div></button>
-                          <button class="btn-swatch" data-group="clothcolor" data-value="1"><div class="swatch-color" style="background:#0BA5EC"></div></button>
-                          <button class="btn-swatch" data-group="clothcolor" data-value="2"><div class="swatch-color" style="background:#875BF7"></div></button>
-                          <button class="btn-swatch" data-group="clothcolor" data-value="3"><div class="swatch-color" style="background:#EE46BC"></div></button>
-                          <button class="btn-swatch" data-group="clothcolor" data-value="4"><div class="swatch-color" style="background:#F04438"></div></button>
-                          <button class="btn-swatch" data-group="clothcolor" data-value="5"><div class="swatch-color" style="background:#EF6820"></div></button>
-                          <button class="btn-swatch" data-group="clothcolor" data-value="6"><div class="swatch-color" style="background:#EAAA08"></div></button>
-                          <button class="btn-swatch" data-group="clothcolor" data-value="7"><div class="swatch-color" style="background:#17B26A"></div></button>
-                          <button class="btn-swatch" data-group="clothcolor" data-value="8"><div class="swatch-color" style="background:#E9EAEB"></div></button>
-                          <button class="btn-swatch" data-group="clothcolor" data-value="9"><div class="swatch-color" style="background:#181D27"></div></button>
+                          <button class="tile tile-swatch selected" data-group="clothcolor" data-value="0"><div class="tile-swatch-color" style="background:#2970FF"></div></button>
+                          <button class="tile tile-swatch" data-group="clothcolor" data-value="1"><div class="tile-swatch-color" style="background:#0BA5EC"></div></button>
+                          <button class="tile tile-swatch" data-group="clothcolor" data-value="2"><div class="tile-swatch-color" style="background:#875BF7"></div></button>
+                          <button class="tile tile-swatch" data-group="clothcolor" data-value="3"><div class="tile-swatch-color" style="background:#EE46BC"></div></button>
+                          <button class="tile tile-swatch" data-group="clothcolor" data-value="4"><div class="tile-swatch-color" style="background:#F04438"></div></button>
+                          <button class="tile tile-swatch" data-group="clothcolor" data-value="5"><div class="tile-swatch-color" style="background:#EF6820"></div></button>
+                          <button class="tile tile-swatch" data-group="clothcolor" data-value="6"><div class="tile-swatch-color" style="background:#EAAA08"></div></button>
+                          <button class="tile tile-swatch" data-group="clothcolor" data-value="7"><div class="tile-swatch-color" style="background:#17B26A"></div></button>
+                          <button class="tile tile-swatch" data-group="clothcolor" data-value="8"><div class="tile-swatch-color" style="background:#E9EAEB"></div></button>
+                          <button class="tile tile-swatch" data-group="clothcolor" data-value="9"><div class="tile-swatch-color" style="background:#181D27"></div></button>
                         </div>
                         <div class="section-label">Clothing</div>
                         <div class="thumb-grid">
-                          <button class="btn-thumb selected" data-group="clothing" data-value="0"><div class="thumb-inner">1</div></button>
-                          <button class="btn-thumb" data-group="clothing" data-value="1"><div class="thumb-inner">2</div></button>
-                          <button class="btn-thumb" data-group="clothing" data-value="2"><div class="thumb-inner">3</div></button>
-                          <button class="btn-thumb" data-group="clothing" data-value="3"><div class="thumb-inner">4</div></button>
-                          <button class="btn-thumb" data-group="clothing" data-value="4"><div class="thumb-inner">5</div></button>
-                          <button class="btn-thumb" data-group="clothing" data-value="5"><div class="thumb-inner">6</div></button>
-                          <button class="btn-thumb" data-group="clothing" data-value="6"><div class="thumb-inner">7</div></button>
-                          <button class="btn-thumb" data-group="clothing" data-value="7"><div class="thumb-inner">8</div></button>
-                          <button class="btn-thumb" data-group="clothing" data-value="8"><div class="thumb-inner">9</div></button>
+                          <button class="tile tile-image selected" data-group="clothing" data-value="0"><div class="thumb-inner">1</div></button>
+                          <button class="tile tile-image" data-group="clothing" data-value="1"><div class="thumb-inner">2</div></button>
+                          <button class="tile tile-image" data-group="clothing" data-value="2"><div class="thumb-inner">3</div></button>
+                          <button class="tile tile-image" data-group="clothing" data-value="3"><div class="thumb-inner">4</div></button>
+                          <button class="tile tile-image" data-group="clothing" data-value="4"><div class="thumb-inner">5</div></button>
+                          <button class="tile tile-image" data-group="clothing" data-value="5"><div class="thumb-inner">6</div></button>
+                          <button class="tile tile-image" data-group="clothing" data-value="6"><div class="thumb-inner">7</div></button>
+                          <button class="tile tile-image" data-group="clothing" data-value="7"><div class="thumb-inner">8</div></button>
+                          <button class="tile tile-image" data-group="clothing" data-value="8"><div class="thumb-inner">9</div></button>
                         </div>
                       </div>
 
@@ -557,16 +475,16 @@
                       <div class="tab-panel" data-panel="6">
                         <div class="section-label">Background color</div>
                         <div class="swatch-grid-wrap">
-                          <button class="btn-swatch selected" data-group="bgcolor" data-value="0"><div class="swatch-color" style="background:#E0F2FE"></div></button>
-                          <button class="btn-swatch" data-group="bgcolor" data-value="1"><div class="swatch-color" style="background:#DBEAFE"></div></button>
-                          <button class="btn-swatch" data-group="bgcolor" data-value="2"><div class="swatch-color" style="background:#E0E7FF"></div></button>
-                          <button class="btn-swatch" data-group="bgcolor" data-value="3"><div class="swatch-color" style="background:#FCE7F6"></div></button>
-                          <button class="btn-swatch" data-group="bgcolor" data-value="4"><div class="swatch-color" style="background:#FFE4E6"></div></button>
-                          <button class="btn-swatch" data-group="bgcolor" data-value="5"><div class="swatch-color" style="background:#FEF3C7"></div></button>
-                          <button class="btn-swatch" data-group="bgcolor" data-value="6"><div class="swatch-color" style="background:#FDE68A"></div></button>
-                          <button class="btn-swatch" data-group="bgcolor" data-value="7"><div class="swatch-color" style="background:#D1FAE5"></div></button>
-                          <button class="btn-swatch" data-group="bgcolor" data-value="8"><div class="swatch-color" style="background:#ECFDF5"></div></button>
-                          <button class="btn-swatch" data-group="bgcolor" data-value="9"><div class="swatch-color" style="background:#FFF7ED"></div></button>
+                          <button class="tile tile-swatch selected" data-group="bgcolor" data-value="0"><div class="tile-swatch-color" style="background:#E0F2FE"></div></button>
+                          <button class="tile tile-swatch" data-group="bgcolor" data-value="1"><div class="tile-swatch-color" style="background:#DBEAFE"></div></button>
+                          <button class="tile tile-swatch" data-group="bgcolor" data-value="2"><div class="tile-swatch-color" style="background:#E0E7FF"></div></button>
+                          <button class="tile tile-swatch" data-group="bgcolor" data-value="3"><div class="tile-swatch-color" style="background:#FCE7F6"></div></button>
+                          <button class="tile tile-swatch" data-group="bgcolor" data-value="4"><div class="tile-swatch-color" style="background:#FFE4E6"></div></button>
+                          <button class="tile tile-swatch" data-group="bgcolor" data-value="5"><div class="tile-swatch-color" style="background:#FEF3C7"></div></button>
+                          <button class="tile tile-swatch" data-group="bgcolor" data-value="6"><div class="tile-swatch-color" style="background:#FDE68A"></div></button>
+                          <button class="tile tile-swatch" data-group="bgcolor" data-value="7"><div class="tile-swatch-color" style="background:#D1FAE5"></div></button>
+                          <button class="tile tile-swatch" data-group="bgcolor" data-value="8"><div class="tile-swatch-color" style="background:#ECFDF5"></div></button>
+                          <button class="tile tile-swatch" data-group="bgcolor" data-value="9"><div class="tile-swatch-color" style="background:#FFF7ED"></div></button>
                         </div>
                       </div>
 
@@ -646,12 +564,12 @@
 
   // ── Swatch & thumbnail click handlers ──
   document.querySelector('.tab-panels').addEventListener('click', function(e) {
-    var btn = e.target.closest('.btn-swatch, .btn-thumb');
+    var btn = e.target.closest('.tile-swatch, .tile-image');
     if (!btn) return;
 
     // Find sibling buttons in same container
     var container = btn.parentElement;
-    container.querySelectorAll('.btn-swatch, .btn-thumb').forEach(function(b) {
+    container.querySelectorAll('.tile-swatch, .tile-image').forEach(function(b) {
       b.classList.remove('selected');
     });
     btn.classList.add('selected');
