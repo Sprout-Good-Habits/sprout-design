@@ -287,11 +287,11 @@
   margin-bottom: var(--spacing-lg, 12px);
 }
 
-/* ── Color swatches (sm selection tile, horizontal carousel) ── */
+/* ── Color swatches (tile-swatch, horizontal carousel) ── */
 .swatch-grid {
   display: flex;
   flex-wrap: nowrap;
-  gap: var(--spacing-md, 8px);
+  gap: var(--spacing-xl, 16px);
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
@@ -300,70 +300,70 @@
 }
 .swatch-grid::-webkit-scrollbar { display: none; }
 .swatch-grid-bg {
-  flex-wrap: wrap;
-  overflow-x: visible;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  grid-template-columns: repeat(5, auto);
+  justify-content: space-between;
+  row-gap: var(--spacing-lg, 12px);
+  overflow-x: visible;
   margin: 0;
   padding: 0 0 var(--spacing-xs, 4px);
 }
-.swatch {
-  width: 60px;
-  height: 60px;
-  border-radius: var(--radius-xl, 12px);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #ffffff);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
-  box-sizing: border-box;
-  padding: var(--spacing-lg, 12px);
+.tile.tile-swatch {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  background: var(--bg-primary, #ffffff);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  padding: var(--spacing-md, 8px);
+  gap: 0;
+  overflow: clip;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  flex-shrink: 0;
 }
-.swatch-color {
-  width: 36px;
-  height: 36px;
+.tile-swatch-color {
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-md, 8px);
   flex-shrink: 0;
 }
-.swatch:active { box-shadow: none; transform: translateY(2px); }
-.swatch.selected {
+.tile.tile-swatch:active { box-shadow: none; transform: translateY(2px); }
+.tile.tile-swatch.selected {
   background: var(--brand-100, #e0f2fe);
   border-color: #7cd4fd;
   box-shadow: 0 3px 0 0 #7cd4fd;
 }
 
-/* ── Style cards (lg selection tile) ── */
+/* ── Style cards (tile-image) ── */
 .style-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, auto);
+  justify-content: space-between;
+  row-gap: var(--spacing-lg, 12px);
 }
-.style-card {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: var(--radius-xl, 12px);
+.tile.tile-image {
+  width: 112px;
+  height: 112px;
   border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
   background: var(--bg-primary, #ffffff);
   box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  padding: var(--spacing-md, 8px);
+  gap: 0;
+  overflow: clip;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-xs, 12px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-tertiary, #535862);
   box-sizing: border-box;
-  padding: 0;
-  overflow: clip;
   position: relative;
 }
-.style-card:active { box-shadow: none; transform: translateY(2px); }
-.style-card.selected {
+.tile.tile-image:active { box-shadow: none; transform: translateY(2px); }
+.tile.tile-image.selected {
   background: var(--brand-100, #e0f2fe);
   border-color: #7cd4fd;
   box-shadow: 0 3px 0 0 #7cd4fd;
@@ -441,8 +441,11 @@
   width: 320px;
   height: 320px;
 }
+.device-wrapper.ipad .swatch-grid-bg {
+  grid-template-columns: repeat(8, auto);
+}
 .device-wrapper.ipad .style-grid {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, auto);
 }
 
 /* ── Home indicator ── */
@@ -787,16 +790,16 @@
     var container = document.getElementById(containerId);
     colors.forEach(function(hex, i) {
       var el = document.createElement('button');
-      el.className = 'swatch' + (i === state[stateKey] ? ' selected' : '');
+      el.className = 'tile tile-swatch' + (i === state[stateKey] ? ' selected' : '');
       el.setAttribute('aria-label', stateKey + ' ' + i);
       var inner = document.createElement('span');
-      inner.className = 'swatch-color';
+      inner.className = 'tile-swatch-color';
       inner.style.background = hex;
       el.appendChild(inner);
       el.addEventListener('click', function() {
         state[stateKey] = i;
         setRiveInput(stateKey, i);
-        container.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('selected'); });
+        container.querySelectorAll('.tile-swatch').forEach(function(s) { s.classList.remove('selected'); });
         el.classList.add('selected');
         syncPreviews();
       });
@@ -810,7 +813,7 @@
     var container = document.getElementById(containerId);
     labels.forEach(function(label, i) {
       var el = document.createElement('button');
-      el.className = 'style-card' + (i === state[stateKey] ? ' selected' : '');
+      el.className = 'tile tile-image' + (i === state[stateKey] ? ' selected' : '');
 
       if (preview) {
         var canvas = document.createElement('canvas');
@@ -858,7 +861,7 @@
       el.addEventListener('click', function() {
         state[stateKey] = i;
         setRiveInput(stateKey, i);
-        container.querySelectorAll('.style-card').forEach(function(s) { s.classList.remove('selected'); });
+        container.querySelectorAll('.tile-image').forEach(function(s) { s.classList.remove('selected'); });
         el.classList.add('selected');
         syncPreviews();
       });
@@ -903,14 +906,14 @@
     var deviceMockup = document.querySelector('.device-mockup');
     colors.forEach(function(hex, i) {
       var el = document.createElement('button');
-      el.className = 'swatch' + (i === 0 ? ' selected' : '');
+      el.className = 'tile tile-swatch' + (i === 0 ? ' selected' : '');
       el.setAttribute('aria-label', 'Background ' + i);
       var inner = document.createElement('span');
-      inner.className = 'swatch-color';
+      inner.className = 'tile-swatch-color';
       inner.style.background = hex;
       el.appendChild(inner);
       el.addEventListener('click', function() {
-        container.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('selected'); });
+        container.querySelectorAll('.tile-swatch').forEach(function(s) { s.classList.remove('selected'); });
         el.classList.add('selected');
         sky.style.background = hex;
         statusBar.style.background = hex;

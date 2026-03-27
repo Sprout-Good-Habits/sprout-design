@@ -306,72 +306,71 @@
   margin-bottom: var(--spacing-lg, 12px);
 }
 
-/* ── Color swatches (sm selection tile) ── */
+/* ── Color swatches (tile-swatch from design system) ── */
 .swatch-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-  gap: var(--spacing-md, 8px);
+  grid-template-columns: repeat(5, auto);
+  justify-content: space-between;
+  row-gap: var(--spacing-lg, 12px);
   margin: 0;
   padding: 0 0 var(--spacing-xs, 4px);
 }
 .swatch-grid::-webkit-scrollbar { display: none; }
-.swatch {
-  width: 60px;
-  height: 60px;
-  border-radius: var(--radius-xl, 12px);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #ffffff);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
-  box-sizing: border-box;
-  padding: var(--spacing-lg, 12px);
+.tile.tile-swatch {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  background: var(--bg-primary, #ffffff);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  padding: var(--spacing-md, 8px);
+  gap: 0;
+  overflow: clip;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
 }
-.swatch-color {
-  width: 36px;
-  height: 36px;
+.tile-swatch-color {
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-md, 8px);
   flex-shrink: 0;
 }
-.swatch:active { box-shadow: none; transform: translateY(2px); }
-.swatch.selected {
+.tile.tile-swatch:active { box-shadow: none; transform: translateY(2px); }
+.tile.tile-swatch.selected {
   background: var(--brand-100, #e0f2fe);
   border-color: #7cd4fd;
   box-shadow: 0 3px 0 0 #7cd4fd;
 }
 
-/* ── Style cards (lg selection tile) ── */
+/* ── Style cards (tile-image from design system) ── */
 .style-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, auto);
+  justify-content: space-between;
+  row-gap: var(--spacing-lg, 12px);
 }
-.style-card {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: var(--radius-xl, 12px);
+.tile.tile-image {
+  width: 112px;
+  height: 112px;
   border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
   background: var(--bg-primary, #ffffff);
   box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  padding: var(--spacing-md, 8px);
+  gap: 0;
+  overflow: clip;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-xs, 12px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-tertiary, #535862);
   box-sizing: border-box;
-  padding: 0;
-  overflow: clip;
   position: relative;
 }
-.style-card:active { box-shadow: none; transform: translateY(2px); }
-.style-card.selected {
+.tile.tile-image:active { box-shadow: none; transform: translateY(2px); }
+.tile.tile-image.selected {
   background: var(--brand-100, #e0f2fe);
   border-color: #7cd4fd;
   box-shadow: 0 3px 0 0 #7cd4fd;
@@ -429,8 +428,11 @@
   width: 640px;
   height: 960px;
 }
+.device-wrapper.ipad .swatch-grid {
+  grid-template-columns: repeat(8, auto);
+}
 .device-wrapper.ipad .style-grid {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, auto);
 }
 
 /* ── Home indicator ── */
@@ -651,22 +653,22 @@
     });
   }
 
-  // ── Build swatches (small color tiles) ──
+  // ── Build swatches (tile-swatch) ──
   function buildSwatches(containerId, items, stateKey) {
     var container = document.getElementById(containerId);
     items.forEach(function(item) {
       var riveId = item.id;
       var el = document.createElement('button');
-      el.className = 'swatch' + (riveId === state[stateKey] ? ' selected' : '');
+      el.className = 'tile tile-swatch' + (riveId === state[stateKey] ? ' selected' : '');
       el.setAttribute('aria-label', stateKey + ' ' + riveId);
       var inner = document.createElement('span');
-      inner.className = 'swatch-color';
+      inner.className = 'tile-swatch-color';
       inner.style.background = item.hex;
       el.appendChild(inner);
       el.addEventListener('click', function() {
         state[stateKey] = riveId;
         setRiveInput(stateKey, riveId);
-        container.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('selected'); });
+        container.querySelectorAll('.tile-swatch').forEach(function(s) { s.classList.remove('selected'); });
         el.classList.add('selected');
         syncPreviews();
       });
@@ -674,12 +676,12 @@
     });
   }
 
-  // ── Build style cards (big tiles with Rive previews) ──
+  // ── Build style cards (tile-image with Rive previews) ──
   function buildStyleCards(containerId, labels, stateKey) {
     var container = document.getElementById(containerId);
     labels.forEach(function(label, i) {
       var el = document.createElement('button');
-      el.className = 'style-card' + (i === state[stateKey] ? ' selected' : '');
+      el.className = 'tile tile-image' + (i === state[stateKey] ? ' selected' : '');
 
       var canvas = document.createElement('canvas');
       canvas.width = 222;
@@ -719,7 +721,7 @@
       el.addEventListener('click', function() {
         state[stateKey] = i;
         setRiveInput(stateKey, i);
-        container.querySelectorAll('.style-card').forEach(function(s) { s.classList.remove('selected'); });
+        container.querySelectorAll('.tile-image').forEach(function(s) { s.classList.remove('selected'); });
         el.classList.add('selected');
         syncPreviews();
       });

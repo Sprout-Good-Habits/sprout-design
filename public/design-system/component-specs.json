@@ -390,16 +390,19 @@
     },
     "composition": {
       "requires": ["label"],
-      "allows": ["icon", "description", "chevron", "radio-indicator", "checkbox-indicator"],
+      "allows": ["icon", "description", "chevron", "radio-indicator", "checkbox-indicator", "swatch", "image-thumb"],
       "forbids": ["button", "nested-tile"]
     },
     "variants": [
       { "name": "Navigation", "useWhen": "Navigating to a sub-screen, shows chevron", "pairWith": [] },
       { "name": "Radio", "useWhen": "Single-select from a list, shows radio indicator", "pairWith": [] },
-      { "name": "Checkbox", "useWhen": "Multi-select from a list, shows checkbox indicator", "pairWith": [] }
+      { "name": "Checkbox", "useWhen": "Multi-select from a list, shows checkbox indicator", "pairWith": [] },
+      { "name": "Swatch", "useWhen": "Color selection from a palette, compact square with color fill", "pairWith": [] },
+      { "name": "Image", "useWhen": "Image or photo selection from a grid, square with image fill", "pairWith": [] }
     ],
     "sizes": [
-      { "name": "Default", "useWhen": "All contexts — 56px height minimum" }
+      { "name": "Default", "useWhen": "All contexts — 56px height minimum" },
+      { "name": "Square", "useWhen": "Swatch and Image types — compact square layout" }
     ],
     "context": {
       "density": ["default"],

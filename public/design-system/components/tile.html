@@ -17,16 +17,19 @@
   },
   "composition": {
     "requires": ["label"],
-    "allows": ["icon", "avatar", "description", "chevron", "radio-indicator", "checkbox-indicator"],
+    "allows": ["icon", "avatar", "description", "chevron", "radio-indicator", "checkbox-indicator", "swatch", "image-thumb"],
     "forbids": ["button", "nested-tile"]
   },
   "variants": [
     { "name": "Navigation", "useWhen": "Navigating to a sub-screen, shows chevron", "pairWith": [] },
     { "name": "Radio", "useWhen": "Single-select from a list, shows radio indicator", "pairWith": [] },
-    { "name": "Checkbox", "useWhen": "Multi-select from a list, shows checkbox indicator", "pairWith": [] }
+    { "name": "Checkbox", "useWhen": "Multi-select from a list, shows checkbox indicator", "pairWith": [] },
+    { "name": "Swatch", "useWhen": "Color selection from a palette, compact square with color fill", "pairWith": [] },
+    { "name": "Image", "useWhen": "Image or photo selection from a grid, square with image fill", "pairWith": [] }
   ],
   "sizes": [
-    { "name": "Default", "useWhen": "All contexts — 56px height minimum" }
+    { "name": "Default", "useWhen": "All contexts — 56px height minimum" },
+    { "name": "Square", "useWhen": "Swatch and Image types — compact square layout" }
   ],
   "context": {
     "density": ["default"],
@@ -165,8 +168,37 @@
   stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round;
 }
 
+/* ── Swatch variant (compact color tile) ── */
+.tile.tile-swatch {
+  width:auto;
+  padding:var(--spacing-md, 8px);
+  gap:0;
+  overflow:clip;
+}
+.tile-swatch-color {
+  width:40px; height:40px;
+  flex-shrink:0;
+  border-radius:var(--radius-md, 8px);
+}
+
+/* ── Image variant (square image tile) ── */
+.tile.tile-image {
+  width:112px; height:112px;
+  padding:var(--spacing-md, 8px);
+  gap:0;
+  overflow:clip;
+}
+.tile-image-thumb {
+  flex:1; min-width:0; min-height:0;
+  border-radius:var(--radius-md, 8px);
+  object-fit:cover;
+  width:100%; height:100%;
+}
+
 /* ── State grid: let list items fill cells ── */
 .state-cell .tile { width:100%; }
+.state-cell .tile.tile-swatch { width:auto; }
+.state-cell .tile.tile-image { width:112px; }
 
 @media(max-width:768px) {
   .tile { width:100%; }
@@ -198,7 +230,6 @@
           <div class="tile-icon">&#128218;</div>
           <div class="tile-content">
             <div class="tile-label">Reading corner</div>
-            <div class="tile-desc">Stories and adventures</div>
           </div>
           <div class="tile-chevron">
             <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
@@ -206,15 +237,14 @@
         </div>
       </div>
       <div class="demo-item">
-        <span class="demo-label">Radio</span>
+        <span class="demo-label">Navigation (avatar)</span>
         <div class="tile">
-          <div class="tile-icon">&#127793;</div>
+          <div class="avatar avatar-md avatar-bg-green" id="overview-avatar-nav"><canvas class="rive-user" width="110" height="100"></canvas></div>
           <div class="tile-content">
-            <div class="tile-label">Plant a garden</div>
-            <div class="tile-desc">Grow your own vegetables</div>
+            <div class="tile-label">Shane</div>
           </div>
-          <div class="tile-radio">
-            <div class="tile-radio-dot"></div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
           </div>
         </div>
       </div>
@@ -224,11 +254,58 @@
           <div class="tile-icon">&#127912;</div>
           <div class="tile-content">
             <div class="tile-label">Draw and paint</div>
-            <div class="tile-desc">Express yourself with colors</div>
           </div>
           <div class="tile-checkbox">
             <svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
           </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Checkbox (avatar)</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-orange" id="overview-avatar-check"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Leo</div>
+          </div>
+          <div class="tile-checkbox">
+            <svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Radio</span>
+        <div class="tile">
+          <div class="tile-icon">&#127793;</div>
+          <div class="tile-content">
+            <div class="tile-label">Plant a garden</div>
+          </div>
+          <div class="tile-radio">
+            <div class="tile-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Radio (avatar)</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-sky" id="overview-avatar-radio"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Mia</div>
+          </div>
+          <div class="tile-radio">
+            <div class="tile-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Swatch</span>
+        <div class="tile tile-swatch">
+          <div class="tile-swatch-color" style="background:#ffc7ba"></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Image</span>
+        <div class="tile tile-image">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example image">
         </div>
       </div>
     </div>
@@ -279,6 +356,8 @@
         <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Navigation</strong> when making a choice navigates to another screen or step in a flow.</li>
         <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Radio</strong> to select a single item from a mutually exclusive list.</li>
         <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Checkbox</strong> to select multiple items from a list.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Swatch</strong> to select a color from a palette &mdash; compact square tiles with a colored fill.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Image</strong> to select from photos or illustrations &mdash; 112px square tiles with an image fill.</li>
         <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use section headers to separate lists with different types on the same page.</li>
         <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix different types in the same list.</li>
         <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use Navigation when the user needs to choose options within a form &mdash; use Radio or Checkbox instead.</li>
@@ -303,7 +382,7 @@
   <!-- ════ Anatomy ════ -->
   <div class="doc-section">
     <h2>Anatomy</h2>
-    <p>A tile is composed of up to four parts. Only the <strong>label</strong> is required; the leading element, description, and trailing indicator are all optional.</p>
+    <p>Navigation, Radio, and Checkbox tiles are composed of up to four parts. Only the <strong>label</strong> is required; the leading element, description, and trailing indicator are all optional. Swatch and Image tiles are compact square variants that contain only a color fill or image &mdash; no label or trailing indicator.</p>
 
     <div class="demo">
       <div class="demo-item">
@@ -435,6 +514,28 @@
           </div>
         </div>
       </div>
+
+      <div class="state-cell">
+        <div class="tile tile-swatch">
+          <div class="tile-swatch-color" style="background:#ffc7ba"></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-swatch checked">
+          <div class="tile-swatch-color" style="background:#ffc7ba"></div>
+        </div>
+      </div>
+
+      <div class="state-cell">
+        <div class="tile tile-image">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example image">
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-image checked">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example image">
+        </div>
+      </div>
     </div>
   </div>
 
@@ -456,7 +557,7 @@
   <!-- ════ Token reference ════ -->
   <div class="doc-section">
     <h2>Token Reference</h2>
-    <p>All tile styles map to Sprout design tokens. The container is identical across all three types &mdash; only the trailing indicator differs.</p>
+    <p>All tile styles map to Sprout design tokens. Navigation, Radio, and Checkbox share the same container &mdash; only the trailing indicator differs. Swatch and Image use a compact square container.</p>
 
     <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Container</h3>
     <table class="token-table">
@@ -483,6 +584,18 @@
         <tr><td>Checkbox</td><td>24px</td><td><code>--radius-sm</code> (6px)</td><td>Border <code>--border-secondary</code></td><td>Filled <code>--brand-500</code>, white check icon</td></tr>
         <tr><td>Radio</td><td>24px</td><td><code>--radius-full</code> (9999px)</td><td>Border <code>--border-secondary</code></td><td>Filled <code>--brand-500</code>, 8px white dot</td></tr>
         <tr><td>Navigation</td><td>24px</td><td>&mdash;</td><td>Chevron in <code>--text-tertiary</code></td><td>Chevron in <code>--brand-500</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Compact variants (Swatch &amp; Image)</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Swatch</th><th>Image</th></tr></thead>
+      <tbody>
+        <tr><td>Size</td><td>Auto (content-sized)</td><td>112px &times; 112px</td></tr>
+        <tr><td>Padding</td><td colspan="2"><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Gap</td><td colspan="2">0</td></tr>
+        <tr><td>Overflow</td><td colspan="2">Clip</td></tr>
+        <tr><td>Inner element</td><td>40px square, <code>--radius-md</code> (8px), arbitrary color</td><td>Fills space, <code>--radius-md</code> (8px), <code>object-fit: cover</code></td></tr>
       </tbody>
     </table>
   </div>
