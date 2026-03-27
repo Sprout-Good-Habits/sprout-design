@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Design System — Suggested Tiles (Single-select)</title>
+<title>Sprout Design System — Response Tiles Single</title>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/components/tile.css">
@@ -176,7 +176,7 @@
 <div class="page-content">
   <div class="breadcrumb" id="breadcrumb"></div>
   <div class="page-header">
-    <div class="sec-title">Suggested Tiles (Single-select)</div>
+    <div class="sec-title">Response Tiles Single</div>
     <div class="sec-desc">Tiles presented inside the chat thread as tappable suggested responses. These are suggestions, not requirements — the kid can pick a tile or type their own response instead. Uses the DS Tile component (None variant) to keep a consistent visual language.</div>
     <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
       <ul>
@@ -380,7 +380,7 @@
     <table class="token-table">
       <thead><tr><th>Element</th><th>Component</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td>Container</td><td><code>.tile-group</code></td><td>Vertical stack with 8px gap, max-width 330px</td></tr>
+        <tr><td>Container</td><td><code>.tile-group</code></td><td>Vertical stack with 8px gap, full width</td></tr>
         <tr><td>Each option</td><td>Tile (None variant)</td><td>Leading emoji + label + optional description</td></tr>
         <tr><td>Leading</td><td><code>.tile-leading-icon</code></td><td>24px emoji (chat-size) vs 32px default</td></tr>
         <tr><td>Selection state</td><td><code>.tile.checked</code></td><td>Blue bg + brand border from DS</td></tr>
@@ -397,6 +397,16 @@
         <li>Container has <code>role="listbox"</code>, each tile has <code>role="option"</code> with <code>aria-selected</code>.</li>
         <li>Tile touch target is minimum 56x44px (DS Tile default).</li>
         <li>Reduced-motion users see tiles without slide-in animation.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="doc-section">
+    <h2>Prototypes</h2>
+    <div class="prose">
+      <ul>
+        <li><a href="/product-explorer/task/chat-tier-3-tiles.html">Chat Tier 3 + Tiles</a> &mdash; Text-first chat for older kids</li>
+        <li><a href="/product-explorer/task/chat-tier-2-tiles.html">Chat Tier 2 + Tiles</a> &mdash; Audio-first chat for younger kids (large mic, Sprout visible, compressed thread)</li>
       </ul>
     </div>
   </div>

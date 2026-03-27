@@ -34,6 +34,87 @@
   transform:translateY(2px);
 }
 
+/* ── Validation states ── */
+.tile.success {
+  background:var(--green-100, #dcfae6);
+  border-color:var(--green-300, #75e0a7);
+  box-shadow:0 4px 0 0 var(--green-300, #75e0a7);
+  pointer-events:none;
+}
+.tile.error {
+  background:var(--red-100, #fee4e2);
+  border-color:var(--red-300, #fda29b);
+  box-shadow:0 4px 0 0 var(--red-300, #fda29b);
+  pointer-events:none;
+}
+.tile.warning {
+  animation:tileWarningFlash 2s ease forwards;
+}
+@keyframes tileWarningFlash {
+  0% {
+    background:var(--bg-primary, #ffffff);
+    border-color:var(--border-secondary, #e9eaeb);
+    box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  }
+  15% {
+    background:var(--yellow-100, #fef7c3);
+    border-color:var(--yellow-300, #fde272);
+    box-shadow:0 4px 0 0 var(--yellow-300, #fde272);
+  }
+  70% {
+    background:var(--yellow-100, #fef7c3);
+    border-color:var(--yellow-300, #fde272);
+    box-shadow:0 4px 0 0 var(--yellow-300, #fde272);
+  }
+  100% {
+    background:var(--bg-primary, #ffffff);
+    border-color:var(--border-secondary, #e9eaeb);
+    box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  }
+}
+/* Static warning (for docs/demos without animation) */
+.tile.warning-static {
+  background:var(--yellow-100, #fef7c3);
+  border-color:var(--yellow-300, #fde272);
+  box-shadow:0 4px 0 0 var(--yellow-300, #fde272);
+  pointer-events:none;
+}
+
+/* ── Disabled state ── */
+.tile.disabled {
+  background:var(--bg-primary, #ffffff);
+  border-color:var(--border-secondary, #e9eaeb);
+  box-shadow:none;
+  pointer-events:none;
+  cursor:default;
+}
+.tile.disabled .tile-label {
+  color:var(--gray-400, #a4a7ae);
+}
+.tile.disabled .tile-desc {
+  color:var(--gray-300, #d5d7da);
+}
+.tile.disabled .tile-leading,
+.tile.disabled .avatar {
+  filter:grayscale(1);
+  mix-blend-mode:luminosity;
+}
+
+/* Validation: indicators stay filled (success + error are final states) */
+.success .tile-checkbox,
+.success .tile-radio,
+.error .tile-checkbox,
+.error .tile-radio {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-500, #0ba5ec);
+}
+.success .tile-check-icon,
+.success .tile-radio-dot,
+.error .tile-check-icon,
+.error .tile-radio-dot {
+  display:block;
+}
+
 /* ── Leading element (.Leading subcomponent) ── */
 .tile-leading {
   width:40px; height:40px;
@@ -46,6 +127,12 @@
   display:flex; align-items:center; justify-content:center;
   font-family:'TossFace', sans-serif;
   font-size:32px; line-height:1;
+}
+
+/* Leading: Group (multiple leading elements side by side) */
+.tile-leading-group {
+  display:flex; gap:var(--spacing-xs, 4px);
+  align-items:center; flex-shrink:0;
 }
 
 /* Leading: Swatch (color fill) */
@@ -186,4 +273,35 @@
   border-radius:var(--radius-md, 8px);
   object-fit:cover;
   width:100%; height:100%;
+}
+
+/* ── Sortable variant (drag to reorder) ── */
+.tile.tile-sortable {
+  gap:var(--spacing-md, 8px);
+  padding:var(--spacing-xl, 16px);
+  cursor:grab;
+  touch-action:none;
+}
+.tile.tile-sortable:active {
+  cursor:grabbing;
+}
+
+/* Drag handle (dots-grid icon) */
+.tile-drag-handle {
+  width:24px; height:24px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--gray-400, #a4a7ae);
+}
+.tile-drag-handle svg {
+  width:16px; height:16px;
+}
+
+/* Dragging state */
+.tile.tile-sortable.dragging {
+  background:var(--bg-brand-secondary, #e0f2fe);
+  border-color:var(--brand-300, #7cd4fd);
+  box-shadow:0 8px 16px -4px rgba(10,13,18,0.12), 0 4px 6px -2px rgba(10,13,18,0.05);
+  z-index:10;
+  transform:scale(1.02);
+  cursor:grabbing;
 }

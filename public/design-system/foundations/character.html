@@ -72,8 +72,8 @@
   overflow: hidden;
 }
 .device-screen {
-  width: 302px;
-  height: 656px;
+  width: 402px;
+  height: 874px;
   position: relative;
   overflow: hidden;
 }
@@ -92,25 +92,25 @@
   width: 100%;
 }
 .screen-sky .grass-edge {
-  height: 18px;
+  height: 24px;
   background: var(--bg-grass, #86cb3c);
-  border-radius: 18px 18px 0 0;
+  border-radius: 24px 24px 0 0;
 }
 .screen-sky .grass-fill {
   background: var(--bg-grass, #86cb3c);
   width: 100%;
 }
-.bg-main .grass-fill { height: 32px; }
-.bg-alt .grass-fill { height: 375px; }
+.bg-main .grass-fill { height: 89px; }
+.bg-alt .grass-fill { height: 500px; }
 
 /* ── Home indicator ── */
 .home-indicator {
   position: absolute;
-  bottom: 6px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 108px;
-  height: 4px;
+  width: 134px;
+  height: 5px;
   background: black;
   border-radius: 100px;
   z-index: 10;
@@ -127,8 +127,8 @@
 .rive-canvas-alt {
   position: absolute;
   left: 50%;
-  width: 302px;
-  height: 302px;
+  width: 402px;
+  height: 402px;
   z-index: 1;
   pointer-events: none;
   transform: translateX(-50%) scale(1.25);
@@ -136,11 +136,11 @@
 }
 /* Main: shadow overlaps grass edge, feet on grass */
 .rive-canvas-main {
-  bottom: -46px;
+  bottom: -60px;
 }
 /* Alt: feet on the tall grass edge */
 .rive-canvas-alt {
-  bottom: 297px;
+  bottom: 395px;
 }
 
 /* ── Standalone Rive preview ── */
@@ -236,7 +236,7 @@
                 <div class="device-mockup">
                   <div class="device-screen bg-main">
                     <div class="screen-sky">
-                      <canvas id="rive-main" class="rive-canvas-main" width="302" height="302"></canvas>
+                      <canvas id="rive-main" class="rive-canvas-main" width="804" height="804"></canvas>
                       <div class="grass-container">
                         <div class="grass-edge"></div>
                         <div class="grass-fill"></div>
@@ -259,7 +259,7 @@
                 <div class="device-mockup">
                   <div class="device-screen bg-alt">
                     <div class="screen-sky">
-                      <canvas id="rive-alt" class="rive-canvas-alt" width="302" height="302"></canvas>
+                      <canvas id="rive-alt" class="rive-canvas-alt" width="804" height="804"></canvas>
                       <div class="grass-container">
                         <div class="grass-edge"></div>
                         <div class="grass-fill"></div>
@@ -271,6 +271,62 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      </div>
+
+      <!-- Chat placement -->
+      <div class="doc-section">
+        <h2>Chat placement (Tier 2)</h2>
+        <p>In the Tier 2 chat, Sprout is pushed <strong>52px lower</strong> than the default Main placement to maximize chat thread space while staying visible. The character peeks from behind the grass area.</p>
+
+        <div class="demo" style="padding:var(--spacing-3xl, 24px);">
+          <div class="device-wrapper" style="display:inline-block;">
+            <div class="device-inner-shadow">
+              <div class="device-mockup">
+                <div class="device-screen" style="width:402px;height:874px;">
+                  <div class="screen-sky" style="width:100%;height:100%;position:relative;overflow:hidden;">
+                    <!-- Chat thread area indicator -->
+                    <div style="position:absolute;top:118px;left:0;right:0;bottom:330px;border-bottom:2px dashed var(--brand-300, #7cd4fd);z-index:3;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;">
+                      <span style="font-size:11px;font-weight:600;color:var(--brand-500, #0ba5ec);background:var(--bg-brand-secondary, #e0f2fe);padding:2px 8px;border-radius:4px;">chat thread ends here — bottom: 330px</span>
+                    </div>
+                    <!-- Sprout character -->
+                    <canvas id="rive-chat" style="position:absolute;bottom:-196px;left:50%;transform:translateX(-50%);width:690px;height:690px;z-index:2;pointer-events:none;" width="1380" height="1380"></canvas>
+                    <!-- Grass -->
+                    <div style="position:absolute;bottom:0;left:0;right:0;">
+                      <div style="height:24px;background:var(--bg-grass, #86cb3c);border-radius:24px 24px 0 0;"></div>
+                      <div style="height:89px;background:var(--bg-grass, #86cb3c);"></div>
+                    </div>
+                    <!-- Home indicator -->
+                    <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:#181d27;z-index:20;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <table class="usage-table">
+          <thead><tr><th>Property</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Screen size</td><td>402 &times; 874px</td></tr>
+            <tr><td>Rive canvas</td><td>690 &times; 690px, centered horizontally</td></tr>
+            <tr><td>Canvas bottom</td><td><code>-196px</code> (was -144px, shifted 52px down)</td></tr>
+            <tr><td>Chat thread bottom</td><td><code>330px</code> (was 382px, gained 52px)</td></tr>
+            <tr><td>Thread fade bottom</td><td><code>330px</code> (matches thread)</td></tr>
+            <tr><td>Grass edge</td><td>24px, rounded top</td></tr>
+            <tr><td>Grass fill</td><td>89px</td></tr>
+            <tr><td>Mic bar bottom</td><td><code>45px</code></td></tr>
+          </tbody>
+        </table>
+
+        <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+          <ul>
+            <li><span style="color:var(--green-500)">&#10003;</span> Use this placement for all Tier 2 chat screens (standard and tiles).</li>
+            <li><span style="color:var(--green-500)">&#10003;</span> Sprout should always remain visible &mdash; the character is never fully hidden by the chat thread.</li>
+            <li><span style="color:var(--red-500)">&#10007;</span> Don&rsquo;t move Sprout further down &mdash; 330px is the minimum chat thread bottom to keep the character recognizable.</li>
+          </ul>
         </div>
       </div>
 
@@ -328,12 +384,19 @@
           <div class="variant-desc">Position the canvas so Sprout stands on top of the tall grass. The canvas bottom should sit at approximately <strong>45% of the screen height</strong> from the bottom, placing Sprout in the upper portion of the grass area with feet on the grass edge.</div>
         </div>
 
+        <div class="variant-section">
+          <div class="variant-title">Chat (Tier 2) &mdash; vertical position</div>
+          <div class="variant-desc">Sprout is pushed <strong>52px lower</strong> than the default Main placement to maximize the chat thread area. The Rive canvas uses <code>bottom: -196px</code> (vs <code>-144px</code> default) at 690&times;690px. The chat thread ends at <code>bottom: 330px</code> (vs 382px originally). This is the standard placement for all Tier 2 chat screens.</div>
+        </div>
+
         <table class="usage-table">
-          <thead><tr><th>Property</th><th>Main</th><th>Alt</th></tr></thead>
+          <thead><tr><th>Property</th><th>Main</th><th>Alt</th><th>Chat (Tier 2)</th></tr></thead>
           <tbody>
-            <tr><td>Grass edge height</td><td colspan="2">~2.7% of screen height, rounded top with <code>--radius-4xl</code></td></tr>
-            <tr><td>Grass fill height</td><td>~5% of screen height</td><td>~57% of screen height</td></tr>
-            <tr><td>Canvas bottom offset</td><td>Grass fill height &minus; ~7% of screen height (feet overlap grass edge)</td><td>Grass top &minus; ~7% of screen height</td></tr>
+            <tr><td>Grass edge height</td><td colspan="3">~2.7% of screen height, rounded top with <code>--radius-4xl</code></td></tr>
+            <tr><td>Grass fill height</td><td>~5% of screen height</td><td>~57% of screen height</td><td>~10% of screen height (89px)</td></tr>
+            <tr><td>Canvas size</td><td>Screen width &times; screen width</td><td>Screen width &times; screen width</td><td>690 &times; 690px</td></tr>
+            <tr><td>Canvas bottom offset</td><td><code>-46px</code> (302px canvas)</td><td><code>297px</code></td><td><code>-196px</code> (690px canvas)</td></tr>
+            <tr><td>Chat thread bottom</td><td>&mdash;</td><td>&mdash;</td><td><code>330px</code></td></tr>
           </tbody>
         </table>
       </div>
@@ -412,6 +475,7 @@ initRive('rive-standalone', { fit: rive.Fit.Contain });
 // In-screen previews — Contain + BottomCenter so feet anchor to grass
 initRive('rive-main', { fit: rive.Fit.Contain, alignment: rive.Alignment.BottomCenter });
 initRive('rive-alt', { fit: rive.Fit.Contain, alignment: rive.Alignment.BottomCenter });
+initRive('rive-chat', { fit: rive.Fit.Contain, alignment: rive.Alignment.BottomCenter });
 </script>
 </body>
 </html>
