@@ -21,7 +21,7 @@
   -webkit-tap-highlight-color:transparent;
 }
 .tile:hover {
-  border-color:var(--gray-300, #d5d7da);
+  background:var(--bg-secondary, #fafafa);
 }
 .tile.checked,
 .tile.selected {

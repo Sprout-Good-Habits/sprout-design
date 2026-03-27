@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Suggested Tiles (Multi-select)</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/tile.css">
+<link rel="stylesheet" href="/components/buttons.css">
+<link rel="stylesheet" href="/components/tabs.css">
+<style>
+/* ── Device frame ── */
+.device-wrapper{background:var(--bg-primary);border:1px solid rgba(0,0,0,0.08);border-radius:32px;padding:4px;box-shadow:0 12px 16px -4px rgba(10,13,18,0.08),0 4px 6px -2px rgba(10,13,18,0.03),0 2px 2px -1px rgba(10,13,18,0.04);}
+.device-inner-shadow{background:var(--bg-primary);border-radius:28px;padding:4px;overflow:hidden;position:relative;}
+.device-inner-shadow::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 6px 2px rgba(10,13,18,0.08),inset 0 0 4px 2px rgba(10,13,18,0.03);z-index:6;}
+.device-mockup{background:var(--bg-tertiary);border:2px solid var(--border-secondary);border-radius:24px;clip-path:inset(0 round 24px);position:relative;}
+.device-screen{width:402px;height:874px;position:relative;overflow:hidden;background:var(--bg-sky);user-select:none;}
+.viewer{display:flex;justify-content:center;margin-top:var(--spacing-xl);}
+.dev-status-bar{position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;z-index:10;pointer-events:none;}
+.dev-status-bar-time{font-size:17px;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em;}
+.dev-status-bar-icons{display:flex;align-items:center;gap:6px;}
+.dev-toolbar{position:absolute;top:62px;left:0;right:0;height:56px;display:flex;align-items:flex-start;justify-content:space-between;padding:0 16px 8px;z-index:10;background:var(--bg-sky);box-shadow:0 3px 0 0 var(--gray-200);}
+.dev-toolbar-btn{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--bg-primary);border:2px solid var(--border-secondary);border-radius:9999px;box-shadow:0 3px 0 0 var(--gray-200);}
+.dev-toolbar-btn svg{width:24px;height:24px;color:var(--text-primary);}
+.dev-toolbar-title{position:absolute;left:50%;top:13px;transform:translateX(-50%);font-size:18px;font-weight:600;color:var(--text-primary);}
+.dev-thread{position:absolute;top:118px;left:0;right:0;bottom:113px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;z-index:5;scrollbar-width:none;}
+.dev-thread::-webkit-scrollbar{display:none;}
+.dev-msg-in,.dev-msg-out{border-radius:24px;padding:12px 16px;max-width:256px;font-size:14px;line-height:20px;color:var(--text-primary);}
+.dev-msg-in{background:var(--bg-primary);align-self:flex-start;}
+.dev-msg-out{background:var(--brand-200);align-self:flex-end;}
+.dev-tile-group{display:flex;flex-direction:column;gap:8px;width:100%;}
+.dev-tile-group .tile{padding:12px 16px;cursor:pointer;}
+.dev-tile-group .tile-leading{width:32px;height:32px;}
+.dev-tile-group .tile-leading-icon{font-size:24px;}
+@keyframes devTileIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.dev-tile-group .tile{animation:devTileIn 0.3s ease both;}
+.dev-tile-group .tile:nth-child(1){animation-delay:0.05s;}
+.dev-tile-group .tile:nth-child(2){animation-delay:0.1s;}
+.dev-tile-group .tile:nth-child(3){animation-delay:0.15s;}
+.dev-tile-group .tile:nth-child(4){animation-delay:0.2s;}
+.dev-grass-edge{position:absolute;bottom:89px;left:0;right:0;height:24px;border-radius:24px 24px 0 0;background:var(--bg-grass, #86cb3c);z-index:1;}
+.dev-grass-fill{position:absolute;bottom:0;left:0;right:0;height:89px;background:var(--bg-grass, #86cb3c);z-index:1;}
+.dev-composer{position:absolute;bottom:34px;left:0;right:0;z-index:10;display:flex;align-items:flex-end;gap:12px;padding:0 16px;}
+.dev-composer.locked{pointer-events:none;opacity:0.4;}
+.dev-composer-plus{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--bg-primary);border:2px solid var(--border-secondary);border-radius:9999px;box-shadow:0 3px 0 0 var(--gray-200);}
+.dev-composer-plus svg{width:24px;height:24px;color:var(--text-primary);}
+.dev-composer-input{flex:1;height:48px;border-radius:24px;background:var(--bg-primary);border:2px solid var(--border-secondary);box-shadow:0 3px 0 0 var(--gray-200);display:flex;align-items:center;padding:0 16px;font-size:16px;color:var(--text-placeholder-subtle, #d5d7da);}
+.dev-home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:var(--text-primary);z-index:20;}
+/* ── Demo chat frame ── */
+.demo-chat {
+  background:var(--bg-sky, #e0f2fe);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-4xl, 24px);
+  padding:var(--spacing-xl, 16px);
+  max-width:402px;
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-md, 8px);
+}
+.demo-msg {
+  border-radius:var(--radius-4xl, 24px);
+  padding:var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  max-width:280px;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  color:var(--text-primary, #181d27);
+}
+.demo-msg-in { background:var(--bg-primary, #ffffff); align-self:flex-start; }
+.demo-msg-out { background:var(--brand-200, #b9e6fe); align-self:flex-end; }
+.demo-tile-group {
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-md, 8px);
+  width:100%;
+}
+.demo-tile-group .tile {
+  padding:var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  cursor:pointer;
+}
+.demo-tile-group .tile-leading { width:32px; height:32px; }
+.demo-tile-group .tile-leading-icon { font-size:24px; }
+
+/* ── Confirm button ── */
+.tile-group-confirm {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--spacing-md, 8px);
+  width:100%;
+  height:50px;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  border-radius:var(--radius-2xl, 16px);
+  cursor:pointer;
+  padding:var(--spacing-lg, 12px);
+  transition:background 0.15s, box-shadow 0.15s, transform 0.15s;
+  background:var(--fg-brand-primary, #0ba5ec);
+  color:#fff;
+  border:none;
+  border-bottom:2px solid var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+}
+.tile-group-confirm:active {
+  box-shadow:none;
+  transform:translateY(4px);
+}
+.tile-group-confirm.state-disabled {
+  background:var(--gray-300, #d5d7da);
+  color:var(--text-disabled, #717680);
+  border-bottom:2px solid var(--gray-400, #a4a7ae);
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);
+  cursor:default;
+  pointer-events:none;
+}
+.tile-group-count {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,0.25);
+  border-radius:var(--radius-full, 9999px);
+  min-width:22px;
+  height:22px;
+  padding:0 6px;
+  font-size:13px;
+  font-weight:var(--font-weight-bold, 700);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Suggested Tiles (Multi-select)</div>
+    <div class="sec-desc">Tiles with checkboxes that let the kid pick multiple options before confirming. A primary button at the bottom activates once at least one tile is selected. Uses the DS Tile component (Checkbox variant).</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when the question allows multiple answers (e.g. "What did you do today?").</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when the kid should review their choices before committing.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for single-choice questions — use Single-select tiles instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use when the number of options exceeds 5 — consider a different pattern.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Interactive Demo ════ -->
+  <div class="doc-section">
+    <h2>Example</h2>
+    <p>Tap tiles to toggle selection. The confirm button activates once at least one tile is checked. Tap "Done" to confirm.</p>
+    <div class="demo" style="justify-content:center;">
+      <div class="demo-chat" id="demoMulti">
+        <div class="demo-msg demo-msg-in">What did you get up to today? Pick all that apply!</div>
+        <div class="demo-tile-group" id="demoTilesMulti">
+          <div class="tile" data-label="School">
+            <div class="tile-leading tile-leading-icon">📚</div>
+            <div class="tile-content"><div class="tile-label">School</div><div class="tile-desc">Classes, homework, projects</div></div>
+            <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+          </div>
+          <div class="tile" data-label="Sports">
+            <div class="tile-leading tile-leading-icon">⚽</div>
+            <div class="tile-content"><div class="tile-label">Sports</div><div class="tile-desc">Practice, games, exercise</div></div>
+            <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+          </div>
+          <div class="tile" data-label="Art & Drawing">
+            <div class="tile-leading tile-leading-icon">🎨</div>
+            <div class="tile-content"><div class="tile-label">Art & Drawing</div></div>
+            <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+          </div>
+          <div class="tile" data-label="Music">
+            <div class="tile-leading tile-leading-icon">🎵</div>
+            <div class="tile-content"><div class="tile-label">Music</div></div>
+            <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+          </div>
+          <button class="tile-group-confirm state-disabled" id="demoConfirm">Done <span class="tile-group-count" id="demoCount">0</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Device Preview ════ -->
+  <div class="doc-section">
+    <h2>Device preview</h2>
+    <p>Multi-select tiles in context. The composer is hidden and replaced by a sticky "Done" button at the bottom. Tap tiles to toggle, then tap "Done" to confirm.</p>
+    <div class="viewer">
+      <div class="device-wrapper">
+        <div class="device-inner-shadow">
+          <div class="device-mockup">
+            <div class="device-screen">
+              <div class="dev-status-bar">
+                <span class="dev-status-bar-time">9:41</span>
+                <span class="dev-status-bar-icons">
+                  <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+                  <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+                </span>
+              </div>
+              <div class="dev-toolbar">
+                <div class="dev-toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg></div>
+                <span class="dev-toolbar-title">Sprout</span>
+                <div style="width:48px"></div>
+              </div>
+              <div class="dev-thread" id="devThreadMulti">
+                <div class="dev-msg-in">What did you get up to today? Pick all that apply!</div>
+                <div class="dev-tile-group" id="devTilesMulti">
+                  <div class="tile" data-label="School"><div class="tile-leading tile-leading-icon">📚</div><div class="tile-content"><div class="tile-label">School</div><div class="tile-desc">Classes, homework, projects</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+                  <div class="tile" data-label="Sports"><div class="tile-leading tile-leading-icon">⚽</div><div class="tile-content"><div class="tile-label">Sports</div><div class="tile-desc">Practice, games, exercise</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+                  <div class="tile" data-label="Art & Drawing"><div class="tile-leading tile-leading-icon">🎨</div><div class="tile-content"><div class="tile-label">Art & Drawing</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+                  <div class="tile" data-label="Music"><div class="tile-leading tile-leading-icon">🎵</div><div class="tile-content"><div class="tile-label">Music</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+                  <button class="tile-group-confirm state-disabled" id="devConfirmMulti">Done <span class="tile-group-count" id="devCountMulti">0</span></button>
+                </div>
+              </div>
+              <div class="dev-grass-edge"></div>
+              <div class="dev-grass-fill"></div>
+              <!-- Composer hidden during multi-select; confirm bar takes its place -->
+              <div class="dev-composer" id="devComposerMulti" style="display:none;">
+                <div class="dev-composer-plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+                <div class="dev-composer-input">Talk to Sprout...</div>
+              </div>
+              <div class="dev-confirm-bar" id="devConfirmBar" style="position:absolute;bottom:34px;left:0;right:0;z-index:10;padding:0 16px;">
+                <button class="tile-group-confirm state-disabled" id="devConfirmMulti" style="width:100%;">Done <span class="tile-group-count" id="devCountMulti">0</span></button>
+              </div>
+              <div class="dev-home-indicator"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Behavior ════ -->
+  <div class="doc-section">
+    <h2>Behavior</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Toggle:</strong> Each tile toggles independently. Tap to check, tap again to uncheck.</li>
+        <li><strong>Confirm button:</strong> Starts disabled (gray). Activates as primary blue when ≥1 tile is checked. Shows a count badge.</li>
+        <li><strong>Submit:</strong> Tapping the confirm button dismisses the group. All selected labels combine into one outgoing message.</li>
+        <li><strong>Message format:</strong> Selections are joined naturally — "I did school, sports and art today!"</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+
+    <h3>Tile states</h3>
+    <div class="state-grid" style="grid-template-columns:repeat(2, 1fr); max-width:540px;">
+      <div class="state-cell">
+        <span class="state-cell-label">Unchecked</span>
+        <div class="tile" style="width:100%;">
+          <div class="tile-leading tile-leading-icon">📚</div>
+          <div class="tile-content"><div class="tile-label">School</div></div>
+          <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Checked</span>
+        <div class="tile checked" style="width:100%;">
+          <div class="tile-leading tile-leading-icon">📚</div>
+          <div class="tile-content"><div class="tile-label">School</div></div>
+          <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Confirm button states</h3>
+    <div class="state-grid" style="grid-template-columns:repeat(2, 1fr); max-width:540px;">
+      <div class="state-cell">
+        <span class="state-cell-label">Disabled (0 selected)</span>
+        <button class="tile-group-confirm state-disabled" style="width:100%;">Done <span class="tile-group-count">0</span></button>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Active (2 selected)</span>
+        <button class="tile-group-confirm" style="width:100%;">Done <span class="tile-group-count">2</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Scenarios ════ -->
+  <div class="doc-section">
+    <h2>Scenarios</h2>
+    <div class="demo" style="gap:var(--spacing-3xl, 24px); flex-wrap:wrap;">
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Activity recap</span>
+        <div class="demo-chat" style="width:320px;">
+          <div class="demo-msg demo-msg-in">What did you get up to today? Pick all!</div>
+          <div class="demo-tile-group">
+            <div class="tile checked"><div class="tile-leading tile-leading-icon">📚</div><div class="tile-content"><div class="tile-label">School</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+            <div class="tile"><div class="tile-leading tile-leading-icon">⚽</div><div class="tile-content"><div class="tile-label">Sports</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+            <div class="tile checked"><div class="tile-leading tile-leading-icon">🎨</div><div class="tile-content"><div class="tile-label">Art & Drawing</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+            <div class="tile"><div class="tile-leading tile-leading-icon">🎵</div><div class="tile-content"><div class="tile-label">Music</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+            <button class="tile-group-confirm" style="width:100%;">Done <span class="tile-group-count">2</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Interest picker</span>
+        <div class="demo-chat" style="width:320px;">
+          <div class="demo-msg demo-msg-in">What do you like to do? Pick as many as you want!</div>
+          <div class="demo-tile-group">
+            <div class="tile checked"><div class="tile-leading tile-leading-icon">🎮</div><div class="tile-content"><div class="tile-label">Gaming</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+            <div class="tile checked"><div class="tile-leading tile-leading-icon">📖</div><div class="tile-content"><div class="tile-label">Reading</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+            <div class="tile checked"><div class="tile-leading tile-leading-icon">🍳</div><div class="tile-content"><div class="tile-label">Cooking</div></div><div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div></div>
+            <button class="tile-group-confirm" style="width:100%;">Done <span class="tile-group-count">3</span></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ Edge Cases ════ -->
+  <div class="doc-section">
+    <h2>Edge cases</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Composer replaced:</strong> Unlike single-select tiles (which are suggestions), multi-select hides the composer entirely. The confirm button takes its place at the bottom of the screen, always anchored. The kid must make their selections and tap the confirm button. Once confirmed, the composer returns.</li>
+        <li><strong>No skip:</strong> There is no way to dismiss tiles without selecting. If the question is optional, add a "Skip" tile as the last option.</li>
+        <li><strong>All deselected:</strong> If the kid unchecks all tiles after checking some, the confirm button returns to disabled state. The count badge shows 0.</li>
+        <li><strong>Max selections:</strong> No hard limit, but the message format degrades past 4 selections.</li>
+        <li><strong>6+ options — scrollable:</strong> When there are 6 or more tiles, the tile list renders inside a scrollable container (max-height 340px) with a fade hint at the bottom. The confirm button stays sticky below the scroll area, always visible. A thin scrollbar and bottom fade indicate more content.</li>
+        <li><strong>Scroll fade:</strong> The bottom fade disappears once the kid scrolls to the end, so the last tile is fully visible.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Composition ════ -->
+  <div class="doc-section">
+    <h2>Composition</h2>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Component</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Container</td><td><code>.tile-group</code></td><td>Vertical stack, 8px gap, <code>aria-multiselectable="true"</code></td></tr>
+        <tr><td>Each option</td><td>Tile (Checkbox variant)</td><td>Leading emoji + label + checkbox indicator</td></tr>
+        <tr><td>Checkbox</td><td><code>.tile-checkbox</code></td><td>24px square, fills blue with checkmark on select</td></tr>
+        <tr><td>Confirm button</td><td>Primary button (lg)</td><td>Disabled until ≥1 selected. Shows count badge.</td></tr>
+        <tr><td>Count badge</td><td><code>.tile-group-count</code></td><td>22px pill, white-on-brand text</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Sprout's question should explicitly say "pick all" or "as many as you want" so the kid knows they can select multiple.</li>
+        <li>Confirm button label should be short — "Done" is the default. Use "Next" or "Send" if it fits the context better.</li>
+        <li>Keep the total to 3–5 tiles. More than 5 options pushes the confirm button out of view.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>Container has <code>role="listbox"</code> and <code>aria-multiselectable="true"</code>.</li>
+        <li>Each tile has <code>role="option"</code> with <code>aria-checked</code> toggling on tap.</li>
+        <li>Confirm button has <code>aria-disabled</code> when no tiles are selected.</li>
+        <li>Count badge updates live so screen readers can track selection count.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+
+<script>
+// ── Interactive demo ──
+(function() {
+  var group = document.getElementById('demoTilesMulti');
+  var chat = document.getElementById('demoMulti');
+  var confirmBtn = document.getElementById('demoConfirm');
+  var countEl = document.getElementById('demoCount');
+  if (!group) return;
+
+  function updateCount() {
+    var n = group.querySelectorAll('.tile.checked').length;
+    countEl.textContent = n;
+    confirmBtn.classList.toggle('state-disabled', n === 0);
+  }
+
+  group.querySelectorAll('.tile').forEach(function(tile) {
+    tile.addEventListener('click', function() {
+      tile.classList.toggle('checked');
+      tile.setAttribute('aria-checked', tile.classList.contains('checked'));
+      updateCount();
+    });
+  });
+
+  confirmBtn.addEventListener('click', function() {
+    if (confirmBtn.classList.contains('state-disabled')) return;
+    var labels = [];
+    group.querySelectorAll('.tile.checked').forEach(function(t) {
+      labels.push(t.getAttribute('data-label'));
+    });
+
+    group.style.transition = 'opacity 0.25s';
+    group.style.opacity = '0';
+    setTimeout(function() {
+      group.style.display = 'none';
+      var msg = document.createElement('div');
+      msg.className = 'demo-msg demo-msg-out';
+      if (labels.length === 1) {
+        msg.textContent = 'I did ' + labels[0].toLowerCase() + ' today!';
+      } else {
+        msg.textContent = 'I did ' + labels.slice(0, -1).join(', ').toLowerCase() + ' and ' + labels[labels.length - 1].toLowerCase() + ' today!';
+      }
+      chat.appendChild(msg);
+
+      // Reset after 2.5s
+      setTimeout(function() {
+        msg.remove();
+        group.style.display = '';
+        group.style.opacity = '1';
+        group.querySelectorAll('.tile').forEach(function(t) {
+          t.classList.remove('checked');
+          t.setAttribute('aria-checked', 'false');
+        });
+        updateCount();
+      }, 2500);
+    }, 300);
+  });
+})();
+</script>
+
+<script>
+// ── Device preview interactivity (multi-select) ──
+(function() {
+  var devThread = document.getElementById('devThreadMulti');
+  var devTiles = document.getElementById('devTilesMulti');
+  var devComposer = document.getElementById('devComposerMulti');
+  var devConfirmBar = document.getElementById('devConfirmBar');
+  var devConfirm = document.getElementById('devConfirmMulti');
+  var devCount = document.getElementById('devCountMulti');
+  if (!devTiles) return;
+
+  function updateDevCount() {
+    var n = devTiles.querySelectorAll('.tile.checked').length;
+    devCount.textContent = n;
+    devConfirm.classList.toggle('state-disabled', n === 0);
+  }
+
+  devTiles.querySelectorAll('.tile').forEach(function(tile) {
+    tile.addEventListener('click', function() {
+      tile.classList.toggle('checked');
+      tile.setAttribute('aria-checked', tile.classList.contains('checked'));
+      updateDevCount();
+    });
+  });
+
+  devConfirm.addEventListener('click', function() {
+    if (devConfirm.classList.contains('state-disabled')) return;
+    var labels = [];
+    devTiles.querySelectorAll('.tile.checked').forEach(function(t) {
+      labels.push(t.getAttribute('data-label'));
+    });
+
+    devTiles.style.transition = 'opacity 0.25s';
+    devTiles.style.opacity = '0';
+    devConfirmBar.style.display = 'none';
+    setTimeout(function() {
+      devTiles.style.display = 'none';
+      devComposer.style.display = '';
+
+      var msg = document.createElement('div');
+      msg.className = 'dev-msg-out';
+      if (labels.length === 1) {
+        msg.textContent = 'I did ' + labels[0].toLowerCase() + ' today!';
+      } else {
+        msg.textContent = 'I did ' + labels.slice(0, -1).join(', ').toLowerCase() + ' and ' + labels[labels.length - 1].toLowerCase() + ' today!';
+      }
+      devThread.appendChild(msg);
+
+      setTimeout(function() {
+        var reply = document.createElement('div');
+        reply.className = 'dev-msg-in';
+        reply.textContent = "Wow, busy day! That sounds like so much fun!";
+        devThread.appendChild(reply);
+        devThread.scrollTop = devThread.scrollHeight;
+
+        // Reset after 3s
+        setTimeout(function() {
+          msg.remove();
+          reply.remove();
+          devTiles.style.display = '';
+          devTiles.style.opacity = '1';
+          devComposer.style.display = 'none';
+          devConfirmBar.style.display = '';
+          devTiles.querySelectorAll('.tile').forEach(function(t) {
+            t.classList.remove('checked');
+            t.setAttribute('aria-checked', 'false');
+          });
+          updateDevCount();
+        }, 3000);
+      }, 1200);
+    }, 300);
+  });
+})();
+</script>
+
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>
