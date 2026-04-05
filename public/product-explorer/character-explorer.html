@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer — Character 2.7 Explorer</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/tabs.css">
+<link rel="stylesheet" href="/design-system/components/tile.css">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<style>
+/* ── Device frame ── */
+.device-wrapper {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 32px;
+  padding: 4px;
+  box-shadow:
+    0 12px 16px -4px rgba(10,13,18,0.08),
+    0 4px 6px -2px rgba(10,13,18,0.03),
+    0 2px 2px -1px rgba(10,13,18,0.04);
+}
+.device-inner-shadow {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 28px;
+  padding: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.device-inner-shadow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 6px 2px rgba(10,13,18,0.08),
+    inset 0 0 4px 2px rgba(10,13,18,0.03);
+  z-index: 6;
+}
+.device-mockup {
+  background: var(--bg-sky, #e0f2fe);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 24px;
+  clip-path: inset(0 round 24px);
+  position: relative;
+}
+.device-screen {
+  width: 402px;
+  height: 874px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Status bar ── */
+.phone-status {
+  height: 54px;
+  padding: 14px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #181d27);
+  flex-shrink: 0;
+  background: var(--bg-sky, #e0f2fe);
+  position: relative;
+  z-index: 5;
+}
+.phone-status-icons { display: flex; gap: 4px; align-items: center; }
+.phone-status-icons svg { width: 16px; height: 16px; }
+
+/* ── TossFace ── */
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+.tf-icon {
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px; line-height: 1;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Sky + character area ── */
+.screen-sky {
+  background: var(--bg-sky, #e0f2fe);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 4;
+}
+.toolbar-default {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.toolbar-default .leading,
+.toolbar-default .trailing {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+.toolbar-default .trailing {
+  justify-content: flex-end;
+}
+.toolbar-abs-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+}
+.btn-util {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: var(--spacing-lg, 12px);
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.btn-util:hover { background: var(--gray-50, #fafafa); }
+.btn-util:active { box-shadow: none; transform: translateY(2px); }
+.btn-util-primary {
+  background: var(--brand-500, #0ba5ec);
+  border-color: var(--brand-600, #0086c9);
+  box-shadow: 0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-util-primary:hover { background: var(--brand-400, #36bffa); }
+.btn-util-primary:active { background: var(--brand-500, #0ba5ec); box-shadow: none; transform: translateY(2px); }
+.btn-util-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.btn-util-icon svg { width: 100%; height: 100%; }
+
+/* ── Character wrapper ── */
+.rive-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: -20px;
+}
+.device-wrapper.ipad .rive-wrapper {
+  margin-bottom: -72px;
+}
+
+/* ── Character canvas ── */
+.rive-canvas {
+  position: relative;
+  align-self: center;
+  width: 280px;
+  height: 280px;
+  z-index: 3;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* ── Bottom panel — same height as grass area in home tier-3 ── */
+.customizer-panel {
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+  position: relative;
+  z-index: 4;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+  height: 460px;
+}
+
+/* ── Category tabs — page-specific margin override ── */
+.category-tabs {
+  margin: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0;
+}
+
+/* ── Panel content ── */
+.panel-content {
+  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  min-height: 0;
+}
+.panel-content::-webkit-scrollbar { display: none; }
+.panel-section { display: none; }
+.panel-section.active { display: block; }
+
+.panel-subsection {
+  margin-bottom: var(--spacing-xl, 16px);
+}
+.panel-subsection:last-child { margin-bottom: 0; }
+
+.panel-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  margin-bottom: var(--spacing-lg, 12px);
+}
+
+/* ── Swatch grid (horizontal carousel) ── */
+.swatch-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-xl, 16px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 var(--spacing-xl, 16px) var(--spacing-xs, 4px);
+  margin: 0 calc(-1 * var(--spacing-xl, 16px));
+}
+.swatch-grid::-webkit-scrollbar { display: none; }
+.swatch-grid .tile.tile-swatch { flex-shrink: 0; }
+.swatch-grid-bg {
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  justify-content: space-between;
+  row-gap: var(--spacing-lg, 12px);
+  overflow-x: visible;
+  margin: 0;
+  padding: 0 0 var(--spacing-xs, 4px);
+}
+
+/* ── Style grid ── */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  justify-content: space-between;
+  row-gap: var(--spacing-lg, 12px);
+}
+
+/* ── Coming soon ── */
+.coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-3xl, 24px) 0;
+  color: var(--text-quaternary, #717680);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+}
+.coming-soon-icon {
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px;
+}
+
+/* ── Controls row ── */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-xl, 16px);
+}
+/* ── Device toggle — minimal overrides for tabs component ── */
+.device-toggle .cat-tab { height: 36px; }
+.cat-tab svg { width: 20px; height: 20px; flex-shrink: 0; }
+.cat-tab .device-icon { stroke: var(--text-quaternary, #717680); transition: stroke 0.15s; }
+.cat-tab.active .device-icon { stroke: var(--text-secondary, #414651); }
+.viewer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── iPad overrides ── */
+.device-wrapper.ipad .device-screen {
+  width: 640px;
+  height: 960px;
+}
+.device-wrapper.ipad .rive-canvas {
+  width: 320px;
+  height: 320px;
+}
+.device-wrapper.ipad .swatch-grid-bg {
+  grid-template-columns: repeat(8, auto);
+}
+.device-wrapper.ipad .style-grid {
+  grid-template-columns: repeat(5, auto);
+}
+
+/* ── Home indicator ── */
+.home-indicator {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-md, 8px) 0 var(--spacing-sm, 6px);
+  background: transparent;
+  flex-shrink: 0;
+  z-index: 4;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.home-indicator-bar {
+  width: 108px;
+  height: 4px;
+  background: var(--text-primary, #181d27);
+  border-radius: 100px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="page-header">
+        <div class="sec-title">Character 2.7 Explorer</div>
+        <div class="sec-desc">Unit-test explorer for character2.7.riv — every Rive input discovered and controllable. Skin, hair, beard, clothing, eyes, glasses, face details, earrings, headwear, expressions.</div>
+      </div>
+
+      <div class="controls-row">
+        <div class="tabs-container tabs-equal device-toggle">
+          <button class="cat-tab" data-device="ipad"><svg viewBox="0 0 18 22" fill="none"><path class="device-icon" d="M9 16.5H9.01M4.2 21H13.8C14.9201 21 15.4802 21 15.908 20.782C16.2843 20.5903 16.5903 20.2843 16.782 19.908C17 19.4802 17 18.9201 17 17.8V4.2C17 3.0799 17 2.51984 16.782 2.09202C16.5903 1.7157 16.2843 1.40974 15.908 1.21799C15.4802 1 14.9201 1 13.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM9.5 16.5C9.5 16.7761 9.27614 17 9 17C8.72386 17 8.5 16.7761 8.5 16.5C8.5 16.2239 8.72386 16 9 16C9.27614 16 9.5 16.2239 9.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tablet</button>
+          <button class="cat-tab active" data-device="iphone"><svg viewBox="0 0 16 22" fill="none"><path class="device-icon" d="M8 16.5H8.01M4.2 21H11.8C12.9201 21 13.4802 21 13.908 20.782C14.2843 20.5903 14.5903 20.2843 14.782 19.908C15 19.4802 15 18.9201 15 17.8V4.2C15 3.0799 15 2.51984 14.782 2.09202C14.5903 1.7157 14.2843 1.40974 13.908 1.21799C13.4802 1 12.9201 1 11.8 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.7157 1.40974 1.40974 1.7157 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V17.8C1 18.9201 1 19.4802 1.21799 19.908C1.40974 20.2843 1.7157 20.5903 2.09202 20.782C2.51984 21 3.0799 21 4.2 21ZM8.5 16.5C8.5 16.7761 8.27614 17 8 17C7.72386 17 7.5 16.7761 7.5 16.5C7.5 16.2239 7.72386 16 8 16C8.27614 16 8.5 16.2239 8.5 16.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Phone</button>
+        </div>
+      </div>
+
+      <div class="viewer">
+        <div class="device-wrapper" id="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen">
+                <!-- Status bar -->
+                <div class="phone-status">
+                  <span>9:41</span>
+                  <div class="phone-status-icons">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M7.4 2.3c.3-.3.9-.3 1.2 0l5.1 5.1c.3.3.3.9 0 1.2l-5.1 5.1c-.3.3-.9.3-1.2 0L2.3 8.6c-.3-.3-.3-.9 0-1.2L7.4 2.3z" opacity=".3"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="3" height="9" rx="0.5" opacity=".3"/><rect x="5" y="3" width="3" height="10" rx="0.5" opacity=".5"/><rect x="9" y="1" width="3" height="12" rx="0.5" opacity=".7"/><rect x="13" y="0" width="3" height="13" rx="0.5"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="14.5" y="6" width="1.5" height="4" rx="0.5"/><rect x="1.5" y="5.5" width="10" height="5" rx="0.5"/></svg>
+                  </div>
+                </div>
+
+                <!-- Sky area with character -->
+                <div class="screen-sky">
+                  <!-- Toolbar -->
+                  <nav class="toolbar toolbar-default" aria-label="Edit profile toolbar">
+                    <div class="leading">
+                      <button class="btn-util" aria-label="Close">
+                        <div class="btn-util-icon">
+                          <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        </div>
+                      </button>
+                    </div>
+                    <span class="toolbar-abs-title">Edit profile</span>
+                    <div class="trailing">
+                      <button class="btn-util btn-util-primary" aria-label="Save" id="btn-save">
+                        <div class="btn-util-icon">
+                          <svg fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                        </div>
+                      </button>
+                    </div>
+                  </nav>
+
+                  <!-- Rive character centered in sky -->
+                  <div class="rive-wrapper">
+                    <canvas id="sprout-rive" class="rive-canvas" width="560" height="560"></canvas>
+                  </div>
+                </div>
+
+                <!-- Customizer panel -->
+                <div class="customizer-panel">
+                  <!-- Category tabs (TossFace icons) -->
+                  <div class="tabs-container tabs-equal tabs-sliding category-tabs" id="category-tabs">
+                    <div class="slide-pill" id="slide-pill"></div>
+                    <button class="cat-tab active" data-panel="skin-body" aria-label="Skin tone" title="Skin tone"><span class="tf-icon">&#x1F600;</span></button>
+                    <button class="cat-tab" data-panel="eyes" aria-label="Eye color" title="Eye color"><span class="tf-icon">&#x1F440;</span></button>
+
+                    <button class="cat-tab" data-panel="hair" aria-label="Hair" title="Hair"><span class="tf-icon">&#x1FAAE;</span></button>
+
+                    <button class="cat-tab" data-panel="facial" aria-label="Facial hair" title="Facial hair"><span class="tf-icon">&#x1F453;&#xFE0F;</span></button>
+
+                    <button class="cat-tab" data-panel="headwear" aria-label="Headwear" title="Headwear"><span class="tf-icon">&#x1F9E2;</span></button>
+
+                    <button class="cat-tab" data-panel="outfit" aria-label="Clothing" title="Clothing"><span class="tf-icon">&#x1F45A;</span></button>
+                    <button class="cat-tab" data-panel="background" aria-label="Background color" title="Background color"><span class="tf-icon">&#x1FA9F;</span></button>
+                  </div>
+
+                  <!-- Panel sections -->
+                  <div class="panel-content">
+
+                    <!-- 1. Skin tone + Body -->
+                    <div class="panel-section active" id="panel-skin-body">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Skin tone</div>
+                        <div class="swatch-grid" id="skin-swatches"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Body</div>
+                        <div class="coming-soon">
+                          <span class="coming-soon-icon">&#x2728;</span>
+                          Coming soon
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 2. Eye color + Glasses -->
+                    <div class="panel-section" id="panel-eyes">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Eye color</div>
+                        <div class="swatch-grid" id="eye-swatches"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Glasses</div>
+                        <div class="style-grid" id="glasses-styles"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Glasses color</div>
+                        <div class="swatch-grid" id="glasses-swatches"></div>
+                      </div>
+                    </div>
+
+                    <!-- 3. Main hair color + Hairstyle -->
+                    <div class="panel-section" id="panel-hair">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Main hair color</div>
+                        <div class="swatch-grid" id="hair-swatches"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Hairstyle</div>
+                        <div class="style-grid" id="hair-styles"></div>
+                      </div>
+                    </div>
+
+                    <!-- 4. Facial hair color + Facial hair + Face details -->
+                    <div class="panel-section" id="panel-facial">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Facial hair color</div>
+                        <div class="swatch-grid" id="beard-swatches"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Facial hair</div>
+                        <div class="style-grid" id="beard-styles"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Face details</div>
+                        <div class="style-grid" id="facedetail-styles"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Earrings</div>
+                        <div class="style-grid" id="earring-styles"></div>
+                      </div>
+                    </div>
+
+                    <!-- 5. Headwear -->
+                    <div class="panel-section" id="panel-headwear">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Headwear color</div>
+                        <div class="swatch-grid" id="headwear-swatches"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Headwear</div>
+                        <div class="style-grid" id="headwear-styles"></div>
+                      </div>
+                    </div>
+
+                    <!-- 6. Clothing color + Clothing -->
+                    <div class="panel-section" id="panel-outfit">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Clothing color</div>
+                        <div class="swatch-grid" id="clothing-swatches"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Clothing</div>
+                        <div class="style-grid" id="clothing-styles"></div>
+                      </div>
+                    </div>
+
+                    <!-- 7. Background color -->
+                    <div class="panel-section" id="panel-background">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Background color</div>
+                        <div class="swatch-grid swatch-grid-bg" id="bg-swatches"></div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Home indicator -->
+                <div class="home-indicator">
+                  <div class="home-indicator-bar"></div>
+                </div>
+
+              </div><!-- /device-screen -->
+            </div>
+          </div>
+        </div>
+      </div><!-- /viewer -->
+
+      <!-- Debug: All Rive Inputs -->
+      <details class="debug-panel" id="debug-panel" style="margin-top:32px;">
+        <summary style="font-family:var(--font-family-body,'Inter',sans-serif);font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary,#181d27);cursor:pointer;padding:12px 0;">Debug: All Rive Inputs</summary>
+        <div style="background:var(--bg-secondary,#f9fafb);border:1px solid var(--border-secondary,#e9eaeb);border-radius:var(--radius-xl,12px);padding:16px;margin-top:8px;">
+          <div id="debug-inputs" style="display:flex;flex-direction:column;gap:12px;"></div>
+          <div style="margin-top:16px;display:flex;gap:8px;">
+            <button id="debug-copy" style="padding:8px 16px;background:var(--brand-500,#0ba5ec);color:white;border:none;border-radius:var(--radius-lg,8px);font-size:13px;font-weight:600;cursor:pointer;">Copy JSON</button>
+            <span id="debug-copy-msg" style="font-size:13px;color:var(--text-tertiary,#535862);align-self:center;"></span>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+  <div class="toc-sidebar" id="toc"></div>
+</div>
+
+<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'New Activity',href:'/product-explorer/kid-home/new-activity.html',dot:'var(--orange-400)'},{label:'Quests',href:'/product-explorer/quest.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/quest.html'},{label:'Photo',href:'/product-explorer/quest/photo.html'},{label:'Quiz',href:'/product-explorer/quest/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Chat',href:'/product-explorer/task/chat-tier-2.html',dot:'var(--violet-500)',children:[{label:'Chat Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat Tier 3',href:'/product-explorer/task/chat-tier-3.html'}]},{label:'Customize Avatar',href:'/product-explorer/customize-avatar.html',dot:'var(--violet-400)'},{label:'Character 2.7 Explorer',href:'/product-explorer/character-explorer.html',dot:'var(--orange-500)'},{label:'Customize Sprout',href:'/product-explorer/customize-sprout.html',dot:'var(--sprout-400)'}];</script>
+<script src="/product-explorer/shell.js"></script>
+<script>
+(function() {
+  // ── Data ──
+  var SKINS = [
+    '#FFB497','#6E3D3A','#7D4A3F','#8C4A25','#97513F','#985C30',
+    '#A46648','#B76E45','#C6775C','#E18E70','#E59D65','#F2A07D',
+    '#FFB89D','#FFC6B7','#FFCBA3','#FFE2D6'
+  ];
+
+  var HAIR_COLORS = [
+    '#3F3F3F','#3D3D3D','#553629','#662C2C','#753A23','#A34242',
+    '#947872','#BB6A20','#CA6049','#F5AF62','#FFDEBB','#E4DDD6','#ECF0F1'
+  ];
+
+  var HAIR_STYLES = [
+    'Short','Short curly','Buzz cut','Side part','Curly','Long','Ponytail'
+  ];
+
+  var BEARD_TYPES = [
+    'None','Long beard','Light stubble','Jawline','Goatee','Goatee 2','Full beard','Mustache'
+  ];
+
+  var CLOTHING_COLORS = [
+    '#3EBBF6','#717680','#17B26A','#669F2A','#9E77ED','#2970FF',
+    '#875BF7','#EE46BC','#F04438','#EF6820','#F79009'
+  ];
+
+  var CLOTHING_TYPES = [
+    'T-shirt','Cardigan','Blazer','Blazer & Tie','Flannel','Turtle neck',
+    'Hoodie','Shirt','Half sleeve','Polo','Full sleeve','Puffer'
+  ];
+
+  // Eye colors — approximate hex values (verify via debug panel)
+  var EYE_COLORS = [
+    '#3B2314','#5C3A1E','#6B4226','#8B6914','#4A7C59','#2E8B57',
+    '#4682B4','#4169E1','#6A5ACD','#708090','#36454F','#1C1C1C'
+  ];
+
+  var GLASSES_TYPES = ['None','Round','Square','Aviator'];
+
+  var GLASSES_COLORS = [
+    '#1C1C1C','#3B2314','#8B4513','#708090','#4682B4','#C0C0C0',
+    '#FFD700','#B22222','#2E8B57'
+  ];
+
+  var FACIAL_DETAILS = ['None','Freckles','Dimples','Beauty mark','Scar'];
+
+  var EARRING_TYPES = ['None','Stud','Hoop','Drop','Double'];
+
+  var HEADWEAR_TYPES = ['None','Cap','Beanie','Headband','Bow'];
+
+  var HEADWEAR_COLORS = [
+    '#3EBBF6','#717680','#17B26A','#669F2A','#9E77ED','#2970FF',
+    '#875BF7','#EE46BC','#F04438','#EF6820','#F79009'
+  ];
+
+  var BG_COLORS = [
+    '#b9e6fe', // light blue 200
+    '#b2ccff', // blue 200
+    '#ddd6fe', // violet 200
+    '#fcceee', // pink 200
+    '#fecdca', // red 200
+    '#abefc6', // green 200
+    '#ceeab0', // sprout 200
+    '#feee95', // yellow 200
+    '#f9dbaf', // orange 200
+    '#e9eaeb'  // gray 200
+  ];
+
+  // ── State ──
+  var state = {
+    skinID: 11,
+    hairID: 0,
+    hairshadeID: 0,
+    beardID: 0,
+    beardshadeID: 0,
+    clothingcolourID: 0,
+    clothingID: 0,
+    eyecolourID: 0,
+    glassesID: 0,
+    glassescolourID: 0,
+    facialdetailsID: 0,
+    earringsID: 0,
+    headwearID: 0,
+    headwearcolourID: 0
+  };
+  var riveInstance = null;
+  var riveInputs = null;
+  // Track all preview Rive instances: { rive, inputs, stateKey, value }
+  var previews = [];
+
+  // ── Rive init ──
+  function initRive() {
+    try {
+      riveInstance = new rive.Rive({
+        src: '/design-system/character2.7.riv',
+        canvas: document.getElementById('sprout-rive'),
+        autoplay: true,
+        artboard: 'Village-character',
+        stateMachines: 'State Machine 1',
+        fit: rive.Fit.Contain,
+        alignment: rive.Alignment.Center,
+        onLoad: function() {
+          riveInstance.resizeDrawingSurfaceToCanvas();
+          try {
+            riveInputs = riveInstance.stateMachineInputs('State Machine 1');
+            applyAllInputs();
+          } catch(e) { console.warn('Rive inputs error', e); }
+        }
+      });
+    } catch(e) {
+      console.warn('Rive init failed', e);
+    }
+  }
+
+  function setRiveInput(name, value) {
+    if (!riveInputs) return;
+    for (var i = 0; i < riveInputs.length; i++) {
+      if (riveInputs[i].name === name) {
+        riveInputs[i].value = value;
+        return;
+      }
+    }
+  }
+
+  function applyAllInputs() {
+    Object.keys(state).forEach(function(key) {
+      setRiveInput(key, state[key]);
+    });
+    buildDebugPanel();
+  }
+
+  // Sync all preview thumbnails with current state, keeping their own property fixed
+  function syncPreviews() {
+    previews.forEach(function(p) {
+      if (!p.inputs) return;
+      p.inputs.forEach(function(inp) {
+        // Use the preview's own value for its stateKey, current state for everything else
+        if (inp.name === p.stateKey) {
+          inp.value = p.value;
+        } else if (state.hasOwnProperty(inp.name)) {
+          inp.value = state[inp.name];
+        }
+      });
+    });
+  }
+
+  // ── Build swatches ──
+  function buildSwatches(containerId, colors, stateKey) {
+    var container = document.getElementById(containerId);
+    colors.forEach(function(hex, i) {
+      var el = document.createElement('button');
+      el.className = 'tile tile-swatch' + (i === state[stateKey] ? ' selected' : '');
+      el.setAttribute('aria-label', stateKey + ' ' + i);
+      var inner = document.createElement('span');
+      inner.className = 'tile-swatch-color';
+      inner.style.background = hex;
+      el.appendChild(inner);
+      el.addEventListener('click', function() {
+        state[stateKey] = i;
+        setRiveInput(stateKey, i);
+        container.querySelectorAll('.tile-swatch').forEach(function(s) { s.classList.remove('selected'); });
+        el.classList.add('selected');
+        syncPreviews();
+      });
+      container.appendChild(el);
+    });
+  }
+
+  // ── Build style cards ──
+  // For hair cards, render a mini Rive preview showing that hairstyle
+  function buildStyleCards(containerId, labels, stateKey, preview) {
+    var container = document.getElementById(containerId);
+    labels.forEach(function(label, i) {
+      var el = document.createElement('button');
+      el.className = 'tile tile-image' + (i === state[stateKey] ? ' selected' : '');
+
+      if (preview) {
+        var canvas = document.createElement('canvas');
+        canvas.width = 222;
+        canvas.height = 222;
+        canvas.style.cssText = 'width:132%;height:132%;pointer-events:none;position:absolute;top:-16%;left:50%;transform:translateX(-50%);';
+        el.appendChild(canvas);
+
+        // Render a mini Rive preview with this style variant
+        try {
+          (function(opts) {
+            var r = new rive.Rive({
+              src: '/design-system/character2.7.riv',
+              canvas: canvas,
+              autoplay: true,
+              artboard: 'Village-character',
+              stateMachines: 'State Machine 1',
+              fit: rive.Fit.Contain,
+              alignment: rive.Alignment.TopCenter,
+              onLoad: function() {
+                r.resizeDrawingSurfaceToCanvas();
+                try {
+                  var inputs = r.stateMachineInputs('State Machine 1');
+                  if (inputs) {
+                    // Store for syncing later
+                    previews.push({ rive: r, inputs: inputs, stateKey: opts.stateKey, value: opts.value });
+                    // Apply full current state, but override the preview's own property
+                    inputs.forEach(function(inp) {
+                      if (inp.name === opts.stateKey) {
+                        inp.value = opts.value;
+                      } else if (state.hasOwnProperty(inp.name)) {
+                        inp.value = state[inp.name];
+                      }
+                    });
+                  }
+                } catch(e) {}
+              }
+            });
+          })({ stateKey: stateKey, value: i });
+        } catch(e) {}
+      } else {
+        el.textContent = label;
+      }
+
+      el.addEventListener('click', function() {
+        state[stateKey] = i;
+        setRiveInput(stateKey, i);
+        container.querySelectorAll('.tile-image').forEach(function(s) { s.classList.remove('selected'); });
+        el.classList.add('selected');
+        syncPreviews();
+      });
+      container.appendChild(el);
+    });
+  }
+
+  // ── Debug panel ──
+  function buildDebugPanel() {
+    if (!riveInputs) return;
+    var container = document.getElementById('debug-inputs');
+    if (!container) return;
+    container.innerHTML = '';
+    riveInputs.forEach(function(inp) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;font-family:monospace;font-size:13px;';
+      var isTrigger = typeof inp.fire === 'function' && inp.value === undefined;
+      var isBool = !isTrigger && typeof inp.value === 'boolean';
+      var typeLabel = isTrigger ? 'trigger' : isBool ? 'bool' : 'number';
+      var nameSpan = document.createElement('span');
+      nameSpan.style.cssText = 'min-width:160px;font-weight:600;color:var(--text-primary,#181d27);';
+      nameSpan.textContent = inp.name;
+      row.appendChild(nameSpan);
+      var typeSpan = document.createElement('span');
+      typeSpan.style.cssText = 'min-width:60px;color:var(--text-tertiary,#535862);font-size:11px;';
+      typeSpan.textContent = typeLabel;
+      row.appendChild(typeSpan);
+
+      if (!isTrigger && !isBool) { // number
+        var slider = document.createElement('input');
+        slider.type = 'range';
+        slider.min = 0;
+        slider.max = 30;
+        slider.value = inp.value;
+        slider.style.cssText = 'flex:1;accent-color:var(--brand-500,#0ba5ec);';
+        var valSpan = document.createElement('span');
+        valSpan.style.cssText = 'min-width:30px;text-align:right;';
+        valSpan.textContent = inp.value;
+        slider.addEventListener('input', function() {
+          inp.value = Number(slider.value);
+          valSpan.textContent = slider.value;
+          if (state.hasOwnProperty(inp.name)) state[inp.name] = Number(slider.value);
+        });
+        row.appendChild(slider);
+        row.appendChild(valSpan);
+      } else if (isBool) {
+        var toggle = document.createElement('input');
+        toggle.type = 'checkbox';
+        toggle.checked = inp.value;
+        toggle.style.cssText = 'accent-color:var(--brand-500,#0ba5ec);width:18px;height:18px;';
+        toggle.addEventListener('change', function() {
+          inp.value = toggle.checked;
+          if (state.hasOwnProperty(inp.name)) state[inp.name] = toggle.checked;
+        });
+        row.appendChild(toggle);
+      } else { // trigger
+        var btn = document.createElement('button');
+        btn.textContent = 'Fire';
+        btn.style.cssText = 'padding:4px 12px;background:var(--brand-500,#0ba5ec);color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;';
+        btn.addEventListener('click', function() { inp.fire(); });
+        row.appendChild(btn);
+      }
+      container.appendChild(row);
+    });
+  }
+
+  // ── Debug copy JSON ──
+  document.getElementById('debug-copy').addEventListener('click', function() {
+    if (!riveInputs) return;
+    var dump = {};
+    riveInputs.forEach(function(inp) {
+      if (typeof inp.fire === 'function' && inp.value === undefined) dump[inp.name] = '(trigger)';
+      else dump[inp.name] = inp.value;
+    });
+    navigator.clipboard.writeText(JSON.stringify(dump, null, 2)).then(function() {
+      var msg = document.getElementById('debug-copy-msg');
+      msg.textContent = 'Copied!';
+      setTimeout(function() { msg.textContent = ''; }, 2000);
+    });
+  });
+
+  // ── Tab switching with sliding pill ──
+  var tabContainer = document.getElementById('category-tabs');
+  var pill = document.getElementById('slide-pill');
+  var tabs = document.querySelectorAll('.cat-tab');
+
+  function movePill(tab) {
+    var containerRect = tabContainer.getBoundingClientRect();
+    var tabRect = tab.getBoundingClientRect();
+    var offsetLeft = tabRect.left - containerRect.left;
+    pill.style.width = tabRect.width + 'px';
+    pill.style.transform = 'translateX(' + (offsetLeft - 4) + 'px)';
+  }
+
+  // Init pill on first active tab
+  var firstActive = tabContainer.querySelector('.cat-tab.active');
+  if (firstActive && pill) movePill(firstActive);
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var panel = tab.getAttribute('data-panel');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      document.querySelectorAll('.panel-section').forEach(function(p) { p.classList.remove('active'); });
+      var target = document.getElementById('panel-' + panel);
+      if (target) target.classList.add('active');
+      if (pill) movePill(tab);
+    });
+  });
+
+  // ── Build background swatches (changes sky color) ──
+  function buildBgSwatches(containerId, colors) {
+    var container = document.getElementById(containerId);
+    var sky = document.querySelector('.screen-sky');
+    var statusBar = document.querySelector('.phone-status');
+    var deviceMockup = document.querySelector('.device-mockup');
+    colors.forEach(function(hex, i) {
+      var el = document.createElement('button');
+      el.className = 'tile tile-swatch' + (i === 0 ? ' selected' : '');
+      el.setAttribute('aria-label', 'Background ' + i);
+      var inner = document.createElement('span');
+      inner.className = 'tile-swatch-color';
+      inner.style.background = hex;
+      el.appendChild(inner);
+      el.addEventListener('click', function() {
+        container.querySelectorAll('.tile-swatch').forEach(function(s) { s.classList.remove('selected'); });
+        el.classList.add('selected');
+        sky.style.background = hex;
+        statusBar.style.background = hex;
+        deviceMockup.style.background = hex;
+      });
+      container.appendChild(el);
+    });
+  }
+
+  // ── Populate panels ──
+  buildSwatches('skin-swatches', SKINS, 'skinID');
+  buildSwatches('hair-swatches', HAIR_COLORS, 'hairshadeID');
+  buildSwatches('beard-swatches', HAIR_COLORS, 'beardshadeID');
+  buildSwatches('clothing-swatches', CLOTHING_COLORS, 'clothingcolourID');
+  buildSwatches('eye-swatches', EYE_COLORS, 'eyecolourID');
+  buildSwatches('glasses-swatches', GLASSES_COLORS, 'glassescolourID');
+  buildSwatches('headwear-swatches', HEADWEAR_COLORS, 'headwearcolourID');
+  buildStyleCards('hair-styles', HAIR_STYLES, 'hairID', true);
+  buildStyleCards('beard-styles', BEARD_TYPES, 'beardID', true);
+  buildStyleCards('clothing-styles', CLOTHING_TYPES, 'clothingID', true);
+  buildStyleCards('glasses-styles', GLASSES_TYPES, 'glassesID', true);
+  buildStyleCards('facedetail-styles', FACIAL_DETAILS, 'facialdetailsID', true);
+  buildStyleCards('earring-styles', EARRING_TYPES, 'earringsID', true);
+  buildStyleCards('headwear-styles', HEADWEAR_TYPES, 'headwearID', true);
+  buildBgSwatches('bg-swatches', BG_COLORS);
+
+  // ── Device toggle ──
+  var deviceBtns = document.querySelectorAll('.device-toggle .cat-tab');
+  var deviceWrapper = document.getElementById('device-wrapper');
+  deviceBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var device = btn.getAttribute('data-device');
+      deviceBtns.forEach(function(b) { b.classList.toggle('active', b === btn); });
+      if (device === 'ipad') {
+        deviceWrapper.classList.add('ipad');
+      } else {
+        deviceWrapper.classList.remove('ipad');
+      }
+    });
+  });
+
+  // ── Init Rive ──
+  initRive();
+})();
+</script>
+</body>
+</html>
