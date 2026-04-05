@@ -429,19 +429,14 @@
                       </div>
                     </div>
 
-                    <!-- 2. Eye color + Glasses -->
+                    <!-- 2. Eye color -->
                     <div class="panel-section" id="panel-eyes">
                       <div class="panel-subsection">
                         <div class="panel-label">Eye color</div>
-                        <div class="swatch-grid" id="eye-swatches"></div>
-                      </div>
-                      <div class="panel-subsection">
-                        <div class="panel-label">Glasses</div>
-                        <div class="style-grid" id="glasses-styles"></div>
-                      </div>
-                      <div class="panel-subsection">
-                        <div class="panel-label">Glasses color</div>
-                        <div class="swatch-grid" id="glasses-swatches"></div>
+                        <div class="coming-soon">
+                          <span class="coming-soon-icon">&#x2728;</span>
+                          Coming soon
+                        </div>
                       </div>
                     </div>
 
@@ -469,11 +464,10 @@
                       </div>
                       <div class="panel-subsection">
                         <div class="panel-label">Face details</div>
-                        <div class="style-grid" id="facedetail-styles"></div>
-                      </div>
-                      <div class="panel-subsection">
-                        <div class="panel-label">Earrings</div>
-                        <div class="style-grid" id="earring-styles"></div>
+                        <div class="coming-soon">
+                          <span class="coming-soon-icon">&#x2728;</span>
+                          Coming soon
+                        </div>
                       </div>
                     </div>
 
@@ -481,11 +475,17 @@
                     <div class="panel-section" id="panel-headwear">
                       <div class="panel-subsection">
                         <div class="panel-label">Headwear color</div>
-                        <div class="swatch-grid" id="headwear-swatches"></div>
+                        <div class="coming-soon">
+                          <span class="coming-soon-icon">&#x2728;</span>
+                          Coming soon
+                        </div>
                       </div>
                       <div class="panel-subsection">
                         <div class="panel-label">Headwear</div>
-                        <div class="style-grid" id="headwear-styles"></div>
+                        <div class="coming-soon">
+                          <span class="coming-soon-icon">&#x2728;</span>
+                          Coming soon
+                        </div>
                       </div>
                     </div>
 
@@ -522,18 +522,6 @@
           </div>
         </div>
       </div><!-- /viewer -->
-
-      <!-- Debug: All Rive Inputs -->
-      <details class="debug-panel" id="debug-panel" style="margin-top:32px;">
-        <summary style="font-family:var(--font-family-body,'Inter',sans-serif);font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary,#181d27);cursor:pointer;padding:12px 0;">Debug: All Rive Inputs</summary>
-        <div style="background:var(--bg-secondary,#f9fafb);border:1px solid var(--border-secondary,#e9eaeb);border-radius:var(--radius-xl,12px);padding:16px;margin-top:8px;">
-          <div id="debug-inputs" style="display:flex;flex-direction:column;gap:12px;"></div>
-          <div style="margin-top:16px;display:flex;gap:8px;">
-            <button id="debug-copy" style="padding:8px 16px;background:var(--brand-500,#0ba5ec);color:white;border:none;border-radius:var(--radius-lg,8px);font-size:13px;font-weight:600;cursor:pointer;">Copy JSON</button>
-            <span id="debug-copy-msg" style="font-size:13px;color:var(--text-tertiary,#535862);align-self:center;"></span>
-          </div>
-        </div>
-      </details>
 
     </div>
   </div>
@@ -574,30 +562,6 @@
     'Hoodie','Shirt','Half sleeve','Polo','Full sleeve','Puffer'
   ];
 
-  // Eye colors — approximate rendered hex values (verify via debug panel)
-  var EYE_COLORS = [
-    '#3B2314','#5C3A1E','#6B4226','#8B6914','#4A7C59','#2E8B57',
-    '#4682B4','#4169E1','#6A5ACD','#708090','#36454F','#1C1C1C'
-  ];
-
-  var GLASSES_TYPES = ['None','Round','Square','Aviator'];
-
-  var GLASSES_COLORS = [
-    '#1C1C1C','#3B2314','#8B4513','#708090','#4682B4','#C0C0C0',
-    '#FFD700','#B22222','#2E8B57'
-  ];
-
-  var FACIAL_DETAILS = ['None','Freckles','Dimples','Beauty mark','Scar'];
-
-  var EARRING_TYPES = ['None','Stud','Hoop','Drop','Double'];
-
-  var HEADWEAR_TYPES = ['None','Cap','Beanie','Headband','Bow'];
-
-  var HEADWEAR_COLORS = [
-    '#3EBBF6','#717680','#17B26A','#669F2A','#9E77ED','#2970FF',
-    '#875BF7','#EE46BC','#F04438','#EF6820','#F79009'
-  ];
-
   var BG_COLORS = [
     '#b9e6fe', // light blue 200
     '#b2ccff', // blue 200
@@ -619,14 +583,7 @@
     beardID: 0,
     beardshadeID: 0,
     clothingcolourID: 0,
-    clothingID: 0,
-    eyecolourID: 0,
-    glassesID: 0,
-    glassescolourID: 0,
-    facialdetailsID: 0,
-    earringsID: 0,
-    headwearID: 0,
-    headwearcolourID: 0
+    clothingID: 0
   };
   var riveInstance = null;
   var riveInputs = null;
@@ -637,7 +594,7 @@
   function initRive() {
     try {
       riveInstance = new rive.Rive({
-        src: '/design-system/character2.7.riv',
+        src: '/design-system/character2.4.riv',
         canvas: document.getElementById('sprout-rive'),
         autoplay: true,
         artboard: 'Village-character',
@@ -668,10 +625,12 @@
   }
 
   function applyAllInputs() {
-    Object.keys(state).forEach(function(key) {
-      setRiveInput(key, state[key]);
-    });
-    buildDebugPanel();
+    setRiveInput('skinID', state.skinID);
+    setRiveInput('hairID', state.hairID);
+    setRiveInput('hairshadeID', state.hairshadeID);
+    setRiveInput('beardID', state.beardID);
+    setRiveInput('beardshadeID', state.beardshadeID);
+    setRiveInput('clothingcolourID', state.clothingcolourID);
   }
 
   // Sync all preview thumbnails with current state, keeping their own property fixed
@@ -730,7 +689,7 @@
         try {
           (function(opts) {
             var r = new rive.Rive({
-              src: '/design-system/character2.7.riv',
+              src: '/design-system/character2.4.riv',
               canvas: canvas,
               autoplay: true,
               artboard: 'Village-character',
@@ -772,82 +731,6 @@
       container.appendChild(el);
     });
   }
-
-  // ── Debug panel ──
-  function buildDebugPanel() {
-    if (!riveInputs) return;
-    var container = document.getElementById('debug-inputs');
-    if (!container) return;
-    container.innerHTML = '';
-    riveInputs.forEach(function(inp) {
-      var row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:8px;font-family:monospace;font-size:13px;';
-      // Detect type by checking for .fire (trigger) or typeof value
-      var isTrigger = typeof inp.fire === 'function' && inp.value === undefined;
-      var isBool = !isTrigger && typeof inp.value === 'boolean';
-      var isNumber = !isTrigger && typeof inp.value === 'number';
-      var typeLabel = isTrigger ? 'trigger' : isBool ? 'bool' : 'number';
-      var nameSpan = document.createElement('span');
-      nameSpan.style.cssText = 'min-width:160px;font-weight:600;color:var(--text-primary,#181d27);';
-      nameSpan.textContent = inp.name;
-      row.appendChild(nameSpan);
-      var typeSpan = document.createElement('span');
-      typeSpan.style.cssText = 'min-width:60px;color:var(--text-tertiary,#535862);font-size:11px;';
-      typeSpan.textContent = typeLabel;
-      row.appendChild(typeSpan);
-
-      if (isNumber) { // number
-        var slider = document.createElement('input');
-        slider.type = 'range';
-        slider.min = 0;
-        slider.max = 30;
-        slider.value = inp.value;
-        slider.style.cssText = 'flex:1;accent-color:var(--brand-500,#0ba5ec);';
-        var valSpan = document.createElement('span');
-        valSpan.style.cssText = 'min-width:30px;text-align:right;';
-        valSpan.textContent = inp.value;
-        slider.addEventListener('input', function() {
-          inp.value = Number(slider.value);
-          valSpan.textContent = slider.value;
-          if (state.hasOwnProperty(inp.name)) state[inp.name] = Number(slider.value);
-        });
-        row.appendChild(slider);
-        row.appendChild(valSpan);
-      } else if (isBool) { // boolean
-        var toggle = document.createElement('input');
-        toggle.type = 'checkbox';
-        toggle.checked = inp.value;
-        toggle.style.cssText = 'accent-color:var(--brand-500,#0ba5ec);width:18px;height:18px;';
-        toggle.addEventListener('change', function() {
-          inp.value = toggle.checked;
-          if (state.hasOwnProperty(inp.name)) state[inp.name] = toggle.checked;
-        });
-        row.appendChild(toggle);
-      } else { // trigger
-        var btn = document.createElement('button');
-        btn.textContent = 'Fire';
-        btn.style.cssText = 'padding:4px 12px;background:var(--brand-500,#0ba5ec);color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;';
-        btn.addEventListener('click', function() { inp.fire(); });
-        row.appendChild(btn);
-      }
-      container.appendChild(row);
-    });
-  }
-
-  // ── Debug copy JSON ──
-  document.getElementById('debug-copy').addEventListener('click', function() {
-    if (!riveInputs) return;
-    var dump = {};
-    riveInputs.forEach(function(inp) {
-      if (typeof inp.fire === 'function' && inp.value === undefined) dump[inp.name] = '(trigger)';
-      else dump[inp.name] = inp.value;
-    });
-    navigator.clipboard.writeText(JSON.stringify(dump, null, 2)).then(function() {
-      var msg = document.getElementById('debug-copy-msg');
-      msg.textContent = 'Copied!';
-      setTimeout(function() { msg.textContent = ''; }, 2000);
-    });
-  });
 
   // ── Tab switching with sliding pill ──
   var tabContainer = document.getElementById('category-tabs');
@@ -908,16 +791,9 @@
   buildSwatches('hair-swatches', HAIR_COLORS, 'hairshadeID');
   buildSwatches('beard-swatches', HAIR_COLORS, 'beardshadeID');
   buildSwatches('clothing-swatches', CLOTHING_COLORS, 'clothingcolourID');
-  buildSwatches('eye-swatches', EYE_COLORS, 'eyecolourID');
-  buildSwatches('glasses-swatches', GLASSES_COLORS, 'glassescolourID');
-  buildSwatches('headwear-swatches', HEADWEAR_COLORS, 'headwearcolourID');
   buildStyleCards('hair-styles', HAIR_STYLES, 'hairID', true);
   buildStyleCards('beard-styles', BEARD_TYPES, 'beardID', true);
   buildStyleCards('clothing-styles', CLOTHING_TYPES, 'clothingID', true);
-  buildStyleCards('glasses-styles', GLASSES_TYPES, 'glassesID', true);
-  buildStyleCards('facedetail-styles', FACIAL_DETAILS, 'facialdetailsID', true);
-  buildStyleCards('earring-styles', EARRING_TYPES, 'earringsID', true);
-  buildStyleCards('headwear-styles', HEADWEAR_TYPES, 'headwearID', true);
   buildBgSwatches('bg-swatches', BG_COLORS);
 
   // ── Device toggle ──
