@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progress Options — Goal Progress System</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+  @font-face { font-family: 'TossFace'; src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype'); }
+
+  .po-intro {
+    max-width: 720px;
+    background: var(--brand-25, #f5fbff);
+    border: 1px solid var(--brand-100);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--text-secondary);
+  }
+
+  .po-controls {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .po-control {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 220px;
+    flex: 1;
+  }
+  .po-control label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-tertiary);
+  }
+  .po-control .row { display: flex; align-items: center; gap: 12px; }
+  .po-control input[type="range"] {
+    flex: 1;
+    accent-color: var(--brand-500);
+  }
+  .po-control .val {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    min-width: 48px;
+    text-align: right;
+  }
+
+  .po-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .po-card {
+    background: white;
+    border: 1px solid var(--border-secondary);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 2px rgba(10,13,18,0.05);
+  }
+  .po-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .po-card-sub {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 24px;
+  }
+  .po-render {
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    padding: 16px 0;
+  }
+  .po-meta {
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-100);
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+  .po-meta strong { color: var(--text-primary); }
+
+  /* ── Stars treatment ── */
+  .stars-row { display: flex; gap: 8px; align-items: center; }
+  .stars-row .star {
+    font-family: 'TossFace';
+    font-size: 32px;
+    color: var(--gray-200);
+    transition: color 0.2s, transform 0.2s;
+  }
+  .stars-row .star.on { color: var(--yellow-400); transform: scale(1.1); }
+  .stars-row .star.partial { color: var(--yellow-300); }
+
+  /* ── Circles treatment ── */
+  .circles-row { display: flex; gap: 8px; align-items: center; }
+  .circles-row .circle {
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    border: 3px solid var(--gray-200);
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .circles-row .circle.on {
+    border-color: var(--brand-500);
+    background: var(--brand-500);
+  }
+  .circles-row .circle.on::after { content: '✓'; }
+  .circles-row .circle.partial {
+    border-color: var(--brand-300);
+    background: linear-gradient(to right, var(--brand-300) 50%, white 50%);
+  }
+
+  /* ── Lines treatment ── */
+  .lines-row { display: flex; gap: 4px; align-items: center; width: 100%; max-width: 240px; }
+  .lines-row .line {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--gray-200);
+    transition: background 0.2s;
+  }
+  .lines-row .line.on { background: var(--brand-500); }
+  .lines-row .line.partial { background: linear-gradient(to right, var(--brand-500) 50%, var(--gray-200) 50%); }
+
+  /* ── Checkpoints treatment ── */
+  .checkpoints {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 280px;
+  }
+  .checkpoints::before {
+    content: '';
+    position: absolute;
+    left: 12px; right: 12px;
+    height: 4px;
+    background: var(--gray-200);
+    border-radius: 2px;
+    z-index: 0;
+  }
+  .checkpoints .cp-fill {
+    position: absolute;
+    left: 12px;
+    height: 4px;
+    background: var(--brand-500);
+    border-radius: 2px;
+    z-index: 1;
+    transition: width 0.3s;
+  }
+  .checkpoints .checkpoints-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    z-index: 2;
+    position: relative;
+  }
+  .checkpoints .cp {
+    width: 24px; height: 24px;
+    border-radius: 999px;
+    border: 3px solid var(--gray-200);
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .checkpoints .cp.on {
+    border-color: var(--brand-500);
+    background: var(--brand-500);
+  }
+  .checkpoints .cp.on::after { content: '✓'; color: white; font-size: 11px; font-weight: 700; }
+  .checkpoints .cp.current {
+    border-color: var(--brand-500);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(11,165,236,0.2);
+  }
+
+  /* ── Message composer comparison ── */
+  .composer-section {
+    margin-top: 56px;
+  }
+  .composer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .composer {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .composer .title { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+  .composer .input {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 999px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-quaternary);
+  }
+  .composer .input .send {
+    margin-left: auto;
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: var(--brand-500);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .composer .input .mic { color: var(--gray-400); font-size: 16px; }
+  .composer.with-suggest .pills {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+  }
+  .composer.with-suggest .pill {
+    font-size: 11px; color: var(--brand-700);
+    background: var(--brand-50);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="page-header">
+        <div class="sec-label">Goal Progress System</div>
+        <div class="sec-title">Progress Options</div>
+        <div class="sec-desc">Four progress-bar treatments compared side-by-side. Drag the sliders to scrub progress and change the step count.</div>
+      </div>
+
+      <div class="po-intro">
+        Inside the agent interaction screen, the kid needs to see how far through a quest they are. The Figma spec explores four visual approaches — each has different connotations (Stars feel rewarding, Circles feel checklist-y, Lines are minimal, Checkpoints feel journey-like). This page renders all four off the same slider so we can compare apples to apples.
+      </div>
+
+      <div class="po-controls">
+        <div class="po-control">
+          <label>Steps</label>
+          <div class="row">
+            <input type="range" id="stepsSlider" min="1" max="10" value="5">
+            <span class="val" id="stepsVal">5</span>
+          </div>
+        </div>
+        <div class="po-control">
+          <label>Progress</label>
+          <div class="row">
+            <input type="range" id="progressSlider" min="0" max="100" value="40">
+            <span class="val" id="progressVal">40%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="po-grid">
+        <div class="po-card">
+          <div class="po-card-title">⭐ Stars</div>
+          <div class="po-card-sub">Reward-coded. Best for quest mastery and grades.</div>
+          <div class="po-render"><div class="stars-row" id="starsRow"></div></div>
+          <div class="po-meta"><span>Reads as: <strong>achievement</strong></span><span>Use for: rewards</span></div>
+        </div>
+
+        <div class="po-card">
+          <div class="po-card-title">⚪ Circles</div>
+          <div class="po-card-sub">Checklist-coded. Each circle = one discrete check.</div>
+          <div class="po-render"><div class="circles-row" id="circlesRow"></div></div>
+          <div class="po-meta"><span>Reads as: <strong>checklist</strong></span><span>Use for: subtasks</span></div>
+        </div>
+
+        <div class="po-card">
+          <div class="po-card-title">▬ Lines</div>
+          <div class="po-card-sub">Minimal segmented bar. Scales to lots of steps.</div>
+          <div class="po-render"><div class="lines-row" id="linesRow"></div></div>
+          <div class="po-meta"><span>Reads as: <strong>progress bar</strong></span><span>Use for: long sequences</span></div>
+        </div>
+
+        <div class="po-card">
+          <div class="po-card-title">📍 Checkpoints</div>
+          <div class="po-card-sub">Journey-coded. One filled rail with discrete dots.</div>
+          <div class="po-render">
+            <div class="checkpoints" id="checkpoints">
+              <div class="cp-fill" id="cpFill"></div>
+              <div class="checkpoints-row" id="checkpointsRow"></div>
+            </div>
+          </div>
+          <div class="po-meta"><span>Reads as: <strong>journey</strong></span><span>Use for: multi-day goals</span></div>
+        </div>
+      </div>
+
+      <div class="composer-section">
+        <div class="page-header" style="border-bottom:none;margin-bottom:0;padding-bottom:0;">
+          <div class="sec-title" style="font-size:18px;">Message Composer Variants</div>
+          <div class="sec-desc" style="font-size:13px;">Three composer treatments from the spec, used inside the chat surface where progress is shown.</div>
+        </div>
+        <div class="composer-grid">
+          <div class="composer">
+            <div class="title">1 — Plain</div>
+            <div class="input"><span>Type a message…</span><span class="send">↑</span></div>
+          </div>
+          <div class="composer">
+            <div class="title">2 — With voice</div>
+            <div class="input"><span>Type a message…</span><span class="mic">🎤</span><span class="send">↑</span></div>
+          </div>
+          <div class="composer with-suggest">
+            <div class="title">3 — With suggestions</div>
+            <div class="input"><span>Type a message…</span><span class="send">↑</span></div>
+            <div class="pills"><span class="pill">Yes!</span><span class="pill">Show me</span><span class="pill">Tell me more</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function render(){
+  var steps = parseInt(document.getElementById('stepsSlider').value, 10);
+  var progress = parseInt(document.getElementById('progressSlider').value, 10);
+  document.getElementById('stepsVal').textContent = steps;
+  document.getElementById('progressVal').textContent = progress + '%';
+
+  var fillUnits = (progress / 100) * steps;
+  var fullSteps = Math.floor(fillUnits);
+  var partial = fillUnits - fullSteps > 0.05 && fullSteps < steps;
+
+  // Stars
+  var starsRow = document.getElementById('starsRow');
+  starsRow.innerHTML = '';
+  for (var i = 0; i < steps; i++) {
+    var s = document.createElement('span');
+    s.className = 'star';
+    if (i < fullSteps) s.classList.add('on');
+    else if (i === fullSteps && partial) s.classList.add('partial');
+    s.textContent = '⭐';
+    starsRow.appendChild(s);
+  }
+
+  // Circles
+  var circlesRow = document.getElementById('circlesRow');
+  circlesRow.innerHTML = '';
+  for (var j = 0; j < steps; j++) {
+    var c = document.createElement('div');
+    c.className = 'circle';
+    if (j < fullSteps) c.classList.add('on');
+    else if (j === fullSteps && partial) c.classList.add('partial');
+    circlesRow.appendChild(c);
+  }
+
+  // Lines
+  var linesRow = document.getElementById('linesRow');
+  linesRow.innerHTML = '';
+  for (var k = 0; k < steps; k++) {
+    var l = document.createElement('div');
+    l.className = 'line';
+    if (k < fullSteps) l.classList.add('on');
+    else if (k === fullSteps && partial) l.classList.add('partial');
+    linesRow.appendChild(l);
+  }
+
+  // Checkpoints
+  var cpRow = document.getElementById('checkpointsRow');
+  cpRow.innerHTML = '';
+  for (var m = 0; m < steps; m++) {
+    var p = document.createElement('div');
+    p.className = 'cp';
+    if (m < fullSteps) p.classList.add('on');
+    else if (m === fullSteps) p.classList.add('current');
+    cpRow.appendChild(p);
+  }
+  // Compute fill width based on progress
+  var fillPct = Math.max(0, Math.min(100, progress));
+  document.getElementById('cpFill').style.width = 'calc(' + fillPct + '% - 24px)';
+}
+
+document.getElementById('stepsSlider').addEventListener('input', render);
+document.getElementById('progressSlider').addEventListener('input', render);
+render();
+</script>
+
+<script src="/product-explorer/goal-progress/_nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>
