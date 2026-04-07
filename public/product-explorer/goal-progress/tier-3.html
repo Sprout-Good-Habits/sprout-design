@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tier 3 Playground — Goal Progress System</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+  @font-face { font-family: 'TossFace'; src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype'); }
+
+  .pg-stage { display: flex; gap: 32px; align-items: flex-start; margin-top: 16px; }
+  .pg-device-col { flex-shrink: 0; }
+  .pg-side {
+    flex: 1; min-width: 0;
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    padding: 24px;
+    position: sticky; top: 24px;
+  }
+  .pg-side h3 {
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--brand-700); margin-bottom: 12px;
+  }
+  .pg-crumbs {
+    display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+    font-size: 12px; color: var(--text-tertiary); margin-bottom: 12px;
+  }
+  .pg-crumbs .step { padding: 3px 8px; border-radius: 999px; background: var(--gray-100); }
+  .pg-crumbs .step.now { background: var(--brand-100); color: var(--brand-700); font-weight: 700; }
+  .pg-tip {
+    background: white; border: 1px solid var(--gray-200);
+    border-radius: 10px; padding: 12px 14px;
+    font-size: 13px; line-height: 19px; color: var(--text-secondary);
+  }
+  .pg-tip strong { color: var(--text-primary); }
+  .pg-reset {
+    margin-top: 16px;
+    padding: 8px 14px; border-radius: 8px;
+    border: 1px solid var(--gray-300); background: white;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: inherit; color: var(--text-secondary);
+  }
+  .pg-reset:hover { background: var(--gray-50); }
+
+  /* ── Device frame ── */
+  .device {
+    width: 360px; background: white;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 36px; padding: 5px;
+    box-shadow:
+      0 12px 24px -4px rgba(10,13,18,0.10),
+      0 4px 6px -2px rgba(10,13,18,0.04);
+  }
+  .device-inner {
+    background: white; border-radius: 32px;
+    padding: 4px; overflow: hidden; position: relative;
+  }
+  .device-inner::after {
+    content: ''; position: absolute; inset: 0;
+    border-radius: inherit; pointer-events: none;
+    box-shadow: inset 0 0 6px 2px rgba(10,13,18,0.08);
+    z-index: 50;
+  }
+  .device-screen {
+    background: white;
+    border-radius: 28px;
+    width: 100%; height: 700px;
+    overflow: hidden; position: relative;
+  }
+  .screen { position: absolute; inset: 0; display: none; flex-direction: column; overflow: hidden; }
+  .screen.active { display: flex; }
+
+  .status-bar {
+    display: flex; justify-content: space-between;
+    padding: 14px 22px 4px;
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+
+  /* ── Top toolbar (denser, less rounded) ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 18px 12px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .topbar .icon-btn {
+    width: 32px; height: 32px;
+    background: none; border: none;
+    font-family: 'TossFace'; font-size: 18px;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+  .topbar .pills { display: flex; gap: 6px; }
+  .topbar .pill {
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px; font-weight: 700;
+    color: var(--text-secondary);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .topbar .tf { font-family: 'TossFace'; font-size: 13px; line-height: 1; }
+  .topbar.with-back .back {
+    background: none; border: none;
+    font-size: 22px; cursor: pointer;
+    color: var(--text-primary);
+    padding: 0 4px;
+  }
+  .topbar.with-back .title {
+    flex: 1; text-align: center;
+    font-size: 14px; font-weight: 700; color: var(--text-primary);
+  }
+
+  /* ── Home (Tier 3 list style) ── */
+  .home-greeting {
+    padding: 12px 22px 6px;
+    font-size: 14px; font-weight: 700; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .home-date {
+    padding: 0 22px 12px;
+    font-size: 22px; font-weight: 700; color: var(--text-primary);
+  }
+  .goal-widget {
+    margin: 0 18px 14px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .goal-widget:hover { border-color: var(--brand-300); }
+  .goal-widget .gh { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .goal-widget .ge { font-family: 'TossFace'; font-size: 22px; }
+  .goal-widget .gt { font-size: 13px; font-weight: 700; color: var(--text-primary); flex: 1; }
+  .goal-widget .gtap { font-size: 11px; color: var(--brand-600); }
+  .goal-widget .gbar { height: 6px; background: white; border: 1px solid var(--gray-200); border-radius: 999px; overflow: hidden; }
+  .goal-widget .gbar > span { display: block; height: 100%; background: var(--brand-500); border-radius: 999px; transition: width 0.4s; }
+  .goal-widget .gstats { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-tertiary); margin-top: 6px; }
+
+  .home-section-label {
+    padding: 8px 22px 6px;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .home-list {
+    padding: 0 18px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .home-list .row {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .home-list .row .e { font-family: 'TossFace'; font-size: 22px; }
+  .home-list .row .nm { flex: 1; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .home-list .row .nm small { display: block; font-weight: 400; color: var(--text-tertiary); font-size: 11px; }
+  .home-list .row .b {
+    font-size: 11px; font-weight: 700;
+    background: var(--brand-50); color: var(--brand-700);
+    padding: 3px 8px; border-radius: 999px;
+  }
+
+  /* ── Lobby (checklist) ── */
+  .lobby-meta {
+    margin: 12px 18px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .lobby-meta .lh { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .lobby-meta .le { font-family: 'TossFace'; font-size: 24px; }
+  .lobby-meta .lt { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .lobby-meta .ld { font-size: 11px; color: var(--text-tertiary); }
+  .lobby-meta .lbar { height: 6px; background: white; border: 1px solid var(--gray-200); border-radius: 999px; overflow: hidden; }
+  .lobby-meta .lbar > span { display: block; height: 100%; background: var(--brand-500); border-radius: 999px; transition: width 0.5s; }
+  .lobby-meta .lstats { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-tertiary); margin-top: 6px; }
+
+  .checklist {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 18px 18px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .checklist::-webkit-scrollbar { display: none; }
+  .checklist .crow {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .checklist .crow:not(.is-locked):hover { border-color: var(--brand-300); transform: translateX(2px); }
+  .checklist .crow.is-locked { opacity: 0.5; cursor: not-allowed; }
+  .checklist .ck {
+    width: 22px; height: 22px;
+    border-radius: 999px;
+    border: 2px solid var(--gray-300);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: 'TossFace';
+    font-size: 11px;
+    color: transparent;
+  }
+  .checklist .e { font-family: 'TossFace'; font-size: 22px; flex-shrink: 0; }
+  .checklist .nm { flex: 1; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .checklist .nm small { display: block; font-weight: 400; font-size: 11px; color: var(--text-tertiary); }
+  .checklist .stars { display: flex; gap: 1px; }
+  .checklist .stars span { font-family: 'TossFace'; font-size: 11px; color: var(--gray-300); }
+  .checklist .stars span.on { color: var(--yellow-400); }
+  .checklist .flag {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 999px;
+    text-transform: uppercase;
+    background: var(--gray-100); color: var(--text-tertiary);
+  }
+  .checklist .crow.is-now { border-color: var(--brand-400); background: var(--brand-25, #f5fbff); }
+  .checklist .crow.is-now .ck { border-color: var(--brand-400); }
+  .checklist .crow.is-now .flag { background: var(--brand-500); color: white; }
+  .checklist .crow.is-thinking { border-color: var(--violet-300); background: var(--violet-25, #fbfaff); }
+  .checklist .crow.is-thinking .ck { border-color: var(--violet-400); color: var(--violet-500); }
+  .checklist .crow.is-thinking .flag { background: var(--violet-500); color: white; }
+  .checklist .crow.is-waiting { border-color: var(--yellow-300); background: var(--yellow-25, #fefdf0); }
+  .checklist .crow.is-waiting .flag { background: var(--yellow-500); color: white; }
+  .checklist .crow.is-done { background: var(--green-25, #f6fef9); border-color: var(--green-300); }
+  .checklist .crow.is-done .ck { background: var(--green-500); border-color: var(--green-500); color: white; }
+  .checklist .crow.is-done .flag { background: var(--green-500); color: white; }
+  .checklist .crow.is-done .nm { text-decoration: line-through; color: var(--text-tertiary); }
+  .checklist .crow.is-locked .ck { color: var(--text-tertiary); }
+
+  /* ── Unit detail (compact) ── */
+  .unit-detail {
+    flex: 1; overflow-y: auto;
+    padding: 16px 18px 18px;
+  }
+  .unit-detail::-webkit-scrollbar { display: none; }
+  .unit-hero {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .unit-hero .ue { font-family: 'TossFace'; font-size: 56px; line-height: 1; flex-shrink: 0; }
+  .unit-hero .un { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+  .unit-hero .ud { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
+
+  .sprout-says {
+    background: var(--brand-50);
+    border-left: 3px solid var(--brand-500);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    display: flex; gap: 10px;
+  }
+  .sprout-says .ava { font-family: 'TossFace'; font-size: 22px; }
+  .sprout-says .body { font-size: 13px; line-height: 19px; color: var(--text-secondary); flex: 1; }
+  .sprout-says .body strong { color: var(--brand-700); }
+
+  .quest-actions { display: flex; flex-direction: column; gap: 8px; }
+  .quest-actions .qbtn {
+    background: var(--brand-500);
+    color: white; border: none;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .quest-actions .qbtn .tf { font-family: 'TossFace'; font-size: 16px; }
+  .quest-actions .qbtn.alt {
+    background: white; color: var(--text-secondary);
+    border: 1px solid var(--gray-200);
+  }
+  .quest-actions .qbtn.alt:hover { border-color: var(--brand-300); }
+
+  /* ── Camera ── */
+  .camera-view {
+    flex: 1; background: #181d27;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .camera-frame {
+    flex: 1;
+    background:
+      radial-gradient(ellipse at center, rgba(255,255,255,0.06) 0%, transparent 60%),
+      linear-gradient(135deg, #2a3140 0%, #181d27 100%);
+    margin: 14px;
+    border-radius: 12px;
+    border: 2px dashed rgba(255,255,255,0.3);
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    color: rgba(255,255,255,0.7); text-align: center; padding: 20px;
+  }
+  .camera-frame .e { font-family: 'TossFace'; font-size: 56px; margin-bottom: 12px; }
+  .camera-frame .label { font-size: 12px; }
+  .camera-controls { padding: 14px 14px 24px; display: flex; align-items: center; justify-content: center; }
+  .camera-shutter {
+    width: 60px; height: 60px; border-radius: 999px;
+    background: white; border: 4px solid rgba(255,255,255,0.4);
+    cursor: pointer;
+  }
+
+  /* ── Chat ── */
+  .chat-thread {
+    flex: 1; overflow-y: auto;
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+    background: var(--gray-50);
+  }
+  .chat-thread::-webkit-scrollbar { display: none; }
+  .chat-msg {
+    max-width: 78%;
+    padding: 8px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .chat-msg.sprout {
+    align-self: flex-start;
+    background: white;
+    border: 1px solid var(--gray-200);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+    display: flex; gap: 6px; align-items: flex-start;
+  }
+  .chat-msg.sprout .a { font-family: 'TossFace'; font-size: 16px; }
+  .chat-msg.kid {
+    align-self: flex-end;
+    background: var(--brand-500);
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-composer {
+    flex-shrink: 0;
+    padding: 8px 14px 14px;
+    display: flex; gap: 8px;
+    background: white;
+    border-top: 1px solid var(--gray-100);
+  }
+  .chat-composer input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    font-size: 13px; font-family: inherit;
+  }
+  .chat-composer input:focus { outline: 2px solid var(--brand-300); }
+  .chat-composer .send {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    background: var(--brand-500);
+    color: white; border: none;
+    font-size: 16px; cursor: pointer;
+  }
+
+  /* ── Quiz ── */
+  .quiz-wrap { flex: 1; padding: 14px 18px 18px; overflow-y: auto; }
+  .quiz-q {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .quiz-q .qe { font-family: 'TossFace'; font-size: 36px; }
+  .quiz-q .qt { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-top: 8px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-primary);
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .quiz-option:hover { border-color: var(--brand-300); }
+  .quiz-option.correct { background: var(--green-50); border-color: var(--green-400); color: var(--green-800); }
+  .quiz-option.wrong { background: var(--red-50); border-color: var(--red-400); color: var(--red-800); }
+
+  /* ── Result ── */
+  .result-screen {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .result-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 28px 22px;
+    text-align: center;
+    width: 100%;
+  }
+  .result-card .e { font-family: 'TossFace'; font-size: 72px; display: block; margin-bottom: 10px; }
+  .result-card .e.spin { animation: spin 1.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .result-card .e.bounce { animation: bounce 1.5s ease infinite; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .result-card .t { font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .result-card .d { font-size: 12px; color: var(--text-tertiary); line-height: 17px; margin-bottom: 14px; }
+  .result-card .reward {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; background: var(--brand-50); color: var(--brand-700);
+    border-radius: 999px; font-size: 12px; font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .result-card .reward .tf { font-family: 'TossFace'; font-size: 14px; }
+  .result-card .cont {
+    display: block; width: 100%;
+    background: var(--brand-500); color: white; border: none;
+    border-radius: 10px; padding: 12px;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  .result-card.waiting { background: var(--yellow-25, #fefdf0); border-color: var(--yellow-300); }
+  .result-card.waiting .reward { background: var(--yellow-100); color: var(--yellow-800); }
+
+  @media (max-width: 1100px) {
+    .pg-stage { flex-direction: column; align-items: center; }
+    .pg-side { width: 100%; max-width: 420px; position: static; }
+  }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="page-header">
+        <div class="sec-label">Goal Progress System</div>
+        <div class="sec-title">Tier 3 Playground</div>
+        <div class="sec-desc">Same loop as Tier 2, denser list/checklist treatment for older kids. Tap the soccer goal to open the lobby, tap any row to run the unit.</div>
+      </div>
+
+      <div class="pg-stage">
+        <div class="pg-device-col">
+          <div class="device">
+            <div class="device-inner">
+              <div class="device-screen">
+
+                <!-- ───── HOME ───── -->
+                <div class="screen active" data-screen="home">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar">
+                    <button class="icon-btn">🛡️</button>
+                    <div class="pills">
+                      <span class="pill"><span class="tf">🔥</span>12</span>
+                      <span class="pill"><span class="tf">💎</span>40</span>
+                    </div>
+                  </div>
+                  <div class="home-greeting">Today</div>
+                  <div class="home-date">Tuesday</div>
+                  <div class="goal-widget" data-action="home-to-lobby">
+                    <div class="gh"><span class="ge">⚽</span><div class="gt">Soccer practice</div><div class="gtap">Open ›</div></div>
+                    <div class="gbar"><span id="home-bar" style="width:42%;"></span></div>
+                    <div class="gstats"><span><strong id="home-units-done">3</strong>/7 units</span><span>3-day streak 🔥</span></div>
+                  </div>
+                  <div class="home-section-label">Today's quests</div>
+                  <div class="home-list">
+                    <div class="row" data-action="home-to-lobby">
+                      <span class="e">🐻</span>
+                      <span class="nm">Bear hugs<small>10 hugs · 4:30 PM</small></span>
+                      <span class="b">Now</span>
+                    </div>
+                    <div class="row" data-action="home-to-lobby">
+                      <span class="e">🌀</span>
+                      <span class="nm">Typhoon spin<small>5 spins · 5:00 PM</small></span>
+                      <span class="b" style="background:var(--gray-100);color:var(--text-tertiary);">Next</span>
+                    </div>
+                    <div class="row" style="opacity:0.5;">
+                      <span class="e">🧱</span>
+                      <span class="nm">Brick wall<small>Locked</small></span>
+                      <span class="b" style="background:var(--gray-100);color:var(--text-tertiary);">🔒</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ───── LOBBY ───── -->
+                <div class="screen" data-screen="lobby">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back">
+                    <button class="back" data-action="back-to-home">‹</button>
+                    <div class="title">Soccer practice</div>
+                    <button class="icon-btn">⋯</button>
+                  </div>
+                  <div class="lobby-meta">
+                    <div class="lh"><span class="le">⚽</span><div><div class="lt">Soccer practice</div><div class="ld">7 units · daily goal</div></div></div>
+                    <div class="lbar"><span id="lobby-bar" style="width:42%;"></span></div>
+                    <div class="lstats"><span id="lobby-stats">3/7 units · 3-day streak 🔥</span></div>
+                  </div>
+                  <div class="checklist" id="checklist"></div>
+                </div>
+
+                <!-- ───── UNIT DETAIL ───── -->
+                <div class="screen" data-screen="unit">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back">
+                    <button class="back" data-action="back-to-lobby">‹</button>
+                    <div class="title" id="unit-title">Bear hugs</div>
+                    <button class="icon-btn">ℹ︎</button>
+                  </div>
+                  <div class="unit-detail">
+                    <div class="unit-hero">
+                      <span class="ue" id="unit-emoji">🐻</span>
+                      <div><div class="un" id="unit-name">Bear hugs</div><div class="ud" id="unit-desc">10 hugs · earn ⭐⭐⭐</div></div>
+                    </div>
+                    <div class="sprout-says">
+                      <span class="ava">🌱</span>
+                      <div class="body" id="sprout-says-body"><strong>Sprout:</strong> Show me your strongest bear hug.</div>
+                    </div>
+                    <div class="quest-actions">
+                      <button class="qbtn" data-action="open-camera"><span class="tf">📷</span> Take a photo</button>
+                      <button class="qbtn alt" data-action="open-chat"><span class="tf">💬</span> Tell Sprout</button>
+                      <button class="qbtn alt" data-action="open-quiz"><span class="tf">❓</span> Quick quiz</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ───── CAMERA ───── -->
+                <div class="screen" data-screen="camera">
+                  <div class="status-bar" style="color:white;"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back" style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <button class="back" data-action="back-to-unit" style="color:white;">‹</button>
+                    <div class="title" style="color:white;">Take a photo</div>
+                    <button class="icon-btn" style="color:white;">🔄</button>
+                  </div>
+                  <div class="camera-view">
+                    <div class="camera-frame">
+                      <div class="e" id="camera-emoji">🐻</div>
+                      <div class="label">Frame your bear hug here</div>
+                    </div>
+                    <div class="camera-controls">
+                      <button class="camera-shutter" data-action="snap-photo" aria-label="Snap"></button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ───── CHAT ───── -->
+                <div class="screen" data-screen="chat">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back">
+                    <button class="back" data-action="back-to-unit">‹</button>
+                    <div class="title">Tell Sprout</div>
+                    <button class="icon-btn">ℹ︎</button>
+                  </div>
+                  <div class="chat-thread" id="chat-thread">
+                    <div class="chat-msg sprout"><span class="a">🌱</span><span>Did you do your bear hugs? How did it feel?</span></div>
+                  </div>
+                  <div class="chat-composer">
+                    <input type="text" id="chat-input" placeholder="Type a message…">
+                    <button class="send" data-action="send-chat">↑</button>
+                  </div>
+                </div>
+
+                <!-- ───── QUIZ ───── -->
+                <div class="screen" data-screen="quiz">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back">
+                    <button class="back" data-action="back-to-unit">‹</button>
+                    <div class="title">Quick quiz</div>
+                    <button class="icon-btn">ℹ︎</button>
+                  </div>
+                  <div class="quiz-wrap">
+                    <div class="quiz-q">
+                      <span class="qe">🐻</span>
+                      <div class="qt">How many bear hugs make a set?</div>
+                    </div>
+                    <div class="quiz-options">
+                      <button class="quiz-option" data-correct="false">5 hugs</button>
+                      <button class="quiz-option" data-correct="true">10 hugs</button>
+                      <button class="quiz-option" data-correct="false">20 hugs</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ───── RESULT ───── -->
+                <div class="screen" data-screen="result">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar"><button class="icon-btn">🛡️</button><div class="pills"><span class="pill"><span class="tf">🔥</span>12</span><span class="pill"><span class="tf">💎</span>40</span></div></div>
+                  <div class="result-screen">
+                    <div class="result-card" id="result-card">
+                      <span class="e" id="result-emoji">⏳</span>
+                      <div class="t" id="result-title">Sprout is checking…</div>
+                      <div class="d" id="result-desc">Looking at your submission.</div>
+                      <div class="reward" id="result-reward" style="display:none;"><span class="tf">💎</span> +20</div>
+                      <button class="cont" id="result-cont" data-action="result-continue" style="display:none;">Back to lobby</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="pg-side">
+          <h3>Where you are</h3>
+          <div class="pg-crumbs" id="pg-crumbs"></div>
+          <div class="pg-tip" id="pg-tip"><strong>Try this:</strong> Tap the soccer goal widget on the home screen, or any row in the list, to open the lobby.</div>
+          <button class="pg-reset" id="pg-reset">↺ Reset playground</button>
+        </aside>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+//   Tier 3 Playground state machine
+//   (Same logic as Tier 2 — different chrome)
+// ════════════════════════════════════════════
+var STATE = {
+  units: [],
+  current: 'home',
+  activeUnit: null
+};
+
+function initialUnits(){
+  return [
+    { id: 'warmup',    name: 'Warmup',       emoji: '🌞', status: 'done',   stars: 3, desc: '5 min stretch' },
+    { id: 'drills',    name: 'Drills',       emoji: '⚽', status: 'done',   stars: 2, desc: '20 dribbles' },
+    { id: 'goalkicks', name: 'Goal kicks',   emoji: '🥅', status: 'done',   stars: 2, desc: '10 shots on goal' },
+    { id: 'bear',      name: 'Bear hugs',    emoji: '🐻', status: 'now',    stars: 0, desc: '10 hugs · earn ⭐⭐⭐', sprout: 'Show me your strongest bear hug — snap a photo or tell me about it.' },
+    { id: 'typhoon',   name: 'Typhoon spin', emoji: '🌀', status: 'todo',   stars: 0, desc: '5 spins · earn ⭐⭐⭐', sprout: 'Twirl 5 times like a typhoon!' },
+    { id: 'brick',     name: 'Brick wall',   emoji: '🧱', status: 'locked', stars: 0, desc: 'Wall sit for 30s' },
+    { id: 'ferris',    name: 'Ferris wheel', emoji: '🎡', status: 'locked', stars: 0, desc: '5 forward rolls' }
+  ];
+}
+
+var FLAGS = { todo:'To do', now:'Now', thinking:'Thinking', waiting:'Parent', done:'Done', locked:'Locked' };
+var CRUMBS = {
+  home: ['Home'], lobby: ['Home','Lobby'], unit: ['Home','Lobby','Unit'],
+  camera: ['Home','Lobby','Unit','Camera'], chat: ['Home','Lobby','Unit','Chat'],
+  quiz: ['Home','Lobby','Unit','Quiz'], result: ['Home','Lobby','Unit','Result']
+};
+var TIPS = {
+  home:   '<strong>Try this:</strong> Tap the soccer goal widget — or any quest row — to open the lobby.',
+  lobby:  '<strong>Try this:</strong> Tap any non-locked checklist row. Bear hugs is the active one.',
+  unit:   '<strong>Three input methods.</strong> Camera + Chat go through Sprout AI verification (auto or escalated). The Quiz is deterministic.',
+  camera: '<strong>Tap the shutter</strong> to submit. Sprout will think, then auto-approve or escalate.',
+  chat:   '<strong>Send any message</strong>. After a brief exchange Sprout closes the chat and verifies.',
+  quiz:   '<strong>Pick 10 hugs</strong> for an instant deterministic success. Wrong answers trip the warning state.',
+  result: '<strong>Tap continue</strong> — the lobby will reflect the unit\'s new state.'
+};
+
+function $(s){ return document.querySelector(s); }
+function $$(s){ return document.querySelectorAll(s); }
+
+function show(screen){
+  STATE.current = screen;
+  $$('.screen').forEach(function(el){ el.classList.toggle('active', el.dataset.screen === screen); });
+  renderCrumbs();
+  $('#pg-tip').innerHTML = TIPS[screen] || '';
+}
+function renderCrumbs(){
+  var c = CRUMBS[STATE.current] || [];
+  $('#pg-crumbs').innerHTML = c.map(function(label, i){
+    var cls = 'step' + (i === c.length - 1 ? ' now' : '');
+    return '<span class="'+cls+'">'+label+'</span>' + (i < c.length-1 ? '<span>›</span>' : '');
+  }).join('');
+}
+
+function renderLobby(){
+  var html = '';
+  STATE.units.forEach(function(u){
+    var stars = '';
+    for (var i = 0; i < 3; i++) stars += '<span'+(i<u.stars?' class="on"':'')+'>⭐</span>';
+    var ckIcon = u.status === 'done' ? '✓' : u.status === 'thinking' ? '⏳' : u.status === 'waiting' ? '👀' : u.status === 'locked' ? '🔒' : '';
+    html += '<div class="crow is-'+u.status+'" data-unit="'+u.id+'">'
+         + '<div class="ck">'+ckIcon+'</div>'
+         + '<span class="e">'+u.emoji+'</span>'
+         + '<span class="nm">'+u.name+'<small>'+(u.desc||'')+'</small></span>'
+         + '<span class="stars">'+stars+'</span>'
+         + '<span class="flag">'+FLAGS[u.status]+'</span>'
+         + '</div>';
+  });
+  $('#checklist').innerHTML = html;
+  $$('#checklist .crow').forEach(function(el){
+    el.addEventListener('click', function(){
+      if (el.classList.contains('is-locked')) return;
+      openUnit(el.dataset.unit);
+    });
+  });
+  var doneCount = STATE.units.filter(function(u){ return u.status === 'done'; }).length;
+  var pct = Math.round(doneCount / STATE.units.length * 100);
+  $('#lobby-bar').style.width = pct + '%';
+  $('#lobby-stats').textContent = doneCount + '/' + STATE.units.length + ' units · 3-day streak 🔥';
+  $('#home-bar').style.width = pct + '%';
+  $('#home-units-done').textContent = doneCount;
+}
+
+function openUnit(id){
+  var u = STATE.units.find(function(x){ return x.id === id; });
+  if (!u) return;
+  STATE.activeUnit = id;
+  $('#unit-title').textContent = u.name;
+  $('#unit-name').textContent = u.name;
+  $('#unit-emoji').textContent = u.emoji;
+  $('#unit-desc').textContent = u.desc || '';
+  $('#sprout-says-body').innerHTML = '<strong>Sprout:</strong> ' + (u.sprout || ('Ready to do ' + u.name + '?'));
+  $('#camera-emoji').textContent = u.emoji;
+  show('unit');
+}
+
+function startVerification(verdict){
+  show('result');
+  var rc = $('#result-card');
+  rc.classList.remove('waiting');
+  $('#result-emoji').className = 'e';
+  $('#result-reward').style.display = 'none';
+  $('#result-cont').style.display = 'none';
+
+  if (verdict === 'instant-success') {
+    $('#result-emoji').textContent = '🎉';
+    $('#result-emoji').classList.add('bounce');
+    $('#result-title').textContent = 'Nailed it!';
+    $('#result-desc').textContent = 'Quiz answered correctly. Instant credit.';
+    $('#result-reward').style.display = 'inline-flex';
+    $('#result-cont').style.display = 'block';
+    markUnit('done');
+    return;
+  }
+
+  $('#result-emoji').textContent = '⏳';
+  $('#result-emoji').classList.add('spin');
+  $('#result-title').textContent = 'Sprout is checking…';
+  $('#result-desc').textContent = 'Looking at your submission.';
+  markUnit('thinking');
+
+  setTimeout(function(){
+    $('#result-emoji').className = 'e';
+    if (verdict === 'auto-approve') {
+      $('#result-emoji').textContent = '✅';
+      $('#result-emoji').classList.add('bounce');
+      $('#result-title').textContent = 'AI approved!';
+      $('#result-desc').textContent = 'Sprout is sure you nailed it.';
+      $('#result-reward').style.display = 'inline-flex';
+      markUnit('done');
+    } else if (verdict === 'parent') {
+      rc.classList.add('waiting');
+      $('#result-emoji').textContent = '👀';
+      $('#result-title').textContent = 'Sent to a parent';
+      $('#result-desc').textContent = 'Sprout wasn\'t 100% sure. A grown-up will check.';
+      markUnit('waiting');
+    } else if (verdict === 'warning') {
+      $('#result-emoji').textContent = '⚠️';
+      $('#result-title').textContent = 'Try again';
+      $('#result-desc').textContent = 'Give it another shot.';
+      markUnit('now');
+    }
+    $('#result-cont').style.display = 'block';
+  }, 1600);
+}
+
+function markUnit(newStatus){
+  var u = STATE.units.find(function(x){ return x.id === STATE.activeUnit; });
+  if (!u) return;
+  u.status = newStatus;
+  if (newStatus === 'done') u.stars = Math.max(u.stars, 2);
+  if (newStatus === 'done') {
+    var hasNow = STATE.units.find(function(x){ return x.status === 'now'; });
+    var firstTodo = STATE.units.find(function(x){ return x.status === 'todo'; });
+    if (!hasNow && firstTodo) firstTodo.status = 'now';
+    var locked = STATE.units.find(function(x){ return x.status === 'locked'; });
+    var nowAfter = STATE.units.find(function(x){ return x.status === 'now'; });
+    if (!nowAfter && locked) locked.status = 'todo';
+  }
+  renderLobby();
+}
+
+document.body.addEventListener('click', function(e){
+  var t = e.target.closest('[data-action]');
+  if (!t) return;
+  var action = t.dataset.action;
+  switch(action){
+    case 'home-to-lobby': show('lobby'); break;
+    case 'back-to-home': show('home'); break;
+    case 'back-to-lobby': show('lobby'); break;
+    case 'back-to-unit': show('unit'); break;
+    case 'open-camera': show('camera'); break;
+    case 'open-chat': resetChat(); show('chat'); break;
+    case 'open-quiz': resetQuiz(); show('quiz'); break;
+    case 'snap-photo': startVerification(Math.random() < 0.6 ? 'auto-approve' : 'parent'); break;
+    case 'send-chat': sendChatMessage(); break;
+    case 'result-continue': show('lobby'); break;
+  }
+});
+
+function resetChat(){
+  $('#chat-thread').innerHTML = '<div class="chat-msg sprout"><span class="a">🌱</span><span>Did you do your bear hugs? How did it feel?</span></div>';
+  $('#chat-input').value = '';
+  chatStep = 0;
+}
+var chatStep = 0;
+function sendChatMessage(){
+  var input = $('#chat-input');
+  var v = input.value.trim();
+  if (!v) v = 'Yes! It was great.';
+  var thread = $('#chat-thread');
+  thread.innerHTML += '<div class="chat-msg kid">'+v.replace(/</g,'&lt;')+'</div>';
+  input.value = '';
+  thread.scrollTop = thread.scrollHeight;
+  chatStep++;
+  setTimeout(function(){
+    if (chatStep === 1) {
+      thread.innerHTML += '<div class="chat-msg sprout"><span class="a">🌱</span><span>Awesome! How many did you do?</span></div>';
+      thread.scrollTop = thread.scrollHeight;
+    } else {
+      thread.innerHTML += '<div class="chat-msg sprout"><span class="a">🌱</span><span>Got it. Checking with Sprout AI…</span></div>';
+      thread.scrollTop = thread.scrollHeight;
+      setTimeout(function(){
+        chatStep = 0;
+        startVerification(Math.random() < 0.7 ? 'auto-approve' : 'parent');
+      }, 700);
+    }
+  }, 400);
+}
+$('#chat-input') && $('#chat-input').addEventListener('keydown', function(e){ if (e.key === 'Enter') sendChatMessage(); });
+
+function resetQuiz(){
+  $$('.quiz-option').forEach(function(b){ b.classList.remove('correct','wrong'); b.disabled = false; });
+}
+$$('.quiz-option').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var correct = btn.dataset.correct === 'true';
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    $$('.quiz-option').forEach(function(b){ b.disabled = true; });
+    setTimeout(function(){ startVerification(correct ? 'instant-success' : 'warning'); }, 600);
+  });
+});
+
+$('#pg-reset').addEventListener('click', function(){
+  STATE.units = initialUnits();
+  renderLobby();
+  show('home');
+});
+
+STATE.units = initialUnits();
+renderLobby();
+show('home');
+</script>
+
+<script src="/product-explorer/goal-progress/_nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

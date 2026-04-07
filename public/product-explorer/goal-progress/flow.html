@@ -12,10 +12,7 @@
     gap: 24px;
     align-items: flex-start;
   }
-  .flow-main {
-    flex: 1;
-    min-width: 0;
-  }
+  .flow-main { flex: 1; min-width: 0; }
   .flow-tabs {
     display: inline-flex;
     background: var(--gray-100);
@@ -39,6 +36,7 @@
     color: var(--text-primary);
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
+
   .flow-canvas-wrap {
     background: var(--bg-primary);
     border: 1px solid var(--border-secondary);
@@ -53,36 +51,25 @@
 
   /* Node styles */
   .node { cursor: pointer; transition: all 0.15s; }
-  .node-rect, .node-diamond, .node-pill {
+  .node-rect, .node-diamond, .node-pill, .node-hub {
     transition: all 0.15s;
   }
-  .node-rect {
-    fill: white;
-    stroke: var(--gray-300);
-    stroke-width: 2;
+  .node-rect { fill: white; stroke: var(--gray-300); stroke-width: 2; }
+  .node-diamond { fill: var(--yellow-50); stroke: var(--yellow-500); stroke-width: 2; }
+  .node-input .node-rect { fill: var(--brand-25); stroke: var(--brand-400); }
+  .node-thinking .node-rect { fill: var(--violet-50); stroke: var(--violet-400); }
+  .node-waiting .node-rect { fill: var(--yellow-25, #fefdf0); stroke: var(--yellow-400); }
+  .node-approved .node-rect { fill: var(--green-50); stroke: var(--green-400); }
+  .node-warning .node-rect { fill: var(--orange-50); stroke: var(--orange-500); }
+  .node-hub .node-rect {
+    fill: var(--brand-100);
+    stroke: var(--brand-600);
+    stroke-width: 3;
   }
-  .node-diamond {
-    fill: var(--yellow-50);
-    stroke: var(--yellow-500);
-    stroke-width: 2;
-  }
-  .node-pill {
-    fill: var(--brand-50);
-    stroke: var(--brand-500);
-    stroke-width: 2;
-  }
-  .node-terminal .node-rect {
-    fill: var(--green-50);
-    stroke: var(--green-500);
-  }
-  .node-warning .node-rect {
-    fill: var(--orange-50);
-    stroke: var(--orange-500);
-  }
-  .node-state .node-rect { rx: 12; }
+  .node-state .node-rect { rx: 14; }
   .node-label {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     fill: var(--text-primary);
     text-anchor: middle;
     pointer-events: none;
@@ -94,13 +81,13 @@
     text-anchor: middle;
     pointer-events: none;
   }
-  .node:hover .node-rect, .node:hover .node-diamond, .node:hover .node-pill {
+  .node:hover .node-rect, .node:hover .node-diamond {
     filter: drop-shadow(0 4px 12px rgba(11,165,236,0.3));
     stroke-width: 3;
   }
-  .node.active .node-rect, .node.active .node-diamond, .node.active .node-pill {
+  .node.active .node-rect, .node.active .node-diamond {
     stroke: var(--brand-500);
-    stroke-width: 3;
+    stroke-width: 4;
     filter: drop-shadow(0 6px 16px rgba(11,165,236,0.4));
   }
 
@@ -115,20 +102,15 @@
   .edge-label {
     font-size: 11px;
     fill: var(--text-tertiary);
-    font-weight: 500;
+    font-weight: 600;
+    pointer-events: none;
   }
-  .edge.highlight {
-    stroke: var(--brand-500);
-    stroke-width: 3;
-  }
-  .edge.dim {
-    opacity: 0.15;
-  }
-  .node.dim {
-    opacity: 0.3;
-  }
+  .edge.dashed { stroke-dasharray: 6 4; }
+  .edge.highlight { stroke: var(--brand-500); stroke-width: 3.5; }
+  .edge.dim { opacity: 0.15; }
+  .node.dim { opacity: 0.3; }
 
-  /* Side panel */
+  /* Side inspector */
   .flow-detail {
     width: 320px;
     flex-shrink: 0;
@@ -160,10 +142,7 @@
     color: var(--text-secondary);
     margin-bottom: 16px;
   }
-  .flow-detail-meta {
-    padding-top: 16px;
-    border-top: 1px solid var(--gray-100);
-  }
+  .flow-detail-meta { padding-top: 16px; border-top: 1px solid var(--gray-100); }
   .flow-detail-meta dt {
     font-size: 11px;
     text-transform: uppercase;
@@ -186,7 +165,7 @@
 
   .flow-legend {
     display: flex;
-    gap: 16px;
+    gap: 14px;
     margin-top: 16px;
     flex-wrap: wrap;
     font-size: 12px;
@@ -194,8 +173,7 @@
   }
   .flow-legend-item { display: flex; align-items: center; gap: 6px; }
   .flow-legend-swatch {
-    width: 14px;
-    height: 14px;
+    width: 14px; height: 14px;
     border-radius: 4px;
     border: 2px solid;
   }
@@ -215,238 +193,232 @@
       <div class="page-header">
         <div class="sec-label">Goal Progress System</div>
         <div class="sec-title">Flow Diagrams</div>
-        <div class="sec-desc">Two interactive state machines from the Figma spec. Click any node to see what it means and what triggers it. Hover to highlight downstream paths.</div>
+        <div class="sec-desc">The state machine. Lobby is the hub — every loop starts and ends there. Click any node for details.</div>
       </div>
 
       <div class="flow-shell">
         <div class="flow-main">
           <div class="flow-tabs" role="tablist">
-            <button class="flow-tab active" data-tab="agent">Agent Interaction</button>
-            <button class="flow-tab" data-tab="goal">Goal Status</button>
+            <button class="flow-tab active" data-tab="agent">Agent Loop (one unit)</button>
+            <button class="flow-tab" data-tab="lobby">Lobby Lifecycle</button>
           </div>
 
           <div class="flow-canvas-wrap">
 
-            <!-- ───────── AGENT INTERACTION FLOW ───────── -->
+            <!-- ════════════════════════════════════
+                 AGENT LOOP — one unit, lobby is hub
+                 ════════════════════════════════════ -->
             <div class="flow-canvas active" id="canvas-agent">
-              <svg class="flow-svg" viewBox="0 0 880 720" xmlns="http://www.w3.org/2000/svg">
+              <svg class="flow-svg" viewBox="0 0 1100 720" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                     <path d="M0,0 L10,5 L0,10 z" fill="#a4a7ae"/>
                   </marker>
                 </defs>
 
-                <!-- Edges first so they sit under nodes -->
                 <g id="agent-edges">
-                  <path class="edge" d="M120,90 L120,170" data-from="camera" data-to="chat"/>
-                  <path class="edge" d="M120,250 L120,330" data-from="chat" data-to="canvas"/>
-                  <path class="edge" d="M170,370 C260,370 260,440 320,440" data-from="canvas" data-to="parent"/>
-                  <path class="edge" d="M440,440 L520,440" data-from="parent" data-to="verified"/>
-                  <path class="edge" d="M620,400 C620,300 720,300 720,250" data-from="verified" data-to="save-complete"/>
-                  <text class="edge-label" x="650" y="345">yes</text>
-                  <path class="edge" d="M620,480 C620,560 720,560 720,600" data-from="verified" data-to="save-warning"/>
-                  <text class="edge-label" x="650" y="540">no</text>
-                  <path class="edge" d="M780,210 L860,210 L860,90 L240,90" data-from="save-complete" data-to="goal-complete-loop"/>
-                  <path class="edge" d="M780,640 C840,640 840,170 250,170" data-from="save-warning" data-to="back-to-chat" stroke-dasharray="6 4"/>
-                  <text class="edge-label" x="450" y="160">retry</text>
-                  <path class="edge" d="M380,480 L380,560 L260,560 L260,250" data-from="parent" data-to="save-review" stroke-dasharray="6 4"/>
-                  <text class="edge-label" x="290" y="450">in review</text>
+                  <!-- Lobby → Unit detail -->
+                  <path class="edge" d="M180,240 L180,310" data-from="lobby" data-to="unit"/>
+                  <text class="edge-label" x="190" y="280">tap a unit</text>
+
+                  <!-- Unit → 4 parallel input options -->
+                  <path class="edge" d="M260,360 L420,360 L420,170" data-from="unit" data-to="camera"/>
+                  <path class="edge" d="M260,380 L600,380 L600,170" data-from="unit" data-to="chat"/>
+                  <path class="edge" d="M260,400 L780,400 L780,170" data-from="unit" data-to="canvas"/>
+                  <path class="edge" d="M260,420 L960,420 L960,170" data-from="unit" data-to="quiz"/>
+
+                  <!-- Camera/Chat/Canvas → AI thinking -->
+                  <path class="edge" d="M420,210 L420,470 L560,470" data-from="camera" data-to="thinking"/>
+                  <path class="edge" d="M600,210 L600,470" data-from="chat" data-to="thinking"/>
+                  <path class="edge" d="M780,210 L780,470 L640,470" data-from="canvas" data-to="thinking"/>
+
+                  <!-- Quiz → instant verdict (deterministic) -->
+                  <path class="edge dashed" d="M960,210 L960,540 L840,540" data-from="quiz" data-to="approved"/>
+                  <text class="edge-label" x="850" y="420">deterministic</text>
+
+                  <!-- AI thinking → 2 outcomes -->
+                  <path class="edge" d="M560,510 C480,510 480,540 420,540" data-from="thinking" data-to="approved"/>
+                  <text class="edge-label" x="450" y="525">confident</text>
+                  <path class="edge" d="M640,510 C720,510 720,540 660,580 L580,580" data-from="thinking" data-to="waiting"/>
+                  <text class="edge-label" x="660" y="555">unsure</text>
+
+                  <!-- Waiting → parent decision → approved or warning -->
+                  <path class="edge" d="M460,610 C400,640 360,640 360,580" data-from="waiting" data-to="approved"/>
+                  <text class="edge-label" x="380" y="635">parent ok</text>
+                  <path class="edge" d="M580,610 C700,650 880,650 880,610" data-from="waiting" data-to="warning"/>
+                  <text class="edge-label" x="700" y="660">parent rejects</text>
+
+                  <!-- Warning → back to unit -->
+                  <path class="edge dashed" d="M880,580 C950,520 950,360 260,360" data-from="warning" data-to="unit"/>
+                  <text class="edge-label" x="940" y="450">try again</text>
+
+                  <!-- Approved → Lobby (loop) -->
+                  <path class="edge" d="M340,540 L120,540 L120,180 L140,180" data-from="approved" data-to="lobby"/>
+                  <text class="edge-label" x="60" y="360">unit done →</text>
                 </g>
 
                 <!-- Nodes -->
-                <g class="node node-state" data-id="camera" data-title="Camera" data-desc="Kid takes a photo of their completed quest. The first contact point of the agent interaction loop." data-screens="Quest Photo (Tier 2, Tier 3)" data-triggers="Tap “Start” on a quest card">
-                  <rect class="node-rect" x="40" y="40" width="160" height="60"/>
-                  <text class="node-label" x="120" y="64">📷 Camera</text>
-                  <text class="node-sub" x="120" y="84">capture photo</text>
+                <g class="node node-hub" data-id="lobby" data-title="Goal Lobby" data-desc="The hub. Every loop starts and ends here. The lobby shows all the units in a goal and their current state — to do, in progress, thinking, waiting for parent, or done." data-screens="Lobby (Sequential, Gallery, Checklist)" data-triggers="Tap goal widget on home screen">
+                  <rect class="node-rect" x="60" y="160" width="240" height="80"/>
+                  <text class="node-label" x="180" y="190">🏠 Goal Lobby</text>
+                  <text class="node-sub" x="180" y="214">the hub for all units</text>
                 </g>
-                <g class="node node-state" data-id="chat" data-title="Chat" data-desc="Sprout asks follow-up questions in chat to understand context and confirm the kid finished what they said they'd do." data-screens="Chat Tier 2, Chat Tier 3" data-triggers="Photo submitted from Camera">
-                  <rect class="node-rect" x="40" y="170" width="160" height="60"/>
-                  <text class="node-label" x="120" y="194">💬 Chat</text>
-                  <text class="node-sub" x="120" y="214">agent dialogue</text>
+
+                <g class="node node-state" data-id="unit" data-title="Unit Detail" data-desc="The screen for one unit inside the goal. Shows what to do, what Sprout is asking, and a choice of input methods. Always reached from the lobby." data-screens="Unit detail (Tier 2 + Tier 3)" data-triggers="Tap a unit in the lobby">
+                  <rect class="node-rect" x="80" y="310" width="180" height="60"/>
+                  <text class="node-label" x="170" y="344">Unit Detail</text>
                 </g>
-                <g class="node node-state" data-id="canvas" data-title="Canvas" data-desc="Optional drawing/annotation step where the kid demonstrates the result on a free-form canvas." data-screens="Quest Canvas" data-triggers="Chat exchange completes">
-                  <rect class="node-rect" x="40" y="330" width="160" height="60"/>
-                  <text class="node-label" x="120" y="354">🎨 Canvas</text>
-                  <text class="node-sub" x="120" y="374">draw / annotate</text>
+
+                <g class="node node-input node-state" data-id="camera" data-title="Camera" data-desc="Take a photo. One of four parallel input options inside an agent loop — not a forced first step. Best for visible / physical proof." data-screens="Quest Photo" data-triggers="Tap “Take a photo” on Unit Detail">
+                  <rect class="node-rect" x="360" y="120" width="120" height="60"/>
+                  <text class="node-label" x="420" y="144">📷 Camera</text>
+                  <text class="node-sub" x="420" y="164">photo proof</text>
                 </g>
-                <g class="node node-state" data-id="parent" data-title="Parent reviews" data-desc="Parent receives a notification with the photo, chat transcript, and any drawings. They approve, reject, or request changes." data-screens="Parent inbox, Notification" data-triggers="Kid finishes the agent interaction loop">
-                  <rect class="node-rect" x="320" y="410" width="120" height="60" fill="#f5fbff" stroke="#0086c9"/>
-                  <text class="node-label" x="380" y="434">👀 Parent reviews</text>
-                  <text class="node-sub" x="380" y="454">human in loop</text>
+
+                <g class="node node-input node-state" data-id="chat" data-title="Chat" data-desc="Talk to Sprout. Best when the kid wants to describe what they did or when reflection matters more than evidence." data-screens="Chat (Tier 2 + Tier 3)" data-triggers="Tap “Tell Sprout” on Unit Detail">
+                  <rect class="node-rect" x="540" y="120" width="120" height="60"/>
+                  <text class="node-label" x="600" y="144">💬 Chat</text>
+                  <text class="node-sub" x="600" y="164">describe it</text>
                 </g>
-                <g class="node" data-id="verified" data-title="Verified?" data-desc="The decision point. Did the parent (or auto-verifier) confirm the quest as legitimately complete?" data-screens="—" data-triggers="Parent reviews finishes">
-                  <polygon class="node-diamond" points="620,400 680,440 620,480 560,440"/>
-                  <text class="node-label" x="620" y="442">Verified?</text>
+
+                <g class="node node-input node-state" data-id="canvas" data-title="Canvas" data-desc="Draw or annotate. Used for art, math, handwriting practice — anything where the work IS a sketch." data-screens="Quest Canvas" data-triggers="Tap “Draw it” on Unit Detail">
+                  <rect class="node-rect" x="720" y="120" width="120" height="60"/>
+                  <text class="node-label" x="780" y="144">🎨 Canvas</text>
+                  <text class="node-sub" x="780" y="164">draw / annotate</text>
                 </g>
-                <g class="node node-terminal" data-id="save-complete" data-title="Save as complete" data-desc="Quest is marked as complete in the goal progress system. Gems are awarded, streak ticks, completed card state shows." data-screens="Home (completed quest card), Goal Lobby" data-triggers="Verified? = yes">
-                  <rect class="node-rect" x="660" y="180" width="120" height="60"/>
-                  <text class="node-label" x="720" y="204">✅ Save as</text>
-                  <text class="node-label" x="720" y="222">complete</text>
+
+                <g class="node node-input node-state" data-id="quiz" data-title="Quiz" data-desc="Answer a question. Deterministic — no AI thinking needed. Right answer = instant credit, wrong = retry." data-screens="Quest Quiz (classic / guided / conversational)" data-triggers="Tap “Quick quiz” on Unit Detail">
+                  <rect class="node-rect" x="900" y="120" width="120" height="60"/>
+                  <text class="node-label" x="960" y="144">❓ Quiz</text>
+                  <text class="node-sub" x="960" y="164">deterministic</text>
                 </g>
-                <g class="node node-warning" data-id="save-warning" data-title="Save as warning" data-desc="Quest is flagged but not rejected. The kid gets a chance to retry through Chat. Warning state propagates to home + lobby." data-screens="Home (warning quest card), Goal Lobby" data-triggers="Verified? = no">
-                  <rect class="node-rect" x="660" y="600" width="120" height="60"/>
-                  <text class="node-label" x="720" y="624">⚠️ Save as</text>
-                  <text class="node-label" x="720" y="642">warning</text>
+
+                <g class="node node-thinking node-state" data-id="thinking" data-title="AI Thinking" data-desc="Sprout is processing the photo / chat / canvas submission. A short visible delay (~1–2s) so the kid feels heard. Photo and Chat and Canvas all funnel here." data-screens="Result screen — thinking state" data-triggers="Submit from Camera / Chat / Canvas">
+                  <rect class="node-rect" x="560" y="440" width="160" height="60"/>
+                  <text class="node-label" x="640" y="464">⏳ AI Thinking</text>
+                  <text class="node-sub" x="640" y="484">verifying…</text>
                 </g>
-                <g class="node node-state" data-id="save-review" data-title="Save as in-review" data-desc="Intermediate state shown while the parent is reviewing — kid sees a Reviewing badge and can't restart the quest yet." data-screens="Home, Goal Lobby (reviewing badge)" data-triggers="Sent to parent, awaiting decision">
-                  <rect class="node-rect" x="200" y="180" width="120" height="60" fill="#fefbe8" stroke="#ca8504"/>
-                  <text class="node-label" x="260" y="204">⏳ Save as</text>
-                  <text class="node-label" x="260" y="222">in-review</text>
+
+                <g class="node node-approved node-state" data-id="approved" data-title="AI Approved" data-desc="Sprout is confident the unit was completed. Gems credited, stars awarded, lobby state updates to Done. The most common happy path." data-screens="Result screen — approved" data-triggers="AI Thinking → high confidence, OR Quiz correct">
+                  <rect class="node-rect" x="340" y="510" width="180" height="60"/>
+                  <text class="node-label" x="430" y="534">✅ AI Approved</text>
+                  <text class="node-sub" x="430" y="554">deterministic OR auto</text>
+                </g>
+
+                <g class="node node-waiting node-state" data-id="waiting" data-title="Waiting for parent" data-desc="Sprout was unsure (low confidence, edge case, sensitive content). The submission is escalated to a parent for human review. The kid sees a friendly waiting state in the lobby." data-screens="Result screen — sent to parent · Lobby — waiting flag" data-triggers="AI Thinking → low confidence">
+                  <rect class="node-rect" x="460" y="580" width="180" height="60"/>
+                  <text class="node-label" x="550" y="604">👀 Waiting for parent</text>
+                  <text class="node-sub" x="550" y="624">human in the loop</text>
+                </g>
+
+                <g class="node node-warning node-state" data-id="warning" data-title="Try again" data-desc="Either AI verification failed outright, or the parent rejected the submission. The kid is invited to try the unit again — back to Unit Detail." data-screens="Result screen — try again" data-triggers="Parent rejects, OR Quiz wrong">
+                  <rect class="node-rect" x="780" y="580" width="180" height="60"/>
+                  <text class="node-label" x="870" y="604">⚠️ Try again</text>
+                  <text class="node-sub" x="870" y="624">retry the unit</text>
                 </g>
 
               </svg>
             </div>
 
-            <!-- ───────── GOAL STATUS FLOW ───────── -->
-            <div class="flow-canvas" id="canvas-goal">
-              <svg class="flow-svg" viewBox="0 0 1100 980" xmlns="http://www.w3.org/2000/svg">
+            <!-- ════════════════════════════════════
+                 LOBBY LIFECYCLE — one unit's states
+                 ════════════════════════════════════ -->
+            <div class="flow-canvas" id="canvas-lobby">
+              <svg class="flow-svg" viewBox="0 0 1000 520" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                     <path d="M0,0 L10,5 L0,10 z" fill="#a4a7ae"/>
                   </marker>
                 </defs>
 
-                <g id="goal-edges">
-                  <!-- Entry funnel -->
-                  <path class="edge" d="M120,80 L240,80" data-from="entry" data-to="has-goals"/>
-                  <path class="edge" d="M380,80 L520,80" data-from="has-goals" data-to="has-st"/>
-                  <text class="edge-label" x="430" y="70">yes</text>
-                  <path class="edge" d="M340,120 L340,200 L240,200" data-from="has-goals" data-to="empty"/>
-                  <text class="edge-label" x="260" y="160">no</text>
-                  <path class="edge" d="M660,80 L780,80" data-from="has-st" data-to="show-st"/>
-                  <text class="edge-label" x="710" y="70">yes</text>
-                  <path class="edge" d="M620,120 L620,200" data-from="has-st" data-to="lobby"/>
-                  <text class="edge-label" x="635" y="160">no</text>
-                  <path class="edge" d="M820,120 L820,200 L700,200" data-from="show-st" data-to="lobby"/>
+                <g id="lobby-edges">
+                  <path class="edge" d="M180,80 L300,80" data-from="locked" data-to="todo"/>
+                  <text class="edge-label" x="220" y="70">earlier unit done</text>
+                  <path class="edge" d="M460,80 L580,80" data-from="todo" data-to="now"/>
+                  <text class="edge-label" x="495" y="70">tap → unit detail</text>
+                  <path class="edge" d="M740,80 L860,80" data-from="now" data-to="ai-thinking"/>
+                  <text class="edge-label" x="775" y="70">submit</text>
 
-                  <!-- Lifecycle column from Goal Lobby down -->
-                  <path class="edge" d="M620,260 L160,260 L160,330" data-from="lobby" data-to="not-started"/>
-                  <path class="edge" d="M160,410 L160,470" data-from="not-started" data-to="in-progress"/>
-                  <path class="edge" d="M160,550 L160,610" data-from="in-progress" data-to="warning"/>
-                  <text class="edge-label" x="170" y="585">on issue</text>
-                  <path class="edge" d="M160,690 L160,750" data-from="warning" data-to="reviewing"/>
-                  <path class="edge" d="M160,830 L160,890" data-from="reviewing" data-to="completed"/>
+                  <!-- Branches from thinking -->
+                  <path class="edge" d="M920,120 L920,200" data-from="ai-thinking" data-to="ai-approved"/>
+                  <text class="edge-label" x="930" y="160">confident</text>
+                  <path class="edge" d="M860,110 C760,150 700,200 700,200" data-from="ai-thinking" data-to="parent"/>
+                  <text class="edge-label" x="720" y="155">unsure</text>
 
-                  <!-- Lifecycle skip-paths -->
-                  <path class="edge" d="M220,500 C300,500 300,790 220,790" data-from="in-progress" data-to="reviewing" stroke-dasharray="6 4"/>
-                  <text class="edge-label" x="305" y="650">happy path</text>
+                  <!-- Quiz: instant approved -->
+                  <path class="edge dashed" d="M620,120 L620,180 L800,200" data-from="now" data-to="ai-approved"/>
+                  <text class="edge-label" x="640" y="160">quiz: instant</text>
 
-                  <!-- Completed → Verified → repeatable? → outcomes -->
-                  <path class="edge" d="M240,920 L380,920" data-from="completed" data-to="verified"/>
-                  <path class="edge" d="M520,920 L660,920" data-from="verified" data-to="repeatable"/>
-                  <text class="edge-label" x="570" y="910">yes</text>
-                  <path class="edge" d="M820,880 L820,800 L900,800" data-from="repeatable" data-to="goal-complete"/>
-                  <text class="edge-label" x="830" y="845">no</text>
-                  <path class="edge" d="M780,920 L900,920" data-from="repeatable" data-to="next-iteration" stroke-dasharray="6 4"/>
-                  <text class="edge-label" x="810" y="950">repeat</text>
+                  <!-- Parent → approved or warning -->
+                  <path class="edge" d="M740,240 L800,240" data-from="parent" data-to="ai-approved"/>
+                  <text class="edge-label" x="745" y="230">approves</text>
+                  <path class="edge" d="M620,280 L620,360" data-from="parent" data-to="warning-state"/>
+                  <text class="edge-label" x="630" y="320">rejects</text>
 
-                  <!-- Outcome fan-out -->
-                  <path class="edge" d="M1000,760 L1000,700 L1080,700" data-from="goal-complete" data-to="success"/>
-                  <path class="edge" d="M1000,800 L1080,800" data-from="goal-complete" data-to="gems"/>
-                  <path class="edge" d="M1000,840 L1000,900 L1080,900" data-from="goal-complete" data-to="streak"/>
+                  <!-- Approved → Done -->
+                  <path class="edge" d="M920,280 L920,360 L780,360" data-from="ai-approved" data-to="done"/>
 
-                  <!-- Parent verification loop -->
-                  <path class="edge" d="M450,880 C450,800 380,800 380,750" data-from="verified" data-to="parent-verif"/>
+                  <!-- Done → next unit (loop) -->
+                  <path class="edge" d="M620,400 L380,400 L380,120" data-from="done" data-to="now" stroke-dasharray="6 4"/>
+                  <text class="edge-label" x="410" y="395">next unit promotes</text>
+
+                  <!-- Warning → back to now -->
+                  <path class="edge dashed" d="M540,390 C440,440 380,400 380,120" data-from="warning-state" data-to="now"/>
+                  <text class="edge-label" x="430" y="430">retry</text>
                 </g>
 
                 <!-- Nodes -->
-                <g class="node node-state" data-id="entry" data-title="Entry" data-desc="Kid opens the home screen. The system checks whether the kid has any active goals." data-screens="Home (entry)" data-triggers="App launch / home tap">
-                  <rect class="node-rect" x="40" y="50" width="80" height="60" rx="999"/>
-                  <text class="node-label" x="80" y="84">Entry</text>
+                <g class="node node-state" data-id="locked" data-title="Locked" data-desc="An earlier unit hasn't been completed yet. The card shows greyed out with a lock icon. Tapping does nothing." data-screens="Lobby — locked unit" data-triggers="Earlier unit not done">
+                  <rect class="node-rect" x="60" y="50" width="120" height="60"/>
+                  <text class="node-label" x="120" y="84">🔒 Locked</text>
                 </g>
-                <g class="node" data-id="has-goals" data-title="Has goals?" data-desc="Decision: does this kid have at least one active goal in the system?" data-screens="—" data-triggers="System check on home load">
-                  <polygon class="node-diamond" points="310,40 380,80 310,120 240,80"/>
-                  <text class="node-label" x="310" y="84">Has goals?</text>
+                <g class="node node-state" data-id="todo" data-title="To do" data-desc="Available but the kid hasn't started. Tappable. Card shows neutral." data-screens="Lobby — to-do unit" data-triggers="Earlier unit done OR unit unblocked">
+                  <rect class="node-rect" x="300" y="50" width="160" height="60"/>
+                  <text class="node-label" x="380" y="84">⭕ To do</text>
                 </g>
-                <g class="node node-state" data-id="empty" data-title="Empty state" data-desc="Friendly empty screen prompting the kid (or parent) to set up a goal. No quest cards rendered." data-screens="Home — Empty state" data-triggers="Has goals? = no">
-                  <rect class="node-rect" x="120" y="170" width="120" height="60"/>
-                  <text class="node-label" x="180" y="204">Empty state</text>
-                </g>
-                <g class="node" data-id="has-st" data-title="Has screen time?" data-desc="Is screen-time gating enabled for this kid?" data-screens="—" data-triggers="After Has goals? = yes">
-                  <polygon class="node-diamond" points="590,40 660,80 590,120 520,80"/>
-                  <text class="node-label" x="590" y="78">Has screen</text>
-                  <text class="node-label" x="590" y="94">time?</text>
-                </g>
-                <g class="node node-state" data-id="show-st" data-title="Show screen time card" data-desc="An additional card appears in the home carousel showing remaining screen time before the kid can play." data-screens="Home — Screen Time Card" data-triggers="Has screen time? = yes">
-                  <rect class="node-rect" x="780" y="50" width="160" height="60"/>
-                  <text class="node-label" x="860" y="74">Show screen</text>
-                  <text class="node-label" x="860" y="92">time card</text>
-                </g>
-                <g class="node node-pill" data-id="lobby" data-title="Goal Lobby" data-desc="The lobby screen showing all units in the goal. Layout depends on tier (Sequential, Gallery, Checklist)." data-screens="Lobby — all 5 layouts" data-triggers="Lifecycle entry">
-                  <rect class="node-rect" x="540" y="200" width="160" height="60" rx="12" fill="#e0f2fe" stroke="#0086c9"/>
-                  <text class="node-label" x="620" y="234">Goal Lobby</text>
+                <g class="node node-input node-state" data-id="now" data-title="Now / in progress" data-desc="The kid has tapped into the unit. Highlighted glow on the card. Stays this state until the kid submits." data-screens="Lobby — now unit" data-triggers="Tap a to-do unit">
+                  <rect class="node-rect" x="580" y="50" width="160" height="60"/>
+                  <text class="node-label" x="660" y="84">▶ Now</text>
                 </g>
 
-                <!-- Lifecycle column -->
-                <g class="node node-state" data-id="not-started" data-title="Not started" data-desc="Quest card initial state. Card shows the CTA Start button. No progress indicator." data-screens="Quest card (all tiers)" data-triggers="Quest enters lobby">
-                  <rect class="node-rect" x="80" y="330" width="160" height="60"/>
-                  <text class="node-label" x="160" y="364">Not started</text>
-                </g>
-                <g class="node node-state" data-id="in-progress" data-title="In progress" data-desc="Quest card glowing state. Currently active. Sprout coach is engaged." data-screens="Quest card — Now state" data-triggers="Kid taps Start">
-                  <rect class="node-rect" x="80" y="470" width="160" height="60" fill="#f5fbff" stroke="#0086c9"/>
-                  <text class="node-label" x="160" y="504">In progress</text>
-                </g>
-                <g class="node node-warning" data-id="warning" data-title="Warning" data-desc="Something needs attention — photo unclear, chat unanswered, parent flagged. Kid sees a yellow warning chip." data-screens="Quest card — Warning state" data-triggers="Verification flag during interaction">
-                  <rect class="node-rect" x="80" y="610" width="160" height="60"/>
-                  <text class="node-label" x="160" y="644">Warning</text>
-                </g>
-                <g class="node node-state" data-id="reviewing" data-title="Reviewing" data-desc="Sent to parent. Kid waits. Card disabled with a Reviewing label." data-screens="Quest card — Reviewing state" data-triggers="Quest submitted to parent">
-                  <rect class="node-rect" x="80" y="750" width="160" height="60" fill="#fefbe8" stroke="#ca8504"/>
-                  <text class="node-label" x="160" y="784">Reviewing</text>
-                </g>
-                <g class="node node-terminal" data-id="completed" data-title="Completed" data-desc="Quest is done. Gems credited, streak ticked, card shows the completed overlay." data-screens="Quest card — Completed state" data-triggers="Verified ✓">
-                  <rect class="node-rect" x="80" y="890" width="160" height="60"/>
-                  <text class="node-label" x="160" y="924">Completed</text>
+                <g class="node node-thinking node-state" data-id="ai-thinking" data-title="AI Thinking" data-desc="Submission is in flight. Lobby card shows a violet pulsing state. Photo / chat / canvas all transit through here." data-screens="Lobby — thinking flag" data-triggers="Submit from Camera / Chat / Canvas">
+                  <rect class="node-rect" x="860" y="50" width="120" height="60"/>
+                  <text class="node-label" x="920" y="76">⏳ AI</text>
+                  <text class="node-label" x="920" y="94">Thinking</text>
                 </g>
 
-                <g class="node" data-id="verified" data-title="Verified" data-desc="The system confirms the unit was completed legitimately, possibly with parent input." data-screens="—" data-triggers="Completed signal">
-                  <rect class="node-rect" x="380" y="890" width="140" height="60" rx="999" fill="#ecfdf3" stroke="#079455"/>
-                  <text class="node-label" x="450" y="924">Verified</text>
-                </g>
-                <g class="node" data-id="parent-verif" data-title="Parent Verification?" data-desc="Conditional gate — does this unit require an explicit parent OK before counting?" data-screens="Parent inbox" data-triggers="Reviewing state requires it">
-                  <polygon class="node-diamond" points="380,690 460,750 380,810 300,750"/>
-                  <text class="node-label" x="380" y="748">Parent</text>
-                  <text class="node-label" x="380" y="764">Verification?</text>
-                </g>
-                <g class="node" data-id="repeatable" data-title="Is goal repeatable?" data-desc="Daily and weekly goals reset; one-shot goals don't. Determines whether to loop back or terminate." data-screens="—" data-triggers="After verification">
-                  <polygon class="node-diamond" points="720,860 780,920 720,980 660,920"/>
-                  <text class="node-label" x="720" y="918">Repeatable?</text>
-                </g>
-                <g class="node node-terminal" data-id="goal-complete" data-title="Goal complete" data-desc="The whole goal — not just one quest — is finished. Triggers a celebration." data-screens="Goal complete celebration" data-triggers="Final unit verified, not repeatable">
-                  <rect class="node-rect" x="900" y="770" width="140" height="60"/>
-                  <text class="node-label" x="970" y="804">🏆 Goal</text>
-                  <text class="node-label" x="970" y="822">complete</text>
-                </g>
-                <g class="node node-state" data-id="next-iteration" data-title="Next iteration" data-desc="Repeatable goals reset their unit lifecycle for the next cycle (next day, next week)." data-screens="Lobby — fresh state" data-triggers="Repeatable = yes">
-                  <rect class="node-rect" x="900" y="900" width="140" height="60"/>
-                  <text class="node-label" x="970" y="934">↻ Next cycle</text>
+                <g class="node node-waiting node-state" data-id="parent" data-title="Waiting for parent" data-desc="Escalated to a human. Lobby card shows yellow with a “Parent” flag. The kid can't retry until the parent answers." data-screens="Lobby — waiting flag" data-triggers="AI Thinking → low confidence">
+                  <rect class="node-rect" x="540" y="200" width="200" height="80"/>
+                  <text class="node-label" x="640" y="230">👀 Waiting for</text>
+                  <text class="node-label" x="640" y="250">parent</text>
+                  <text class="node-sub" x="640" y="270">human review</text>
                 </g>
 
-                <!-- Outcomes -->
-                <g class="node node-terminal" data-id="success" data-title="Success Metrics" data-desc="Goal complete contributes to long-term metrics tracked across the system." data-screens="Parent dashboard" data-triggers="Goal complete">
-                  <rect class="node-rect" x="1080" y="670" width="140" height="60"/>
-                  <text class="node-label" x="1150" y="694">📊 Success</text>
-                  <text class="node-label" x="1150" y="712">Metrics</text>
-                </g>
-                <g class="node node-terminal" data-id="gems" data-title="Gem Progression" data-desc="Gems earned add to the kid's total. Drives wishlist purchases." data-screens="Wishlist widget, gem counter" data-triggers="Goal complete">
-                  <rect class="node-rect" x="1080" y="770" width="140" height="60"/>
-                  <text class="node-label" x="1150" y="794">💎 Gem</text>
-                  <text class="node-label" x="1150" y="812">Progression</text>
-                </g>
-                <g class="node node-terminal" data-id="streak" data-title="Streak" data-desc="Streak ticks for the day. Multi-day streaks unlock bonus rewards." data-screens="Home toolbar, streak flame" data-triggers="Goal complete">
-                  <rect class="node-rect" x="1080" y="870" width="140" height="60"/>
-                  <text class="node-label" x="1150" y="904">🔥 Streak</text>
+                <g class="node node-approved node-state" data-id="ai-approved" data-title="AI Approved" data-desc="Sprout said yes (or the parent did, or the quiz was correct). Card flips to a green approved state for a beat before becoming Done." data-screens="Lobby — approved" data-triggers="AI confident, parent approves, or quiz correct">
+                  <rect class="node-rect" x="800" y="200" width="180" height="80"/>
+                  <text class="node-label" x="890" y="230">✅ AI Approved</text>
+                  <text class="node-sub" x="890" y="252">credit pending</text>
                 </g>
 
+                <g class="node node-state" data-id="done" data-title="Done" data-desc="Final state. Stars and gems credited. Card shows green with strikethrough. The next to-do unit promotes to Now." data-screens="Lobby — done unit" data-triggers="AI Approved settles">
+                  <rect class="node-rect" x="620" y="330" width="160" height="60" fill="#f6fef9" stroke="#17b26a"/>
+                  <text class="node-label" x="700" y="364">✓ Done</text>
+                </g>
+
+                <g class="node node-warning node-state" data-id="warning-state" data-title="Try again" data-desc="The unit kicks back to Now after a parent rejection or wrong quiz answer. The kid hasn't lost progress — they just need another attempt." data-screens="Lobby — warning briefly, then back to Now" data-triggers="Parent rejects OR quiz wrong">
+                  <rect class="node-rect" x="540" y="360" width="160" height="60"/>
+                  <text class="node-label" x="620" y="394">⚠ Try again</text>
+                </g>
               </svg>
             </div>
 
             <div class="flow-legend">
-              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:white;border-color:#d5d7da;"></div>State</div>
-              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#fefbe8;border-color:#eaaa08;"></div>Decision</div>
-              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#ecfdf3;border-color:#17b26a;"></div>Terminal / outcome</div>
-              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#fef6ee;border-color:#ef6820;"></div>Warning</div>
-              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#e0f2fe;border-color:#0086c9;"></div>Lobby</div>
+              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#e0f2fe;border-color:#0086c9;"></div>Lobby (hub)</div>
+              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#f5fbff;border-color:#36bffa;"></div>Input / state</div>
+              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#f5f3ff;border-color:#a48afb;"></div>AI Thinking</div>
+              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#fefdf0;border-color:#fde272;"></div>Waiting for parent</div>
+              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#ecfdf3;border-color:#47cd89;"></div>Approved</div>
+              <div class="flow-legend-item"><div class="flow-legend-swatch" style="background:#fef6ee;border-color:#ef6820;"></div>Try again</div>
             </div>
           </div>
         </div>
@@ -467,7 +439,6 @@
 </div>
 
 <script>
-// ── Tab switching ──
 document.querySelectorAll('.flow-tab').forEach(function(tab){
   tab.addEventListener('click', function(){
     document.querySelectorAll('.flow-tab').forEach(function(t){t.classList.remove('active');});
@@ -478,22 +449,20 @@ document.querySelectorAll('.flow-tab').forEach(function(tab){
   });
 });
 
-// ── Node interaction ──
 function clearDetail(){
-  document.querySelectorAll('.node').forEach(function(n){n.classList.remove('active','dim');});
+  document.querySelectorAll('.node').forEach(function(n){n.classList.remove('active','dim','locked');});
   document.querySelectorAll('.edge').forEach(function(e){e.classList.remove('highlight','dim');});
   document.getElementById('detailTitle').textContent = 'Click any node';
   document.getElementById('detailBody').innerHTML = '<span class="flow-empty">Hover a node to highlight its connections. Click to pin details here.</span>';
   document.getElementById('detailMeta').style.display = 'none';
 }
 
-function highlightNode(node, lock){
+function highlightNode(node){
   var id = node.dataset.id;
   var canvas = node.closest('svg');
   var allNodes = canvas.querySelectorAll('.node');
   var allEdges = canvas.querySelectorAll('.edge');
 
-  // Find directly-connected edges
   var connectedEdges = [];
   var connectedNodes = new Set([id]);
   allEdges.forEach(function(e){
@@ -532,13 +501,13 @@ function highlightNode(node, lock){
 
 document.querySelectorAll('.node').forEach(function(node){
   node.addEventListener('mouseenter', function(){
-    if (!document.querySelector('.node.locked')) highlightNode(node, false);
+    if (!document.querySelector('.node.locked')) highlightNode(node);
   });
   node.addEventListener('click', function(e){
     e.stopPropagation();
     document.querySelectorAll('.node.locked').forEach(function(n){n.classList.remove('locked');});
     node.classList.add('locked');
-    highlightNode(node, true);
+    highlightNode(node);
   });
 });
 
@@ -550,7 +519,7 @@ document.querySelector('.flow-canvas-wrap').addEventListener('click', function(e
 });
 </script>
 
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'New Activity',href:'/product-explorer/kid-home/new-activity.html',dot:'var(--orange-400)'},{label:'Quests',href:'/product-explorer/quest.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/quest.html'},{label:'Photo',href:'/product-explorer/quest/photo.html'},{label:'Quiz',href:'/product-explorer/quest/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Chat',href:'/product-explorer/task/chat-tier-2.html',dot:'var(--violet-500)',children:[{label:'Chat Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat Tier 3',href:'/product-explorer/task/chat-tier-3.html'}]},{label:'Goal Progress System',href:'/product-explorer/goal-progress/',dot:'var(--green-500)',children:[{label:'Overview',href:'/product-explorer/goal-progress/'},{label:'Flow Diagrams',href:'/product-explorer/goal-progress/flow.html'},{label:'Quest Cards',href:'/product-explorer/goal-progress/quest-cards.html'},{label:'Unit Cards',href:'/product-explorer/goal-progress/unit-cards.html'},{label:'Home: Goal Status',href:'/product-explorer/goal-progress/home-goal-status.html'},{label:'Lobby: Unit Status',href:'/product-explorer/goal-progress/lobby-unit-status.html'},{label:'Progress Options',href:'/product-explorer/goal-progress/progress-options.html'}]},{label:'Customize Avatar',href:'/product-explorer/customize-avatar.html',dot:'var(--violet-400)'},{label:'Customize Sprout',href:'/product-explorer/customize-sprout.html',dot:'var(--sprout-400)'}];</script>
+<script src="/product-explorer/goal-progress/_nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 </body>
 </html>

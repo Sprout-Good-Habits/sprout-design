@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tier 2 Playground — Goal Progress System</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+  @font-face { font-family: 'TossFace'; src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype'); }
+
+  .pg-stage {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    margin-top: 16px;
+  }
+  .pg-device-col { flex-shrink: 0; }
+  .pg-side {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    padding: 24px;
+    position: sticky;
+    top: 24px;
+  }
+  .pg-side h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--brand-700);
+    margin-bottom: 12px;
+  }
+  .pg-side .lh-body {
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+  .pg-crumbs {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+  }
+  .pg-crumbs .step {
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--gray-100);
+  }
+  .pg-crumbs .step.now {
+    background: var(--brand-100);
+    color: var(--brand-700);
+    font-weight: 700;
+  }
+  .pg-tip {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 19px;
+    color: var(--text-secondary);
+  }
+  .pg-tip strong { color: var(--text-primary); }
+
+  .pg-reset {
+    margin-top: 16px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--gray-300);
+    background: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--text-secondary);
+  }
+  .pg-reset:hover { background: var(--gray-50); }
+
+  /* ── Device frame ── */
+  .device {
+    width: 360px;
+    background: white;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 36px;
+    padding: 5px;
+    box-shadow:
+      0 12px 24px -4px rgba(10,13,18,0.10),
+      0 4px 6px -2px rgba(10,13,18,0.04);
+  }
+  .device-inner {
+    background: white;
+    border-radius: 32px;
+    padding: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .device-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 0 6px 2px rgba(10,13,18,0.08);
+    z-index: 50;
+  }
+  .device-screen {
+    background: var(--bg-sky, #e0f2fe);
+    border-radius: 28px;
+    width: 100%;
+    height: 700px;
+    overflow: hidden;
+    position: relative;
+  }
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .screen.active { display: flex; }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 22px 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex-shrink: 0;
+  }
+
+  /* ── Top toolbar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 18px 12px;
+    flex-shrink: 0;
+  }
+  .topbar .icon-btn {
+    width: 36px; height: 36px; border-radius: 999px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'TossFace'; font-size: 18px;
+    cursor: pointer;
+    border: none;
+  }
+  .topbar .pills { display: flex; gap: 6px; }
+  .topbar .pill {
+    background: white;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .topbar .tf { font-family: 'TossFace'; font-size: 13px; line-height: 1; }
+
+  .topbar.with-back .back {
+    width: 36px; height: 36px;
+    border-radius: 999px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    color: var(--text-primary);
+    cursor: pointer;
+    border: none;
+  }
+  .topbar.with-back .title {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  /* ── Home screen ── */
+  .home-greeting {
+    padding: 8px 22px 12px;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .goal-widget {
+    margin: 0 18px 14px;
+    background: white;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(10,13,18,0.06);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .goal-widget:hover { transform: translateY(-1px); }
+  .goal-widget .gh { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .goal-widget .ge { font-family: 'TossFace'; font-size: 32px; }
+  .goal-widget .gt { font-size: 16px; font-weight: 700; color: var(--text-primary); flex: 1; }
+  .goal-widget .gtap {
+    font-size: 11px; color: var(--brand-600); font-weight: 700;
+  }
+  .goal-widget .gbar {
+    height: 10px; background: var(--gray-100); border-radius: 999px; overflow: hidden;
+  }
+  .goal-widget .gbar > span {
+    display: block; height: 100%;
+    background: var(--brand-500); border-radius: 999px;
+    transition: width 0.4s;
+  }
+  .goal-widget .gstats {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--text-tertiary);
+    margin-top: 8px;
+  }
+  .goal-widget .gstats strong { color: var(--text-primary); }
+
+  .home-hero {
+    margin: 4px 18px 12px;
+    background: var(--violet-500);
+    color: white;
+    border-radius: 18px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-hero .hb { display: flex; justify-content: space-between; font-size: 11px; }
+  .home-hero .hb .b {
+    background: rgba(255,255,255,0.2);
+    padding: 3px 7px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 3px;
+  }
+  .home-hero .hb .tf { font-family: 'TossFace'; font-size: 12px; }
+  .home-hero .hn { font-size: 18px; font-weight: 700; margin-top: 8px; }
+  .home-hero .hd { font-size: 12px; opacity: 0.9; margin-top: 2px; }
+  .home-hero .he {
+    display: flex; justify-content: center; align-items: center;
+    padding: 14px 0; font-family: 'TossFace'; font-size: 72px;
+  }
+  .home-hero .hcta {
+    background: white;
+    color: var(--text-secondary);
+    text-align: center;
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 3px 0 0 var(--gray-200);
+  }
+
+  .grass {
+    margin-top: auto;
+    height: 60px;
+    background: var(--bg-grass);
+    border-radius: 28px 28px 0 0;
+    position: relative;
+  }
+  .grass::after {
+    content: '🌱';
+    font-family: 'TossFace';
+    font-size: 36px;
+    position: absolute;
+    bottom: 8px; left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* ── Lobby screen ── */
+  .lobby-meta {
+    margin: 0 18px 16px;
+    background: white;
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 8px rgba(10,13,18,0.06);
+  }
+  .lobby-meta .lh { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .lobby-meta .le { font-family: 'TossFace'; font-size: 28px; }
+  .lobby-meta .lt { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+  .lobby-meta .ld { font-size: 11px; color: var(--text-tertiary); }
+  .lobby-meta .lbar { height: 8px; background: var(--gray-100); border-radius: 999px; overflow: hidden; }
+  .lobby-meta .lbar > span { display: block; height: 100%; background: var(--brand-500); border-radius: 999px; transition: width 0.5s; }
+  .lobby-meta .lstats { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-tertiary); margin-top: 6px; }
+
+  .lobby-grid {
+    padding: 4px 18px 8px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .lobby-grid::-webkit-scrollbar { display: none; }
+  .lobby-grid .ucard {
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 14px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 2px 0 0 var(--gray-200);
+    transition: all 0.15s;
+  }
+  .lobby-grid .ucard:not(.is-locked):hover { transform: translateY(-2px); }
+  .lobby-grid .ucard.is-locked { opacity: 0.5; cursor: not-allowed; }
+  .lobby-grid .ucard .ue { font-family: 'TossFace'; font-size: 38px; }
+  .lobby-grid .ucard .un { font-size: 13px; font-weight: 700; color: var(--text-primary); text-align: center; line-height: 16px; }
+  .lobby-grid .ucard .us { display: flex; gap: 1px; }
+  .lobby-grid .ucard .us span { font-family: 'TossFace'; font-size: 11px; color: var(--gray-300); }
+  .lobby-grid .ucard .us span.on { color: var(--yellow-400); }
+  .lobby-grid .ucard .uflag {
+    position: absolute;
+    top: -8px; right: -6px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background: var(--gray-100);
+    color: var(--text-tertiary);
+    border: 2px solid white;
+    white-space: nowrap;
+  }
+  .ucard.is-todo { border-color: var(--gray-300); box-shadow: 0 2px 0 0 var(--gray-300); }
+  .ucard.is-now { border-color: var(--brand-400); background: var(--brand-25, #f5fbff); box-shadow: 0 2px 0 0 var(--brand-400), 0 0 0 4px rgba(54,191,250,0.15); }
+  .ucard.is-now .uflag { background: var(--brand-500); color: white; }
+  .ucard.is-thinking { border-color: var(--violet-300); background: var(--violet-50); box-shadow: 0 2px 0 0 var(--violet-300); }
+  .ucard.is-thinking .uflag { background: var(--violet-500); color: white; }
+  .ucard.is-thinking .ue { animation: pulse 1.4s ease-in-out infinite; }
+  .ucard.is-waiting { border-color: var(--yellow-300); background: var(--yellow-25, #fefdf0); box-shadow: 0 2px 0 0 var(--yellow-300); }
+  .ucard.is-waiting .uflag { background: var(--yellow-500); color: white; }
+  .ucard.is-done { background: var(--green-25, #f6fef9); border-color: var(--green-300); box-shadow: 0 2px 0 0 var(--green-300); }
+  .ucard.is-done .uflag { background: var(--green-500); color: white; }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* ── Unit detail screen ── */
+  .unit-detail {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 18px 18px;
+  }
+  .unit-detail::-webkit-scrollbar { display: none; }
+  .unit-hero {
+    background: white;
+    border-radius: 22px;
+    padding: 24px 20px;
+    text-align: center;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(10,13,18,0.06);
+  }
+  .unit-hero .ue { font-family: 'TossFace'; font-size: 96px; line-height: 1; margin-bottom: 12px; display: block; }
+  .unit-hero .un { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .unit-hero .ud { font-size: 13px; color: var(--text-tertiary); }
+
+  .sprout-says {
+    background: var(--brand-50);
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 10px;
+  }
+  .sprout-says .ava {
+    font-family: 'TossFace'; font-size: 28px;
+    flex-shrink: 0;
+  }
+  .sprout-says .body {
+    font-size: 13px;
+    line-height: 19px;
+    color: var(--text-secondary);
+    flex: 1;
+  }
+  .sprout-says .body strong { color: var(--brand-700); }
+
+  .quest-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .quest-actions .qbtn {
+    background: var(--violet-500);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 4px 0 0 var(--violet-700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .quest-actions .qbtn .tf { font-family: 'TossFace'; font-size: 18px; }
+  .quest-actions .qbtn:active { transform: translateY(2px); box-shadow: 0 2px 0 0 var(--violet-700); }
+  .quest-actions .qbtn.alt {
+    background: white;
+    color: var(--text-secondary);
+    border: 2px solid var(--gray-200);
+    box-shadow: 0 4px 0 0 var(--gray-200);
+  }
+
+  /* ── Camera screen ── */
+  .camera-view {
+    flex: 1;
+    background: #181d27;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .camera-frame {
+    flex: 1;
+    background:
+      radial-gradient(ellipse at center, rgba(255,255,255,0.06) 0%, transparent 60%),
+      linear-gradient(135deg, #2a3140 0%, #181d27 100%);
+    margin: 18px;
+    border-radius: 18px;
+    border: 2px dashed rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 20px;
+  }
+  .camera-frame .e { font-family: 'TossFace'; font-size: 64px; margin-bottom: 12px; }
+  .camera-frame .label { font-size: 13px; }
+  .camera-controls {
+    padding: 18px 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .camera-shutter {
+    width: 72px; height: 72px;
+    border-radius: 999px;
+    background: white;
+    border: 4px solid rgba(255,255,255,0.4);
+    cursor: pointer;
+  }
+
+  /* ── Chat screen ── */
+  .chat-thread {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .chat-thread::-webkit-scrollbar { display: none; }
+  .chat-msg {
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .chat-msg.sprout {
+    align-self: flex-start;
+    background: white;
+    color: var(--text-primary);
+    border-bottom-left-radius: 6px;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .chat-msg.sprout .a { font-family: 'TossFace'; font-size: 18px; }
+  .chat-msg.kid {
+    align-self: flex-end;
+    background: var(--brand-500);
+    color: white;
+    border-bottom-right-radius: 6px;
+  }
+  .chat-composer {
+    flex-shrink: 0;
+    padding: 8px 14px 18px;
+    display: flex;
+    gap: 8px;
+  }
+  .chat-composer input {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--gray-200);
+    background: white;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .chat-composer input:focus { outline: 2px solid var(--brand-300); }
+  .chat-composer .send {
+    width: 44px; height: 44px;
+    border-radius: 999px;
+    background: var(--brand-500);
+    color: white;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  /* ── Quiz screen ── */
+  .quiz-wrap {
+    flex: 1;
+    padding: 8px 18px 18px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .quiz-q {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(10,13,18,0.06);
+  }
+  .quiz-q .qe { font-family: 'TossFace'; font-size: 56px; display: block; margin-bottom: 12px; }
+  .quiz-q .qt { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    box-shadow: 0 2px 0 0 var(--gray-200);
+  }
+  .quiz-option:hover { border-color: var(--brand-300); }
+  .quiz-option.correct { background: var(--green-50); border-color: var(--green-400); box-shadow: 0 2px 0 0 var(--green-400); color: var(--green-800); }
+  .quiz-option.wrong { background: var(--red-50); border-color: var(--red-400); box-shadow: 0 2px 0 0 var(--red-400); color: var(--red-800); }
+
+  /* ── Result / thinking screens ── */
+  .result-screen {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .result-card {
+    background: white;
+    border-radius: 22px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 12px 24px rgba(10,13,18,0.10);
+    width: 100%;
+  }
+  .result-card .e {
+    font-family: 'TossFace'; font-size: 96px; display: block; margin-bottom: 12px;
+  }
+  .result-card .e.spin { animation: spin 1.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .result-card .e.bounce { animation: bounce 1.5s ease infinite; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .result-card .t { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .result-card .d { font-size: 13px; color: var(--text-tertiary); line-height: 18px; margin-bottom: 18px; }
+  .result-card .reward {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: var(--brand-100);
+    color: var(--brand-700);
+    border-radius: 999px;
+    font-size: 13px; font-weight: 700;
+    margin-bottom: 18px;
+  }
+  .result-card .reward .tf { font-family: 'TossFace'; font-size: 16px; }
+  .result-card .cont {
+    display: block;
+    width: 100%;
+    background: var(--brand-500);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 4px 0 0 var(--brand-700);
+  }
+  .result-card .cont:active { transform: translateY(2px); box-shadow: 0 2px 0 0 var(--brand-700); }
+
+  .result-card.waiting { background: var(--yellow-25, #fefdf0); }
+  .result-card.waiting .reward { background: var(--yellow-100); color: var(--yellow-800); }
+
+  @media (max-width: 1100px) {
+    .pg-stage { flex-direction: column; align-items: center; }
+    .pg-side { width: 100%; max-width: 420px; position: static; }
+  }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="page-header">
+        <div class="sec-label">Goal Progress System</div>
+        <div class="sec-title">Tier 2 Playground</div>
+        <div class="sec-desc">Click through the full loop on a real device frame. Tap the goal widget on home, pick a unit in the lobby, run it through camera or chat or a quiz, and watch the lobby state update.</div>
+      </div>
+
+      <div class="pg-stage">
+        <div class="pg-device-col">
+          <div class="device">
+            <div class="device-inner">
+              <div class="device-screen" id="screen-stage">
+
+                <!-- ───── HOME ───── -->
+                <div class="screen active" data-screen="home">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar">
+                    <button class="icon-btn">🛡️</button>
+                    <div class="pills">
+                      <span class="pill"><span class="tf">🔥</span>12</span>
+                      <span class="pill"><span class="tf">💎</span>40</span>
+                    </div>
+                  </div>
+                  <div class="home-greeting">Hi Mali ✨</div>
+                  <div class="goal-widget" data-action="home-to-lobby">
+                    <div class="gh"><span class="ge">⚽</span><div class="gt">Soccer practice</div><div class="gtap">Tap to open ›</div></div>
+                    <div class="gbar"><span id="home-bar" style="width:42%;"></span></div>
+                    <div class="gstats"><span><strong id="home-units-done">3</strong>/7 units</span><span>3-day streak 🔥</span></div>
+                  </div>
+                  <div class="home-hero">
+                    <div class="hb"><span class="b"><span class="tf">🔥</span>12</span><span class="b"><span class="tf">💎</span>20</span></div>
+                    <div class="hn">Continue practice</div>
+                    <div class="hd">Bear hugs is up next</div>
+                    <div class="he">🐻</div>
+                    <div class="hcta" data-action="home-to-lobby">Continue ›</div>
+                  </div>
+                  <div class="grass"></div>
+                </div>
+
+                <!-- ───── LOBBY ───── -->
+                <div class="screen" data-screen="lobby">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back">
+                    <button class="back" data-action="back-to-home">‹</button>
+                    <div class="title">Soccer practice</div>
+                    <button class="icon-btn">⋯</button>
+                  </div>
+                  <div class="lobby-meta">
+                    <div class="lh"><span class="le">⚽</span><div><div class="lt">Soccer practice</div><div class="ld">7 units · daily goal</div></div></div>
+                    <div class="lbar"><span id="lobby-bar" style="width:42%;"></span></div>
+                    <div class="lstats"><span id="lobby-stats">3/7 units · 3-day streak 🔥</span></div>
+                  </div>
+                  <div class="lobby-grid" id="lobby-grid"></div>
+                </div>
+
+                <!-- ───── UNIT DETAIL ───── -->
+                <div class="screen" data-screen="unit">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back">
+                    <button class="back" data-action="back-to-lobby">‹</button>
+                    <div class="title" id="unit-title">Bear hugs</div>
+                    <button class="icon-btn">ℹ︎</button>
+                  </div>
+                  <div class="unit-detail">
+                    <div class="unit-hero">
+                      <span class="ue" id="unit-emoji">🐻</span>
+                      <div class="un" id="unit-name">Bear hugs</div>
+                      <div class="ud" id="unit-desc">10 hugs with great form · earn ⭐⭐⭐</div>
+                    </div>
+                    <div class="sprout-says">
+                      <span class="ava">🌱</span>
+                      <div class="body" id="sprout-says-body"><strong>Sprout:</strong> Show me your strongest bear hug! Snap a photo or tell me about it.</div>
+                    </div>
+                    <div class="quest-actions">
+                      <button class="qbtn" data-action="open-camera"><span class="tf">📷</span> Take a photo</button>
+                      <button class="qbtn alt" data-action="open-chat"><span class="tf">💬</span> Tell Sprout</button>
+                      <button class="qbtn alt" data-action="open-quiz"><span class="tf">❓</span> Quick quiz</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ───── CAMERA ───── -->
+                <div class="screen" data-screen="camera">
+                  <div class="status-bar" style="color:white;"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back">
+                    <button class="back" data-action="back-to-unit">‹</button>
+                    <div class="title" style="color:white;">Take a photo</div>
+                    <button class="icon-btn">🔄</button>
+                  </div>
+                  <div class="camera-view">
+                    <div class="camera-frame">
+                      <div class="e" id="camera-emoji">🐻</div>
+                      <div class="label">Frame your bear hug here</div>
+                    </div>
+                    <div class="camera-controls">
+                      <button class="camera-shutter" data-action="snap-photo" aria-label="Snap photo"></button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ───── CHAT ───── -->
+                <div class="screen" data-screen="chat">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back">
+                    <button class="back" data-action="back-to-unit">‹</button>
+                    <div class="title">Tell Sprout</div>
+                    <button class="icon-btn">ℹ︎</button>
+                  </div>
+                  <div class="chat-thread" id="chat-thread">
+                    <div class="chat-msg sprout"><span class="a">🌱</span><span>Hey! Did you do your bear hugs? How did it feel?</span></div>
+                  </div>
+                  <div class="chat-composer">
+                    <input type="text" id="chat-input" placeholder="Type a message…">
+                    <button class="send" data-action="send-chat">↑</button>
+                  </div>
+                </div>
+
+                <!-- ───── QUIZ ───── -->
+                <div class="screen" data-screen="quiz">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar with-back">
+                    <button class="back" data-action="back-to-unit">‹</button>
+                    <div class="title">Quick quiz</div>
+                    <button class="icon-btn">ℹ︎</button>
+                  </div>
+                  <div class="quiz-wrap">
+                    <div class="quiz-q">
+                      <span class="qe">🐻</span>
+                      <div class="qt">How many bear hugs make a set?</div>
+                    </div>
+                    <div class="quiz-options">
+                      <button class="quiz-option" data-correct="false">5 hugs</button>
+                      <button class="quiz-option" data-correct="true">10 hugs</button>
+                      <button class="quiz-option" data-correct="false">20 hugs</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ───── THINKING / RESULT ───── -->
+                <div class="screen" data-screen="result">
+                  <div class="status-bar"><span>9:41</span><span>● ● ●</span></div>
+                  <div class="topbar"><button class="icon-btn">🛡️</button><div class="pills"><span class="pill"><span class="tf">🔥</span>12</span><span class="pill"><span class="tf">💎</span>40</span></div></div>
+                  <div class="result-screen">
+                    <div class="result-card" id="result-card">
+                      <span class="e" id="result-emoji">⏳</span>
+                      <div class="t" id="result-title">Sprout is checking…</div>
+                      <div class="d" id="result-desc">Looking at your photo. This usually takes a moment.</div>
+                      <div class="reward" id="result-reward" style="display:none;"><span class="tf">💎</span> +20</div>
+                      <button class="cont" id="result-cont" data-action="result-continue" style="display:none;">Back to lobby</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="pg-side">
+          <h3>Where you are</h3>
+          <div class="pg-crumbs" id="pg-crumbs"></div>
+          <div class="pg-tip" id="pg-tip"><strong>Try this:</strong> Tap the soccer goal widget on the home screen to open the lobby. Then tap any unit to start the quest loop.</div>
+          <button class="pg-reset" id="pg-reset">↺ Reset playground</button>
+        </aside>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+//   Tier 2 Playground state machine
+// ════════════════════════════════════════════
+var STATE = {
+  units: [
+    { id: 'warmup',  name: 'Warmup',     emoji: '🌞', status: 'done',   stars: 3 },
+    { id: 'drills',  name: 'Drills',     emoji: '⚽', status: 'done',   stars: 2 },
+    { id: 'goalkicks', name: 'Goal kicks', emoji: '🥅', status: 'done', stars: 2 },
+    { id: 'bear',    name: 'Bear hugs',  emoji: '🐻', status: 'now',    stars: 0, sprout: 'Show me your strongest bear hug! Snap a photo or tell me about it.', desc: '10 hugs with great form · earn ⭐⭐⭐' },
+    { id: 'typhoon', name: 'Typhoon spin', emoji: '🌀', status: 'todo', stars: 0, sprout: 'Twirl 5 times like a typhoon — careful, don\'t get dizzy!', desc: '5 spins · earn ⭐⭐⭐' },
+    { id: 'brick',   name: 'Brick wall', emoji: '🧱', status: 'locked', stars: 0 },
+    { id: 'ferris',  name: 'Ferris wheel', emoji: '🎡', status: 'locked', stars: 0 }
+  ],
+  current: 'home',
+  activeUnit: null,
+  lastVerification: null
+};
+
+var FLAGS = {
+  todo:    'To do',
+  now:     'Now',
+  thinking:'Thinking',
+  waiting: 'Parent',
+  done:    'Done',
+  locked:  'Locked'
+};
+
+var CRUMBS = {
+  home:   ['Home'],
+  lobby:  ['Home','Lobby'],
+  unit:   ['Home','Lobby','Unit'],
+  camera: ['Home','Lobby','Unit','Camera'],
+  chat:   ['Home','Lobby','Unit','Chat'],
+  quiz:   ['Home','Lobby','Unit','Quiz'],
+  result: ['Home','Lobby','Unit','Result']
+};
+
+var TIPS = {
+  home:   '<strong>Try this:</strong> Tap the soccer goal widget to open the lobby. The hero card and the widget both lead there.',
+  lobby:  '<strong>Try this:</strong> Tap any unit (Bear hugs is the active one). Locked units stay locked until earlier ones finish.',
+  unit:   '<strong>Try this:</strong> Three input methods. Camera and Chat go through Sprout AI verification. The Quiz is deterministic — answer correctly for an instant approval.',
+  camera: '<strong>Tap the shutter</strong> — Sprout will think for a moment, then either auto-approve or escalate to a parent.',
+  chat:   '<strong>Type and send anything</strong>. After one exchange, Sprout will close the chat and verify.',
+  quiz:   '<strong>Pick the right answer (10)</strong> for an instant deterministic success. Wrong answers trip the warning state.',
+  result: '<strong>Tap continue</strong> to go back to the lobby and see the unit\'s new state.'
+};
+
+// ── DOM helpers ──
+function $(s){ return document.querySelector(s); }
+function $$(s){ return document.querySelectorAll(s); }
+
+function show(screen){
+  STATE.current = screen;
+  $$('.screen').forEach(function(el){
+    el.classList.toggle('active', el.dataset.screen === screen);
+  });
+  renderCrumbs();
+  $('#pg-tip').innerHTML = TIPS[screen] || '';
+}
+
+function renderCrumbs(){
+  var c = CRUMBS[STATE.current] || [];
+  $('#pg-crumbs').innerHTML = c.map(function(label, i){
+    var cls = 'step' + (i === c.length - 1 ? ' now' : '');
+    return '<span class="'+cls+'">'+label+'</span>' + (i < c.length-1 ? '<span>›</span>' : '');
+  }).join('');
+}
+
+function renderLobby(){
+  var html = '';
+  STATE.units.forEach(function(u){
+    var stars = '';
+    for (var i = 0; i < 3; i++) stars += '<span'+(i<u.stars?' class="on"':'')+'>⭐</span>';
+    html += '<div class="ucard is-'+u.status+'" data-unit="'+u.id+'">'
+         + '<span class="uflag">'+FLAGS[u.status]+'</span>'
+         + '<span class="ue">'+u.emoji+'</span>'
+         + '<span class="un">'+u.name+'</span>'
+         + '<span class="us">'+stars+'</span>'
+         + '</div>';
+  });
+  $('#lobby-grid').innerHTML = html;
+  // bind unit clicks
+  $$('#lobby-grid .ucard').forEach(function(el){
+    el.addEventListener('click', function(){
+      if (el.classList.contains('is-locked')) return;
+      var id = el.dataset.unit;
+      openUnit(id);
+    });
+  });
+  // update progress bar
+  var doneCount = STATE.units.filter(function(u){ return u.status === 'done'; }).length;
+  var pct = Math.round(doneCount / STATE.units.length * 100);
+  $('#lobby-bar').style.width = pct + '%';
+  $('#lobby-stats').textContent = doneCount + '/' + STATE.units.length + ' units · 3-day streak 🔥';
+  $('#home-bar').style.width = pct + '%';
+  $('#home-units-done').textContent = doneCount;
+}
+
+function openUnit(id){
+  var u = STATE.units.find(function(x){ return x.id === id; });
+  if (!u) return;
+  STATE.activeUnit = id;
+  $('#unit-title').textContent = u.name;
+  $('#unit-name').textContent = u.name;
+  $('#unit-emoji').textContent = u.emoji;
+  $('#unit-desc').textContent = u.desc || (u.name + ' · earn ⭐⭐⭐');
+  $('#sprout-says-body').innerHTML = '<strong>Sprout:</strong> ' + (u.sprout || ('Ready to do ' + u.name + '?'));
+  $('#camera-emoji').textContent = u.emoji;
+  show('unit');
+}
+
+// ── Verification flow ──
+function startVerification(verdict){
+  // verdict: 'auto-approve' | 'parent' | 'instant-success' | 'warning'
+  show('result');
+  var rc = $('#result-card');
+  rc.classList.remove('waiting');
+  $('#result-emoji').className = 'e';
+  $('#result-reward').style.display = 'none';
+  $('#result-cont').style.display = 'none';
+
+  if (verdict === 'instant-success') {
+    // Deterministic — no thinking
+    $('#result-emoji').textContent = '🎉';
+    $('#result-emoji').classList.add('bounce');
+    $('#result-title').textContent = 'Nailed it!';
+    $('#result-desc').textContent = 'Quiz answered correctly. Instant credit.';
+    $('#result-reward').style.display = 'inline-flex';
+    $('#result-cont').style.display = 'block';
+    markUnit('done');
+    return;
+  }
+
+  // AI thinking phase
+  $('#result-emoji').textContent = '⏳';
+  $('#result-emoji').classList.add('spin');
+  $('#result-title').textContent = 'Sprout is checking…';
+  $('#result-desc').textContent = 'Looking at your submission. This usually takes a moment.';
+  markUnit('thinking');
+
+  setTimeout(function(){
+    $('#result-emoji').className = 'e';
+    if (verdict === 'auto-approve') {
+      $('#result-emoji').textContent = '✅';
+      $('#result-emoji').classList.add('bounce');
+      $('#result-title').textContent = 'AI approved!';
+      $('#result-desc').textContent = 'Sprout is sure you nailed it. Gems are yours.';
+      $('#result-reward').style.display = 'inline-flex';
+      markUnit('done');
+    } else if (verdict === 'parent') {
+      rc.classList.add('waiting');
+      $('#result-emoji').textContent = '👀';
+      $('#result-title').textContent = 'Sent to a parent';
+      $('#result-desc').textContent = 'Sprout wasn\'t 100% sure. A grown-up will take a quick look.';
+      markUnit('waiting');
+    } else if (verdict === 'warning') {
+      $('#result-emoji').textContent = '⚠️';
+      $('#result-title').textContent = 'Try again';
+      $('#result-desc').textContent = 'Sprout couldn\'t tell — give it another shot.';
+      markUnit('now');
+    }
+    $('#result-cont').style.display = 'block';
+  }, 1600);
+}
+
+function markUnit(newStatus){
+  var u = STATE.units.find(function(x){ return x.id === STATE.activeUnit; });
+  if (!u) return;
+  u.status = newStatus;
+  if (newStatus === 'done') u.stars = Math.max(u.stars, 2);
+  // Unlock the next locked unit if this finished
+  if (newStatus === 'done') {
+    var locked = STATE.units.find(function(x){ return x.status === 'locked'; });
+    var hasNow = STATE.units.find(function(x){ return x.status === 'now'; });
+    if (!hasNow && locked) locked.status = 'todo';
+    // promote first todo to now
+    var firstTodo = STATE.units.find(function(x){ return x.status === 'todo'; });
+    if (firstTodo) firstTodo.status = 'now';
+  }
+  renderLobby();
+}
+
+// ── Action handlers ──
+document.body.addEventListener('click', function(e){
+  var t = e.target.closest('[data-action]');
+  if (!t) return;
+  var action = t.dataset.action;
+  switch(action){
+    case 'home-to-lobby': show('lobby'); break;
+    case 'back-to-home': show('home'); break;
+    case 'back-to-lobby': show('lobby'); break;
+    case 'back-to-unit': show('unit'); break;
+    case 'open-camera': show('camera'); break;
+    case 'open-chat': resetChat(); show('chat'); break;
+    case 'open-quiz': resetQuiz(); show('quiz'); break;
+    case 'snap-photo':
+      // Photo: 60% auto-approve, 40% parent
+      startVerification(Math.random() < 0.6 ? 'auto-approve' : 'parent');
+      break;
+    case 'send-chat':
+      sendChatMessage();
+      break;
+    case 'result-continue':
+      show('lobby');
+      break;
+  }
+});
+
+function resetChat(){
+  $('#chat-thread').innerHTML = '<div class="chat-msg sprout"><span class="a">🌱</span><span>Hey! Did you do your bear hugs? How did it feel?</span></div>';
+  $('#chat-input').value = '';
+}
+
+var chatStep = 0;
+function sendChatMessage(){
+  var input = $('#chat-input');
+  var v = input.value.trim();
+  if (!v) v = 'Yes! It was great.';
+  var thread = $('#chat-thread');
+  thread.innerHTML += '<div class="chat-msg kid">'+v.replace(/</g,'&lt;')+'</div>';
+  input.value = '';
+  thread.scrollTop = thread.scrollHeight;
+  chatStep++;
+  setTimeout(function(){
+    if (chatStep === 1) {
+      thread.innerHTML += '<div class="chat-msg sprout"><span class="a">🌱</span><span>Awesome! How many did you do?</span></div>';
+      thread.scrollTop = thread.scrollHeight;
+    } else {
+      thread.innerHTML += '<div class="chat-msg sprout"><span class="a">🌱</span><span>Got it. Let me check that with Sprout AI…</span></div>';
+      thread.scrollTop = thread.scrollHeight;
+      setTimeout(function(){
+        chatStep = 0;
+        // Chat verdict: 70% auto, 30% parent
+        startVerification(Math.random() < 0.7 ? 'auto-approve' : 'parent');
+      }, 700);
+    }
+  }, 400);
+}
+
+$('#chat-input') && $('#chat-input').addEventListener('keydown', function(e){
+  if (e.key === 'Enter') sendChatMessage();
+});
+
+function resetQuiz(){
+  $$('.quiz-option').forEach(function(b){
+    b.classList.remove('correct','wrong');
+    b.disabled = false;
+  });
+}
+
+$$('.quiz-option').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var correct = btn.dataset.correct === 'true';
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    $$('.quiz-option').forEach(function(b){ b.disabled = true; });
+    setTimeout(function(){
+      startVerification(correct ? 'instant-success' : 'warning');
+    }, 600);
+  });
+});
+
+// ── Reset ──
+$('#pg-reset').addEventListener('click', function(){
+  STATE.units = [
+    { id: 'warmup',  name: 'Warmup',     emoji: '🌞', status: 'done',   stars: 3 },
+    { id: 'drills',  name: 'Drills',     emoji: '⚽', status: 'done',   stars: 2 },
+    { id: 'goalkicks', name: 'Goal kicks', emoji: '🥅', status: 'done', stars: 2 },
+    { id: 'bear',    name: 'Bear hugs',  emoji: '🐻', status: 'now',    stars: 0, sprout: 'Show me your strongest bear hug! Snap a photo or tell me about it.', desc: '10 hugs with great form · earn ⭐⭐⭐' },
+    { id: 'typhoon', name: 'Typhoon spin', emoji: '🌀', status: 'todo', stars: 0, sprout: 'Twirl 5 times like a typhoon — careful, don\'t get dizzy!', desc: '5 spins · earn ⭐⭐⭐' },
+    { id: 'brick',   name: 'Brick wall', emoji: '🧱', status: 'locked', stars: 0 },
+    { id: 'ferris',  name: 'Ferris wheel', emoji: '🎡', status: 'locked', stars: 0 }
+  ];
+  renderLobby();
+  show('home');
+});
+
+// ── Init ──
+renderLobby();
+show('home');
+</script>
+
+<script src="/product-explorer/goal-progress/_nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>
