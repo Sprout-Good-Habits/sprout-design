@@ -267,7 +267,7 @@
     <table class="token-table">
       <thead><tr><th>Property</th><th>Value</th></tr></thead>
       <tbody>
-        <tr><td>File (User)</td><td><code>character2.4.riv</code></td></tr>
+        <tr><td>File (User)</td><td><code>character2.8.riv</code></td></tr>
         <tr><td>File (Sprout)</td><td><code>sprout-character.riv</code></td></tr>
         <tr><td>Artboard</td><td><code>Village-character</code></td></tr>
         <tr><td>State machine</td><td><code>State Machine 1</code></td></tr>
@@ -299,20 +299,20 @@
 <script src="/shell.js"></script>
 <script>
 /* ── Rive avatar portrait initialization ── */
-var RIVE_USER_SRC = '/character2.4.riv';
+var RIVE_USER_SRC = '/character2.8.riv';
 var RIVE_SPROUT_SRC = '/sprout-character.riv';
 var ARTBOARD = 'Village-character';
 var SM_NAME = 'State Machine 1';
 
 /* ── Presets (shared village character identities) ── */
 var PRESETS = {
-  shane:    { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
-  zeev:     { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2 },
-  mali:     { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1 },
-  grandpa:  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5 },
-  coachEli: { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10},
-  msChen:   { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3 },
-  liam:     { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0 }
+  shane:    { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0,  glassID:0, glassshadeID:0, eyeshadeID:3, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 },
+  zeev:     { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2,  glassID:1, glassshadeID:3, eyeshadeID:5, earringID:0, facedetailID:0, headwearID:2, headwearshadeID:5 },
+  mali:     { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1,  glassID:0, glassshadeID:0, eyeshadeID:4, earringID:3, facedetailID:3, headwearID:0, headwearshadeID:0 },
+  grandpa:  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5,  glassID:4, glassshadeID:7, eyeshadeID:1, earringID:0, facedetailID:2, headwearID:3, headwearshadeID:2 },
+  coachEli: { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10, glassID:0, glassshadeID:0, eyeshadeID:2, earringID:0, facedetailID:1, headwearID:1, headwearshadeID:8 },
+  msChen:   { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3,  glassID:2, glassshadeID:5, eyeshadeID:6, earringID:5, facedetailID:0, headwearID:0, headwearshadeID:0 },
+  liam:     { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0,  glassID:0, glassshadeID:0, eyeshadeID:7, earringID:2, facedetailID:0, headwearID:4, headwearshadeID:10 }
 };
 
 /* Per-element character states */

@@ -146,7 +146,7 @@ new rive.Rive({
 
 The Village Character represents family members. It uses a different Rive file from Sprout with deep customization (skin, hair, beard, clothing).
 
-**Rive file:** `/character2.4.riv` — artboard: `Village-character`, state machine: `State Machine 1`.
+**Rive file:** `/character2.8.riv` — artboard: `Village-character`, state machine: `State Machine 1`.
 
 **IMPORTANT — Reference implementations:**
 - **Avatars (XS–XL):** See `components/avatar.html` for exact canvas sizes and top offsets per size
@@ -173,7 +173,7 @@ The Village Character represents family members. It uses a different Rive file f
 ```js
 var r;
 r = new rive.Rive({
-  src: '/character2.4.riv',
+  src: '/character2.8.riv',
   canvas: canvasElement,
   autoplay: true,
   artboard: 'Village-character',

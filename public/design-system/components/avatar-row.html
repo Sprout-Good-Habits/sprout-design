@@ -54,95 +54,8 @@
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/components/avatar.css">
+<link rel="stylesheet" href="/components/avatar-row.css">
 <style>
-/* ── Avatar Item (avatar + label) ── */
-.avatar-item {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-}
-.avatar-item-label {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-weight:var(--font-weight-regular, 400);
-  color:var(--text-primary, #181d27);
-  text-align:center;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  width:100%;
-}
-
-/* ── Avatar Item sizes ── */
-.avatar-item-xs {
-  gap:var(--spacing-xxs, 2px);
-  max-width:40px;
-}
-.avatar-item-xs .avatar-item-label {
-  font-size:var(--font-size-text-xs, 12px);
-  line-height:var(--line-height-text-xs, 16px);
-}
-.avatar-item-sm {
-  gap:var(--spacing-xxs, 2px);
-  max-width:52px;
-}
-.avatar-item-sm .avatar-item-label {
-  font-size:var(--font-size-text-xs, 12px);
-  line-height:var(--line-height-text-xs, 16px);
-}
-.avatar-item-md {
-  gap:var(--spacing-xs, 4px);
-  max-width:64px;
-}
-.avatar-item-md .avatar-item-label {
-  font-size:var(--font-size-text-sm, 14px);
-  line-height:var(--line-height-text-sm, 20px);
-}
-
-/* ── Avatar Row ── */
-.avatar-row {
-  display:flex;
-  align-items:flex-start;
-}
-.avatar-row-xs { gap:var(--spacing-md, 8px); }
-.avatar-row-sm { gap:var(--spacing-md, 8px); }
-.avatar-row-md { gap:var(--spacing-lg, 12px); }
-
-/* Scrollable variant */
-.avatar-row-scroll {
-  overflow-x:auto;
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
-}
-.avatar-row-scroll::-webkit-scrollbar { display:none; }
-
-/* ── Add action button ── */
-.avatar-add {
-  background:var(--bg-primary, #ffffff);
-  border:2px dashed var(--border-secondary, #e9eaeb);
-  cursor:pointer;
-  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-.avatar-add:hover {
-  background:var(--gray-50, #fafafa);
-  border-color:var(--gray-400, #98a2b3);
-}
-.avatar-add svg {
-  width:40%; height:40%;
-  stroke:var(--text-quaternary, #717680);
-  stroke-width:2.5;
-  stroke-linecap:round;
-}
-
-/* ── Background colors (from avatar) ── */
-.avatar-bg-blue      { background:#b9e6fe; }
-.avatar-bg-violet    { background:#ddd6fe; }
-.avatar-bg-pink      { background:#fcceee; }
-.avatar-bg-green     { background:#abefc6; }
-.avatar-bg-yellow    { background:#feee95; }
-.avatar-bg-orange    { background:#f9dbaf; }
-
 /* ── Anatomy diagram ── */
 .anatomy-diagram {
   display:flex; align-items:center; gap:var(--spacing-4xl, 32px);
@@ -466,13 +379,13 @@ function initRowRive(canvas, opts) {
 
 /* ── Presets (shared village character identities) ── */
 var PRESETS = [
-  { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },  // Shane
-  { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2 },  // Zeev
-  { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1 },  // Mali
-  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5 },  // Grandpa
-  { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10},  // Coach Eli
-  { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3 },  // Ms. Chen
-  { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0 }   // Liam
+  { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0, glassID:0, glassshadeID:0, eyeshadeID:2, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 },  // Shane
+  { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2, glassID:2, glassshadeID:4, eyeshadeID:5, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 },  // Zeev
+  { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1, glassID:0, glassshadeID:0, eyeshadeID:1, earringID:3, facedetailID:0, headwearID:0, headwearshadeID:0 },  // Mali
+  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5, glassID:3, glassshadeID:7, eyeshadeID:4, earringID:0, facedetailID:1, headwearID:2, headwearshadeID:3 },  // Grandpa
+  { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10,glassID:0, glassshadeID:0, eyeshadeID:7, earringID:0, facedetailID:0, headwearID:3, headwearshadeID:6 },  // Coach Eli
+  { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3, glassID:0, glassshadeID:0, eyeshadeID:3, earringID:5, facedetailID:2, headwearID:0, headwearshadeID:0 },  // Ms. Chen
+  { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0, glassID:0, glassshadeID:0, eyeshadeID:6, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 }   // Liam
 ];
 
 var userIdx = 0;
@@ -480,7 +393,7 @@ var userStates = PRESETS;
 
 document.querySelectorAll('.rive-user').forEach(function(canvas) {
   initRowRive(canvas, {
-    src: '/character2.4.riv',
+    src: '/character2.8.riv',
     artboard: 'Village-character',
     alignment: rive.Alignment.Center,
     state: userStates[userIdx % userStates.length]

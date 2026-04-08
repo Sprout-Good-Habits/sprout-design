@@ -50,25 +50,8 @@
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/components/avatar.css">
+<link rel="stylesheet" href="/components/avatar-group.css">
 <style>
-/* ── Overflow counter ── */
-.avatar-count {
-  background:var(--bg-sky, #e0f2fe);
-  color:var(--text-brand-secondary, #026aa2);
-  font-weight:var(--font-weight-semibold, 600);
-}
-
-/* ── User Group (stacked avatars) ── */
-.user-group {
-  display:flex; align-items:center;
-}
-.user-group-xs { padding-right:6px; }
-.user-group-xs .avatar { margin-right:-6px; }
-.user-group-sm { padding-right:8px; }
-.user-group-sm .avatar { margin-right:-8px; }
-.user-group-md { padding-right:10px; }
-.user-group-md .avatar { margin-right:-10px; }
-
 /* ── Button Utility (for in-context demo) ── */
 .btn-util {
   display:inline-flex; align-items:center; justify-content:center;
@@ -375,13 +358,13 @@ function initGroupRive(canvas, opts) {
 
 /* ── Presets (shared village character identities) ── */
 var PRESETS = [
-  { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },  // Shane
-  { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2 },  // Zeev
-  { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1 },  // Mali
-  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5 },  // Grandpa
-  { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10},  // Coach Eli
-  { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3 },  // Ms. Chen
-  { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0 }   // Liam
+  { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0, glassID:0, glassshadeID:0, eyeshadeID:2, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 },  // Shane
+  { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2, glassID:2, glassshadeID:4, eyeshadeID:5, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 },  // Zeev
+  { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1, glassID:0, glassshadeID:0, eyeshadeID:1, earringID:3, facedetailID:0, headwearID:0, headwearshadeID:0 },  // Mali
+  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5, glassID:3, glassshadeID:7, eyeshadeID:6, earringID:0, facedetailID:1, headwearID:2, headwearshadeID:3 },  // Grandpa
+  { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10,glassID:0, glassshadeID:0, eyeshadeID:3, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 },  // Coach Eli
+  { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3, glassID:0, glassshadeID:0, eyeshadeID:7, earringID:2, facedetailID:0, headwearID:0, headwearshadeID:0 },  // Ms. Chen
+  { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0, glassID:0, glassshadeID:0, eyeshadeID:4, earringID:0, facedetailID:2, headwearID:3, headwearshadeID:8 }   // Liam
 ];
 
 /* User character avatars */
@@ -389,7 +372,7 @@ var userIdx = 0;
 var userStates = PRESETS;
 document.querySelectorAll('.rive-user').forEach(function(canvas) {
   initGroupRive(canvas, {
-    src: '/character2.4.riv',
+    src: '/character2.8.riv',
     artboard: 'Village-character',
     alignment: rive.Alignment.Center,
     state: userStates[userIdx % userStates.length]

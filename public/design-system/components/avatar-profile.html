@@ -49,6 +49,7 @@
 </script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/avatar-profile.css">
 <style>
 /* ── Device frame (reused from product explorer) ── */
 .device-wrapper {
@@ -98,24 +99,6 @@
 }
 .phone-status-icons { display: flex; gap: 4px; align-items: center; }
 .phone-status-icons svg { width: 16px; height: 16px; }
-
-/* ── Avatar Profile component ── */
-.avatar-profile {
-  width: 100%;
-  height: 264px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-.avatar-profile canvas {
-  position: relative;
-  width: 209px;
-  height: 299px;
-  pointer-events: none;
-  margin-bottom: -60px;
-}
 
 /* ── Toolbar ── */
 .toolbar-profile {
@@ -209,14 +192,6 @@
 .device-wrapper.ipad .device-screen {
   width: 640px;
   height: 960px;
-}
-.device-wrapper.ipad .avatar-profile {
-  height: 320px;
-}
-.device-wrapper.ipad .avatar-profile canvas {
-  width: 260px;
-  height: 372px;
-  margin-bottom: -75px;
 }
 
 /* ── Anatomy diagram ── */
@@ -525,7 +500,14 @@ var USER_STATE = {
   beardID: 0,
   beardshadeID: 0,
   clothingcolourID: 0,
-  clothingID: 0
+  clothingID: 0,
+  glassID: 0,
+  glassshadeID: 0,
+  eyeshadeID: 3,
+  earringID: 0,
+  facedetailID: 0,
+  headwearID: 0,
+  headwearshadeID: 0
 };
 
 function initProfileRive(canvas) {
@@ -536,7 +518,7 @@ function initProfileRive(canvas) {
   var r;
   try {
     r = new rive.Rive({
-      src: '/character2.4.riv',
+      src: '/character2.8.riv',
       canvas: canvas,
       autoplay: true,
       artboard: 'Village-character',

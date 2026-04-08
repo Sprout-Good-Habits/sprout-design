@@ -207,7 +207,7 @@
 
 /* ── Panel content ── */
 .panel-content {
-  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0;
+  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) var(--spacing-4xl, 32px);
   flex: 1;
   overflow-y: auto;
   scrollbar-width: none;
@@ -399,11 +399,12 @@
                   <div class="tabs-container tabs-equal tabs-sliding category-tabs" id="category-tabs">
                     <div class="slide-pill" id="slide-pill"></div>
                     <button class="cat-tab active" data-panel="skin-body" aria-label="Skin tone" title="Skin tone"><span class="tf-icon">&#x1F600;</span></button>
-                    <button class="cat-tab" data-panel="eyes" aria-label="Eye color" title="Eye color"><span class="tf-icon">&#x1F440;</span></button>
 
                     <button class="cat-tab" data-panel="hair" aria-label="Hair" title="Hair"><span class="tf-icon">&#x1FAAE;</span></button>
 
-                    <button class="cat-tab" data-panel="facial" aria-label="Facial hair" title="Facial hair"><span class="tf-icon">&#x1F453;&#xFE0F;</span></button>
+                    <button class="cat-tab" data-panel="facial" aria-label="Accessories" title="Accessories"><span class="tf-icon">&#x1F453;&#xFE0F;</span></button>
+
+                    <button class="cat-tab" data-panel="beard" aria-label="Facial hair" title="Facial hair"><span class="tf-icon">&#x1F978;</span></button>
 
                     <button class="cat-tab" data-panel="headwear" aria-label="Headwear" title="Headwear"><span class="tf-icon">&#x1F9E2;</span></button>
 
@@ -421,18 +422,11 @@
                         <div class="swatch-grid" id="skin-swatches"></div>
                       </div>
                       <div class="panel-subsection">
-                        <div class="panel-label">Body</div>
-                        <div class="coming-soon">
-                          <span class="coming-soon-icon">&#x2728;</span>
-                          Coming soon
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- 2. Eye color -->
-                    <div class="panel-section" id="panel-eyes">
-                      <div class="panel-subsection">
                         <div class="panel-label">Eye color</div>
+                        <div class="swatch-grid" id="eye-swatches"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Body</div>
                         <div class="coming-soon">
                           <span class="coming-soon-icon">&#x2728;</span>
                           Coming soon
@@ -452,8 +446,28 @@
                       </div>
                     </div>
 
-                    <!-- 4. Facial hair color + Facial hair + Face details -->
+                    <!-- 4. Accessories — glasses, earrings, face details -->
                     <div class="panel-section" id="panel-facial">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Glasses color</div>
+                        <div class="swatch-grid" id="glass-swatches"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Glasses</div>
+                        <div class="style-grid" id="glass-styles"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Face details</div>
+                        <div class="style-grid" id="facedetail-styles"></div>
+                      </div>
+                      <div class="panel-subsection">
+                        <div class="panel-label">Earrings</div>
+                        <div class="style-grid" id="earring-styles"></div>
+                      </div>
+                    </div>
+
+                    <!-- 5. Facial hair -->
+                    <div class="panel-section" id="panel-beard">
                       <div class="panel-subsection">
                         <div class="panel-label">Facial hair color</div>
                         <div class="swatch-grid" id="beard-swatches"></div>
@@ -462,30 +476,17 @@
                         <div class="panel-label">Facial hair</div>
                         <div class="style-grid" id="beard-styles"></div>
                       </div>
-                      <div class="panel-subsection">
-                        <div class="panel-label">Face details</div>
-                        <div class="coming-soon">
-                          <span class="coming-soon-icon">&#x2728;</span>
-                          Coming soon
-                        </div>
-                      </div>
                     </div>
 
                     <!-- 5. Headwear -->
                     <div class="panel-section" id="panel-headwear">
                       <div class="panel-subsection">
                         <div class="panel-label">Headwear color</div>
-                        <div class="coming-soon">
-                          <span class="coming-soon-icon">&#x2728;</span>
-                          Coming soon
-                        </div>
+                        <div class="swatch-grid" id="headwear-swatches"></div>
                       </div>
                       <div class="panel-subsection">
                         <div class="panel-label">Headwear</div>
-                        <div class="coming-soon">
-                          <span class="coming-soon-icon">&#x2728;</span>
-                          Coming soon
-                        </div>
+                        <div class="style-grid" id="headwear-styles"></div>
                       </div>
                     </div>
 
@@ -562,6 +563,30 @@
     'Hoodie','Shirt','Half sleeve','Polo','Full sleeve','Puffer'
   ];
 
+  var EYE_COLORS = [
+    '#000000','#252B37','#8C4A25','#B93815','#A15C07','#4F7A21','#0086C9','#155EEF','#535862'
+  ];
+
+  var GLASS_TYPES = [
+    'None','Square','Cat eye','Oval','Rounded square','Round'
+  ];
+
+  var GLASS_COLORS = [
+    '#0077B2','#535862','#079455','#4F7A21','#7F56D9','#155EEF','#7839EE','#DD2590','#D92D20','#E04F16','#DC6803'
+  ];
+
+  var EARRING_TYPES = [
+    'None','Big gold hoop','Big silver hoop','Small gold hoop','Small silver hoop','Silver stud','Gold stud'
+  ];
+
+  var HEADWEAR_TYPES = [
+    'None','Style 1','Style 2','Style 3','Style 4'
+  ];
+
+  var FACE_DETAILS = [
+    'None','Blush','Wrinkle','Freckle'
+  ];
+
   var BG_COLORS = [
     '#b9e6fe', // light blue 200
     '#b2ccff', // blue 200
@@ -583,7 +608,14 @@
     beardID: 0,
     beardshadeID: 0,
     clothingcolourID: 0,
-    clothingID: 0
+    clothingID: 0,
+    eyeshadeID: 0,
+    glassID: 0,
+    glassshadeID: 0,
+    earringID: 0,
+    facedetailID: 0,
+    headwearID: 0,
+    headwearshadeID: 0
   };
   var riveInstance = null;
   var riveInputs = null;
@@ -594,7 +626,7 @@
   function initRive() {
     try {
       riveInstance = new rive.Rive({
-        src: '/design-system/character2.4.riv',
+        src: '/design-system/character2.8.riv',
         canvas: document.getElementById('sprout-rive'),
         autoplay: true,
         artboard: 'Village-character',
@@ -631,6 +663,14 @@
     setRiveInput('beardID', state.beardID);
     setRiveInput('beardshadeID', state.beardshadeID);
     setRiveInput('clothingcolourID', state.clothingcolourID);
+    setRiveInput('clothingID', state.clothingID);
+    setRiveInput('eyeshadeID', state.eyeshadeID);
+    setRiveInput('glassID', state.glassID);
+    setRiveInput('glassshadeID', state.glassshadeID);
+    setRiveInput('earringID', state.earringID);
+    setRiveInput('facedetailID', state.facedetailID);
+    setRiveInput('headwearID', state.headwearID);
+    setRiveInput('headwearshadeID', state.headwearshadeID);
   }
 
   // Sync all preview thumbnails with current state, keeping their own property fixed
@@ -689,7 +729,7 @@
         try {
           (function(opts) {
             var r = new rive.Rive({
-              src: '/design-system/character2.4.riv',
+              src: '/design-system/character2.8.riv',
               canvas: canvas,
               autoplay: true,
               artboard: 'Village-character',
@@ -791,9 +831,16 @@
   buildSwatches('hair-swatches', HAIR_COLORS, 'hairshadeID');
   buildSwatches('beard-swatches', HAIR_COLORS, 'beardshadeID');
   buildSwatches('clothing-swatches', CLOTHING_COLORS, 'clothingcolourID');
+  buildSwatches('eye-swatches', EYE_COLORS, 'eyeshadeID');
+  buildSwatches('glass-swatches', GLASS_COLORS, 'glassshadeID');
   buildStyleCards('hair-styles', HAIR_STYLES, 'hairID', true);
   buildStyleCards('beard-styles', BEARD_TYPES, 'beardID', true);
   buildStyleCards('clothing-styles', CLOTHING_TYPES, 'clothingID', true);
+  buildStyleCards('facedetail-styles', FACE_DETAILS, 'facedetailID', true);
+  buildStyleCards('glass-styles', GLASS_TYPES, 'glassID', true);
+  buildStyleCards('earring-styles', EARRING_TYPES, 'earringID', true);
+  buildSwatches('headwear-swatches', CLOTHING_COLORS, 'headwearshadeID');
+  buildStyleCards('headwear-styles', HEADWEAR_TYPES, 'headwearID', true);
   buildBgSwatches('bg-swatches', BG_COLORS);
 
   // ── Device toggle ──
