@@ -54,14 +54,11 @@
 </script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/toolbar.css">
+<link rel="stylesheet" href="/components/button-utility.css">
+<link rel="stylesheet" href="/components/avatar.css">
+<link rel="stylesheet" href="/components/avatar-group.css">
 <style>
-/* ── Toss Face emoji font ── */
-@font-face {
-  font-family:'TossFace';
-  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
-  font-display:swap;
-}
-
 /* ── Phone frame for in-context demos ── */
 .phone-frame {
   width:402px; height:200px;
@@ -101,16 +98,6 @@
 .phone-content-line:nth-child(2) { width:80%; }
 .phone-content-line:nth-child(3) { width:60%; }
 
-/* ── Toolbar shared ── */
-.toolbar {
-  display:flex;
-  align-items:center;
-  padding:0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
-  position:relative;
-  width:100%;
-  box-sizing:border-box;
-}
-
 /* ── Leading / Trailing slot labels ── */
 .slot-label {
   position:absolute;
@@ -123,175 +110,7 @@
   pointer-events:none;
 }
 
-/* ── Button utility ── */
-.btn-util {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:0;
-  padding:var(--spacing-lg, 12px);
-  background:var(--bg-primary, #ffffff);
-  border:2px solid var(--border-secondary, #e9eaeb);
-  border-radius:var(--radius-full, 9999px);
-  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
-  flex-shrink:0;
-  overflow:hidden;
-  cursor:pointer;
-  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-.btn-util:hover {
-  background:var(--gray-50, #fafafa);
-}
-.btn-util:active {
-  box-shadow:none;
-  transform:translateY(2px);
-}
-.btn-util-disabled {
-  background:var(--gray-300, #d5d7da) !important;
-  border-color:var(--gray-400, #a4a7ae) !important;
-  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae) !important;
-  cursor:not-allowed;
-  pointer-events:none;
-}
-.btn-util-primary {
-  background:var(--brand-500, #0ba5ec);
-  border-color:var(--brand-600, #0086c9);
-  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
-}
-.btn-util-primary:hover {
-  background:var(--brand-400, #36bffa);
-}
-.btn-util-pressed {
-  box-shadow:none !important;
-  transform:translateY(2px);
-}
-.btn-util-sm { padding:var(--spacing-md, 8px); }
-.btn-util-icon {
-  width:24px; height:24px;
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0;
-}
-.btn-util-icon svg { width:100%; height:100%; }
-.btn-util-with-label { gap:var(--spacing-md, 8px); }
-.btn-util-label {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-md, 16px);
-  line-height:var(--line-height-text-md, 24px);
-  font-weight:var(--font-weight-regular, 400);
-  color:var(--text-secondary, #414651);
-  white-space:nowrap;
-}
-
-/* ── TossFace emoji icon ── */
-.tf-icon {
-  font-family:'TossFace', sans-serif;
-  font-size:var(--font-size-display-xs, 24px); line-height:1;
-  width:24px; height:24px;
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0;
-}
-
-/* ── Toolbar: Compact Large ── */
-.toolbar-compact-large {
-  gap:5px;
-  align-items:flex-start;
-  justify-content:center;
-}
-.toolbar-compact-large .toolbar-title-display {
-  flex:1;
-  font-family:var(--font-family-display, 'Inter', sans-serif);
-  font-size:var(--font-size-display-md, 36px);
-  line-height:var(--line-height-display-md, 44px);
-  font-weight:var(--font-weight-bold, 700);
-  color:var(--text-primary, #181d27);
-  letter-spacing:-0.72px;
-}
-
-/* ── Toolbar: Large Title ── */
-.toolbar-large-title {
-  flex-direction:column; gap:10px; align-items:center;
-}
-.toolbar-large-title .toolbar-controls {
-  display:flex; align-items:center; justify-content:space-between; width:100%;
-}
-.toolbar-large-title .toolbar-controls .leading,
-.toolbar-large-title .toolbar-controls .trailing {
-  flex:1; display:flex; align-items:center;
-}
-.toolbar-large-title .toolbar-controls .trailing { justify-content:flex-end; }
-.toolbar-large-title .toolbar-title-block {
-  display:flex; flex-direction:column; align-items:flex-start; width:100%;
-}
-.toolbar-large-title .toolbar-title-display {
-  font-family:var(--font-family-display, 'Inter', sans-serif);
-  font-size:var(--font-size-display-md, 36px);
-  line-height:var(--line-height-display-md, 44px);
-  font-weight:var(--font-weight-bold, 700);
-  color:var(--text-primary, #181d27);
-  letter-spacing:-0.72px; width:100%;
-}
-.toolbar-subtitle {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-md, 16px);
-  line-height:var(--line-height-text-md, 24px);
-  font-weight:var(--font-weight-regular, 400);
-  color:var(--text-secondary, #414651); width:100%;
-}
-
-/* ── Toolbar: Title 2 Line ── */
-.toolbar-title-2-line {
-  gap:10px; align-items:center; justify-content:center;
-}
-.toolbar-title-2-line .leading,
-.toolbar-title-2-line .trailing {
-  flex:1; display:flex; align-items:center;
-}
-.toolbar-title-2-line .trailing { justify-content:flex-end; }
-.toolbar-title-2-line .toolbar-center {
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-}
-.toolbar-center-title {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-md, 16px);
-  line-height:var(--line-height-text-md, 24px);
-  font-weight:var(--font-weight-semibold, 600);
-  color:var(--text-primary, #181d27); white-space:nowrap;
-}
-.toolbar-center-subtitle {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-xs, 12px);
-  line-height:var(--line-height-text-xs, 16px);
-  font-weight:var(--font-weight-medium, 500);
-  color:var(--text-secondary, #414651); white-space:nowrap;
-}
-
-/* ── Toolbar: Default & Chat ── */
-.toolbar-default, .toolbar-chat {
-  align-items:flex-start; justify-content:space-between;
-}
-.toolbar-default .leading, .toolbar-default .trailing,
-.toolbar-chat .leading, .toolbar-chat .trailing {
-  flex:1; display:flex; align-items:center;
-}
-.toolbar-default .trailing, .toolbar-chat .trailing { justify-content:flex-end; }
-.toolbar-default .toolbar-abs-title, .toolbar-chat .toolbar-abs-title {
-  position:absolute; left:50%; top:50%; transform:translate(-50%, -50%);
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-lg, 18px);
-  line-height:var(--line-height-text-lg, 28px);
-  font-weight:var(--font-weight-semibold, 600);
-  color:var(--text-primary, #181d27); white-space:nowrap;
-}
-
-/* ── Avatar / User group ── */
-.avatar {
-  width:32px; height:32px;
-  border-radius:var(--radius-full, 9999px);
-  background:var(--brand-100, #e0f2fe);
-  border:2px solid var(--fg-white, #ffffff); flex-shrink:0;
-}
-.user-group { display:flex; align-items:baseline; padding-right:var(--spacing-md, 8px); }
-.user-group .avatar { margin-right:calc(-1 * var(--spacing-md, 8px)); }
+/* ── Sprout avatar (toolbar demo) ── */
 .avatar-sprout {
   background:var(--bg-sky, #e0f2fe);
   position:relative; overflow:hidden;
@@ -303,60 +122,6 @@
   width:96px; height:138px;
   display:block;
 }
-
-/* ── Toolbar: Kid home ── */
-.toolbar-kid-home {
-  align-items:center; justify-content:space-between;
-}
-.toolbar-trailing {
-  display:flex; align-items:center; gap:var(--spacing-md, 8px);
-}
-
-/* ── Toolbar: Quest ── */
-.toolbar-quest {
-  align-items:center;
-  background:var(--bg-sky, #e0f2fe);
-  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
-  gap:var(--spacing-md, 8px);
-}
-.quest-close {
-  display:flex; align-items:center;
-  padding:var(--spacing-xs, 4px);
-  flex-shrink:0; cursor:pointer;
-}
-.quest-close svg { width:40px; height:40px; }
-
-/* ── Progress bar (Quest) ── */
-.progress-track {
-  flex:1; height:var(--spacing-xl, 16px);
-  background:var(--bg-secondary, #fafafa);
-  border-radius:var(--radius-full, 9999px);
-  overflow:hidden; position:relative;
-}
-.progress-fill {
-  height:100%;
-  background:var(--brand-500, #0ba5ec);
-  border-radius:var(--radius-full, 9999px);
-  min-width:var(--spacing-4xl, 32px);
-  padding:var(--spacing-xs, 4px) var(--spacing-md, 8px);
-  box-sizing:border-box;
-  position:relative;
-  transition:width 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
-}
-.progress-fill::after {
-  content:'';
-  display:block;
-  width:100%; height:var(--spacing-xs, 4px);
-  background:rgba(255,255,255,0.5);
-  border-radius:var(--radius-full, 9999px);
-}
-
-/* ── Toolbar: Quest 2 ── */
-.toolbar-quest-transparent {
-  align-items:center;
-  gap:var(--spacing-md, 8px);
-}
-.toolbar-quest-transparent .progress-track { flex:1; }
 
 /* ── Figma link ── */
 .figma-link {
@@ -401,11 +166,6 @@
   .phone-frame { width:100%; }
 }
 
-/* ── Reduced motion ── */
-@media (prefers-reduced-motion: reduce) {
-  .progress-fill { transition:none; }
-  .btn-util { transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1); }
-}
 </style>
 </head>
 <body>
@@ -475,7 +235,7 @@
         <div class="toolbar toolbar-chat" style="width:340px;position:relative;">
           <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
           <span class="toolbar-abs-title">Family Chat</span>
-          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div></div></div>
         </div>
       </div>
       <div class="demo-item">
@@ -678,7 +438,7 @@
         <div class="toolbar toolbar-chat">
           <div class="leading"><div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></div></div>
           <span class="toolbar-abs-title">Family Chat</span>
-          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div></div></div>
+          <div class="trailing"><div class="btn-util btn-util-sm"><div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div></div></div>
         </div>
         <div class="phone-content"><div class="phone-content-line"></div><div class="phone-content-line"></div><div class="phone-content-line"></div></div>
       </div>
@@ -1011,7 +771,7 @@
       </div>
       <div class="state-cell">
         <span class="state-cell-label">User group</span>
-        <div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div></div>
+        <div class="btn-util btn-util-sm"><div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div></div>
       </div>
       <div class="state-cell">
         <span class="state-cell-label">Emoji only</span>
@@ -1065,19 +825,19 @@
     <div class="state-grid" style="grid-template-columns:repeat(4, 1fr);margin-top:16px;">
       <div class="state-cell">
         <span class="state-cell-label">Default</span>
-        <div class="btn-util btn-util-sm"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div></div>
+        <div class="btn-util btn-util-sm"><div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div></div>
       </div>
       <div class="state-cell">
         <span class="state-cell-label">Hover</span>
-        <div class="btn-util btn-util-sm" style="background:var(--gray-50, #fafafa);"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div></div>
+        <div class="btn-util btn-util-sm" style="background:var(--gray-50, #fafafa);"><div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div></div>
       </div>
       <div class="state-cell">
         <span class="state-cell-label">Active / Pressed</span>
-        <div class="btn-util btn-util-sm btn-util-pressed"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div></div>
+        <div class="btn-util btn-util-sm btn-util-pressed"><div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div></div>
       </div>
       <div class="state-cell">
         <span class="state-cell-label">Disabled</span>
-        <div class="btn-util btn-util-sm btn-util-disabled"><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div></div>
+        <div class="btn-util btn-util-sm btn-util-disabled"><div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div></div>
       </div>
     </div>
 
@@ -1138,8 +898,8 @@
 
     <div class="demo">
       <div class="demo-item"><span class="demo-label">User</span><div class="avatar"></div></div>
-      <div class="demo-item"><span class="demo-label">Sprout</span><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div>
-      <div class="demo-item"><span class="demo-label">User group (3)</span><div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar avatar-sprout"><canvas class="rive-avatar" width="128" height="184"></canvas></div></div></div>
+      <div class="demo-item"><span class="demo-label">Sprout</span><div class="avatar avatar-sm avatar-sprout"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div>
+      <div class="demo-item"><span class="demo-label">User group (3)</span><div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div></div>
     </div>
 
     <table class="token-table">
@@ -1316,36 +1076,48 @@
 })();
 
 // Initialize Rive avatars
-var RIVE_SRC = '/sprout-character.riv';
 var SM_NAME = 'State Machine 1';
-document.querySelectorAll('.rive-avatar').forEach(function(canvas) {
-  canvas.width = 128;
-  canvas.height = 184;
-  canvas.style.width = '96px';
-  canvas.style.height = '138px';
+var PRESETS = [
+  { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
+  { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1 },
+  { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2 },
+  { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10},
+  { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3 },
+  { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0 },
+  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5 }
+];
+function initToolbarRive(canvas, opts) {
+  var w = parseInt(canvas.getAttribute('width'), 10);
+  var h = parseInt(canvas.getAttribute('height'), 10);
+  canvas.width = w; canvas.height = h;
+  var r;
   try {
-    var r = new rive.Rive({
-      src: RIVE_SRC,
-      canvas: canvas,
-      autoplay: true,
-      stateMachines: SM_NAME,
-      fit: rive.Fit.Contain,
-      alignment: rive.Alignment.TopCenter,
+    r = new rive.Rive({
+      src: opts.src, canvas: canvas, autoplay: true, stateMachines: SM_NAME,
+      artboard: opts.artboard || undefined,
+      fit: rive.Fit.Contain, alignment: opts.alignment || rive.Alignment.Center,
       onLoad: function() {
+        if (!r) return;
         r.resizeDrawingSurfaceToCanvas();
         try {
           var inputs = r.stateMachineInputs(SM_NAME);
-          if (inputs) {
+          if (inputs && opts.state) {
             inputs.forEach(function(inp) {
-              if (inp.name === 'hairID') inp.value = 1;
+              if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
             });
           }
         } catch(e) {}
       }
     });
-  } catch(e) {
-    console.warn('Rive avatar init failed', e);
-  }
+  } catch(e) {}
+}
+var userIdx = 0;
+document.querySelectorAll('.rive-user').forEach(function(canvas) {
+  initToolbarRive(canvas, { src: '/character2.8.riv', artboard: 'Village-character', state: PRESETS[userIdx % PRESETS.length] });
+  userIdx++;
+});
+document.querySelectorAll('.rive-sprout').forEach(function(canvas) {
+  initToolbarRive(canvas, { src: '/sprot2.97_.riv', alignment: rive.Alignment.TopCenter, state: { hairID: 1 } });
 });
 </script>
 </body>

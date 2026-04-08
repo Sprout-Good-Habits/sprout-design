@@ -106,7 +106,7 @@ IMPORTANT: Every full-screen Sprout kid view uses the branded background. It is 
 
 IMPORTANT: The Sprout character is a Rive animation that must appear on every screen with the branded background. It stands on the grass edge.
 
-**Rive file:** `/sprout-character.riv` — must be the same file from the design system Resources.
+**Rive file:** `/sprot2.97_.riv` — must be the same file from the design system Resources.
 
 **Canvas CSS — exact spec from the documentation:**
 ```css
@@ -131,7 +131,7 @@ IMPORTANT: The Sprout character is a Rive animation that must appear on every sc
 **Rive initialization:**
 ```js
 new rive.Rive({
-  src: '/sprout-character.riv',
+  src: '/sprot2.97_.riv',
   canvas: document.getElementById('sprout-rive'),
   autoplay: true,
   stateMachines: 'State Machine 1',

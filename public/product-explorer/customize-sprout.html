@@ -224,7 +224,7 @@
 
 /* ── Panel content ── */
 .panel-content {
-  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) 0;
+  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) var(--spacing-4xl, 32px);
   flex: 1;
   overflow-y: auto;
   scrollbar-width: none;
@@ -293,6 +293,18 @@
 }
 .device-wrapper.ipad .style-grid {
   grid-template-columns: repeat(5, auto);
+}
+
+/* ── Voice tiles ── */
+.voice-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.voice-tile svg {
+  width: 48px;
+  height: 48px;
 }
 
 /* ── Home indicator ── */
@@ -391,6 +403,7 @@
                     <div class="slide-pill" id="slide-pill"></div>
                     <button class="cat-tab active" data-panel="skin" aria-label="Skin tone" title="Skin tone"><span class="tf-icon">&#x1F600;</span></button>
                     <button class="cat-tab" data-panel="hair" aria-label="Hairstyle" title="Hairstyle"><span class="tf-icon">&#x1FAAE;</span></button>
+                    <button class="cat-tab" data-panel="voice" aria-label="Voice" title="Voice"><span class="tf-icon">&#x1F399;&#xFE0F;</span></button>
                   </div>
 
                   <!-- Panel sections -->
@@ -409,6 +422,24 @@
                       <div class="panel-subsection">
                         <div class="panel-label">Hairstyle</div>
                         <div class="style-grid" id="hair-styles"></div>
+                      </div>
+                    </div>
+
+                    <!-- 3. Voice -->
+                    <div class="panel-section" id="panel-voice">
+                      <div class="panel-subsection">
+                        <div class="panel-label">Voice</div>
+                        <div class="style-grid" id="voice-styles">
+                          <button class="tile tile-image voice-tile"><svg viewBox="0 0 48 48" fill="none"><path d="M6 20L6 28M15 12L15 36M24 6V42M33 12V36M42 20V28" stroke="#0BA5EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                          <button class="tile tile-image voice-tile"><svg viewBox="0 0 48 48" fill="none"><path d="M6 20L6 28M15 22V26M24 12V36M33 6V42M42 20V28" stroke="#0BA5EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                          <button class="tile tile-image voice-tile selected"><svg viewBox="0 0 48 48" fill="none"><path d="M6 20L6 28M15 12L15 36M24 6V42M33 12V36M42 20V28" stroke="#0BA5EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                          <button class="tile tile-image voice-tile"><svg viewBox="0 0 48 48" fill="none"><path d="M6 20L6 28M15 22V26M24 12V36M33 6V42M42 20V28" stroke="#0BA5EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                          <button class="tile tile-image voice-tile"><svg viewBox="0 0 48 48" fill="none"><path d="M6 20L6 28M15 12L15 36M24 6V42M33 12V36M42 20V28" stroke="#0BA5EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                          <button class="tile tile-image voice-tile"><svg viewBox="0 0 48 48" fill="none"><path d="M6 20L6 28M15 22V26M24 12V36M33 6V42M42 20V28" stroke="#0BA5EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                          <button class="tile tile-image voice-tile"><svg viewBox="0 0 48 48" fill="none"><path d="M6 20L6 28M15 12L15 36M24 6V42M33 12V36M42 20V28" stroke="#0BA5EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                          <button class="tile tile-image voice-tile"><svg viewBox="0 0 48 48" fill="none"><path d="M6 20L6 28M15 22V26M24 12V36M33 6V42M42 20V28" stroke="#0BA5EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                          <button class="tile tile-image voice-tile"><svg viewBox="0 0 48 48" fill="none"><path d="M6 20L6 28M15 12L15 36M24 6V42M33 12V36M42 20V28" stroke="#0BA5EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                        </div>
                       </div>
                     </div>
 
@@ -436,7 +467,7 @@
 <script>
 (function() {
   // ── Data ──
-  // Skin colors in display order, mapped to sprout-character.riv skinID
+  // Skin colors in display order, mapped to sprot2.97_.riv skinID
   var SKINS = [
     { hex: '#36bffa', id: 7 }, // Blue light/400
     { hex: '#528bff', id: 6 }, // Blue dark/400
@@ -466,7 +497,7 @@
   function initRive() {
     try {
       riveInstance = new rive.Rive({
-        src: '/design-system/sprout-character.riv',
+        src: '/design-system/sprot2.97_.riv',
         canvas: document.getElementById('sprout-rive'),
         autoplay: true,
         stateMachines: 'State Machine 1',
@@ -552,7 +583,7 @@
       try {
         (function(opts) {
           var r = new rive.Rive({
-            src: '/design-system/sprout-character.riv',
+            src: '/design-system/sprot2.97_.riv',
             canvas: canvas,
             autoplay: true,
             stateMachines: 'State Machine 1',
@@ -621,6 +652,14 @@
   // ── Populate panels ──
   buildSwatches('skin-swatches', SKINS, 'skinID');
   buildStyleCards('hair-styles', HAIR_STYLES, 'hairID');
+
+  // ── Voice tile selection ──
+  document.querySelectorAll('.voice-tile').forEach(function(tile) {
+    tile.addEventListener('click', function() {
+      document.querySelectorAll('.voice-tile').forEach(function(t) { t.classList.remove('selected'); });
+      tile.classList.add('selected');
+    });
+  });
 
   // ── Device toggle ──
   var deviceBtns = document.querySelectorAll('.device-toggle .cat-tab');

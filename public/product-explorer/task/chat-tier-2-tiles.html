@@ -313,6 +313,40 @@
 .tile.warning-static .sort-number{background:#fde272;color:#181d27}
 .sort-placeholder{min-height:56px;border:2px dashed #7cd4fd;border-radius:12px;background:#e0f2fe;opacity:0.4}
 
+/* Image Quiz */
+.image-quiz-group{display:flex;flex-direction:column;gap:8px;width:100%}
+.image-quiz-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.image-quiz-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-sizing:border-box;aspect-ratio:1;padding:16px;background:#fff;border:2px solid #e9eaeb;border-radius:12px;box-shadow:0 3px 0 0 #e9eaeb;cursor:pointer;transition:background 0.15s,border-color 0.15s,box-shadow 0.15s,transform 0.15s;user-select:none;-webkit-tap-highlight-color:transparent}
+.image-quiz-tile:hover{background:#fafafa}
+.image-quiz-tile:active{box-shadow:none;transform:translateY(2px)}
+.image-quiz-tile .quiz-image{font-family:'TossFace',sans-serif;font-size:48px;line-height:1}
+.image-quiz-tile .quiz-label{font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:700;color:#181d27;text-align:center}
+.image-quiz-tile.selected{background:#e0f2fe;border-color:#7cd4fd;box-shadow:0 3px 0 0 #7cd4fd}
+.image-quiz-tile.success{background:#dcfae6;border-color:#75e0a7;box-shadow:0 4px 0 0 #75e0a7;pointer-events:none}
+.image-quiz-tile.error{background:#fee4e2;border-color:#fda29b;box-shadow:0 4px 0 0 #fda29b;pointer-events:none}
+.image-quiz-tile.disabled{background:#fff;border-color:#e9eaeb;box-shadow:none;pointer-events:none;color:#a4a7ae}
+.image-quiz-tile.disabled .quiz-image{filter:grayscale(1);mix-blend-mode:luminosity}
+.image-quiz-tile.disabled .quiz-label{color:#a4a7ae}
+
+/* Fill in the Blank */
+.fill-blank-group{display:flex;flex-direction:column;gap:12px;width:100%}
+.fill-blank-sentence{background:#fff;border:1px solid #e9eaeb;border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:16px}
+.fill-blank-row{display:flex;align-items:flex-start;flex-wrap:wrap}
+.fill-blank-text{font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;line-height:24px;font-weight:400;color:#181d27;white-space:nowrap}
+.fill-blank-gap{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:50px;padding:0 4px}
+.fill-blank-gap-text{opacity:0;font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;line-height:24px;font-weight:400;color:#181d27;white-space:nowrap;transition:opacity 0.15s,color 0.15s}
+.fill-blank-gap.filled .fill-blank-gap-text{opacity:1}
+.fill-blank-gap.correct .fill-blank-gap-text{opacity:1;color:#079455}
+.fill-blank-gap.wrong .fill-blank-gap-text{opacity:1;color:#d92d20}
+.fill-blank-gap-line{width:100%;height:1px;background:#e9eaeb;transition:background 0.15s}
+.fill-blank-gap.active .fill-blank-gap-line{background:#7cd4fd;height:2px}
+.fill-blank-gap.correct .fill-blank-gap-line{background:#079455}
+.fill-blank-gap.wrong .fill-blank-gap-line{background:#d92d20}
+.fill-blank-options{display:flex;gap:12px;justify-content:center}
+.fill-blank-options .tile{width:auto;padding:8px 12px}
+.fill-blank-options .tile.used{opacity:0.3;pointer-events:none}
+.fill-blank-options .tile.placed{background:#e0f2fe;border-color:#7cd4fd;box-shadow:0 3px 0 0 #7cd4fd;pointer-events:none}
+
 @media(prefers-reduced-motion:reduce){.typing-dot,.spinner,.mic-btn.glow,.mic-btn[data-state="stop-default"]::after,.tile-group .tile{animation:none !important}.sheet{transition:opacity 0.1s cubic-bezier(0.25, 0.1, 0.25, 1) !important}.chat-thread-fade{transition:opacity 0.1s !important}}
 </style>
 </head>
@@ -1199,7 +1233,190 @@
     });
   }
 
-  // ── TIER 2 CONVERSATION: All 4 patterns ──
+  // ── Image Quiz ──
+  function addImageQuiz(question, options, correctIndex, onComplete) {
+    var group = document.createElement('div');
+    group.className = 'image-quiz-group';
+    var grid = document.createElement('div');
+    grid.className = 'image-quiz-grid';
+    group.appendChild(grid);
+    options.forEach(function(opt, i) {
+      var tile = document.createElement('div');
+      tile.className = 'image-quiz-tile';
+      tile.dataset.index = i;
+      tile.innerHTML = '<span class="quiz-image">' + opt.emoji + '</span><span class="quiz-label">' + opt.label + '</span>';
+      tile.style.animation = 'tileSlideIn 0.3s ease both';
+      tile.style.animationDelay = (i * 0.08) + 's';
+      grid.appendChild(tile);
+    });
+    chatThread.appendChild(group);
+    scrollThread();
+    grid.addEventListener('click', function(e) {
+      var tile = e.target.closest('.image-quiz-tile');
+      if (!tile) return;
+      var idx = parseInt(tile.dataset.index);
+      var isCorrect = idx === correctIndex;
+      grid.querySelectorAll('.image-quiz-tile').forEach(function(t) {
+        if (t === tile) t.classList.add(isCorrect ? 'success' : 'error');
+        else if (parseInt(t.dataset.index) === correctIndex) { if (!isCorrect) t.classList.add('success'); else t.classList.add('disabled'); }
+        else t.classList.add('disabled');
+      });
+      setTimeout(function() {
+        group.classList.add('dismissed');
+        setTimeout(function() { group.remove(); if (onComplete) onComplete(isCorrect, options[idx].label); }, 350);
+      }, 1200);
+    });
+  }
+
+  // ── Fill in the Blank ──
+  // sentenceParts: array of text segments (N+1 for N blanks)
+  // blankAnswers: string (single blank) or array of strings (multi-blank)
+  // options: array of word strings
+  function addFillBlank(sentenceParts, blankAnswers, options, onComplete) {
+    if (typeof blankAnswers === 'string') blankAnswers = [blankAnswers];
+    var group = document.createElement('div');
+    group.className = 'fill-blank-group';
+
+    // Sentence card with inline text + gap slots + options inside
+    var sentence = document.createElement('div');
+    sentence.className = 'fill-blank-sentence';
+    var row = document.createElement('div');
+    row.className = 'fill-blank-row';
+    var gaps = [];
+    sentenceParts.forEach(function(part, i) {
+      if (part) {
+        var textSpan = document.createElement('span');
+        textSpan.className = 'fill-blank-text';
+        textSpan.textContent = part;
+        row.appendChild(textSpan);
+      }
+      if (i < sentenceParts.length - 1) {
+        var gap = document.createElement('div');
+        gap.className = 'fill-blank-gap' + (i === 0 ? ' active' : '');
+        gap.dataset.index = i;
+        var gapText = document.createElement('p');
+        gapText.className = 'fill-blank-gap-text';
+        gapText.textContent = '\u00A0';
+        gap.appendChild(gapText);
+        var line = document.createElement('div');
+        line.className = 'fill-blank-gap-line';
+        gap.appendChild(line);
+        row.appendChild(gap);
+        gaps.push(gap);
+      }
+    });
+    sentence.appendChild(row);
+
+    // Option tiles (inside sentence card)
+    var optionsRow = document.createElement('div');
+    optionsRow.className = 'fill-blank-options';
+    var shuffled = options.slice();
+    for (var i = shuffled.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = tmp;
+    }
+    shuffled.forEach(function(opt, i) {
+      var tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.dataset.value = opt;
+      tile.innerHTML = '<div class="tile-content"><span class="tile-label">' + opt + '</span></div>';
+      tile.style.animation = 'tileSlideIn 0.3s ease both';
+      tile.style.animationDelay = (i * 0.05) + 's';
+      optionsRow.appendChild(tile);
+    });
+    sentence.appendChild(optionsRow);
+    group.appendChild(sentence);
+    chatThread.appendChild(group);
+    scrollThread();
+
+    // Hide composer, show Check in confirm bar
+    hideComposer();
+    var confirmBar = document.createElement('div');
+    confirmBar.className = 'confirm-bar';
+    var confirmBtn = document.createElement('button');
+    confirmBtn.className = 'tile-group-confirm state-disabled';
+    confirmBtn.textContent = 'Check';
+    confirmBar.appendChild(confirmBtn);
+    setTimeout(function() { phoneScreen.appendChild(confirmBar); }, 150);
+
+    // Track which option tile is placed in which gap
+    var placements = [];
+    var currentGapIndex = 0;
+
+    function updateCheckState() {
+      var allFilled = gaps.every(function(g) { return g.classList.contains('filled'); });
+      if (allFilled) { confirmBtn.classList.remove('state-disabled'); } else { confirmBtn.classList.add('state-disabled'); }
+    }
+
+    // Tap option → place in next empty gap (no validation)
+    optionsRow.addEventListener('click', function(e) {
+      var tile = e.target.closest('.tile');
+      if (!tile || tile.classList.contains('placed') || tile.classList.contains('used') || tile.classList.contains('success')) return;
+      if (currentGapIndex >= gaps.length) return;
+      var value = tile.dataset.value;
+      var gap = gaps[currentGapIndex];
+      var gapText = gap.querySelector('.fill-blank-gap-text');
+      gapText.textContent = value;
+      gap.classList.add('filled');
+      gap.classList.remove('active');
+      tile.classList.add('placed');
+      placements.push({ gapIndex: currentGapIndex, tile: tile, value: value });
+      currentGapIndex++;
+      if (currentGapIndex < gaps.length) gaps[currentGapIndex].classList.add('active');
+      updateCheckState();
+    });
+
+    // Tap Check → validate all gaps
+    confirmBtn.addEventListener('click', function() {
+      if (confirmBtn.classList.contains('state-disabled')) return;
+      var allCorrect = true;
+      placements.forEach(function(p) {
+        var gap = gaps[p.gapIndex];
+        var isCorrect = p.value === blankAnswers[p.gapIndex];
+        if (isCorrect) {
+          gap.classList.add('correct');
+          p.tile.classList.remove('placed');
+          p.tile.classList.add('success');
+        } else {
+          allCorrect = false;
+          gap.classList.add('wrong');
+          p.tile.classList.add('error');
+        }
+      });
+      confirmBtn.classList.add('state-disabled');
+      if (allCorrect) {
+        optionsRow.querySelectorAll('.tile:not(.success)').forEach(function(t) { t.classList.add('used'); });
+        confirmBar.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        confirmBar.style.opacity = '0'; confirmBar.style.transform = 'translateY(8px)';
+        setTimeout(function() {
+          confirmBar.remove(); group.classList.add('dismissed');
+          setTimeout(function() { group.remove(); showComposer(); if (onComplete) onComplete(true); }, 350);
+        }, 1000);
+      } else {
+        setTimeout(function() {
+          placements = placements.filter(function(p) {
+            var gap = gaps[p.gapIndex];
+            if (gap.classList.contains('wrong')) {
+              var gapText = gap.querySelector('.fill-blank-gap-text');
+              gapText.textContent = '\u00A0';
+              gap.classList.remove('filled', 'wrong');
+              p.tile.classList.remove('placed', 'error');
+              p.tile.classList.add('used');
+              return false;
+            }
+            return true;
+          });
+          currentGapIndex = 0;
+          for (var i = 0; i < gaps.length; i++) {
+            if (!gaps[i].classList.contains('filled')) { currentGapIndex = i; gaps[i].classList.add('active'); break; }
+          }
+          updateCheckState();
+        }, 800);
+      }
+    });
+  }
+
+  // ── TIER 2 CONVERSATION: All 6 patterns ──
   setTimeout(function() {
     addIncoming("Hi! What should we do today?", function() {
       addTileGroup([
@@ -1230,7 +1447,33 @@
                     { emoji: '\uD83D\uDC18', content: 'Elephant', correctIndex: 2 }
                   ], function() {
                     addOutgoing("I did it!");
-                    addIncoming("Amazing job! You're so smart!");
+
+                    // Step 5: Image Quiz
+                    addIncoming("Which one is a fruit?", function() {
+                      addImageQuiz("Which is a fruit?", [
+                        { emoji: '\uD83E\uDD55', label: 'Carrot' },
+                        { emoji: '\uD83C\uDF4E', label: 'Apple' },
+                        { emoji: '\uD83E\uDD66', label: 'Broccoli' },
+                        { emoji: '\uD83C\uDF3D', label: 'Corn' }
+                      ], 1, function(correct, picked) {
+                        addOutgoing(correct ? "Apple!" : picked);
+                        addIncoming(correct ? "Yes! Apples are yummy!" : "Not quite! The apple is the fruit!", function() {
+
+                          // Step 6: Fill in the Blank
+                          addIncoming("Fill in the blank!", function() {
+                            addFillBlank(
+                              ["The ", " shines in the sky."],
+                              "sun",
+                              ["moon", "sun", "star", "rain"],
+                              function() {
+                                addOutgoing("The sun!");
+                                addIncoming("You got it! Great job today!");
+                              }
+                            );
+                          });
+                        });
+                      });
+                    });
                   });
                 });
               });
@@ -1264,7 +1507,7 @@
   var canvas = document.getElementById('rive-character');
   if (canvas && window.rive) {
     var r = new rive.Rive({
-      src: '/design-system/sprout-character.riv',
+      src: '/design-system/sprot2.97_.riv',
       canvas: canvas,
       autoplay: true,
       stateMachines: 'State Machine 1',
@@ -1284,7 +1527,7 @@
   var camCanvas = document.getElementById('rive-camera');
   if (camCanvas && window.rive) {
     var r2 = new rive.Rive({
-      src: '/design-system/sprout-character.riv',
+      src: '/design-system/sprot2.97_.riv',
       canvas: camCanvas,
       autoplay: true,
       stateMachines: 'State Machine 1',

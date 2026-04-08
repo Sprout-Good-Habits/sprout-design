@@ -14,7 +14,7 @@ const rewrites = [
   ['/nav.js', '/design-system/nav.js'],
   ['/component-specs.json', '/design-system/component-specs.json'],
   ['/tokens.json', '/design-system/tokens.json'],
-  ['/sprout-character.riv', '/design-system/sprout-character.riv'],
+  ['/sprot2.97_.riv', '/design-system/sprot2.97_.riv'],
   ['/character2.8.riv', '/design-system/character2.8.riv'],
 ];
 

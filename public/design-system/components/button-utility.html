@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sprout Design System — Button Utility</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script type="application/ld+json">
 {
   "@type": "DesignComponent",
@@ -55,119 +56,10 @@
 </script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/button-utility.css">
+<link rel="stylesheet" href="/components/avatar.css">
+<link rel="stylesheet" href="/components/avatar-group.css">
 <style>
-/* ── Toss Face emoji font ── */
-@font-face {
-  font-family:'TossFace';
-  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
-  font-display:swap;
-}
-.tf-icon {
-  font-family:'TossFace', sans-serif;
-  font-size:24px; line-height:1;
-}
-
-/* ── Button Utility base ── */
-.btn-util {
-  display:inline-flex;
-  align-items:center; justify-content:center;
-  gap:0px;
-  padding:var(--spacing-lg, 12px);
-  background:var(--bg-primary, #ffffff);
-  border:2px solid var(--border-secondary, #e9eaeb);
-  border-radius:var(--radius-full, 9999px);
-  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
-  overflow:hidden;
-  cursor:pointer;
-  box-sizing:border-box;
-  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
-  flex-shrink:0;
-}
-.btn-util:hover {
-  background:var(--gray-50, #fafafa);
-}
-.btn-util:active {
-  box-shadow:none;
-  transform:translateY(2px);
-}
-
-/* ── With gap (multi-symbol, icon+value) ── */
-.btn-util-gap { gap:var(--spacing-md, 8px); }
-
-/* ── Small padding for User group ── */
-.btn-util-sm { padding:var(--spacing-md, 8px); }
-
-/* ── Disabled state ── */
-.btn-util-disabled {
-  background:var(--gray-300, #d5d7da);
-  border-color:var(--gray-400, #a4a7ae);
-  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);
-  cursor:not-allowed;
-  pointer-events:none;
-}
-
-/* ── Primary variant ── */
-.btn-util-primary {
-  background:var(--brand-500, #0ba5ec);
-  border-color:var(--brand-600, #0086c9);
-  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
-}
-.btn-util-primary:hover {
-  background:var(--brand-400, #36bffa);
-}
-.btn-util-primary:active {
-  background:var(--brand-500, #0ba5ec);
-  box-shadow:none;
-  transform:translateY(2px);
-}
-.btn-util-primary.btn-util-disabled {
-  background:var(--gray-300, #d5d7da);
-  border-color:var(--gray-400, #a4a7ae);
-  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);
-}
-
-/* ── Pressed state (for demo) ── */
-.btn-util-pressed {
-  box-shadow:none;
-  transform:translateY(2px);
-}
-.btn-util-primary.btn-util-pressed {
-  background:var(--brand-500, #0ba5ec);
-  box-shadow:none;
-  transform:translateY(2px);
-}
-
-/* ── Icon slot ── */
-.btn-util-icon {
-  width:24px; height:24px;
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0;
-  overflow:hidden;
-}
-.btn-util-icon svg {
-  width:24px; height:24px;
-}
-
-/* ── Value label ── */
-.btn-util-label {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-md, 16px);
-  font-weight:var(--font-weight-regular, 400);
-  line-height:var(--line-height-text-md, 24px);
-  color:var(--text-secondary, #414651);
-  white-space:nowrap;
-}
-
-/* ── Avatar / User group ── */
-.avatar {
-  width:32px; height:32px;
-  border-radius:var(--radius-full, 9999px);
-  background:var(--bg-sky, #e0f2fe);
-  border:2px solid var(--fg-white, #ffffff); flex-shrink:0;
-}
-.user-group { display:flex; align-items:baseline; padding-right:var(--spacing-md, 8px); }
-.user-group .avatar { margin-right:calc(-1 * var(--spacing-md, 8px)); }
-
 /* ── Anatomy diagram ── */
 .anatomy-wrap {
   display:flex; align-items:center; justify-content:center;
@@ -237,7 +129,7 @@
       <div class="demo-item">
         <span class="demo-label">User group</span>
         <div class="btn-util btn-util-sm">
-          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+          <div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div>
         </div>
       </div>
     </div>
@@ -268,7 +160,7 @@
       </div>
       <div class="anatomy-item">
         <div class="btn-util btn-util-sm">
-          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+          <div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div>
         </div>
         <div class="anatomy-pointer"></div>
         <span class="anatomy-label">User<br>group</span>
@@ -351,7 +243,7 @@
       <div class="state-cell">
         <span class="state-cell-label">User group</span>
         <div class="btn-util btn-util-sm">
-          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+          <div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div>
         </div>
       </div>
     </div>
@@ -439,22 +331,22 @@
 
       <div class="state-cell">
         <div class="btn-util btn-util-sm">
-          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+          <div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div>
         </div>
       </div>
       <div class="state-cell">
         <div class="btn-util btn-util-sm" style="background:var(--gray-50, #fafafa);">
-          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+          <div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div>
         </div>
       </div>
       <div class="state-cell">
         <div class="btn-util btn-util-sm btn-util-pressed">
-          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+          <div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div>
         </div>
       </div>
       <div class="state-cell">
         <div class="btn-util btn-util-sm btn-util-disabled">
-          <div class="user-group"><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div></div>
+          <div class="user-group user-group-sm"><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-user" width="92" height="132"></canvas></div><div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="128" height="184"></canvas></div></div>
         </div>
       </div>
     </div>
@@ -631,5 +523,50 @@
 <script src="/nav.js"></script>
 <script src="/spec-renderer.js"></script>
 <script src="/shell.js"></script>
+<script>
+var SM_NAME = 'State Machine 1';
+var PRESETS = [
+  { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 },
+  { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1 },
+  { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2 },
+  { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10},
+  { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3 },
+  { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0 },
+  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5 }
+];
+function initRive(canvas, opts) {
+  var w = parseInt(canvas.getAttribute('width'), 10);
+  var h = parseInt(canvas.getAttribute('height'), 10);
+  canvas.width = w; canvas.height = h;
+  var r;
+  try {
+    r = new rive.Rive({
+      src: opts.src, canvas: canvas, autoplay: true, stateMachines: SM_NAME,
+      artboard: opts.artboard || undefined,
+      fit: rive.Fit.Contain, alignment: opts.alignment || rive.Alignment.Center,
+      onLoad: function() {
+        if (!r) return;
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM_NAME);
+          if (inputs && opts.state) {
+            inputs.forEach(function(inp) {
+              if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+            });
+          }
+        } catch(e) {}
+      }
+    });
+  } catch(e) {}
+}
+var userIdx = 0;
+document.querySelectorAll('.rive-user').forEach(function(canvas) {
+  initRive(canvas, { src: '/character2.8.riv', artboard: 'Village-character', state: PRESETS[userIdx % PRESETS.length] });
+  userIdx++;
+});
+document.querySelectorAll('.rive-sprout').forEach(function(canvas) {
+  initRive(canvas, { src: '/sprot2.97_.riv', alignment: rive.Alignment.TopCenter, state: { hairID: 1 } });
+});
+</script>
 </body>
 </html>
