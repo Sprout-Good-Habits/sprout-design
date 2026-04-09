@@ -1,0 +1,46 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Social Buttons Component CSS
+   Third-party sign-in buttons (Google, Apple, etc.)
+   ═══════════════════════════════════════════════════ */
+
+.btn-social {
+  display:flex; align-items:center; justify-content:center; gap:var(--spacing-md, 8px);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-weight:var(--font-weight-bold, 700);
+  font-size:var(--font-size-text-md, 16px); line-height:var(--line-height-text-md, 24px);
+  letter-spacing:0;
+  width:320px; height:48px;
+  padding:var(--spacing-lg, 12px) var(--spacing-3xl, 24px);
+  border-radius:var(--radius-2xl, 16px); cursor:pointer;
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+  white-space:nowrap; box-sizing:border-box;
+  background:var(--bg-primary, #ffffff); color:var(--text-secondary, #414651);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+.btn-social:hover { background:var(--bg-secondary, #fafafa); }
+.btn-social:active, .btn-social.state-active {
+  background:var(--bg-primary, #ffffff); box-shadow:none;
+  border:2px solid var(--border-secondary, #e9eaeb); transform:translateY(3px);
+}
+.btn-social.state-disabled {
+  background:var(--fg-disabled-subtle, #d5d7da); color:var(--text-disabled, #717680);
+  border:none;
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae); cursor:not-allowed; pointer-events:none;
+}
+.btn-social.state-loading {
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb); cursor:wait;
+}
+/* ── Loading spinner ── */
+.spinner {
+  display:inline-block;
+  width:var(--font-size-text-md, 16px); height:var(--font-size-text-md, 16px);
+  border-radius:var(--radius-full, 9999px);
+  animation:spin 1.0s linear infinite;
+}
+.btn-social .spinner { border:2px solid rgba(11,165,236,0.2); border-top-color:var(--brand-500, #0ba5ec); }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.social-icon { width:24px; height:24px; flex-shrink:0; }

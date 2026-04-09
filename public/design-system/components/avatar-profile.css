@@ -1,0 +1,35 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Avatar Profile Component CSS
+   Full-width profile banner showing the character
+   at a large scale. Used at the top of profile screens.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Profile banner ── */
+.avatar-profile {
+  width:100%;
+  height:264px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+.avatar-profile canvas {
+  position:relative;
+  width:209px;
+  height:299px;
+  pointer-events:none;
+  margin-bottom:-60px;
+}
+
+/* ── iPad overrides ── */
+@media (min-width:640px) {
+  .avatar-profile {
+    height:320px;
+  }
+  .avatar-profile canvas {
+    width:260px;
+    height:372px;
+    margin-bottom:-75px;
+  }
+}

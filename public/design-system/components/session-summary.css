@@ -1,0 +1,60 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Session Summary Component CSS
+   A compact card or inline block that displays
+   emoji-prefixed stat lines for quest session summaries.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Base ── */
+.session-summary {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  text-align:left;
+}
+
+/* ── Card variant (gray bg + border) ── */
+.session-summary--card {
+  background:var(--gray-50, #fafafa);
+  border-radius:var(--radius-xl, 14px);
+  padding:var(--spacing-xl, 16px);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  width:280px;
+}
+
+/* ── Inline variant (no bg, just stat lines) ── */
+.session-summary--inline {
+  /* No background, border, or padding */
+}
+
+/* ── Section label ── */
+.session-summary__label {
+  font-size:var(--font-size-text-xs, 11px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-quaternary, #717680);
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  margin-bottom:var(--spacing-md, 8px);
+}
+
+/* ── Stat list container ── */
+.session-summary__stats {
+  font-size:var(--font-size-text-sm, 13px);
+  color:var(--text-secondary, #414651);
+  line-height:1.6;
+}
+
+/* Inline variant uses slightly smaller/lighter text */
+.session-summary--inline .session-summary__stats {
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-tertiary, #535862);
+}
+
+/* ── Individual stat line ── */
+.session-summary__stat {
+  /* Each line is a block-level div; spacing comes from line-height */
+}
+
+/* ── Responsive ── */
+@media (max-width:768px) {
+  .session-summary--card {
+    width:100%;
+  }
+}

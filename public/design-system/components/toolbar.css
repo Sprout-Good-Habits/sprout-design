@@ -1,0 +1,180 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Toolbar Component CSS
+   Top navigation bar with multiple layout variants.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Toolbar shared ── */
+.toolbar {
+  display:flex;
+  align-items:center;
+  padding:0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  position:relative;
+  width:100%;
+  box-sizing:border-box;
+}
+
+/* ── Toolbar: Compact Large ── */
+.toolbar-compact-large {
+  gap:5px;
+  align-items:flex-start;
+  justify-content:center;
+}
+.toolbar-compact-large .toolbar-title-display {
+  flex:1;
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+  font-size:var(--font-size-display-md, 36px);
+  line-height:var(--line-height-display-md, 44px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+  letter-spacing:-0.72px;
+}
+
+/* ── Toolbar: Large Title ── */
+.toolbar-large-title {
+  flex-direction:column; gap:10px; align-items:center;
+}
+.toolbar-large-title .toolbar-controls {
+  display:flex; align-items:center; justify-content:space-between; width:100%;
+}
+.toolbar-large-title .toolbar-controls .leading,
+.toolbar-large-title .toolbar-controls .trailing {
+  flex:1; display:flex; align-items:center;
+}
+.toolbar-large-title .toolbar-controls .trailing { justify-content:flex-end; }
+.toolbar-large-title .toolbar-title-block {
+  display:flex; flex-direction:column; align-items:flex-start; width:100%;
+}
+.toolbar-large-title .toolbar-title-display {
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+  font-size:var(--font-size-display-md, 36px);
+  line-height:var(--line-height-display-md, 44px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+  letter-spacing:-0.72px; width:100%;
+}
+.toolbar-subtitle {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651); width:100%;
+}
+
+/* ── Toolbar: Title 2 Line ── */
+.toolbar-title-2-line {
+  gap:10px; align-items:center; justify-content:center;
+}
+.toolbar-title-2-line .leading,
+.toolbar-title-2-line .trailing {
+  flex:1; display:flex; align-items:center;
+}
+.toolbar-title-2-line .trailing { justify-content:flex-end; }
+.toolbar-title-2-line .toolbar-center {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.toolbar-center-title {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-primary, #181d27); white-space:nowrap;
+}
+.toolbar-center-subtitle {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:var(--line-height-text-xs, 16px);
+  font-weight:var(--font-weight-medium, 500);
+  color:var(--text-secondary, #414651); white-space:nowrap;
+}
+
+/* ── Toolbar: Default & Chat ── */
+.toolbar-default, .toolbar-chat {
+  align-items:flex-start; justify-content:space-between;
+}
+.toolbar-default .leading, .toolbar-default .trailing,
+.toolbar-chat .leading, .toolbar-chat .trailing {
+  flex:1; display:flex; align-items:center;
+}
+.toolbar-default .trailing, .toolbar-chat .trailing { justify-content:flex-end; }
+.toolbar-default .toolbar-abs-title, .toolbar-chat .toolbar-abs-title {
+  position:absolute; left:50%; top:50%; transform:translate(-50%, -50%);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-lg, 18px);
+  line-height:var(--line-height-text-lg, 28px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-primary, #181d27); white-space:nowrap;
+}
+
+/* ── Toolbar: Kid Home ── */
+.toolbar-kid-home {
+  align-items:center; justify-content:space-between;
+}
+.toolbar-trailing {
+  display:flex; align-items:center; gap:var(--spacing-md, 8px);
+}
+
+/* ── Toolbar: Quest — Default ── */
+/* Figma: bg-sky, bottom border blue-light-200, gap md, items-center, h 56px */
+.toolbar-quest {
+  align-items:center;
+  background:var(--bg-sky, #e0f2fe);
+  border-bottom:1px solid var(--blue-light-200, #b9e6fe);
+  gap:var(--spacing-md, 8px);
+  height:56px;
+}
+.toolbar-quest .progress-bar { flex:1; }
+
+/* Quest close — bare icon tap area */
+/* Figma: px-xs(4px) py-sm(6px) */
+.quest-close {
+  display:flex; align-items:center;
+  padding:var(--spacing-sm, 6px) var(--spacing-xs, 4px);
+  flex-shrink:0; cursor:pointer;
+}
+.quest-close svg { width:32px; height:32px; }
+
+/* Progress bar inside quest toolbar: strip the message-space height */
+.toolbar-quest .progress-bar,
+.toolbar-quest-transparent .progress-bar {
+  height:auto;
+}
+
+/* ── Quest timer (trailing, optional) ── */
+/* Quest Default: bare icon + text, no container */
+.quest-timer {
+  display:flex; align-items:center;
+  gap:var(--spacing-md, 8px);
+  justify-content:center;
+  flex-shrink:0;
+  overflow:visible;
+  border-radius:var(--radius-full, 9999px);
+  padding:var(--spacing-none, 0px);
+}
+.quest-timer-icon {
+  width:24px; height:24px; flex-shrink:0;
+  font-family:'TossFace', sans-serif;
+  font-size:24px; line-height:1;
+}
+.quest-timer-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  font-weight:var(--font-weight-regular, 400);
+  line-height:var(--line-height-text-md, 24px);
+  color:var(--text-secondary, #414651);
+  white-space:nowrap;
+}
+.quest-timer.hidden { display:none; }
+
+/* Quest Overlay: timer wrapped in a white pill */
+.toolbar-quest-transparent .quest-timer {
+  background:var(--bg-primary, #ffffff);
+  padding:var(--spacing-lg, 12px);
+  box-shadow:0 4px 0 0 var(--base-white, #ffffff);
+}
+
+/* ── Toolbar: Quest — Overlay (transparent) ── */
+.toolbar-quest-transparent {
+  align-items:center;
+  gap:var(--spacing-md, 8px);
+}
+.toolbar-quest-transparent .progress-bar { flex:1; }

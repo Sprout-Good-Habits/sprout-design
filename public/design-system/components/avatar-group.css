@@ -1,0 +1,23 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Avatar Group Component CSS
+   Overlapping circular avatars for participant display.
+   Import avatar.css alongside this file.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Overflow counter ── */
+.avatar-count {
+  background:var(--bg-sky, #e0f2fe);
+  color:var(--text-brand-secondary, #026aa2);
+  font-weight:var(--font-weight-semibold, 600);
+}
+
+/* ── User Group (stacked avatars) ── */
+.user-group {
+  display:flex; align-items:center;
+}
+.user-group-xs { padding-right:6px; }
+.user-group-xs .avatar { margin-right:-6px; }
+.user-group-sm { padding-right:8px; }
+.user-group-sm .avatar { margin-right:-8px; }
+.user-group-md { padding-right:10px; }
+.user-group-md .avatar { margin-right:-10px; }
