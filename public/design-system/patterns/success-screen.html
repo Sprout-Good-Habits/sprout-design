@@ -3,32 +3,379 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Design System — Success Screen</title>
+<title>Sprout Design System — Result Screen</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "ResultScreen",
+  "slug": "success-screen",
+  "intent": {
+    "purpose": "Communicate the outcome of a quest or task to the kid — whether fully completed, partially completed, or sent for parent review",
+    "taskContext": ["quest-complete", "quest-partial", "pending-review"],
+    "sentiment": ["celebratory", "encouraging", "reassuring"]
+  },
+  "composition": {
+    "requires": ["title", "description", "sprout-character", "grass", "continue-button"],
+    "allows": ["hidden-subtitle"],
+    "forbids": ["navigation-tabs", "session-summary-card", "inline-emoji-avatar"]
+  },
+  "variants": [
+    { "name": "Full Completion", "useWhen": "Readiness = 1.0, kid completed everything", "riveAction": "celebration" },
+    { "name": "Partial (Above Threshold)", "useWhen": "Readiness < 1.0 but >= parent threshold", "riveAction": "celebration" },
+    { "name": "Sent to Parents", "useWhen": "Readiness below threshold, sent for parent review", "riveAction": "smile" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile"],
+    "placement": ["full-screen"]
+  },
+  "relationships": {
+    "related": ["EmptyStates", "ErrorScreen"],
+    "escalatesTo": ["ParentReviewScreen"],
+    "groupsWith": ["Button", "Background"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "status",
+    "keyboard": [],
+    "ariaAttributes": ["aria-live"],
+    "minTouchTarget": "48px"
+  }
+}
+</script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/buttons.css">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<style>
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ══════════════════════════════════════
+   Result Screen pattern demos
+   ══════════════════════════════════════ */
+
+.phone-frame {
+  width:366px; height:780px;
+  border-radius:36px; overflow:hidden;
+  position:relative;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+}
+.phone-frame-sky {
+  background:var(--bg-sky, #e0f2fe);
+}
+
+/* Result screen layout */
+.result-screen {
+  width:100%; height:100%;
+  position:relative; overflow:hidden;
+}
+.result-content {
+  position:absolute; top:80px; left:0; right:0; z-index:10;
+  display:flex; flex-direction:column; align-items:center;
+  text-align:center; padding:16px 16px 0;
+}
+.result-title {
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+  font-size:30px; line-height:38px;
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+  margin-bottom:4px;
+}
+.result-desc {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:18px; line-height:28px;
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-tertiary, #535862);
+  max-width:370px;
+}
+
+/* Sprout character area */
+.result-character {
+  position:absolute; bottom:-170px; left:50%;
+  transform:translateX(-50%);
+  width:630px; height:630px;
+  z-index:2; pointer-events:none;
+}
+.result-character canvas {
+  display:block; width:100%; height:100%;
+}
+
+/* Grass */
+.result-grass {
+  position:absolute; bottom:0; left:0; right:0;
+  z-index:1; pointer-events:none;
+}
+.result-grass-edge {
+  height:24px; background:var(--bg-grass, #86cb3c);
+  border-radius:var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+}
+.result-grass-fill {
+  height:70px; background:var(--bg-grass, #86cb3c);
+}
+
+/* Continue button */
+.result-action {
+  position:absolute; bottom:36px; left:0; right:0;
+  z-index:10; padding:0 16px;
+}
+.result-action .btn-sprout { width:100%; }
+
+/* Home indicator */
+.result-home-indicator {
+  position:absolute; bottom:8px; left:50%;
+  transform:translateX(-50%);
+  width:134px; height:5px;
+  border-radius:100px; background:#181d27;
+  z-index:20;
+}
+
+/* Anatomy annotations */
+.anatomy-overlay { position:relative; }
+.anatomy-label {
+  position:absolute; z-index:30;
+  font-size:10px; font-weight:700;
+  color:#fff; background:var(--brand-500, #0ba5ec);
+  padding:2px 8px; border-radius:4px;
+  white-space:nowrap; pointer-events:none;
+}
+
+/* Wider demos */
+.demo { flex-wrap:wrap; }
+.demo-item { min-width:370px; }
+
+@media(max-width:768px) {
+  .phone-frame { width:100%; height:auto; min-height:600px; }
+  .demo-item { min-width:100%; }
+}
+</style>
 </head>
 <body>
 <div class="sidebar" id="sidebar"></div>
 <div class="main">
-  <div class="content-area">
-    <div class="page-content">
-      <div class="breadcrumb" id="breadcrumb"></div>
-      <div class="page-header">
-        <div class="sec-title">Success Screen</div>
-        <div class="sec-desc">Confirmation and celebration patterns after completed actions or milestones.</div>
-      </div>
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Result Screen</div>
+    <div class="sec-desc">Full-screen pattern for quest and task outcomes. Communicates completion status to the kid with an encouraging tone, a large Sprout character, and a single Continue action. Used for approved completions, partial completions, and pending parent review.</div>
+  </div>
 
-      <div class="doc-section">
-        <h2>Status</h2>
-        <div class="info-note"><strong>Work in progress.</strong> This pattern is being documented. Check back soon for guidelines, examples, and component references.</div>
+  <!-- ════ Variants ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Result Screen</span>
+        <div class="phone-frame phone-frame-sky">
+          <div class="result-screen">
+            <div class="result-content">
+              <div class="result-title">Quest Complete!</div>
+              <div class="result-desc">You practiced for 10 minutes and played it 5 times. I'm so proud of you!</div>
+            </div>
+            <div class="result-character"><canvas class="rive-demo" data-trigger="celebration"></canvas></div>
+            <div class="result-grass"><div class="result-grass-edge"></div><div class="result-grass-fill"></div></div>
+            <div class="result-action"><button class="btn-sprout btn-primary btn-lg">Continue</button></div>
+            <div class="result-home-indicator"></div>
+          </div>
+        </div>
       </div>
-
-      <div class="last-updated">Last updated: March 2026</div>
     </div>
   </div>
-  <div class="toc-sidebar" id="toc"></div>
+
+  <!-- ════ When to use ════ -->
+  <div class="doc-section">
+    <h2>When to use</h2>
+    <p>Use a result screen to communicate the outcome of a completed quest or task to the kid.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> After a quest reaches readiness = 1.0 (full completion).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> After a quest is auto-approved above the parent's threshold (partial completion).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> After a quest is sent to parent for review (below threshold or expired).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Any kid-facing end state that needs to feel warm and encouraging.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ When not to use ════ -->
+  <div class="doc-section doc-section-contd">
+    <h2>When not to use</h2>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for error states &mdash; use the <a href="/patterns/error-screen.html" style="color:var(--brand-500)">Error Screen</a> pattern.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for parent-facing review screens &mdash; those use the Parent Review layout.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for in-progress states (readiness bar, camera view).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>The result screen is a full-screen absolutely-positioned layout with five layers.</p>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Background</strong> (required) &mdash; <code>var(--bg-sky)</code> solid fill. Same across all variants.</li>
+        <li><strong>Title + Description</strong> (required) &mdash; Positioned at <code>top: 100px</code>, centered. Title is <code>30px bold</code> in <code>--text-primary</code>. Description is <code>18px regular</code> in <code>--text-tertiary</code>, max-width 370px.</li>
+        <li><strong>Sprout Character</strong> (required) &mdash; Rive canvas, 690&times;690 at <code>bottom: -196px</code>. Uses <code>Fit.Contain</code>, <code>Alignment.BottomCenter</code>. Character must be grounded &mdash; clipped by the bottom edge, never floating.</li>
+        <li><strong>Grass</strong> (required) &mdash; Two layers at the bottom: 24px rounded top edge + 89px solid fill, both <code>#86cb3c</code>.</li>
+        <li><strong>Continue button</strong> (required) &mdash; <code>btn-sprout btn-primary btn-lg</code>, full-width at <code>bottom: 45px</code>.</li>
+        <li><strong>Home indicator</strong> (required) &mdash; Standard 134&times;5px black pill at <code>bottom: 8px</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Sprout behavior ════ -->
+  <div class="doc-section">
+    <h2>Sprout behavior</h2>
+    <p>Sprout's expression and speech are driven by the Rive state machine and vary by outcome.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Variant</th><th>Rive trigger</th><th>Mouth animation</th><th>Tone</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Full Completion</td>
+            <td><code>celebration</code></td>
+            <td>Speaks the description text (1700ms delay after celebration)</td>
+            <td>Celebratory, proud</td>
+          </tr>
+          <tr>
+            <td>Partial (Above Threshold)</td>
+            <td><code>celebration</code></td>
+            <td>Speaks the description text (1700ms delay after celebration)</td>
+            <td>Encouraging, positive</td>
+          </tr>
+          <tr>
+            <td>Sent to Parents</td>
+            <td><code>smile</code></td>
+            <td>Speaks the description text (200ms delay after smile)</td>
+            <td>Reassuring, warm</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose" style="margin-top:16px">
+      <ul>
+        <li>Mouth animation duration is calculated from the description word count: <code>max(1500ms, wordCount &times; 250ms)</code>.</li>
+        <li>A hidden <code>.subtitle-card p</code> element holds the text that drives the mouth animation timing.</li>
+        <li>The celebration trigger must complete before the mouth starts &mdash; the 1700ms delay ensures this.</li>
+        <li>Never show a sad or negative Sprout expression on result screens. Even &ldquo;Sent to Parents&rdquo; uses <code>smile</code> for an encouraging tone.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Copy guidelines ════ -->
+  <div class="doc-section">
+    <h2>Copy guidelines</h2>
+    <p>The description text is what Sprout &ldquo;says&rdquo; to the kid. Write it in first person from Sprout&rsquo;s voice.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Full Completion</strong> &mdash; Celebrate the specific achievement. Mention what they did and how well. <em>&ldquo;I'm so proud of you!&rdquo;</em></li>
+        <li><strong>Partial</strong> &mdash; Acknowledge effort, note what was done, encourage next time. <em>&ldquo;So close!&rdquo;</em></li>
+        <li><strong>Sent to Parents</strong> &mdash; Explain what happened without blame. Use &ldquo;we&rdquo; language. <em>&ldquo;We'll hear back from them soon!&rdquo;</em></li>
+        <li>Keep descriptions under 25 words for comfortable mouth animation timing.</li>
+        <li>Never frame the outcome as failure. Every result screen is a positive moment.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Adding a new variant ════ -->
+  <div class="doc-section">
+    <h2>Adding a new variant</h2>
+    <p>When creating a new quest outcome screen (e.g. &ldquo;Redo Requested&rdquo; or &ldquo;Expired&rdquo;), follow this checklist:</p>
+    <div class="prose">
+      <ol>
+        <li>Duplicate an existing result screen HTML block.</li>
+        <li>Update the title and description text.</li>
+        <li>Choose a Rive trigger that matches the emotional tone (<code>celebration</code>, <code>smile</code>, <code>characterwave</code>).</li>
+        <li>Add <code>data-rive="triggerName"</code> to the nav item.</li>
+        <li>Add a hidden <code>.subtitle-card p</code> with the description text for mouth animation.</li>
+        <li>Keep the background as <code>var(--bg-sky)</code> &mdash; don&rsquo;t use gradients or custom colors.</li>
+        <li>Keep the layout structure identical. Only the content changes.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ════ Rive character ════ -->
+  <div class="doc-section">
+    <h2>Rive character</h2>
+    <p>The Sprout character uses <code>sprot2.97.riv</code> with state machine <code>State Machine 1</code>.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>File:</strong> <code>sprot2.97.riv</code> &mdash; hosted at <code>https://sprout-hq.vercel.app/assets/sprot2.97.riv</code></li>
+        <li><strong>Canvas:</strong> 1380&times;1380 internal resolution, displayed at 690&times;690 CSS pixels</li>
+        <li><strong>Fit:</strong> <code>Fit.Contain</code>, <code>Alignment.BottomCenter</code></li>
+        <li><strong>Positioning:</strong> <code>bottom: -196px</code>, centered horizontally &mdash; character is grounded and clipped by the grass edge</li>
+        <li><strong>Default customization:</strong> <code>hairID = 1</code> (short hair)</li>
+      </ul>
+    </div>
+    <h3>Available triggers for result screens</h3>
+    <div class="prose">
+      <ul>
+        <li><code>celebration</code> &mdash; Full-body bouncy animation. Use for positive outcomes (completion, approval).</li>
+        <li><code>smile</code> &mdash; Warm encouraging expression. Use for neutral-positive outcomes (sent to parents).</li>
+        <li><code>characterwave</code> &mdash; Wave + smile. Could be used for &ldquo;see you next time&rdquo; type outcomes.</li>
+      </ul>
+    </div>
+    <p style="margin-top:12px">See <a href="/foundations/character.html" style="color:var(--brand-500)">Character</a> and <a href="/resources/rive-file.html" style="color:var(--brand-500)">Rive File</a> for the full input reference.</p>
+  </div>
+
+  <div class="last-updated">Last updated: April 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
 </div>
 <script src="/nav.js"></script>
 <script src="/shell.js"></script>
+
+<!-- Rive demos -->
+<script>
+(function() {
+  var canvases = document.querySelectorAll('.rive-demo');
+  if (!canvases.length) return;
+
+  fetch('https://sprout-hq.vercel.app/assets/sprot2.97.riv')
+    .then(function(r) { return r.arrayBuffer(); })
+    .then(function(buf) {
+      canvases.forEach(function(canvas) {
+        var trigger = canvas.getAttribute('data-trigger');
+        canvas.width = 1260;
+        canvas.height = 1260;
+        var inst = new rive.Rive({
+          buffer: buf,
+          canvas: canvas,
+          autoplay: true,
+          stateMachines: 'State Machine 1',
+          fit: rive.Fit.Contain,
+          alignment: rive.Alignment.BottomCenter,
+          onLoad: function() {
+            var inputs = inst.stateMachineInputs('State Machine 1');
+            if (!inputs) return;
+            inputs.forEach(function(input) {
+              if (input.name === 'hairID') input.value = 1;
+            });
+            if (trigger && trigger !== 'idle') {
+              setTimeout(function() {
+                var current = inst.stateMachineInputs('State Machine 1');
+                if (current) {
+                  current.forEach(function(input) {
+                    if (input.name.trim() === trigger) input.fire();
+                  });
+                }
+              }, 400);
+            }
+          }
+        });
+      });
+    });
+})();
+</script>
 </body>
 </html>

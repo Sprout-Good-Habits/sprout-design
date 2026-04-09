@@ -792,6 +792,45 @@
   },
   {
     "@type": "DesignComponent",
+    "name": "TabBar",
+    "slug": "tab-bar",
+    "intent": {
+      "purpose": "Provide persistent bottom navigation between top-level sections of the kid-facing app using emoji icons and text labels",
+      "taskContext": ["primary-navigation", "section-switching", "app-chrome"],
+      "sentiment": ["neutral"]
+    },
+    "composition": {
+      "requires": ["tab-item", "icon", "label"],
+      "allows": ["badge", "notification-dot"],
+      "forbids": ["nested-tab-bar", "action-button", "overflow-menu"]
+    },
+    "variants": [
+      { "name": "Default", "useWhen": "Standard bottom navigation with 5 tabs", "pairWith": ["Toolbar"] }
+    ],
+    "sizes": [
+      { "name": "Default", "useWhen": "Full-width — fixed to bottom of viewport" }
+    ],
+    "context": {
+      "density": ["default"],
+      "modality": ["mobile", "tablet"],
+      "placement": ["bottom-fixed"]
+    },
+    "relationships": {
+      "related": ["Toolbar", "Tabs"],
+      "escalatesTo": [],
+      "degradesTo": ["Tabs"],
+      "groupsWith": ["Toolbar"]
+    },
+    "states": ["default", "active"],
+    "accessibility": {
+      "role": "navigation",
+      "keyboard": ["Tab", "ArrowLeft", "ArrowRight"],
+      "ariaAttributes": ["aria-label", "aria-current"],
+      "minTouchTarget": "44x44px"
+    }
+  },
+  {
+    "@type": "DesignComponent",
     "name": "Toast",
     "slug": "toast",
     "intent": {

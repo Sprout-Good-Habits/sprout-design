@@ -16,15 +16,17 @@
   },
   "composition": {
     "requires": ["track", "fill"],
-    "allows": ["inner-highlight", "message", "spark-particles"],
+    "allows": ["inner-highlight", "message", "spark-particles", "checkpoints"],
     "forbids": ["button", "icon"]
   },
   "variants": [
     { "name": "Default", "useWhen": "Standard progress display", "pairWith": [] },
-    { "name": "With message", "useWhen": "Streak feedback (3/5/10 in a row)", "pairWith": [] }
+    { "name": "With message", "useWhen": "Streak feedback (3/5/10 in a row)", "pairWith": [] },
+    { "name": "With checkpoints", "useWhen": "Exercise-count milestone markers (5/10/20)", "pairWith": [] }
   ],
   "sizes": [
-    { "name": "Default", "useWhen": "All contexts — 16px track height" }
+    { "name": "Continuous", "useWhen": "Standard progress — 24px track height" },
+    { "name": "Stepper", "useWhen": "With checkpoints — 16px track height" }
   ],
   "context": {
     "density": ["default"],
@@ -48,6 +50,7 @@
 </script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="progress-bar.css">
 <style>
 /* ── Phone frame ── */
 .phone-frame {
@@ -91,125 +94,6 @@
   flex-shrink:0; cursor:pointer;
 }
 .quest-close svg { width:40px; height:40px; }
-
-/* ── Progress bar — matches Figma node 19948:7302 exactly ── */
-.progress-bar {
-  display:flex; flex-direction:column;
-  gap:0px;
-  height:34px; width:100%;
-  align-items:flex-start;
-  justify-content:flex-end;
-  padding:0;
-  position:relative;
-  background:none;
-  border-radius:0;
-  overflow:visible;
-}
-
-/* Message — Figma: w-full, text-xs bold, brand-500 */
-.progress-message {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-xs, 12px);
-  line-height:var(--line-height-text-xs, 16px);
-  font-weight:var(--font-weight-bold, 700);
-  color:var(--brand-500, #0ba5ec);
-  text-transform:uppercase;
-  letter-spacing:0.5px;
-  width:100%;
-  position:relative;
-  flex-shrink:0;
-}
-/* Hidden state for animated demos */
-.progress-message:empty,
-.progress-message.hidden {
-  display:none;
-}
-
-/* Track — Figma: bg-secondary, 16px, radius-full, flex-col */
-.progress-track {
-  width:100%; height:16px;
-  background:var(--bg-secondary, #fafafa);
-  border-radius:var(--radius-full, 9999px);
-  position:relative;
-  flex-shrink:0;
-  display:flex; flex-direction:column;
-  align-items:flex-start;
-}
-
-/* Fill — Figma: flex:1 0 0, brand-500, radius-full, py-xs px-md */
-.progress-fill {
-  flex:1 0 0;
-  height:auto;
-  background:var(--brand-500, #0ba5ec);
-  border-radius:var(--radius-full, 9999px);
-  min-width:32px; min-height:1px;
-  padding:var(--spacing-xs, 4px) var(--spacing-md, 8px);
-  box-sizing:border-box;
-  position:relative;
-  transition:width 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
-  display:flex; flex-direction:column;
-  align-items:flex-start;
-}
-
-/* Inner highlight — Figma: white 50%, 4px, radius-full */
-.progress-fill::after {
-  content:'';
-  display:block;
-  width:100%; height:4px;
-  background:rgba(255,255,255,0.5);
-  border-radius:var(--radius-full, 9999px);
-  flex-shrink:0;
-}
-
-/* ── Sparkle confetti animation ── */
-@keyframes sparkle-pop {
-  0%   { opacity:0; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(0); }
-  30%  { opacity:1; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(1); }
-  70%  { opacity:1; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(1); }
-  100% { opacity:0; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(0.5); }
-}
-
-/* Shimmer trail on the fill surface */
-@keyframes sparkle-shimmer {
-  0%   { opacity:0; transform:translateX(-100%); }
-  20%  { opacity:0.6; }
-  100% { opacity:0; transform:translateX(20px); }
-}
-
-.spark-overlay {
-  position:absolute; top:0; left:0; right:0; bottom:0;
-  pointer-events:none; z-index:10;
-  overflow:visible;
-}
-
-/* Diamond confetti particle — the Figma Sparkle shape */
-.sparkle {
-  position:absolute;
-  width:var(--sz, 6px); height:var(--sz, 6px);
-  border-radius:var(--radius-xxs, 2px);
-  background:var(--c, var(--brand-500, #0ba5ec));
-  transform:rotate(45deg);
-  animation:sparkle-pop var(--dur, 0.55s) cubic-bezier(0.5,1.8,0.3,0.8) forwards;
-  animation-delay:var(--d, 0s);
-}
-
-/* Shimmer — horizontal light streak across the fill */
-.sparkle-shimmer {
-  position:absolute;
-  width:24px; height:100%;
-  top:0;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-  border-radius:var(--radius-full, 9999px);
-  animation:sparkle-shimmer 0.5s cubic-bezier(0.5,1.8,0.3,0.8) forwards;
-  pointer-events:none;
-}
-
-/* ── Reduced motion ── */
-@media (prefers-reduced-motion: reduce) {
-  .progress-fill { transition:none; }
-  .sparkle { animation:none; display:none; }
-  .sparkle-shimmer { animation:none; display:none; }
-}
 
 /* ── Interactive demo ── */
 .demo-controls {
@@ -358,7 +242,7 @@
 
     <div class="prose">
       <ul>
-        <li><strong>Track</strong> (required) &mdash; 16px tall pill. Background: <code>--bg-secondary</code>. Full width of the toolbar center slot.</li>
+        <li><strong>Track</strong> (required) &mdash; 24px tall pill for continuous, 16px for stepper. Background: <code>--bg-secondary</code>. Full width of the toolbar center slot.</li>
         <li><strong>Fill / Progression</strong> (required) &mdash; Animated fill inside the track. Background: <code>--brand-500</code>. Min-width: 32px. Padding: 4px vertical, 8px horizontal.</li>
         <li><strong>Inner highlight</strong> (required) &mdash; 4px tall white 50% opacity bar inside the fill, creating a glossy/3D effect.</li>
         <li><strong>Message</strong> (optional) &mdash; Bold text-xs label above the bar in <code>--brand-500</code> (#0ba5ec). Used for streak callouts like &ldquo;3 in a row!&rdquo;</li>
@@ -550,26 +434,205 @@
     </div>
   </div>
 
+  <!-- Checkpoints -->
+  <div class="doc-section">
+    <h2>Checkpoints</h2>
+    <p>Numbered milestone markers overlaid on the track. Each checkpoint flips to <code>reached</code> styling when the fill passes it. Inspired by exercise-count markers (e.g., 5 / 10 / 20 questions).</p>
+
+    <div class="demo demo-col demo-transparent" style="gap:28px;max-width:323px;">
+
+      <!-- TYPE 1: NUMBER -->
+      <!-- Checkpoints at 5, 10, 15 out of 15 total → 33.3%, 66.7%, 100% -->
+      <div>
+        <p style="font-size:11px;font-weight:700;color:var(--text-quaternary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Type 1: Number</p>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">0 / 15 &mdash; all upcoming</p>
+            <div class="progress-bar stepper">
+              <div class="progress-track">
+                <div class="progress-fill" style="width:0%;min-width:0;transition:none;"></div>
+                <div class="progress-checkpoints">
+                  <div class="progress-checkpoint checkpoint-number" style="left:33.3%;"><span class="progress-checkpoint-label">5</span></div>
+                  <div class="progress-checkpoint checkpoint-number" style="left:66.7%;"><span class="progress-checkpoint-label">10</span></div>
+                  <div class="progress-checkpoint checkpoint-number" style="left:100%;"><span class="progress-checkpoint-label">15</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">7 / 15 &mdash; first checkpoint reached</p>
+            <div class="progress-bar stepper">
+              <div class="progress-track">
+                <div class="progress-fill" style="width:46.7%;transition:none;"></div>
+                <div class="progress-checkpoints">
+                  <div class="progress-checkpoint checkpoint-number reached" style="left:33.3%;"><span class="progress-checkpoint-label">5</span></div>
+                  <div class="progress-checkpoint checkpoint-number" style="left:66.7%;"><span class="progress-checkpoint-label">10</span></div>
+                  <div class="progress-checkpoint checkpoint-number" style="left:100%;"><span class="progress-checkpoint-label">15</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">15 / 15 &mdash; all reached</p>
+            <div class="progress-bar stepper">
+              <div class="progress-track">
+                <div class="progress-fill" style="width:100%;transition:none;"></div>
+                <div class="progress-checkpoints">
+                  <div class="progress-checkpoint checkpoint-number reached" style="left:33.3%;"><span class="progress-checkpoint-label">5</span></div>
+                  <div class="progress-checkpoint checkpoint-number reached" style="left:66.7%;"><span class="progress-checkpoint-label">10</span></div>
+                  <div class="progress-checkpoint checkpoint-number reached" style="left:100%;"><span class="progress-checkpoint-label">15</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TYPE 2: ICON -->
+      <!-- Same proportional positions: 33.3%, 66.7%, 100% -->
+      <div>
+        <p style="font-size:11px;font-weight:700;color:var(--text-quaternary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Type 2: Icon</p>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">0 / 15 &mdash; all upcoming</p>
+            <div class="progress-bar stepper">
+              <div class="progress-track">
+                <div class="progress-fill" style="width:0%;min-width:0;transition:none;"></div>
+                <div class="progress-checkpoints">
+                  <div class="progress-checkpoint checkpoint-icon" style="left:33.3%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="progress-checkpoint checkpoint-icon" style="left:66.7%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="progress-checkpoint checkpoint-icon" style="left:100%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">7 / 15 &mdash; first checkpoint reached</p>
+            <div class="progress-bar stepper">
+              <div class="progress-track">
+                <div class="progress-fill" style="width:46.7%;transition:none;"></div>
+                <div class="progress-checkpoints">
+                  <div class="progress-checkpoint checkpoint-icon reached" style="left:33.3%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="progress-checkpoint checkpoint-icon" style="left:66.7%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="progress-checkpoint checkpoint-icon" style="left:100%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">15 / 15 &mdash; all reached</p>
+            <div class="progress-bar stepper">
+              <div class="progress-track">
+                <div class="progress-fill" style="width:100%;transition:none;"></div>
+                <div class="progress-checkpoints">
+                  <div class="progress-checkpoint checkpoint-icon reached" style="left:33.3%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="progress-checkpoint checkpoint-icon reached" style="left:66.7%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="progress-checkpoint checkpoint-icon reached" style="left:100%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Container:</strong> <code>.progress-checkpoints</code> &mdash; absolutely positioned overlay on the track, <code>pointer-events:none</code>.</li>
+        <li><strong>Checkpoint:</strong> 24px circle, positioned via <code>left:%</code>, vertically centered on the track. Default background: <code>--bg-secondary</code>.</li>
+        <li><strong>Type 1 &mdash; Number</strong> (<code>.checkpoint-number</code>): Always shows the milestone number. Default: gray text on secondary bg. Reached: white text on brand bg.</li>
+        <li><strong>Type 2 &mdash; Icon</strong> (<code>.checkpoint-icon</code>): Empty circle by default. Reached: brand bg with white checkmark.</li>
+        <li><strong>Transition:</strong> Background and color cross-fade at 300ms.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Checkpoints: Interactive demo -->
+  <div class="doc-section">
+    <h2>Checkpoints: Interactive demo</h2>
+    <p>Click to advance. Checkpoint labels flip to white as the fill reaches them.</p>
+
+    <div class="demo demo-col" style="gap:28px;">
+
+      <!-- Number type -->
+      <div>
+        <p style="font-size:11px;font-weight:700;color:var(--text-quaternary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Type 1: Number</p>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="width:323px;">
+            <div class="progress-bar stepper" id="cp-demo-bar">
+              <div class="progress-track">
+                <div class="progress-fill" id="cp-demo-fill" style="width:6.7%;"></div>
+                <div class="progress-checkpoints">
+                  <div class="progress-checkpoint checkpoint-number" id="cp-5" style="left:33.3%;"><span class="progress-checkpoint-label">5</span></div>
+                  <div class="progress-checkpoint checkpoint-number" id="cp-10" style="left:66.7%;"><span class="progress-checkpoint-label">10</span></div>
+                  <div class="progress-checkpoint checkpoint-number" id="cp-15" style="left:100%;"><span class="progress-checkpoint-label">15</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="demo-controls">
+            <button class="demo-btn" id="cp-next-btn" onclick="cpDemoAdvance()">Correct answer &rarr;</button>
+            <button class="demo-btn demo-btn-secondary" onclick="cpDemoReset()">Reset</button>
+            <span class="demo-step-label" id="cp-step-label">Step 1 / 15</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Icon type -->
+      <div>
+        <p style="font-size:11px;font-weight:700;color:var(--text-quaternary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Type 2: Icon</p>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="width:323px;">
+            <div class="progress-bar stepper" id="cpi-demo-bar">
+              <div class="progress-track">
+                <div class="progress-fill" id="cpi-demo-fill" style="width:6.7%;"></div>
+                <div class="progress-checkpoints">
+                  <div class="progress-checkpoint checkpoint-icon" id="cpi-5" style="left:33.3%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="progress-checkpoint checkpoint-icon" id="cpi-10" style="left:66.7%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="progress-checkpoint checkpoint-icon" id="cpi-15" style="left:100%;"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="demo-controls">
+            <button class="demo-btn" id="cpi-next-btn" onclick="cpiDemoAdvance()">Correct answer &rarr;</button>
+            <button class="demo-btn demo-btn-secondary" onclick="cpiDemoReset()">Reset</button>
+            <span class="demo-step-label" id="cpi-step-label">Step 1 / 15</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Token reference -->
   <div class="doc-section">
     <h2>Token reference</h2>
     <table class="token-table">
       <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
       <tbody>
-        <tr><td>Track height</td><td>&mdash;</td><td>16px</td></tr>
+        <tr><td>Track height (continuous)</td><td>&mdash;</td><td>24px</td></tr>
+        <tr><td>Track height (stepper)</td><td>&mdash;</td><td>16px</td></tr>
         <tr><td>Track color</td><td><code>--bg-secondary</code></td><td>#fafafa</td></tr>
         <tr><td>Track radius</td><td><code>--radius-full</code></td><td>9999px</td></tr>
         <tr><td>Fill color</td><td><code>--brand-500</code></td><td>#0ba5ec</td></tr>
-        <tr><td>Fill min-width</td><td>&mdash;</td><td>32px</td></tr>
+        <tr><td>Fill min-width</td><td>&mdash;</td><td>24px</td></tr>
         <tr><td>Fill padding</td><td><code>--spacing-xs</code> / <code>--spacing-md</code></td><td>4px top/bottom, 8px left/right</td></tr>
         <tr><td>Fill radius</td><td><code>--radius-full</code></td><td>9999px</td></tr>
-        <tr><td>Inner highlight</td><td>&mdash;</td><td>4px tall, white 50% opacity, full radius</td></tr>
+        <tr><td>Inner highlight</td><td><code>--utility-brand-300</code></td><td>4px tall, #7cd4fd, full radius</td></tr>
         <tr><td>Fill transition</td><td>&mdash;</td><td>350ms cubic-bezier(0.5, 1.8, 0.3, 0.8) (spring)</td></tr>
         <tr><td>Spark duration</td><td>&mdash;</td><td>500&ndash;600ms with staggered particles</td></tr>
         <tr><td>Message font</td><td>text-xs / bold</td><td>12px / 16px, 700</td></tr>
         <tr><td>Message color</td><td><code>--brand-500</code></td><td>#0ba5ec</td></tr>
         <tr><td>Message fade</td><td>&mdash;</td><td>300ms ease in/out, 2s hold</td></tr>
-        <tr><td>Container height</td><td>&mdash;</td><td>34px (with message space)</td></tr>
+        <tr><td>Container height</td><td>&mdash;</td><td>42px (with message space)</td></tr>
       </tbody>
     </table>
   </div>
@@ -766,6 +829,110 @@ function fullDemoReset() {
   hideMessage(document.getElementById('full-message'));
   document.getElementById('full-next-btn').textContent = 'Correct answer \u2192';
   document.getElementById('full-next-btn').disabled = false;
+}
+
+// ── Checkpoint interactive demo ──
+var cpStep = 1;
+var CP_TOTAL = 15;
+// Positions are proportional: checkpoint / total (5/15=33.3%, 10/15=66.7%, 15/15=100%)
+var CP_MARKS = [
+  { id:'cp-5',  question:5 },
+  { id:'cp-10', question:10 },
+  { id:'cp-15', question:15 }
+];
+
+// Two states: upcoming (default) → reached (at or past checkpoint)
+function cpUpdateCheckpoints(step) {
+  CP_MARKS.forEach(function(m) {
+    var el = document.getElementById(m.id);
+    if (!el) return;
+    el.classList.remove('reached');
+    if (step >= m.question) {
+      el.classList.add('reached');
+    }
+  });
+}
+
+function cpDemoAdvance() {
+  if (cpStep >= CP_TOTAL) return;
+  cpStep++;
+  var pct = Math.round((cpStep / CP_TOTAL) * 100);
+  var fill = document.getElementById('cp-demo-fill');
+  fill.style.width = pct + '%';
+  document.getElementById('cp-step-label').textContent = 'Step ' + cpStep + ' / ' + CP_TOTAL;
+  cpUpdateCheckpoints(cpStep);
+
+  // Spark at checkpoint milestones
+  CP_MARKS.forEach(function(m) {
+    if (cpStep === m.question) {
+      var bar = document.getElementById('cp-demo-bar');
+      setTimeout(function() { fireSpark(bar, fill); }, 420);
+    }
+  });
+
+  if (cpStep >= CP_TOTAL) {
+    document.getElementById('cp-next-btn').textContent = 'Complete!';
+    document.getElementById('cp-next-btn').disabled = true;
+  }
+}
+
+function cpDemoReset() {
+  cpStep = 1;
+  document.getElementById('cp-demo-fill').style.width = '6.7%';
+  document.getElementById('cp-step-label').textContent = 'Step 1 / ' + CP_TOTAL;
+  cpUpdateCheckpoints(0);
+  document.getElementById('cp-next-btn').textContent = 'Correct answer \u2192';
+  document.getElementById('cp-next-btn').disabled = false;
+}
+
+// ── Checkpoint icon interactive demo ──
+var cpiStep = 1;
+var CPI_MARKS = [
+  { id:'cpi-5',  question:5 },
+  { id:'cpi-10', question:10 },
+  { id:'cpi-15', question:15 }
+];
+
+function cpiUpdateCheckpoints(step) {
+  CPI_MARKS.forEach(function(m) {
+    var el = document.getElementById(m.id);
+    if (!el) return;
+    el.classList.remove('reached');
+    if (step >= m.question) {
+      el.classList.add('reached');
+    }
+  });
+}
+
+function cpiDemoAdvance() {
+  if (cpiStep >= CP_TOTAL) return;
+  cpiStep++;
+  var pct = Math.round((cpiStep / CP_TOTAL) * 100);
+  var fill = document.getElementById('cpi-demo-fill');
+  fill.style.width = pct + '%';
+  document.getElementById('cpi-step-label').textContent = 'Step ' + cpiStep + ' / ' + CP_TOTAL;
+  cpiUpdateCheckpoints(cpiStep);
+
+  CPI_MARKS.forEach(function(m) {
+    if (cpiStep === m.question) {
+      var bar = document.getElementById('cpi-demo-bar');
+      setTimeout(function() { fireSpark(bar, fill); }, 420);
+    }
+  });
+
+  if (cpiStep >= CP_TOTAL) {
+    document.getElementById('cpi-next-btn').textContent = 'Complete!';
+    document.getElementById('cpi-next-btn').disabled = true;
+  }
+}
+
+function cpiDemoReset() {
+  cpiStep = 1;
+  document.getElementById('cpi-demo-fill').style.width = '6.7%';
+  document.getElementById('cpi-step-label').textContent = 'Step 1 / ' + CP_TOTAL;
+  cpiUpdateCheckpoints(0);
+  document.getElementById('cpi-next-btn').textContent = 'Correct answer \u2192';
+  document.getElementById('cpi-next-btn').disabled = false;
 }
 </script>
 </body>

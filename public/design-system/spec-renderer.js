@@ -289,6 +289,10 @@
       desc: 'Third-party sign-in buttons',
       thumb: '<div class="thumb-social-btns"><span class="thumb-social-btn"><span class="thumb-social-icon">G</span></span><span class="thumb-social-btn thumb-social-apple"><span class="thumb-social-icon">\uF8FF</span></span></div>'
     },
+    'TabBar': {
+      desc: 'Bottom navigation with emoji tabs',
+      thumb: '<div class="thumb-toolbar"><div class="thumb-toolbar-item"><div class="thumb-toolbar-dot active"></div><div class="thumb-toolbar-line active"></div></div><div class="thumb-toolbar-item"><div class="thumb-toolbar-dot"></div><div class="thumb-toolbar-line"></div></div><div class="thumb-toolbar-item"><div class="thumb-toolbar-dot"></div><div class="thumb-toolbar-line"></div></div><div class="thumb-toolbar-item"><div class="thumb-toolbar-dot"></div><div class="thumb-toolbar-line"></div></div><div class="thumb-toolbar-item"><div class="thumb-toolbar-dot"></div><div class="thumb-toolbar-line"></div></div></div>'
+    },
     'Switch': {
       desc: 'On/off toggle controls',
       thumb: '<div class="thumb-switch"><div class="thumb-switch-track thumb-switch-on"><div class="thumb-switch-thumb"></div></div><div class="thumb-switch-track thumb-switch-off"><div class="thumb-switch-thumb"></div></div></div>'

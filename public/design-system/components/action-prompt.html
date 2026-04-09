@@ -49,196 +49,8 @@
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/components/buttons.css">
+<link rel="stylesheet" href="/components/action-prompt.css">
 <style>
-/* -- Toss Face emoji font -- */
-@font-face {
-  font-family:'TossFace';
-  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
-  font-display:swap;
-}
-
-/* ==============================
-   Action Prompt component
-   ============================== */
-
-/* -- Container -- */
-.action-prompt {
-  display:flex; flex-direction:column;
-  gap:var(--spacing-xl, 16px);
-  background:var(--bg-primary, #ffffff);
-  border-radius:var(--radius-xl, 12px);
-  padding:var(--spacing-xl, 16px);
-  box-shadow:
-    0 2px 2px -1px rgba(10,13,18,0.04),
-    0 4px 6px -2px rgba(10,13,18,0.03),
-    0 12px 16px -4px rgba(10,13,18,0.08);
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  width:370px;
-}
-
-/* -- Content row: leading + text + close -- */
-.ap-content {
-  display:flex; align-items:flex-start; gap:var(--spacing-md, 8px);
-}
-
-/* -- Leading element -- */
-.ap-leading {
-  flex-shrink:0;
-  width:46px; height:46px;
-  display:flex; align-items:center; justify-content:center;
-}
-
-/* Emoji leading */
-.ap-leading-emoji {
-  font-family:'TossFace', sans-serif;
-  font-size:36px; line-height:1;
-}
-
-/* Avatar leading */
-.ap-leading-avatar {
-  width:46px; height:46px;
-  border-radius:var(--radius-full, 9999px);
-  overflow:hidden;
-  position:relative;
-}
-.ap-leading-avatar img {
-  width:100%; height:100%; object-fit:cover;
-}
-.ap-avatar-initials {
-  width:100%; height:100%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:var(--font-size-text-sm, 14px);
-  font-weight:var(--font-weight-medium, 500);
-  background:var(--bg-sky, #e0f2fe);
-  color:var(--text-brand-secondary, #026aa2);
-}
-
-/* Avatar + badge leading */
-.ap-leading-badge-wrap {
-  position:relative;
-  width:46px; height:46px;
-}
-.ap-leading-badge-wrap .ap-leading-avatar {
-  width:46px; height:46px;
-}
-.ap-badge {
-  position:absolute;
-  bottom:-2px; right:-2px;
-  width:20px; height:20px;
-  border-radius:var(--radius-full, 9999px);
-  background:var(--bg-primary, #ffffff);
-  border:2px solid var(--bg-primary, #ffffff);
-  display:flex; align-items:center; justify-content:center;
-  overflow:hidden;
-}
-.ap-badge-emoji {
-  font-family:'TossFace', sans-serif;
-  font-size:12px; line-height:1;
-}
-
-/* -- Text -- */
-.ap-text {
-  flex:1; min-width:0;
-  display:flex; flex-direction:column;
-  gap:var(--spacing-xxs, 2px);
-  justify-content:center;
-}
-.ap-label {
-  font-size:var(--font-size-text-md, 16px);
-  font-weight:var(--font-weight-bold, 700);
-  line-height:var(--line-height-text-md, 24px);
-  color:var(--text-primary, #181d27);
-}
-.ap-desc {
-  font-size:var(--font-size-text-sm, 14px);
-  font-weight:var(--font-weight-regular, 400);
-  line-height:var(--line-height-text-sm, 20px);
-  color:var(--text-secondary, #414651);
-}
-
-/* -- Close button -- */
-.ap-close {
-  width:24px; height:24px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer;
-  color:var(--gray-500, #717680);
-}
-.ap-close svg { width:12px; height:12px; }
-
-/* -- Actions row -- */
-.ap-actions {
-  display:flex; gap:var(--spacing-xl, 16px);
-  width:100%;
-}
-
-/* -- Primary button (Default) -- */
-.ap-btn-primary {
-  display:flex; align-items:center; justify-content:center;
-  flex:1;
-  height:50px;
-  background:var(--fg-brand-primary, #0ba5ec);
-  color:var(--text-white, #ffffff);
-  border:none;
-  border-bottom:2px solid var(--brand-600, #0086c9);
-  border-radius:var(--radius-2xl, 16px);
-  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-md, 16px);
-  font-weight:var(--font-weight-bold, 700);
-  line-height:var(--line-height-text-md, 24px);
-  padding:var(--spacing-lg, 12px);
-  cursor:pointer;
-  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-.ap-btn-primary:active {
-  box-shadow:none; transform:translateY(4px); border-bottom:none;
-}
-
-/* -- Primary button (Destructive) -- */
-.ap-btn-destructive {
-  display:flex; align-items:center; justify-content:center;
-  flex:1;
-  height:50px;
-  background:var(--fg-destructive-primary, #f04438);
-  color:var(--text-white, #ffffff);
-  border:none;
-  border-bottom:2px solid var(--red-600, #d92d20);
-  border-radius:var(--radius-2xl, 16px);
-  box-shadow:0 4px 0 0 var(--red-600, #d92d20);
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-md, 16px);
-  font-weight:var(--font-weight-bold, 700);
-  line-height:var(--line-height-text-md, 24px);
-  padding:var(--spacing-lg, 12px);
-  cursor:pointer;
-  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-.ap-btn-destructive:active {
-  box-shadow:none; transform:translateY(4px); border-bottom:none;
-}
-
-/* -- Secondary / Dismiss button -- */
-.ap-btn-secondary {
-  display:flex; align-items:center; justify-content:center;
-  flex:1;
-  height:50px;
-  background:var(--bg-primary, #ffffff);
-  color:var(--brand-500, #0ba5ec);
-  border:2px solid var(--border-secondary, #e9eaeb);
-  border-radius:var(--radius-2xl, 16px);
-  box-shadow:0 4px 0 0 var(--gray-200, #e9eaeb);
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-md, 16px);
-  font-weight:var(--font-weight-semibold, 600);
-  line-height:var(--line-height-text-md, 24px);
-  padding:var(--spacing-lg, 12px);
-  cursor:pointer;
-  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-.ap-btn-secondary:active {
-  box-shadow:none; transform:translateY(4px);
-}
-
 /* -- Phone frame for demos -- */
 .phone-frame-ap {
   width:402px; height:280px;
@@ -305,8 +117,8 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-secondary">Dismiss</button>
-            <button class="ap-btn-primary">Claim gems</button>
+            <button class="btn-sprout btn-secondary btn-md">Dismiss</button>
+            <button class="btn-sprout btn-primary btn-md">Claim gems</button>
           </div>
         </div>
       </div>
@@ -321,8 +133,8 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-secondary">Dismiss</button>
-            <button class="ap-btn-destructive">Remove</button>
+            <button class="btn-sprout btn-secondary btn-md">Dismiss</button>
+            <button class="btn-sprout btn-destructive btn-md">Remove</button>
           </div>
         </div>
       </div>
@@ -351,8 +163,8 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-secondary">Dismiss</button>
-            <button class="ap-btn-primary">Primary</button>
+            <button class="btn-sprout btn-secondary btn-md">Dismiss</button>
+            <button class="btn-sprout btn-primary btn-md">Primary</button>
           </div>
         </div>
       </div>
@@ -389,7 +201,7 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-primary">Save progress</button>
+            <button class="btn-sprout btn-primary btn-md">Save progress</button>
           </div>
         </div>
       </div>
@@ -409,8 +221,8 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-secondary">Dismiss</button>
-            <button class="ap-btn-primary">Review</button>
+            <button class="btn-sprout btn-secondary btn-md">Dismiss</button>
+            <button class="btn-sprout btn-primary btn-md">Review</button>
           </div>
         </div>
       </div>
@@ -435,8 +247,8 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-secondary">Later</button>
-            <button class="ap-btn-primary">Approve</button>
+            <button class="btn-sprout btn-secondary btn-md">Later</button>
+            <button class="btn-sprout btn-primary btn-md">Approve</button>
           </div>
         </div>
       </div>
@@ -475,7 +287,7 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-primary">Claim gems</button>
+            <button class="btn-sprout btn-primary btn-md">Claim gems</button>
           </div>
         </div>
       </div>
@@ -494,8 +306,8 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-secondary">Dismiss</button>
-            <button class="ap-btn-primary">Accept</button>
+            <button class="btn-sprout btn-secondary btn-md">Dismiss</button>
+            <button class="btn-sprout btn-primary btn-md">Accept</button>
           </div>
         </div>
       </div>
@@ -520,7 +332,7 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-destructive">Destructive</button>
+            <button class="btn-sprout btn-destructive btn-md">Destructive</button>
           </div>
         </div>
       </div>
@@ -537,8 +349,8 @@
             </div>
           </div>
           <div class="ap-actions">
-            <button class="ap-btn-secondary">Dismiss</button>
-            <button class="ap-btn-destructive">Destructive</button>
+            <button class="btn-sprout btn-secondary btn-md">Dismiss</button>
+            <button class="btn-sprout btn-destructive btn-md">Destructive</button>
           </div>
         </div>
       </div>
@@ -587,8 +399,8 @@
               </div>
             </div>
             <div class="ap-actions">
-              <button class="ap-btn-secondary">Snooze</button>
-              <button class="ap-btn-primary">Save progress</button>
+              <button class="btn-sprout btn-secondary btn-md">Snooze</button>
+              <button class="btn-sprout btn-primary btn-md">Save progress</button>
             </div>
           </div>
           <div class="phone-frame-ap-content">Screen content</div>

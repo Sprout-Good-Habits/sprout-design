@@ -52,164 +52,9 @@
 </script>
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/message-bubble.css">
 <style>
-/* ── Message Bubble ── */
-.msg-row {
-  display:flex; width:370px; position:relative;
-}
-.msg-row.msg-incoming {
-  align-items:flex-end; gap:var(--spacing-md, 8px);
-}
-.msg-row.msg-outgoing {
-  justify-content:flex-end;
-}
-
-/* Avatar */
-.msg-avatar {
-  width:32px; height:32px; border-radius:var(--radius-full, 9999px);
-  background:var(--bg-sky, #e0f2fe);
-  flex-shrink:0; overflow:hidden; position:relative;
-}
-.msg-avatar canvas {
-  position:absolute;
-  top:-40px; left:50%; transform:translateX(-50%);
-  display:block;
-}
-
-/* Column */
-.msg-col {
-  display:flex; flex-direction:column; gap:var(--spacing-xs, 4px);
-}
-.msg-col-in { align-items:flex-start; }
-.msg-col-out { align-items:flex-end; }
-
-/* Sender */
-.msg-sender {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-xs, 12px);
-  line-height:var(--line-height-text-xs, 16px);
-  font-weight:var(--font-weight-regular, 400);
-  color:var(--text-secondary, #414651);
-  padding:0 var(--spacing-xl, 16px);
-}
-
-/* Bubble */
-.msg-bubble {
-  border-radius:var(--radius-4xl, 24px);
-  padding:var(--spacing-lg, 12px) var(--spacing-xl, 16px);
-  max-width:256px; min-width:90px;
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-sm, 14px);
-  line-height:var(--line-height-text-sm, 20px);
-  font-weight:var(--font-weight-regular, 400);
-  color:var(--text-primary, #181d27);
-  word-wrap:break-word;
-}
-.msg-bubble-in {
-  background:var(--bg-primary, #ffffff);
-}
-.msg-bubble-out {
-  background:var(--brand-200, #b9e6fe);
-}
-
-/* Media grid */
-.msg-images {
-  display:flex; flex-wrap:wrap; gap:var(--spacing-xs, 4px); max-width:330px;
-}
-.msg-images-out { justify-content:flex-end; }
-.msg-image {
-  width:104px; height:104px; border-radius:var(--radius-3xl, 20px);
-  background:var(--gray-200, #e9eaeb); flex-shrink:0;
-  overflow:hidden;
-}
-.msg-image img {
-  width:100%; height:100%; object-fit:cover; display:block;
-}
-.msg-image-tablet {
-  width:128px; height:128px; border-radius:var(--radius-3xl, 20px);
-}
-.msg-images-tablet {
-  max-width:392px;
-}
-
-/* Voice message */
-.msg-bubble-audio {
-  display:flex; flex-direction:column; gap:var(--spacing-xs, 4px);
-  width:256px;
-}
-.msg-audio-row {
-  display:flex; gap:var(--spacing-xs, 4px); align-items:center;
-}
-.msg-audio-play {
-  flex-shrink:0; display:flex; align-items:center; justify-content:center;
-  background:var(--gray-200, #e9eaeb);
-  border-radius:var(--radius-full, 9999px);
-  padding:var(--spacing-sm, 6px) var(--spacing-sm, 6px) var(--spacing-sm, 6px) 7px;
-  cursor:pointer;
-}
-.msg-audio-play svg {
-  width:20px; height:20px; fill:var(--fg-primary, #181d27);
-}
-.msg-audio-play .pause-icon { display:none; }
-.msg-audio-play.playing .play-icon { display:none; }
-.msg-audio-play.playing .pause-icon { display:block;
-}
-.msg-audio-waveform {
-  flex:1; display:flex; gap:var(--spacing-xxs, 2px); align-items:center; height:20px; overflow:hidden;
-}
-.msg-audio-waveform .bar {
-  width:2px; border-radius:1px; flex-shrink:0;
-}
-.msg-audio-waveform .bar.played {
-  background:var(--fg-secondary, #414651);
-}
-.msg-audio-waveform .bar.unplayed {
-  background:var(--fg-quaternary, #a4a7ae);
-}
-.msg-audio-label {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-xs, 12px);
-  line-height:var(--line-height-text-xs, 16px);
-  color:var(--text-secondary, #414651);
-  font-weight:var(--font-weight-regular, 400);
-}
-.msg-audio-label.bold {
-  font-weight:var(--font-weight-bold, 700);
-}
-
-/* Deleted */
-.msg-deleted {
-  display:flex; gap:var(--spacing-xs, 4px); align-items:center;
-}
-.msg-deleted svg {
-  width:20px; height:20px; flex-shrink:0;
-  color:var(--text-secondary, #414651);
-}
-.msg-deleted span {
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-size:var(--font-size-text-sm, 14px);
-  line-height:var(--line-height-text-sm, 20px);
-  color:var(--text-secondary, #414651);
-}
-
-/* Typing indicator */
-@keyframes typingDot {
-  0%, 60%, 100% { opacity:0.3; }
-  30% { opacity:1; }
-}
-.msg-typing-dots {
-  display:flex; gap:var(--spacing-xs, 4px); align-items:center;
-  padding:var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
-}
-.typing-dot {
-  width:var(--spacing-md, 8px); height:var(--spacing-md, 8px); border-radius:50%;
-  background:var(--gray-400, #a4a7ae);
-  animation:typingDot 1.4s ease-in-out infinite;
-}
-.typing-dot:nth-child(2) { animation-delay:0.2s; }
-.typing-dot:nth-child(3) { animation-delay:0.4s; }
-
-/* Demo overrides */
+/* ── Demo overrides ── */
 .msg-demo-stack {
   display:flex; flex-direction:column; gap:var(--spacing-lg, 12px); align-items:stretch;
   width:370px;
@@ -589,7 +434,7 @@
         <li><strong>Avatar</strong> (optional, incoming only) &mdash; 32px circle with sky-blue background. Uses the Sprout character positioned inside the circle (head cropped) or participant photo.</li>
         <li><strong>Sender name</strong> (optional, incoming only) &mdash; text-xs (12px/16px) label in <code>--text-secondary</code>. Appears above the bubble in group conversations.</li>
         <li><strong>Bubble</strong> (required) &mdash; Rounded container with 24px radius. White for incoming, <code>--brand-200</code> blue for outgoing.</li>
-        <li><strong>Text content</strong> (required for text type) &mdash; text-sm (14px/20px) in <code>--text-primary</code>. Wraps at max-width 256px.</li>
+        <li><strong>Text content</strong> (required for text type) &mdash; text-md (16px/24px) in <code>--text-primary</code>. Wraps at max-width 256px.</li>
         <li><strong>Media grid</strong> (optional) &mdash; 104px square images, 20px radius, 4px gap. Wraps above the text bubble.</li>
         <li><strong>Waveform row</strong> (voice type) &mdash; Play/pause button (gray circle, toggles between play and pause icon) + waveform bars inside the bubble.</li>
         <li><strong>Transcription label</strong> (voice type) &mdash; text-xs (12px) in <code>--text-secondary</code>. "Transcribing..." (regular) or "Show transcript" (bold).</li>
@@ -626,7 +471,7 @@
         <tr><td>Fill (outgoing)</td><td><code>--brand-200</code> (#b9e6fe)</td></tr>
         <tr><td>Text color</td><td><code>--text-primary</code> (#181d27)</td></tr>
         <tr><td>Text font</td><td><code>--font-family-body</code> (Inter), <code>--font-weight-regular</code> (400)</td></tr>
-        <tr><td>Text size</td><td><code>--font-size-text-sm</code> (14px) / <code>--line-height-text-sm</code> (20px)</td></tr>
+        <tr><td>Text size</td><td><code>--font-size-text-md</code> (16px) / <code>--line-height-text-md</code> (24px)</td></tr>
         <tr><td>Avatar size</td><td>32px circle, <code>--bg-sky</code> background, 2px white border, <code>--radius-full</code></td></tr>
         <tr><td>Row gap (incoming)</td><td><code>--spacing-md</code> (8px)</td></tr>
         <tr><td>Column gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
@@ -648,7 +493,7 @@
         <tr><td>Transcription weight</td><td><code>--font-weight-regular</code> (transcribing), <code>--font-weight-bold</code> (transcribed)</td></tr>
         <tr><td>Deleted icon</td><td>x-circle 20px, <code>--text-secondary</code></td></tr>
         <tr><td>Deleted gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
-        <tr><td>Deleted text</td><td><code>--font-size-text-sm</code> (14px), <code>--text-secondary</code></td></tr>
+        <tr><td>Deleted text</td><td><code>--font-size-text-md</code> (16px), <code>--text-secondary</code></td></tr>
         <tr><td>Typing dot size</td><td><code>--spacing-md</code> (8px), <code>--gray-400</code></td></tr>
         <tr><td>Typing dot gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
         <tr><td>Typing padding</td><td><code>--spacing-xl</code> (16px) horizontal, <code>--spacing-xl</code> (16px) vertical</td></tr>

@@ -49,125 +49,8 @@
 <link rel="stylesheet" href="/tokens.css">
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/components/buttons.css">
+<link rel="stylesheet" href="/components/feedback-banner.css">
 <style>
-@font-face {
-  font-family:'TossFace';
-  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
-  font-display:swap;
-}
-
-/* ── Feedback Banner base ── */
-.fb {
-  display:flex; flex-direction:column;
-  gap:var(--spacing-xl, 16px);
-  padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);
-  width:358px;
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-}
-
-/* ── Hierarchy backgrounds ── */
-.fb-default { background:var(--bg-primary, #ffffff); }
-.fb-success { background:var(--bg-success-secondary, #dcfae6); }
-.fb-warning { background:var(--bg-warning-secondary, #fef7c3); }
-.fb-error   { background:var(--bg-error-secondary, #fee4e2); }
-
-/* ── Top border (dual CTA only) ── */
-.fb-bordered { border-top:1px solid var(--border-primary, #d5d7da); }
-
-/* ── Header: icon + title ── */
-.fb-header {
-  display:flex; align-items:center; gap:var(--spacing-lg, 12px);
-}
-.fb-icon {
-  width:var(--spacing-4xl, 32px); height:var(--spacing-4xl, 32px); flex-shrink:0;
-  font-family:'TossFace', sans-serif;
-  font-size:28px; line-height:32px;
-  text-align:center;
-}
-.fb-title {
-  flex:1;
-  font-size:var(--font-size-display-xs, 24px);
-  font-weight:var(--font-weight-bold, 700);
-  line-height:var(--line-height-display-xs, 32px);
-  font-family:var(--font-family-display, 'Inter', sans-serif);
-}
-.fb-default .fb-title { color:var(--text-primary, #181d27); }
-.fb-success .fb-title { color:var(--text-success-primary, #079455); }
-.fb-warning .fb-title { color:var(--text-warning-primary, #ca8504); }
-.fb-error   .fb-title { color:var(--text-error-primary, #d92d20); }
-
-/* ── Content: subtitle + description ── */
-.fb-content {
-  display:flex; flex-direction:column; gap:var(--spacing-xxs, 2px);
-  font-size:var(--font-size-text-md, 16px);
-  line-height:var(--line-height-text-md, 24px);
-}
-.fb-subtitle { font-weight:var(--font-weight-bold, 700); }
-.fb-desc     { font-weight:var(--font-weight-regular, 400); }
-
-.fb-default .fb-content { color:var(--text-primary, #181d27); }
-.fb-success .fb-content { color:var(--text-success-primary, #079455); }
-.fb-warning .fb-content { color:var(--text-warning-primary, #ca8504); }
-.fb-error   .fb-content { color:var(--text-error-primary, #d92d20); }
-
-/* ── Buttons ── */
-.fb-btn {
-  display:flex; align-items:center; justify-content:center;
-  box-sizing:border-box;
-  font-family:var(--font-family-body, 'Inter', sans-serif);
-  font-weight:var(--font-weight-bold, 700);
-  font-size:var(--font-size-text-md, 16px);
-  line-height:var(--line-height-text-md, 24px);
-  border:none; cursor:pointer;
-  border-radius:var(--radius-2xl, 16px);
-  padding:var(--spacing-lg, 12px);
-  width:100%;
-  white-space:nowrap;
-  user-select:none;
-  -webkit-tap-highlight-color:transparent;
-}
-
-/* Primary CTA per hierarchy */
-.fb-btn-primary {
-  color:var(--text-white, #ffffff);
-  border-bottom:2px solid transparent;
-}
-.fb-default .fb-btn-primary {
-  background:var(--fg-brand-primary, #0ba5ec);
-  border-bottom-color:var(--brand-600, #0086c9);
-  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
-}
-.fb-success .fb-btn-primary {
-  background:var(--green-500, #17b26a);
-  border-bottom-color:var(--green-600, #079455);
-  box-shadow:0 4px 0 0 var(--green-600, #079455);
-}
-.fb-warning .fb-btn-primary {
-  background:var(--yellow-500, #eaaa08);
-  border-bottom-color:var(--yellow-600, #ca8504);
-  box-shadow:0 4px 0 0 var(--yellow-600, #ca8504);
-}
-.fb-error .fb-btn-primary {
-  background:var(--red-500, #f04438);
-  border-bottom-color:var(--red-600, #d92d20);
-  box-shadow:0 4px 0 0 var(--red-600, #d92d20);
-}
-
-/* Secondary CTA */
-.fb-btn-secondary {
-  background:var(--bg-primary, #ffffff);
-  color:var(--text-secondary, #414651);
-  font-weight:var(--font-weight-semibold, 600);
-  border:2px solid var(--border-secondary, #e9eaeb);
-  box-shadow:0 4px 0 0 var(--gray-200, #e9eaeb);
-}
-
-/* Button row (dual CTA) */
-.fb-btn-row {
-  display:flex; gap:10px; width:100%;
-}
-.fb-btn-row .fb-btn { flex:1; }
-
 /* ── Sentiment tags ── */
 .sentiment-tag {
   display:inline-block;
@@ -257,7 +140,7 @@
             <div class="fb-subtitle">Subtitle</div>
             <div class="fb-desc">Description</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Primary</button>
+          <button class="btn-sprout btn-primary btn-md">Primary</button>
         </div>
       </div>
       <div class="demo-item">
@@ -271,7 +154,7 @@
             <div class="fb-subtitle">Subtitle</div>
             <div class="fb-desc">Description</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Primary</button>
+          <button class="btn-sprout btn-success btn-md">Primary</button>
         </div>
       </div>
       <div class="demo-item">
@@ -285,7 +168,7 @@
             <div class="fb-subtitle">Subtitle</div>
             <div class="fb-desc">Description</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Primary</button>
+          <button class="btn-sprout btn-warning btn-md">Primary</button>
         </div>
       </div>
       <div class="demo-item">
@@ -299,7 +182,7 @@
             <div class="fb-subtitle">Subtitle</div>
             <div class="fb-desc">Description</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Primary</button>
+          <button class="btn-sprout btn-destructive btn-md">Primary</button>
         </div>
       </div>
     </div>
@@ -324,7 +207,7 @@
             <div class="fb-subtitle">Congratulations!</div>
             <div class="fb-desc">You can now access advanced lessons.</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Continue</button>
+          <button class="btn-sprout btn-primary btn-md">Continue</button>
         </div>
       </div>
       <div class="demo-item">
@@ -339,8 +222,8 @@
             <div class="fb-desc">You can now access advanced lessons.</div>
           </div>
           <div class="fb-btn-row">
-            <button class="fb-btn fb-btn-secondary">Go back</button>
-            <button class="fb-btn fb-btn-primary">Continue</button>
+            <button class="btn-sprout btn-secondary btn-md">Go back</button>
+            <button class="btn-sprout btn-primary btn-md">Continue</button>
           </div>
         </div>
       </div>
@@ -360,7 +243,7 @@
             <div class="fb-subtitle">You got it right</div>
             <div class="fb-desc">Keep up the great work.</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Continue</button>
+          <button class="btn-sprout btn-success btn-md">Continue</button>
         </div>
       </div>
       <div class="demo-item">
@@ -375,8 +258,8 @@
             <div class="fb-desc">Keep up the great work.</div>
           </div>
           <div class="fb-btn-row">
-            <button class="fb-btn fb-btn-secondary">Review</button>
-            <button class="fb-btn fb-btn-primary">Continue</button>
+            <button class="btn-sprout btn-secondary btn-md">Review</button>
+            <button class="btn-sprout btn-success btn-md">Continue</button>
           </div>
         </div>
       </div>
@@ -396,7 +279,7 @@
             <div class="fb-subtitle">Time is running out</div>
             <div class="fb-desc">You have 2 minutes remaining.</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Got it</button>
+          <button class="btn-sprout btn-warning btn-md">Got it</button>
         </div>
       </div>
       <div class="demo-item">
@@ -411,8 +294,8 @@
             <div class="fb-desc">You have 2 minutes remaining.</div>
           </div>
           <div class="fb-btn-row">
-            <button class="fb-btn fb-btn-secondary">Skip</button>
-            <button class="fb-btn fb-btn-primary">Got it</button>
+            <button class="btn-sprout btn-secondary btn-md">Skip</button>
+            <button class="btn-sprout btn-warning btn-md">Got it</button>
           </div>
         </div>
       </div>
@@ -432,7 +315,7 @@
             <div class="fb-subtitle">Correct answer:</div>
             <div class="fb-desc">The capital of France is Paris.</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Got it</button>
+          <button class="btn-sprout btn-destructive btn-md">Got it</button>
         </div>
       </div>
       <div class="demo-item">
@@ -447,8 +330,8 @@
             <div class="fb-desc">The capital of France is Paris.</div>
           </div>
           <div class="fb-btn-row">
-            <button class="fb-btn fb-btn-secondary">Report</button>
-            <button class="fb-btn fb-btn-primary">Got it</button>
+            <button class="btn-sprout btn-secondary btn-md">Report</button>
+            <button class="btn-sprout btn-destructive btn-md">Got it</button>
           </div>
         </div>
       </div>
@@ -506,7 +389,7 @@
           <div class="fb-header">
             <div class="fb-title">Great job!</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Continue</button>
+          <button class="btn-sprout btn-success btn-md">Continue</button>
         </div>
       </div>
       <div class="demo-item">
@@ -516,7 +399,7 @@
             <div class="fb-icon">&#9989;</div>
             <div class="fb-title">Great job!</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Continue</button>
+          <button class="btn-sprout btn-success btn-md">Continue</button>
         </div>
       </div>
       <div class="demo-item">
@@ -530,7 +413,7 @@
             <div class="fb-subtitle">Correct answer:</div>
             <div class="fb-desc">ant</div>
           </div>
-          <button class="fb-btn fb-btn-primary">Got it</button>
+          <button class="btn-sprout btn-destructive btn-md">Got it</button>
         </div>
       </div>
     </div>
@@ -565,7 +448,7 @@
                       <div class="fb-icon">&#9989;</div>
                       <div class="fb-title">Great job!</div>
                     </div>
-                    <button class="fb-btn fb-btn-primary">Continue</button>
+                    <button class="btn-sprout btn-success btn-md">Continue</button>
                   </div>
                 </div>
               </div>
@@ -595,8 +478,8 @@
                       <div class="fb-desc">The capital of France is Paris.</div>
                     </div>
                     <div class="fb-btn-row">
-                      <button class="fb-btn fb-btn-secondary">Report</button>
-                      <button class="fb-btn fb-btn-primary">Got it</button>
+                      <button class="btn-sprout btn-secondary btn-md">Report</button>
+                      <button class="btn-sprout btn-destructive btn-md">Got it</button>
                     </div>
                   </div>
                 </div>

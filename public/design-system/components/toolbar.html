@@ -24,10 +24,10 @@
     { "name": "Default", "useWhen": "Standard navigation with back button", "pairWith": [] },
     { "name": "Save", "useWhen": "Edit flows with cancel and primary save action", "pairWith": ["ButtonUtility"] },
     { "name": "Chat", "useWhen": "Chat screens with title and avatar group", "pairWith": ["AvatarGroup"] },
-    { "name": "Quest", "useWhen": "Exercise flow with progress bar and stat counters", "pairWith": ["ProgressBar", "ButtonUtility"] },
+    { "name": "Quest - Default", "useWhen": "Exercise flow with progress bar, bg-sky background and border", "pairWith": ["ProgressBar"] },
     { "name": "Kid Home", "useWhen": "Home screen with shield and stat display", "pairWith": ["ButtonUtility"] },
     { "name": "Large Title", "useWhen": "Section headers with prominent text", "pairWith": [] },
-    { "name": "Quest 2", "useWhen": "Exercise flow with btn-util close and progress bar", "pairWith": ["ProgressBar", "ButtonUtility"] }
+    { "name": "Quest - Overlay", "useWhen": "Exercise flow with transparent toolbar, btn-util close and progress bar", "pairWith": ["ProgressBar", "ButtonUtility"] }
   ],
   "sizes": [
     { "name": "Default", "useWhen": "Standard — 56px height" }
@@ -58,7 +58,13 @@
 <link rel="stylesheet" href="/components/button-utility.css">
 <link rel="stylesheet" href="/components/avatar.css">
 <link rel="stylesheet" href="/components/avatar-group.css">
+<link rel="stylesheet" href="/components/progress-bar.css">
 <style>
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
 /* ── Phone frame for in-context demos ── */
 .phone-frame {
   width:402px; height:200px;
@@ -267,17 +273,19 @@
         </div>
       </div>
       <div class="demo-item">
-        <span class="demo-label">Quest</span>
-        <div class="toolbar toolbar-quest" style="width:340px;">
-          <div class="quest-close"><svg viewBox="0 0 40 40" fill="none"><path d="M14 14l12 12M26 14l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2.5" stroke-linecap="round"/></svg></div>
-          <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
+        <span class="demo-label">Quest — Default</span>
+        <div class="toolbar toolbar-quest" style="width:402px;">
+          <div class="quest-close"><svg viewBox="0 0 32 32" fill="none"><path d="M10 10l12 12M22 10l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:40%"></div></div></div>
+          <div class="quest-timer"><span class="quest-timer-icon">&#9202;&#65039;</span><span class="quest-timer-label">10:00</span></div>
         </div>
       </div>
       <div class="demo-item">
-        <span class="demo-label">Quest 2</span>
+        <span class="demo-label">Quest — Overlay</span>
         <div class="toolbar toolbar-quest-transparent" style="width:340px;">
           <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
-          <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
+          <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:40%"></div></div></div>
+          <div class="quest-timer"><span class="quest-timer-icon">&#9202;&#65039;</span><span class="quest-timer-label">10:00</span></div>
         </div>
       </div>
     </div>
@@ -494,8 +502,9 @@
       <div class="phone-frame" style="height:280px;">
         <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
         <div class="toolbar toolbar-quest">
-          <div class="quest-close"><svg viewBox="0 0 40 40" fill="none"><path d="M14 14l12 12M26 14l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2.5" stroke-linecap="round"/></svg></div>
-          <div class="progress-track"><div class="progress-fill" style="width:25%"></div></div>
+          <div class="quest-close"><svg viewBox="0 0 32 32" fill="none"><path d="M10 10l12 12M22 10l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:25%"></div></div></div>
+          <div class="quest-timer"><span class="quest-timer-icon">&#9202;&#65039;</span><span class="quest-timer-label">10:00</span></div>
         </div>
         <div style="padding:16px;">
           <p style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Translate this sentence</p>
@@ -505,8 +514,9 @@
       <div class="phone-frame" style="height:280px;">
         <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
         <div class="toolbar toolbar-quest">
-          <div class="quest-close"><svg viewBox="0 0 40 40" fill="none"><path d="M14 14l12 12M26 14l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2.5" stroke-linecap="round"/></svg></div>
-          <div class="progress-track"><div class="progress-fill" style="width:75%"></div></div>
+          <div class="quest-close"><svg viewBox="0 0 32 32" fill="none"><path d="M10 10l12 12M22 10l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:75%"></div></div></div>
+          <div class="quest-timer hidden"><span class="quest-timer-icon">&#9202;&#65039;</span><span class="quest-timer-label">5:23</span></div>
         </div>
         <div style="padding:16px;">
           <p style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Match the pairs</p>
@@ -524,7 +534,8 @@
         <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
         <div class="toolbar toolbar-quest-transparent">
           <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
-          <div class="progress-track"><div class="progress-fill" style="width:25%"></div></div>
+          <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:25%"></div></div></div>
+          <div class="quest-timer"><span class="quest-timer-icon">&#9202;&#65039;</span><span class="quest-timer-label">10:00</span></div>
         </div>
         <div style="padding:16px;">
           <p style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">What does this word mean?</p>
@@ -535,7 +546,8 @@
         <div class="phone-status"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="var(--gray-900)"><rect x="1" y="3" width="2" height="10" rx="0.5"/><rect x="5" y="5" width="2" height="8" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="1" width="2" height="12" rx="0.5"/></svg></div></div>
         <div class="toolbar toolbar-quest-transparent">
           <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
-          <div class="progress-track"><div class="progress-fill" style="width:75%"></div></div>
+          <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:75%"></div></div></div>
+          <div class="quest-timer hidden"><span class="quest-timer-icon">&#9202;&#65039;</span><span class="quest-timer-label">3:15</span></div>
         </div>
         <div style="padding:16px;">
           <p style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Complete the sentence</p>
