@@ -7,17 +7,70 @@
   var nav = window.DS_NAV;
   if (!nav) return;
 
-  // ── SVG Icons ──
+  // ── SVG Icons (20px, inline) ──
   var ICONS = {
-    Home: '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 17.5v-5.833c0-.467 0-.7.09-.879a.833.833 0 0 1 .365-.364c.178-.091.412-.091.878-.091h2.334c.466 0 .7 0 .878.09.157.08.285.208.365.365.09.179.09.412.09.879V17.5M9.18 2.818l-5.25 4.2c-.263.21-.394.316-.49.447a1.25 1.25 0 0 0-.19.422c-.05.157-.05.327-.05.668v6.528c0 .7 0 1.05.136 1.318.12.235.311.426.546.546.268.136.618.136 1.318.136h9.6c.7 0 1.05 0 1.318-.136.235-.12.426-.311.546-.546.136-.268.136-.618.136-1.318V8.555c0-.34 0-.51-.05-.668a1.25 1.25 0 0 0-.19-.422c-.096-.131-.227-.236-.49-.448l-5.25-4.2c-.205-.163-.307-.245-.42-.276a.417.417 0 0 0-.226 0c-.113.031-.215.113-.42.276z"/></svg>',
-    'Kid Home': '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="10" height="16" rx="2"/><path d="M8.5 15h3"/></svg>',
-    Activity: '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2M10 16v2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M2 10h2M16 10h2M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41"/><circle cx="10" cy="10" r="3"/></svg>',
-    Tasks: '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/><rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/></svg>',
-    Character: '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6" r="4"/><path d="M3 18c0-3.87 3.13-7 7-7s7 3.13 7 7"/></svg>'
+    phone: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>',
+    'message-chat': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.09 11.22A8 8 0 1 1 9.5 21L3 22l1-4.5a8 8 0 0 1 2.09-6.28Z"/></svg>',
+    'stars-01': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.09 3.26L16 6l-2.91.74L12 10l-1.09-3.26L8 6l2.91-.74L12 2zM5 14l.55 1.63L7 16.17l-1.45.55L5 18.34l-.55-1.62L3 16.17l1.45-.54L5 14zM19 14l.55 1.63L21 16.17l-1.45.55L19 18.34l-.55-1.62L17 16.17l1.45-.54L19 14z"/></svg>',
+    'stars-02': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 22v-6M4.5 8V2M2 4.5h5M2 19.5h5M13 3l-1.74 4.52L6.74 9.5l4.52 1.74L13 15.76l1.74-4.52 4.52-1.74-4.52-1.74L13 3zM18 14l-1.16 3.01L13.83 18.17l3.01 1.16L18 22.34l1.16-3.01 3.01-1.16-3.01-1.16L18 14z"/></svg>',
+    home: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21V13.6c0-.56 0-.84.109-1.054a1 1 0 0 1 .437-.437C9.76 12 10.04 12 10.6 12h2.8c.56 0 .84 0 1.054.109a1 1 0 0 1 .437.437C15 12.76 15 13.04 15 13.6V21M11.018 2.764L4.235 8.039c-.316.252-.473.378-.588.536a1.5 1.5 0 0 0-.228.507C3.36 9.277 3.36 9.464 3.36 9.838v7.845c0 .84 0 1.26.164 1.581a1.5 1.5 0 0 0 .655.655c.321.164.741.164 1.581.164h12.48c.84 0 1.26 0 1.581-.164a1.5 1.5 0 0 0 .655-.655c.164-.321.164-.741.164-1.581V9.838c0-.374 0-.561-.06-.736a1.5 1.5 0 0 0-.227-.507c-.116-.158-.273-.284-.589-.536l-6.783-5.275c-.246-.191-.369-.287-.504-.324a.5.5 0 0 0-.272 0c-.135.037-.258.133-.504.324z"/></svg>',
+    grid: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+    menu: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>'
   };
 
-  var CHEVRON_DOWN = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
+  var CHEVRON_UP = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 10 4-4 4 4"/></svg>';
+  var CHEVRON_DOWN = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 4 4 4-4"/></svg>';
 
+  var CLOSE_X = '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+
+  // ── Inject sidebar styles ──
+  var styleEl = document.createElement('style');
+  styleEl.textContent = [
+    /* Sidebar container */
+    '.sidebar{width:242px;background:#fafafa;border-right:1px solid #e9eaeb;padding:16px 8px;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;position:fixed;top:0;left:0;bottom:0;z-index:200;transform:translateX(0);}',
+    '.sidebar.animate{transition:transform .3s cubic-bezier(0.25,0.1,0.25,1);}',
+    '.sidebar.collapsed{transform:translateX(-100%);}',
+    '.main{margin-left:242px;}',
+    '.main.animate{transition:margin-left .3s cubic-bezier(0.25,0.1,0.25,1);}',
+    'body.sidebar-closed .main{margin-left:0;}',
+    /* scrim removed */
+    '@media(max-width:768px){.main{margin-left:0 !important;}}',
+    '.sidebar-header{display:flex;align-items:center;gap:8px;padding:0 8px 12px;border-bottom:none;}',
+    '.sidebar-header img{width:20px;height:20px;border-radius:4px;display:block;flex-shrink:0;}',
+    '.sidebar-header span{font-size:14px;font-weight:500;color:#181d27;line-height:20px;}',
+    /* Nav list */
+    '.sidebar .nav-list{display:flex;flex-direction:column;gap:4px;padding:12px 0 0;}',
+    /* Nav items (parent sections & leaf items) */
+    '.nav-item,.nav-section{display:flex;align-items:center;gap:8px;height:28px;padding:4px 8px;border-radius:2px;font-size:14px;font-weight:500;color:#414651;text-decoration:none;cursor:pointer;transition:background .1s;line-height:20px;flex-shrink:0;}',
+    '.nav-item:hover,.nav-section:hover{background:#f0f0f0;text-decoration:none;}',
+    '.nav-item.active,.nav-section.active{background:#f0f0f0;font-weight:600;text-decoration:none;}',
+    /* Icon wrapper */
+    '.nav-icon{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}',
+    '.nav-icon svg{width:20px;height:20px;}',
+    /* Badge pill */
+    '.nav-badge{margin-left:auto;background:#f0f9ff;border:1px solid #b9e6fe;color:#026aa2;font-size:12px;font-weight:500;line-height:1;border-radius:6px;padding:2px 6px;white-space:nowrap;flex-shrink:0;}',
+    /* Chevron */
+    '.nav-chevron{width:16px;height:16px;margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#a4a7ae;}',
+    '.nav-chevron svg{width:16px;height:16px;}',
+    /* When badge + chevron coexist, chevron after badge */
+    '.nav-section .nav-chevron{margin-left:0;}',
+    /* Children container */
+    '.nav-children{display:flex;flex-direction:column;gap:4px;}',
+    '.nav-children.collapsed{display:none;}',
+    /* Child items */
+    '.nav-child{display:flex;align-items:center;gap:8px;height:28px;padding:4px 8px 4px 16px;border-radius:2px;font-size:14px;font-weight:500;color:#414651;text-decoration:none;transition:background .1s;line-height:20px;flex-shrink:0;}',
+    '.nav-child:hover{background:#f0f0f0;text-decoration:none;}',
+    '.nav-child.active{background:#f0f0f0;font-weight:600;text-decoration:none;}',
+    /* Breadcrumb hamburger */
+    '.breadcrumb-menu-btn{width:20px;height:20px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:#535862;padding:0;flex-shrink:0;}',
+    '.breadcrumb-menu-btn:hover{color:#181d27;}',
+    '.breadcrumb-menu-btn svg{width:20px;height:20px;}',
+    /* Responsive: hide sidebar, show hamburger */
+    '@media(max-width:768px){}'
+  ].join('\n');
+  document.head.appendChild(styleEl);
+
+  // ── Utility functions ──
   function currentPath() {
     var p = location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
     if (p !== '/' && p.endsWith('/')) p = p.slice(0, -1);
@@ -32,12 +85,12 @@
     return currentPath() === hrefToPath(href);
   }
 
-  // Check if a section is expanded (current page matches section or any child)
+  // Check if a section contains the active page
   function isSectionActive(item) {
-    if (isActive(item.href)) return true;
+    if (item.href && isActive(item.href)) return true;
     if (item.children) {
       for (var i = 0; i < item.children.length; i++) {
-        if (isActive(item.children[i].href)) return true;
+        if (item.children[i].href && isActive(item.children[i].href)) return true;
       }
     }
     return false;
@@ -47,13 +100,13 @@
   function findCurrentPage() {
     for (var i = 0; i < nav.length; i++) {
       var item = nav[i];
-      if (isActive(item.href)) {
+      if (item.href && isActive(item.href)) {
         return { section: null, label: item.label, sectionHref: null };
       }
       if (item.children) {
         for (var j = 0; j < item.children.length; j++) {
-          if (isActive(item.children[j].href)) {
-            return { section: item.label, label: item.children[j].label, sectionHref: item.href };
+          if (item.children[j].href && isActive(item.children[j].href)) {
+            return { section: item.label, label: item.children[j].label, sectionHref: item.href || null };
           }
         }
       }
@@ -66,26 +119,67 @@
     var html = '';
     for (var i = 0; i < nav.length; i++) {
       var item = nav[i];
-      var active = isActive(item.href) ? ' active' : '';
       var sectionActive = isSectionActive(item);
-      var cls = item.children ? 'nav-section' : 'nav-item';
-      var icon = ICONS[item.label] || '';
 
-      html += '<a class="' + cls + active + '" href="' + item.href + '">';
-      if (icon) html += '<span class="nav-icon">' + icon + '</span>';
-      html += item.label;
-      if (item.children) html += '<span class="nav-chevron' + (sectionActive ? ' open' : '') + '">' + CHEVRON_DOWN + '</span>';
-      html += '</a>';
+      if (item.collapsible && item.children) {
+        // Collapsible section header (not a link)
+        var expanded = item.defaultOpen || sectionActive;
+        var icon = item.icon && ICONS[item.icon] ? ICONS[item.icon] : '';
+        var active = item.href && isActive(item.href) ? ' active' : '';
 
-      // Always render children; start expanded if section is active
-      if (item.children) {
+        html += '<div class="nav-section' + active + '" data-collapsible="true">';
+        if (icon) html += '<span class="nav-icon">' + icon + '</span>';
+        html += '<span class="nav-section-label">' + item.label + '</span>';
+        html += '<span class="nav-chevron">' + (expanded ? CHEVRON_UP : CHEVRON_DOWN) + '</span>';
+        html += '</div>';
+
+        html += '<div class="nav-children' + (expanded ? '' : ' collapsed') + '">';
+        for (var j = 0; j < item.children.length; j++) {
+          var child = item.children[j];
+          var childActive = child.href && isActive(child.href) ? ' active' : '';
+          var childIcon = child.icon && ICONS[child.icon] ? ICONS[child.icon] : '';
+
+          html += '<a class="nav-child' + childActive + '" href="' + (child.href || '#') + '">';
+          if (childIcon) html += '<span class="nav-icon">' + childIcon + '</span>';
+          html += '<span class="nav-child-label">' + child.label + '</span>';
+          if (child.badge) html += '<span class="nav-badge">' + child.badge + '</span>';
+          html += '</a>';
+        }
+        html += '</div>';
+      } else if (item.children) {
+        // Non-collapsible section with children (legacy format: parent is a link)
+        var icon = item.icon && ICONS[item.icon] ? ICONS[item.icon] : '';
+        var active = item.href && isActive(item.href) ? ' active' : '';
+
+        html += '<a class="nav-section' + active + '" href="' + (item.href || '#') + '">';
+        if (icon) html += '<span class="nav-icon">' + icon + '</span>';
+        html += '<span class="nav-section-label">' + item.label + '</span>';
+        html += '<span class="nav-chevron">' + (sectionActive ? CHEVRON_UP : CHEVRON_DOWN) + '</span>';
+        html += '</a>';
+
         html += '<div class="nav-children' + (sectionActive ? '' : ' collapsed') + '">';
         for (var j = 0; j < item.children.length; j++) {
           var child = item.children[j];
-          var childActive = isActive(child.href) ? ' active' : '';
-          html += '<a class="nav-child' + childActive + '" href="' + child.href + '">' + child.label + '</a>';
+          var childActive = child.href && isActive(child.href) ? ' active' : '';
+          var childIcon = child.icon && ICONS[child.icon] ? ICONS[child.icon] : '';
+
+          html += '<a class="nav-child' + childActive + '" href="' + (child.href || '#') + '">';
+          if (childIcon) html += '<span class="nav-icon">' + childIcon + '</span>';
+          html += '<span class="nav-child-label">' + child.label + '</span>';
+          if (child.badge) html += '<span class="nav-badge">' + child.badge + '</span>';
+          html += '</a>';
         }
         html += '</div>';
+      } else {
+        // Simple leaf item
+        var icon = item.icon && ICONS[item.icon] ? ICONS[item.icon] : '';
+        var active = item.href && isActive(item.href) ? ' active' : '';
+
+        html += '<a class="nav-item' + active + '" href="' + (item.href || '#') + '">';
+        if (icon) html += '<span class="nav-icon">' + icon + '</span>';
+        html += '<span class="nav-item-label">' + item.label + '</span>';
+        if (item.badge) html += '<span class="nav-badge">' + item.badge + '</span>';
+        html += '</a>';
       }
     }
     return html;
@@ -95,20 +189,23 @@
   function attachSectionToggles(container) {
     var sections = container.querySelectorAll('.nav-section');
     for (var i = 0; i < sections.length; i++) {
-      (function (sectionLink) {
-        sectionLink.addEventListener('click', function (e) {
-          e.preventDefault();
-          var children = sectionLink.nextElementSibling;
+      (function (sectionEl) {
+        sectionEl.addEventListener('click', function (e) {
+          // For collapsible divs, always toggle. For link sections, toggle on chevron or prevent default.
+          var isLink = sectionEl.tagName === 'A';
+          if (isLink) e.preventDefault();
+
+          var children = sectionEl.nextElementSibling;
           if (!children || !children.classList.contains('nav-children')) return;
-          var chevron = sectionLink.querySelector('.nav-chevron');
+          var chevron = sectionEl.querySelector('.nav-chevron');
           var isCollapsed = children.classList.contains('collapsed');
 
           if (isCollapsed) {
             children.classList.remove('collapsed');
-            if (chevron) chevron.classList.add('open');
+            if (chevron) chevron.innerHTML = CHEVRON_UP;
           } else {
             children.classList.add('collapsed');
-            if (chevron) chevron.classList.remove('open');
+            if (chevron) chevron.innerHTML = CHEVRON_DOWN;
           }
         });
       })(sections[i]);
@@ -120,11 +217,43 @@
     var sidebar = document.getElementById('sidebar');
     if (!sidebar) return;
 
-    sidebar.innerHTML = '<div class="sidebar-inner">' +
-      '<div class="sidebar-logo"><img src="/design-system/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44"></div>' +
-      '<div class="nav-list">' + buildNavHTML() + '</div></div>';
+    sidebar.innerHTML =
+      '<div class="sidebar-header">' +
+        '<img src="/design-system/brand/assets/icon-primary.svg" alt="Sprout" />' +
+        '<span>Sprout design</span>' +
+      '</div>' +
+      '<div class="nav-list">' + buildNavHTML() + '</div>';
 
     attachSectionToggles(sidebar);
+  }
+
+  // ── Sidebar toggle helpers ──
+  var sidebarScrim = null;
+
+  function enableTransitions() {
+    var sidebar = document.getElementById('sidebar');
+    var main = document.querySelector('.main');
+    if (sidebar && !sidebar.classList.contains('animate')) sidebar.classList.add('animate');
+    if (main && !main.classList.contains('animate')) main.classList.add('animate');
+    /* scrim removed */
+  }
+
+  function openSidebar() {
+    enableTransitions();
+    var sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+    sidebar.classList.remove('collapsed');
+    document.body.classList.remove('sidebar-closed');
+    localStorage.setItem('sprout-sidebar', 'open');
+  }
+
+  function closeSidebar() {
+    enableTransitions();
+    var sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+    sidebar.classList.add('collapsed');
+    document.body.classList.add('sidebar-closed');
+    localStorage.setItem('sprout-sidebar', 'closed');
   }
 
   // ── Breadcrumb ──
@@ -135,19 +264,32 @@
     var page = findCurrentPage();
     if (!page) return;
 
-    var html = '<a href="/product-explorer/">Product Explorer</a>';
+    // Hamburger menu button (visible on mobile)
+    var html = '<button class="breadcrumb-menu-btn" aria-label="Toggle sidebar">' + ICONS.menu + '</button>';
 
     if (page.section) {
-      html += '<span class="breadcrumb-sep">/</span>' +
-        '<a href="' + page.sectionHref + '">' + page.section + '</a>' +
-        '<span class="breadcrumb-sep">/</span>' +
-        '<span class="breadcrumb-current">' + page.label + '</span>';
-    } else if (page.label !== 'Home') {
+      html += '<a href="/product-explorer/">' + page.section + '</a>';
       html += '<span class="breadcrumb-sep">/</span>' +
         '<span class="breadcrumb-current">' + page.label + '</span>';
+    } else {
+      html += '<span class="breadcrumb-current">' + page.label + '</span>';
     }
 
     bc.innerHTML = html;
+
+    // Attach hamburger click — works on both desktop and mobile
+    var menuBtn = bc.querySelector('.breadcrumb-menu-btn');
+    if (menuBtn) {
+      menuBtn.addEventListener('click', function () {
+        var sidebar = document.getElementById('sidebar');
+        if (!sidebar) return;
+        if (sidebar.classList.contains('collapsed')) {
+          openSidebar();
+        } else {
+          closeSidebar();
+        }
+      });
+    }
   }
 
   // ── Table of Contents ──
@@ -184,61 +326,21 @@
     updateActive();
   }
 
-  // ── Mobile Nav ──
-  var HAMBURGER = '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>';
-  var CLOSE_X = '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-
-  function buildMobileNav() {
-    // Top bar
-    var topbar = document.createElement('div');
-    topbar.className = 'mobile-topbar';
-    topbar.innerHTML = '<img src="/design-system/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44">' +
-      '<button class="mobile-menu-btn" aria-label="Open menu">' + HAMBURGER + '</button>';
-    document.body.insertBefore(topbar, document.body.firstChild);
-
-    // Overlay
-    var overlay = document.createElement('div');
-    overlay.className = 'mobile-overlay';
-    overlay.innerHTML = '<div class="mobile-overlay-scrim"></div>' +
-      '<div class="mobile-drawer">' +
-        '<div class="mobile-drawer-header">' +
-          '<img src="/design-system/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44">' +
-        '</div>' +
-        '<div class="nav-list"></div>' +
-      '</div>' +
-      '<button class="mobile-close-btn" aria-label="Close menu">' + CLOSE_X + '</button>';
-    document.body.appendChild(overlay);
-
-    // Populate nav items (same structure as sidebar)
-    overlay.querySelector('.nav-list').innerHTML = buildNavHTML();
-    attachSectionToggles(overlay);
-
-    // Toggle logic
-    var menuBtn = topbar.querySelector('.mobile-menu-btn');
-    var closeBtn = overlay.querySelector('.mobile-close-btn');
-    var scrim = overlay.querySelector('.mobile-overlay-scrim');
-
-    function openMenu() {
-      overlay.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeMenu() {
-      overlay.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    menuBtn.addEventListener('click', openMenu);
-    closeBtn.addEventListener('click', closeMenu);
-    scrim.addEventListener('click', closeMenu);
-
-    // Close on Escape key
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && overlay.classList.contains('open')) closeMenu();
-    });
-  }
+  // Close sidebar on Escape key
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeSidebar();
+  });
 
   buildSidebar();
-  buildMobileNav();
+
+  // Restore sidebar state after building (innerHTML doesn't clear classList)
+  var savedState = localStorage.getItem('sprout-sidebar');
+  if (savedState === 'closed') {
+    var sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.classList.add('collapsed');
+    document.body.classList.add('sidebar-closed');
+  }
+
   buildBreadcrumb();
 
   // Build TOC after DOM is ready
@@ -246,5 +348,273 @@
     document.addEventListener('DOMContentLoaded', buildTOC);
   } else {
     buildTOC();
+  }
+
+  // ── Auto-scale device to fit col-left ──
+  function scaleDevice() {
+    var colLeft = document.querySelector('.col-left');
+    var wrapper = document.querySelector('.col-left .device-wrapper');
+    if (!colLeft || !wrapper) return;
+
+    // Reset scale to measure natural size
+    wrapper.style.transform = '';
+    colLeft.style.height = '';
+
+    var padding = parseFloat(getComputedStyle(colLeft).paddingLeft) * 2;
+    var availW = colLeft.offsetWidth - padding;
+    var availH = colLeft.offsetHeight - padding;
+
+    // Get device natural dimensions
+    var screen = wrapper.querySelector('.device-screen');
+    if (!screen) return;
+    var nativeW = screen.offsetWidth + 16; // + wrapper padding/borders
+    var nativeH = screen.offsetHeight + 16;
+
+    var scale = Math.min(availW / nativeW, availH / nativeH, 1);
+    if (scale < 1) {
+      wrapper.style.transform = 'scale(' + scale + ')';
+      wrapper.style.transformOrigin = 'top center';
+      colLeft.style.height = (nativeH * scale + padding) + 'px';
+    }
+  }
+
+  // Run after page loads and on resize
+  function initScaleDevice() {
+    scaleDevice();
+    var resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(scaleDevice, 150);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScaleDevice);
+  } else {
+    setTimeout(initScaleDevice, 100);
+  }
+
+  // ── Auto-size dropdowns to stretch to col-right edge ──
+  document.addEventListener('click', function(e) {
+    var badge = e.target.closest('.badge-device');
+    if (!badge) return;
+    var wrap = badge.closest('.device-dropdown-wrap');
+    var dropdown = wrap ? wrap.querySelector('.device-dropdown') : null;
+    var colRight = badge.closest('.col-right');
+    if (!dropdown || !colRight) return;
+
+    var colRect = colRight.getBoundingClientRect();
+    var wrapRect = wrap.getBoundingClientRect();
+    dropdown.style.width = (colRect.right - wrapRect.left) + 'px';
+  });
+
+  // ── Meta icons ──
+  var META_ICONS = {
+    owner: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    status: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+    file: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>',
+    device: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>',
+    time: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    screen: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+    download: '<svg viewBox="0 0 24 24" fill="none" stroke="#717680" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    chevron: '<svg viewBox="0 0 12 12" fill="none" stroke="#414651" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 4.5 3 3 3-3"/></svg>'
+  };
+
+  // ── Build metadata from window.DS_META ──
+  function buildMetadata() {
+    var meta = window.DS_META;
+    if (!meta) return;
+    var colRight = document.querySelector('.col-right');
+    if (!colRight) return;
+
+    var html = '';
+
+    // Title
+    html += '<h1 class="page-title">' + meta.title + '</h1>';
+
+    // Description
+    if (meta.desc) {
+      html += '<p class="page-desc">' + meta.desc + '</p>';
+    }
+
+    // Meta rows
+    html += '<div class="meta-rows">';
+
+    // Owner
+    if (meta.owner) {
+      html += '<div class="meta-row">';
+      html += '<div class="meta-icon">' + META_ICONS.owner + '</div>';
+      html += '<div class="meta-label">Owner</div>';
+      html += '<div class="meta-value">' + meta.owner + '</div>';
+      html += '</div>';
+    }
+
+    // Status
+    if (meta.status) {
+      html += '<div class="meta-row">';
+      html += '<div class="meta-icon">' + META_ICONS.status + '</div>';
+      html += '<div class="meta-label">Status</div>';
+      html += '<div class="meta-value"><span class="badge badge-green">' + meta.status + '</span></div>';
+      html += '</div>';
+    }
+
+    // Rive file
+    if (meta.rive) {
+      html += '<div class="meta-row">';
+      html += '<div class="meta-icon">' + META_ICONS.file + '</div>';
+      html += '<div class="meta-label">Rive file</div>';
+      html += '<div class="meta-value">';
+      html += '<span class="badge badge-gray">' + meta.rive + '</span>';
+      html += '<a class="btn-download" href="/design-system/' + meta.rive + '" download>' + META_ICONS.download + '</a>';
+      html += '</div></div>';
+    }
+
+    // Skill
+    if (meta.skill) {
+      html += '<div class="meta-row">';
+      html += '<div class="meta-icon">' + META_ICONS.file + '</div>';
+      html += '<div class="meta-label">Skill</div>';
+      html += '<div class="meta-value">';
+      html += '<span class="badge badge-gray">' + meta.skill + '</span>';
+      html += '<a class="btn-download" href="/design-system/resources/' + meta.skill + '" download>' + META_ICONS.download + '</a>';
+      html += '</div></div>';
+    }
+
+    // Device
+    if (meta.device) {
+      html += '<div class="meta-row">';
+      html += '<div class="meta-icon">' + META_ICONS.device + '</div>';
+      html += '<div class="meta-label">Device</div>';
+      html += '<div class="meta-value">';
+      if (Array.isArray(meta.device)) {
+        var devDefault = meta.deviceDefault || meta.device[0];
+        html += '<div class="device-dropdown-wrap" id="device-dropdown-wrap">';
+        html += '<span class="badge badge-gray badge-device" id="device-badge" onclick="toggleMetaDropdown(event,\'device-dropdown\')">';
+        html += '<span id="device-badge-text">' + devDefault + '</span>' + META_ICONS.chevron;
+        html += '</span>';
+        html += '<div class="device-dropdown" id="device-dropdown">';
+        html += '<div class="device-dropdown-header">Select an option</div>';
+        for (var d = 0; d < meta.device.length; d++) {
+          var dActive = meta.device[d] === devDefault ? ' active' : '';
+          html += '<button class="device-dropdown-item' + dActive + '" data-device="' + meta.device[d].toLowerCase() + '" onclick="selectMetaOption(\'device\',' + d + ',this)">' + meta.device[d] + '</button>';
+        }
+        html += '</div></div>';
+      } else {
+        html += '<span class="badge badge-gray">' + meta.device + '</span>';
+      }
+      html += '</div></div>';
+    }
+
+    // Time dropdown
+    if (meta.time && Array.isArray(meta.time)) {
+      var timeDefault = meta.timeDefault || meta.time[0];
+      html += '<div class="meta-row">';
+      html += '<div class="meta-icon">' + META_ICONS.time + '</div>';
+      html += '<div class="meta-label">Time</div>';
+      html += '<div class="meta-value">';
+      html += '<div class="device-dropdown-wrap" id="time-dropdown-wrap">';
+      html += '<span class="badge badge-gray badge-device" onclick="toggleMetaDropdown(event,\'time-dropdown\')">';
+      html += '<span id="time-badge-text">' + timeDefault + '</span>' + META_ICONS.chevron;
+      html += '</span>';
+      html += '<div class="device-dropdown" id="time-dropdown">';
+      html += '<div class="device-dropdown-header">Select an option</div>';
+      for (var t = 0; t < meta.time.length; t++) {
+        var tActive = meta.time[t] === timeDefault ? ' active' : '';
+        html += '<button class="device-dropdown-item' + tActive + '" data-value="' + meta.time[t] + '" onclick="selectMetaOption(\'time\',' + t + ',this)">' + meta.time[t] + '</button>';
+      }
+      html += '</div></div></div></div>';
+    }
+
+    // Screen dropdown
+    if (meta.screen && Array.isArray(meta.screen)) {
+      var screenDefault = meta.screenDefault || 0;
+      html += '<div class="meta-row">';
+      html += '<div class="meta-icon">' + META_ICONS.screen + '</div>';
+      html += '<div class="meta-label">Screen</div>';
+      html += '<div class="meta-value">';
+      html += '<div class="device-dropdown-wrap" id="screen-dropdown-wrap">';
+      html += '<span class="badge badge-gray badge-device" onclick="toggleMetaDropdown(event,\'screen-dropdown\')">';
+      html += '<span id="screen-badge-text">' + meta.screen[screenDefault] + '</span>' + META_ICONS.chevron;
+      html += '</span>';
+      html += '<div class="device-dropdown" id="screen-dropdown">';
+      html += '<div class="device-dropdown-header">Select a screen</div>';
+      for (var s = 0; s < meta.screen.length; s++) {
+        var sActive = s === screenDefault ? ' active' : '';
+        html += '<button class="device-dropdown-item' + sActive + '" data-index="' + s + '" onclick="selectMetaOption(\'screen\',' + s + ',this)">' + meta.screen[s] + '</button>';
+      }
+      html += '</div></div></div></div>';
+    }
+
+    html += '</div>'; // /meta-rows
+
+    colRight.innerHTML = html;
+  }
+
+  // ── Global dropdown toggle ──
+  window.toggleMetaDropdown = function(e, dropdownId) {
+    e.stopPropagation();
+    // Close all other dropdowns first
+    document.querySelectorAll('.device-dropdown.open').forEach(function(dd) {
+      if (dd.id !== dropdownId) dd.classList.remove('open');
+    });
+    var dropdown = document.getElementById(dropdownId);
+    if (!dropdown) return;
+
+    // Auto-size to stretch to col-right edge
+    var wrap = dropdown.closest('.device-dropdown-wrap');
+    var colRight = dropdown.closest('.col-right');
+    if (wrap && colRight) {
+      var colRect = colRight.getBoundingClientRect();
+      var wrapRect = wrap.getBoundingClientRect();
+      dropdown.style.width = (colRect.right - wrapRect.left) + 'px';
+    }
+
+    dropdown.classList.toggle('open');
+  };
+
+  // ── Global dropdown selection ──
+  window.selectMetaOption = function(type, index, btn) {
+    var dropdown = btn.closest('.device-dropdown');
+    var wrap = btn.closest('.device-dropdown-wrap');
+    var badgeText = wrap.querySelector('[id$="-badge-text"]');
+
+    // Update badge text
+    if (badgeText) badgeText.textContent = btn.textContent;
+
+    // Update active state
+    dropdown.querySelectorAll('.device-dropdown-item').forEach(function(item) {
+      item.classList.remove('active');
+    });
+    btn.classList.add('active');
+    dropdown.classList.remove('open');
+
+    // Call page-specific handler if defined
+    if (type === 'device' && window.onDeviceChange) {
+      window.onDeviceChange(btn.getAttribute('data-device'));
+    }
+    if (type === 'time' && window.onTimeChange) {
+      window.onTimeChange(btn.getAttribute('data-value'));
+    }
+    if (type === 'screen' && window.onScreenChange) {
+      window.onScreenChange(index);
+    }
+  };
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.device-dropdown-wrap')) {
+      document.querySelectorAll('.device-dropdown.open').forEach(function(dd) {
+        dd.classList.remove('open');
+      });
+    }
+  });
+
+  // Build metadata if config exists
+  if (window.DS_META) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', buildMetadata);
+    } else {
+      buildMetadata();
+    }
   }
 })();

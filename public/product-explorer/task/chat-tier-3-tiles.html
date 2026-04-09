@@ -61,23 +61,6 @@
   user-select: none;
   -webkit-user-select: none;
 }
-.viewer {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--spacing-3xl, 24px);
-}
-
-/* ── Controls row + device toggle ── */
-.controls-row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-bottom: var(--spacing-xl, 16px);
-}
-.device-toggle .cat-tab { height: 36px; }
-.device-toggle .cat-tab svg { width: 20px; height: 20px; flex-shrink: 0; }
-.device-toggle .cat-tab .device-icon { stroke: var(--text-quaternary, #717680); transition: stroke 0.15s; }
-.device-toggle .cat-tab.active .device-icon { stroke: var(--text-secondary, #414651); }
 
 /* ── iPad overrides ── */
 .device-wrapper.ipad .device-screen { width: 640px; height: 854px; }
@@ -390,6 +373,174 @@
   overflow: hidden;
 }
 
+/* ── Image Quiz (grid of image tiles) ── */
+.image-quiz-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+  width: 100%;
+}
+.image-quiz-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md, 8px);
+}
+.image-quiz-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm, 6px);
+  box-sizing: border-box;
+  aspect-ratio: 1;
+  padding: var(--spacing-xl, 16px);
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.image-quiz-tile:hover { background: var(--bg-secondary, #fafafa); }
+.image-quiz-tile:active { box-shadow: none; transform: translateY(2px); }
+.image-quiz-tile .quiz-image {
+  font-family: 'TossFace', sans-serif;
+  font-size: 48px;
+  line-height: 1;
+}
+.image-quiz-tile .quiz-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  text-align: center;
+}
+.image-quiz-tile.selected {
+  background: var(--bg-brand-secondary, #e0f2fe);
+  border-color: var(--brand-300, #7cd4fd);
+  box-shadow: 0 3px 0 0 var(--brand-300, #7cd4fd);
+}
+.image-quiz-tile.success {
+  background: var(--green-100, #dcfae6);
+  border-color: var(--green-300, #75e0a7);
+  box-shadow: 0 4px 0 0 var(--green-300, #75e0a7);
+  pointer-events: none;
+}
+.image-quiz-tile.error {
+  background: var(--red-100, #fee4e2);
+  border-color: var(--red-300, #fda29b);
+  box-shadow: 0 4px 0 0 var(--red-300, #fda29b);
+  pointer-events: none;
+}
+.image-quiz-tile.disabled {
+  background: var(--bg-primary, #ffffff);
+  border-color: var(--border-secondary, #e9eaeb);
+  box-shadow: none;
+  pointer-events: none;
+  color: var(--gray-400, #a4a7ae);
+}
+.image-quiz-tile.disabled .quiz-image {
+  filter: grayscale(1);
+  mix-blend-mode: luminosity;
+}
+.image-quiz-tile.disabled .quiz-label {
+  color: var(--gray-400, #a4a7ae);
+}
+
+/* ── Fill in the Blank ── */
+.fill-blank-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg, 12px);
+  width: 100%;
+}
+.fill-blank-sentence {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-4xl, 24px);
+  padding: var(--spacing-xl, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl, 16px);
+}
+.fill-blank-row {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.fill-blank-text {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+}
+.fill-blank-gap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxs, 2px);
+  min-width: 50px;
+  padding: 0 var(--spacing-xs, 4px);
+}
+.fill-blank-gap-text {
+  opacity: 0;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+  transition: opacity 0.15s, color 0.15s;
+}
+.fill-blank-gap.filled .fill-blank-gap-text { opacity: 1; }
+.fill-blank-gap.correct .fill-blank-gap-text {
+  opacity: 1;
+  color: var(--text-success-primary, #079455);
+}
+.fill-blank-gap.wrong .fill-blank-gap-text {
+  opacity: 1;
+  color: var(--text-error-primary, #d92d20);
+}
+.fill-blank-gap-line {
+  width: 100%;
+  height: 1px;
+  background: var(--border-secondary, #e9eaeb);
+  transition: background 0.15s;
+}
+.fill-blank-gap.active .fill-blank-gap-line {
+  background: var(--brand-300, #7cd4fd);
+  height: 2px;
+}
+.fill-blank-gap.correct .fill-blank-gap-line {
+  background: var(--text-success-primary, #079455);
+}
+.fill-blank-gap.wrong .fill-blank-gap-line {
+  background: var(--text-error-primary, #d92d20);
+}
+.fill-blank-options {
+  display: flex;
+  gap: var(--spacing-lg, 12px);
+  justify-content: center;
+}
+.fill-blank-options .tile {
+  width: auto;
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+}
+.fill-blank-options .tile.used {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.fill-blank-options .tile.placed {
+  background: var(--bg-brand-secondary, #e0f2fe);
+  border-color: var(--brand-300, #7cd4fd);
+  box-shadow: 0 3px 0 0 var(--brand-300, #7cd4fd);
+  pointer-events: none;
+}
+
 /* ── Composer transition for swap ── */
 .composer-area {
   transition: opacity 0.2s ease, transform 0.2s ease;
@@ -595,15 +746,9 @@
     <div class="page-content">
       <div class="breadcrumb" id="breadcrumb"></div>
 
-      <div class="page-header">
-        <div class="page-header-text">
-          <div class="sec-title">Chat — Tier 3 + Suggested Tiles</div>
-          <div class="sec-desc">Interactive prototype showing suggested responses using DS Tile components. Sprout asks questions and offers tappable tile options. Try tapping tiles to see the conversation flow.</div>
-        </div>
-      </div>
-
-      <div class="viewer">
-        <div class="device-wrapper">
+      <div class="two-col">
+        <div class="col-left">
+        <div class="device-wrapper" id="device-wrapper">
           <div class="device-inner-shadow">
             <div class="device-mockup">
               <div class="device-screen" id="phone">
@@ -658,10 +803,19 @@
             </div>
           </div>
         </div>
-      </div>
+      </div><!-- /col-left -->
+        <div class="col-right"></div><!-- /col-right -->
+      </div><!-- /two-col -->
     </div>
   </div>
 </div>
+
+<script>
+  window.onDeviceChange = function(device) {
+    var wrapper = document.getElementById('device-wrapper');
+    wrapper.classList.toggle('ipad', device === 'tablet');
+  };
+</script>
 
 <script>
 (function() {
@@ -1234,6 +1388,239 @@
     });
   }
 
+  // ── Image Quiz (pick the correct image from a grid) ──
+  function addImageQuiz(question, options, correctIndex, onComplete) {
+    var group = document.createElement('div');
+    group.className = 'image-quiz-group';
+
+    var grid = document.createElement('div');
+    grid.className = 'image-quiz-grid';
+    group.appendChild(grid);
+
+    options.forEach(function(opt, i) {
+      var tile = document.createElement('div');
+      tile.className = 'image-quiz-tile';
+      tile.dataset.index = i;
+      tile.innerHTML =
+        '<span class="quiz-image">' + opt.emoji + '</span>' +
+        '<span class="quiz-label">' + opt.label + '</span>';
+      tile.style.animation = 'tileSlideIn 0.3s ease both';
+      tile.style.animationDelay = (i * 0.08) + 's';
+      grid.appendChild(tile);
+    });
+
+    chatThread.appendChild(group);
+    scrollThread();
+
+    grid.addEventListener('click', function(e) {
+      var tile = e.target.closest('.image-quiz-tile');
+      if (!tile) return;
+      var idx = parseInt(tile.dataset.index);
+      var isCorrect = idx === correctIndex;
+
+      // Disable all tiles
+      grid.querySelectorAll('.image-quiz-tile').forEach(function(t) {
+        if (t === tile) {
+          t.classList.add(isCorrect ? 'success' : 'error');
+        } else if (parseInt(t.dataset.index) === correctIndex) {
+          // Show correct answer if kid got it wrong
+          if (!isCorrect) t.classList.add('success');
+          else t.classList.add('disabled');
+        } else {
+          t.classList.add('disabled');
+        }
+      });
+
+      setTimeout(function() {
+        group.classList.add('dismissed');
+        setTimeout(function() {
+          group.remove();
+          if (onComplete) onComplete(isCorrect, options[idx].label);
+        }, 350);
+      }, 1200);
+    });
+  }
+
+  // ── Fill in the Blank ──
+  // sentenceParts: array of text segments (N+1 for N blanks)
+  // blankAnswers: string (single blank) or array of strings (multi-blank)
+  // options: array of word strings
+  function addFillBlank(sentenceParts, blankAnswers, options, onComplete) {
+    if (typeof blankAnswers === 'string') blankAnswers = [blankAnswers];
+
+    var group = document.createElement('div');
+    group.className = 'fill-blank-group';
+
+    // Sentence card with inline text + gap slots
+    var sentence = document.createElement('div');
+    sentence.className = 'fill-blank-sentence';
+    var row = document.createElement('div');
+    row.className = 'fill-blank-row';
+
+    var gaps = [];
+    sentenceParts.forEach(function(part, i) {
+      if (part) {
+        var textSpan = document.createElement('span');
+        textSpan.className = 'fill-blank-text';
+        textSpan.textContent = part;
+        row.appendChild(textSpan);
+      }
+      if (i < sentenceParts.length - 1) {
+        var gap = document.createElement('div');
+        gap.className = 'fill-blank-gap' + (i === 0 ? ' active' : '');
+        gap.dataset.index = i;
+        var gapText = document.createElement('p');
+        gapText.className = 'fill-blank-gap-text';
+        gapText.textContent = '\u00A0';
+        gap.appendChild(gapText);
+        var line = document.createElement('div');
+        line.className = 'fill-blank-gap-line';
+        gap.appendChild(line);
+        row.appendChild(gap);
+        gaps.push(gap);
+      }
+    });
+
+    sentence.appendChild(row);
+
+    // Option tiles (inside sentence card)
+    var optionsRow = document.createElement('div');
+    optionsRow.className = 'fill-blank-options';
+
+    var shuffled = options.slice();
+    for (var i = shuffled.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = tmp;
+    }
+
+    shuffled.forEach(function(opt, i) {
+      var tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.dataset.value = opt;
+      tile.innerHTML = '<div class="tile-content"><span class="tile-label">' + opt + '</span></div>';
+      tile.style.animation = 'tileSlideIn 0.3s ease both';
+      tile.style.animationDelay = (i * 0.05) + 's';
+      optionsRow.appendChild(tile);
+    });
+
+    sentence.appendChild(optionsRow);
+    group.appendChild(sentence);
+    chatThread.appendChild(group);
+    scrollThread();
+
+    // Hide composer, show Check in confirm bar
+    hideComposer();
+    var confirmBar = document.createElement('div');
+    confirmBar.className = 'confirm-bar';
+    var confirmBtn = document.createElement('button');
+    confirmBtn.className = 'tile-group-confirm state-disabled';
+    confirmBtn.textContent = 'Check';
+    confirmBar.appendChild(confirmBtn);
+    setTimeout(function() { phoneScreen.appendChild(confirmBar); }, 150);
+
+    // Track which option tile is placed in which gap
+    var placements = [];
+    var currentGapIndex = 0;
+
+    function updateCheckState() {
+      var allFilled = gaps.every(function(g) { return g.classList.contains('filled'); });
+      if (allFilled) {
+        confirmBtn.classList.remove('state-disabled');
+      } else {
+        confirmBtn.classList.add('state-disabled');
+      }
+    }
+
+    // Tap option → place in next empty gap (no validation)
+    optionsRow.addEventListener('click', function(e) {
+      var tile = e.target.closest('.tile');
+      if (!tile || tile.classList.contains('placed') || tile.classList.contains('used') || tile.classList.contains('success')) return;
+      if (currentGapIndex >= gaps.length) return;
+
+      var value = tile.dataset.value;
+      var gap = gaps[currentGapIndex];
+      var gapText = gap.querySelector('.fill-blank-gap-text');
+
+      gapText.textContent = value;
+      gap.classList.add('filled');
+      gap.classList.remove('active');
+      tile.classList.add('placed');
+      placements.push({ gapIndex: currentGapIndex, tile: tile, value: value });
+      currentGapIndex++;
+
+      if (currentGapIndex < gaps.length) {
+        gaps[currentGapIndex].classList.add('active');
+      }
+      updateCheckState();
+    });
+
+    // Tap Check → validate all gaps
+    confirmBtn.addEventListener('click', function() {
+      if (confirmBtn.classList.contains('state-disabled')) return;
+
+      var allCorrect = true;
+      placements.forEach(function(p) {
+        var gap = gaps[p.gapIndex];
+        var isCorrect = p.value === blankAnswers[p.gapIndex];
+        if (isCorrect) {
+          gap.classList.add('correct');
+          p.tile.classList.remove('placed');
+          p.tile.classList.add('success');
+        } else {
+          allCorrect = false;
+          gap.classList.add('wrong');
+          p.tile.classList.add('error');
+        }
+      });
+
+      confirmBtn.classList.add('state-disabled');
+
+      if (allCorrect) {
+        optionsRow.querySelectorAll('.tile:not(.success)').forEach(function(t) {
+          t.classList.add('used');
+        });
+        confirmBar.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        confirmBar.style.opacity = '0';
+        confirmBar.style.transform = 'translateY(8px)';
+        setTimeout(function() {
+          confirmBar.remove();
+          group.classList.add('dismissed');
+          setTimeout(function() {
+            group.remove();
+            showComposer();
+            if (onComplete) onComplete(true);
+          }, 350);
+        }, 1000);
+      } else {
+        // Reset wrong gaps after delay
+        setTimeout(function() {
+          placements = placements.filter(function(p) {
+            var gap = gaps[p.gapIndex];
+            if (gap.classList.contains('wrong')) {
+              var gapText = gap.querySelector('.fill-blank-gap-text');
+              gapText.textContent = '\u00A0';
+              gap.classList.remove('filled', 'wrong');
+              p.tile.classList.remove('placed', 'error');
+              p.tile.classList.add('used');
+              return false;
+            }
+            return true;
+          });
+          // Find first empty gap for next placement
+          currentGapIndex = 0;
+          for (var i = 0; i < gaps.length; i++) {
+            if (!gaps[i].classList.contains('filled')) {
+              currentGapIndex = i;
+              gaps[i].classList.add('active');
+              break;
+            }
+          }
+          updateCheckState();
+        }, 800);
+      }
+    });
+  }
+
   // ══════════════════════════════════════════
   // CONVERSATION SCRIPT
   // ══════════════════════════════════════════
@@ -1281,7 +1668,33 @@
                     { emoji: '🐘', content: 'Elephant', correctIndex: 3 }
                   ], function() {
                     addOutgoing("I sorted them all!");
-                    addIncoming("Perfect! You're amazing at this!");
+
+                    // Step 6: Image Quiz
+                    addIncoming("Quick quiz! Which one of these is a fruit?", function() {
+                      addImageQuiz("Which is a fruit?", [
+                        { emoji: '🥕', label: 'Carrot' },
+                        { emoji: '🍎', label: 'Apple' },
+                        { emoji: '🥦', label: 'Broccoli' },
+                        { emoji: '🌽', label: 'Corn' }
+                      ], 1, function(correct, picked) {
+                        addOutgoing(correct ? "Apple!" : picked + "... wait, that's not right");
+                        addIncoming(correct ? "That's right! Apples are delicious!" : "Not quite! The apple is the fruit. Let's try another one!", function() {
+
+                          // Step 7: Fill in the Blank (2 blanks)
+                          addIncoming("Can you fill in the blanks?", function() {
+                            addFillBlank(
+                              ["The ", " swims in the ", "."],
+                              ["fish", "water"],
+                              ["fish", "water", "sky", "tree"],
+                              function(correct) {
+                                addOutgoing("The fish swims in the water!");
+                                addIncoming("That's it! You're so smart!");
+                              }
+                            );
+                          });
+                        });
+                      });
+                    });
                   });
                 });
               });
@@ -1325,7 +1738,8 @@
 })();
 </script>
 
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'New Activity',href:'/product-explorer/kid-home/new-activity.html',dot:'var(--orange-400)'},{label:'Quests',href:'/product-explorer/quest.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/quest.html'},{label:'Photo',href:'/product-explorer/quest/photo.html'},{label:'Quiz',href:'/product-explorer/quest/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Chat',href:'/product-explorer/task/chat-tier-2.html',dot:'var(--violet-500)',children:[{label:'Chat Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Chat Tier 2 + Tiles',href:'/product-explorer/task/chat-tier-2-tiles.html'},{label:'Chat Tier 3 + Tiles',href:'/product-explorer/task/chat-tier-3-tiles.html'}]},{label:'Customize Avatar',href:'/product-explorer/customize-avatar.html',dot:'var(--violet-400)'},{label:'Customize Sprout',href:'/product-explorer/customize-sprout.html',dot:'var(--sprout-400)'}];</script>
+<script>window.DS_META={title:'Chat Tier 3 + Tiles',desc:'Chat with interactive tile selection and matching pair activities.',owner:'Leti Schimmel',status:'Done',device:['Phone','Tablet']};</script>
+<script>window.DS_NAV=[{label:'Artifacts',icon:'phone',collapsible:true,defaultOpen:true,children:[{label:'Chat',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2-tiles.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3-tiles.html'},{label:'Customize sprout',icon:'stars-01',href:'/product-explorer/customize-sprout.html'},{label:'Customize avatar',icon:'stars-02',href:'/product-explorer/customize-avatar.html'},{label:'Home',icon:'home',badge:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Home',icon:'home',badge:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'Activity',icon:'grid',href:'/product-explorer/kid-home/activity.html'},{label:'New Activity',icon:'grid',href:'/product-explorer/kid-home/new-activity.html'},{label:'Quest — Photo',icon:'grid',href:'/product-explorer/quest/photo.html'},{label:'Quest — Classic',icon:'grid',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quest — Guided',icon:'grid',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quest — Conversational',icon:'grid',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Design System',icon:'grid',collapsible:true,children:[{label:'Foundations',icon:'grid',href:'/foundations.html'},{label:'Components',icon:'grid',href:'/components.html'},{label:'Patterns',icon:'grid',href:'/patterns.html'},{label:'Resources',icon:'grid',href:'/resources.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 </body>
 </html>

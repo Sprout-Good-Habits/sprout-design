@@ -9,41 +9,6 @@
 <link rel="stylesheet" href="/design-system/components/buttons.css">
 <link rel="stylesheet" href="/design-system/components/tile.css">
 <style>
-/* ── Prototype viewer ── */
-.proto-viewer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-3xl, 24px);
-  margin-top: var(--spacing-5xl, 40px);
-}
-.proto-arrow {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #ffffff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-tertiary, #535862);
-  transition: all 0.15s;
-  flex-shrink: 0;
-}
-.proto-arrow:hover {
-  border-color: var(--border-primary, #d5d7da);
-  color: var(--text-primary, #181d27);
-}
-.proto-arrow:disabled,
-.proto-arrow.disabled {
-  opacity: 0.35;
-  cursor: default;
-  pointer-events: none;
-}
-.proto-arrow svg { width: 20px; height: 20px; }
-
 /* ── Device frame ── */
 .device-wrapper {
   background: var(--bg-primary, #ffffff);
@@ -570,15 +535,6 @@
 .card-completed-overlay::after { content: '✅'; }
 .flame-muted { opacity: 0.5; }
 
-/* ── Screen label (below device) ── */
-.screen-label-outer {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-md, 16px);
-  line-height: var(--line-height-text-md, 24px);
-  color: var(--text-secondary, #414651);
-  text-align: center;
-  margin-top: var(--spacing-xl, 16px);
-}
 @media (prefers-reduced-motion: reduce) {
   .progress-fill, .feedback-bottom, .gem-counter-glow,
   .card-claimed-anim .card-completed-overlay {
@@ -595,20 +551,8 @@
     <div class="page-content">
       <div class="breadcrumb" id="breadcrumb"></div>
 
-      <div class="page-header">
-        <div class="page-header-text">
-          <div class="sec-title">Quiz — Guided</div>
-          <div class="sec-desc">Sprout coaches kids through each question with hints and encouragement.</div>
-        </div>
-        <button class="btn-reset" id="reset-btn" aria-label="Reset prototype">
-          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-        </button>
-      </div>
-
-      <div class="proto-viewer">
-        <button class="proto-arrow disabled" id="prev-btn" aria-label="Previous screen">
-          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
+      <div class="two-col">
+        <div class="col-left">
 
         <div class="device-wrapper">
           <div class="device-inner-shadow">
@@ -896,17 +840,18 @@
           </div>
         </div>
 
-        <button class="proto-arrow" id="next-btn" aria-label="Next screen">
-          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        <button class="btn-reset" id="reset-btn" aria-label="Reset prototype">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
         </button>
-      </div>
-
-      <div class="screen-label-outer" id="screen-label"></div>
+      </div><!-- /col-left -->
+        <div class="col-right"></div><!-- /col-right -->
+      </div><!-- /two-col -->
     </div>
   </div>
 </div>
 
-<script>window.DS_NAV=[{label:'Home',href:'/product-explorer/',dot:'var(--gray-400)'},{label:'Kid Home',href:'/product-explorer/kid-home.html',dot:'var(--sprout-500)',children:[{label:'Overview',href:'/product-explorer/kid-home.html'},{label:'Tier 1 (Coming Soon)',href:'#'},{label:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'[Abandoned] Timeline',href:'/product-explorer/kid-home/timeline.html'},{label:'[Abandoned] 2 Tabs',href:'/product-explorer/kid-home/2-tabs.html'},{label:'[Abandoned] 4 Tabs',href:'/product-explorer/kid-home/4-tabs.html'}]},{label:'Activity',href:'/product-explorer/kid-home/activity.html',dot:'var(--orange-500)'},{label:'New Activity',href:'/product-explorer/kid-home/new-activity.html',dot:'var(--orange-400)'},{label:'Quests',href:'/product-explorer/quest.html',dot:'var(--brand-500)',children:[{label:'Overview',href:'/product-explorer/quest.html'},{label:'Photo',href:'/product-explorer/quest/photo.html'},{label:'Quiz',href:'/product-explorer/quest/quiz.html'},{label:'Quiz — Classic',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quiz — Guided',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quiz — Conversational',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Chat',href:'/product-explorer/task/chat-tier-2.html',dot:'var(--violet-500)',children:[{label:'Chat Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat Tier 3',href:'/product-explorer/task/chat-tier-3.html'}]},{label:'Customize Avatar',href:'/product-explorer/customize-avatar.html',dot:'var(--violet-400)'},{label:'Customize Sprout',href:'/product-explorer/customize-sprout.html',dot:'var(--sprout-400)'}];</script>
+<script>window.DS_META={title:'Quest \u2014 Guided',desc:'Guided quiz with helper text and progressive disclosure.',owner:'Leti Schimmel',status:'Done',rive:'sprot2.97_.riv',screen:['Home','Intro','Q1','Q2','Q3','Q4','Success'],device:'Phone'};</script>
+<script>window.DS_NAV=[{label:'Artifacts',icon:'phone',collapsible:true,defaultOpen:true,children:[{label:'Chat',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2-tiles.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3-tiles.html'},{label:'Customize sprout',icon:'stars-01',href:'/product-explorer/customize-sprout.html'},{label:'Customize avatar',icon:'stars-02',href:'/product-explorer/customize-avatar.html'},{label:'Home',icon:'home',badge:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Home',icon:'home',badge:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'Activity',icon:'grid',href:'/product-explorer/kid-home/activity.html'},{label:'New Activity',icon:'grid',href:'/product-explorer/kid-home/new-activity.html'},{label:'Quest — Photo',icon:'grid',href:'/product-explorer/quest/photo.html'},{label:'Quest — Classic',icon:'grid',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quest — Guided',icon:'grid',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quest — Conversational',icon:'grid',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Design System',icon:'grid',collapsible:true,children:[{label:'Foundations',icon:'grid',href:'/foundations.html'},{label:'Components',icon:'grid',href:'/components.html'},{label:'Patterns',icon:'grid',href:'/patterns.html'},{label:'Resources',icon:'grid',href:'/resources.html'}]}];</script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
@@ -948,18 +893,12 @@
 
   // Screen navigation
   var screens = document.querySelectorAll('.screen');
-  var prevBtn = document.getElementById('prev-btn');
-  var nextBtn = document.getElementById('next-btn');
-  var screenLabel = document.getElementById('screen-label');
   var labels = ['Home', 'Task Intro', 'Q1 — Radio + Sprout', 'Q2 — Checkbox + Sprout', 'Q3 — Radio + Sprout', 'Q4 — Checkbox + Sprout', 'Success'];
   var current = 0;
   var total = screens.length;
 
   function updateScreen() {
     screens.forEach(function(s, i) { s.classList.toggle('active', i === current); });
-    prevBtn.classList.toggle('disabled', current === 0);
-    nextBtn.classList.toggle('disabled', current === total - 1);
-    screenLabel.textContent = labels[current] || '';
     var showHomeRive = current <= 1;
     if (homeRive) {
       homeRive.style.display = showHomeRive ? '' : 'none';
@@ -967,10 +906,19 @@
     }
     if (homeGrass) homeGrass.style.display = showHomeRive ? '' : 'none';
     if (current === 6 && celebrationTrigger) celebrationTrigger.fire();
+    // Update screen dropdown
+    var badgeText = document.getElementById('screen-badge-text');
+    if (badgeText) badgeText.textContent = labels[current] || 'Screen ' + (current + 1);
+    var sd = document.getElementById('screen-dropdown');
+    if (sd) sd.querySelectorAll('.device-dropdown-item').forEach(function(item) {
+      item.classList.toggle('active', parseInt(item.getAttribute('data-screen')) === current);
+    });
   }
 
-  prevBtn.addEventListener('click', function() { if (current > 0) { current--; updateScreen(); } });
-  nextBtn.addEventListener('click', function() { if (current < total - 1) { current++; updateScreen(); } });
+  window.onScreenChange = function(index) {
+    current = index;
+    updateScreen();
+  };
 
   // Interactive buttons
   document.getElementById('start-cta').addEventListener('click', function() { current = 1; updateScreen(); });
