@@ -13,7 +13,7 @@
     { "source": "/component-specs.json", "destination": "/design-system/component-specs.json" },
     { "source": "/tokens.json", "destination": "/design-system/tokens.json" },
     { "source": "/sprot2.97_.riv", "destination": "/design-system/sprot2.97_.riv" },
-    { "source": "/character2.8.riv", "destination": "/design-system/character2.8.riv" },
+    { "source": "/character2.91.riv", "destination": "/design-system/character2.91.riv" },
     { "source": "/brand/:path*", "destination": "/design-system/brand/:path*" },
     { "source": "/foundations/:path*", "destination": "/design-system/foundations/:path*" },
     { "source": "/components/:path*", "destination": "/design-system/components/:path*" },

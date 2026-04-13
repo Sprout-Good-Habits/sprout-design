@@ -15,7 +15,7 @@ const rewrites = [
   ['/component-specs.json', '/design-system/component-specs.json'],
   ['/tokens.json', '/design-system/tokens.json'],
   ['/sprot2.97_.riv', '/design-system/sprot2.97_.riv'],
-  ['/character2.8.riv', '/design-system/character2.8.riv'],
+  ['/character2.91.riv', '/design-system/character2.91.riv'],
 ];
 
 const prefixRewrites = [

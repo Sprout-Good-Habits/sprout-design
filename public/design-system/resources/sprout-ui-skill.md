@@ -157,7 +157,18 @@ new rive.Rive({
 });
 ```
 
-**Inputs:** `skinID` (0-9), `hairID` (0-8), `mouthselector` (0-6), `looking` (0=center, 2=up).
+**Number inputs:** `skinID` (0-9), `hairID` (0-8), `mouthselector` (0-12, 0=closed rest, 1-12=viseme variations), `looking` (0-3: 0=top-left, 1=top-middle, 2=top-right).
+
+**Expression triggers** (fire once for animated reaction):
+`smile`, `laugh`, `surprise`, `smugface`, `sad`, `doubtful`, `thinking`, `celebration`, `characterwave`
+
+**Animation booleans:**
+- `talkinganimation` (bool) -- body movement during talking
+- `talkingmouth toggle` (bool) -- enable/disable mouth movement
+
+**Skin colors (skinID 0-9):** 0=#ACDC79 Green, 1=#F97066 Coral, 2=#F670C7 Pink, 3=#F38744 Orange, 4=#FAC515 Gold, 5=#47CD89 Emerald, 6=#528BFF Blue, 7=#36BFFA Cyan, 8=#9B8AFB Lavender, 9=#BEA091 Beige
+
+**Hair styles (hairID 0-8):** 0=None, 1=Short, 2=Curly, 3=Spiky, 4=Long, 5=Pigtails, 6=Mohawk, 7=Afro, 8=Bob
 
 **Kid Home positioning** (smaller Sprout on sky-spacer):
 ```css
@@ -186,7 +197,7 @@ Only upper body visible above grass. Chat thread bottom set to ~330px to sit abo
 
 The Village Character represents family members. It uses a different Rive file from Sprout with deep customization (skin, hair, beard, clothing).
 
-**Rive file:** `/character2.8.riv` -- artboard: `Village-character`, state machine: `State Machine 1`.
+**Rive file:** `/character2.91.riv` -- artboard: `Village-character`, state machine: `State Machine 1`.
 
 **IMPORTANT -- Reference implementations:**
 - **Avatars (XS-XL):** See `components/avatar.html` for exact canvas sizes and top offsets per size
@@ -211,7 +222,7 @@ The Village Character represents family members. It uses a different Rive file f
 ```js
 var r;
 r = new rive.Rive({
-  src: '/character2.8.riv',
+  src: '/character2.91.riv',
   canvas: canvasElement,
   autoplay: true,
   artboard: 'Village-character',
@@ -231,7 +242,45 @@ r = new rive.Rive({
 });
 ```
 
-**Customization inputs:** `skinID` (0-15), `hairID` (0-6), `hairshadeID` (0-12), `beardID` (0-7), `beardshadeID` (0-12), `clothingcolourID` (0-10), `clothingID` (0-11), `mouthselector` (0-20), `talkingmouth` (bool), plus `glassID`, `glassshadeID`, `eyeshadeID`, `earringID`, `facedetailID`, `headwearID`, `headwearshadeID`.
+**Customization inputs:** `skinID` (0-15), `hairID` (0-15), `hairshadeID` (0-12), `beardID` (0-7), `beardshadeID` (0-12), `clothingcolourID` (0-10), `clothingID` (0-11), `mouthselector` (0-20), `talkingmouth toggle` (bool), plus `glassID` (0-5), `glassshadeID` (0-10), `eyeshadeID` (0-7), `earringID` (0-6), `facedetailID` (0-3), `headwearID` (0-4), `headwearshadeID` (0-10).
+
+**Expression triggers** (fire once for animated reaction):
+`laugh`, `surprise`, `sad`, `smugface`, `doubtful`
+
+**Animation booleans:**
+- `talking` (bool) -- talking animation with hand movements
+- `talkingsimple` (bool) -- talking animation, minimal, no hand movements
+- `talkingmouth toggle` (bool) -- enable/disable mouth movement
+
+**Customization lookup tables:**
+
+**Skin (skinID 0-15):** 0=#FFB497, 1=#6E3D3A, 2=#7D4A3F, 3=#8C4A25, 4=#97513F, 5=#985C30, 6=#A46648, 7=#B76E45, 8=#C6775C, 9=#E18E70, 10=#E59D65, 11=#F2A07D, 12=#FFB89D, 13=#FFC6B7, 14=#FFCBA3, 15=#FFE2D6
+
+**Hair styles (hairID 0-15):** 0=Short, 1=Short Curly, 2=Buzz Cut, 3=Sidepart, 4=Curly, 5=Long, 6=Ponytail, 7=Classic Short, 8=Middle Part, 9=Side Sweep, 10=Textured Crop, 11=Curly Top, 12=Side Part, 13=Short Side Sweep, 14=Mullet, 15=Buzz Cut
+
+**Hair colors (hairshadeID 0-12):** 0=#3F3F3F Black, 1=#3D3D3D Charcoal, 2=#553629 Espresso, 3=#662C2C Burgundy, 4=#753A23 Chestnut, 5=#A34242 Auburn, 6=#947872 Taupe, 7=#BB6A20 Bronze, 8=#CA6049 Copper, 9=#F5AF62 Amber, 10=#FFDEBB Blonde, 11=#E4DDD6 Platinum, 12=#ECF0F1 White
+
+**Clothing types (clothingID 0-11):** 0=T-shirt, 1=Cardigan, 2=Blazer, 3=Blazer & Tie, 4=Flannel, 5=Turtleneck, 6=Hoodie, 7=Shirt Full Sleeve, 8=Half Sleeve Shirt, 9=Polo, 10=Full Sleeve T-shirt, 11=Puffer Jacket
+
+**Clothing colors (clothingcolourID 0-10):** 0=#3EBBF6 Blue, 1=#717680 Slate, 2=#17B26A Emerald, 3=#669F2A Olive, 4=#9E77ED Violet, 5=#2970FF Royal Blue, 6=#875BF7 Purple, 7=#EE46BC Pink, 8=#F04438 Red, 9=#EF6820 Orange, 10=#F79009 Amber
+
+**Beard types (beardID 0-7):** 0=None, 1=Long Beard, 2=Light Stubble, 3=Jawline Beard, 4=Goatee, 5=Goatee 2, 6=Full Beard, 7=Mustache
+
+**Beard colors (beardshadeID 0-12):** Same palette as hairshadeID.
+
+**Glasses types (glassID 0-5):** 0=None, 1=Square, 2=Cat Eye, 3=Oval, 4=Rounded Square, 5=Round
+
+**Glasses colors (glassshadeID 0-10):** 0=#0077B2 Blue, 1=#535862 Grey, 2=#079455 Green, 3=#4F7A21 Olive, 4=#7F56D9 Violet, 5=#155EEF Dark Blue, 6=#7839EE Purple, 7=#DD2590 Pink, 8=#D92D20 Red, 9=#E04F16 Orange, 10=#DC6803 Ochre
+
+**Eye colors (eyeshadeID 0-7):** 0=#000000 Black, 1=#3D3D3D Charcoal, 2=#A44407 Amber, 3=#947300 Hazel, 4=#549002 Olive, 5=#0B8890 Teal, 6=#007FCF Sapphire, 7=#7386A1 Blue Grey
+
+**Earring types (earringID 0-6):** 0=None, 1=Big Gold Hoop, 2=Big Silver Hoop, 3=Small Gold Hoop, 4=Small Silver Hoop, 5=Silver Stud, 6=Gold Stud
+
+**Face details (facedetailID 0-3):** 0=None, 1=Blush, 2=Wrinkle, 3=Freckle
+
+**Headwear types (headwearID 0-4):** 0=None, 1=Baseball Cap, 2=Flat Cap, 3=Beanie 1, 4=Beanie 2
+
+**Headwear colors (headwearshadeID 0-10):** Same palette as clothingcolourID.
 
 **Presets (quick-start character combos):**
 | Name | skinID | hairID | hairshadeID | beardID | clothingcolourID | clothingID |

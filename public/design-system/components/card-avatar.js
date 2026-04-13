@@ -2,7 +2,7 @@
    Sprout Design System — CardAvatar Village runtime
 
    Auto-discovers every .card-avatar-canvas on the page and
-   initialises it as a Rive village character from character2.8.riv
+   initialises it as a Rive village character from character2.91.riv
    (artboard "Village-character", state machine "State Machine 1").
 
    Each canvas can override the default "Shane" preset via
@@ -25,7 +25,7 @@
 (function() {
   'use strict';
 
-  var RIVE_SRC = '/design-system/character2.8.riv';
+  var RIVE_SRC = '/design-system/character2.91.riv';
   var RIVE_RUNTIME = 'https://unpkg.com/@rive-app/canvas@2.35.2';
   var ARTBOARD = 'Village-character';
   var SM_NAME = 'State Machine 1';

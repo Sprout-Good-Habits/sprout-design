@@ -341,7 +341,7 @@
         <tr><td><code>clothingcolourID</code></td><td>Number</td><td>0&ndash;10</td><td>Clothing color</td></tr>
         <tr><td><code>glassID</code></td><td>Number</td><td>0&ndash;5</td><td>Glasses type (none, square, cat eye, oval, rounded square, round)</td></tr>
         <tr><td><code>glassshadeID</code></td><td>Number</td><td>0&ndash;10</td><td>Glasses color</td></tr>
-        <tr><td><code>eyeshadeID</code></td><td>Number</td><td>0&ndash;8</td><td>Eye shadow color</td></tr>
+        <tr><td><code>eyeshadeID</code></td><td>Number</td><td>0&ndash;7</td><td>Eye color</td></tr>
         <tr><td><code>earringID</code></td><td>Number</td><td>0&ndash;6</td><td>Earring type (0&nbsp;=&nbsp;none)</td></tr>
         <tr><td><code>facedetailID</code></td><td>Number</td><td>0&ndash;3</td><td>Face detail (none, blush, wrinkle, freckle)</td></tr>
         <tr><td><code>headwearID</code></td><td>Number</td><td>0&ndash;4</td><td>Headwear type (0&nbsp;=&nbsp;none)</td></tr>
@@ -535,7 +535,7 @@
 <script src="/shell.js"></script>
 <script>
 /* ── Rive avatar initialization ── */
-var RIVE_USER_SRC = '/character2.8.riv';
+var RIVE_USER_SRC = '/character2.91.riv';
 var RIVE_SPROUT_SRC = '/sprot2.97_.riv';
 var ARTBOARD = 'Village-character';
 var SM_NAME = 'State Machine 1';
@@ -597,7 +597,7 @@ var BG_STATES = {
   'bg-yellow': PRESETS.zeev
 };
 
-/* Init all user avatar canvases (Avatar variant — character2.8.riv with Village-character artboard) */
+/* Init all user avatar canvases (Avatar variant — character2.91.riv with Village-character artboard) */
 document.querySelectorAll('.rive-user').forEach(function(canvas) {
   var parentId = canvas.parentElement.id;
   var state = BG_STATES[parentId] || USER_STATE;

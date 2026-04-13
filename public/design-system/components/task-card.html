@@ -974,7 +974,7 @@
         </tr>
         <tr>
           <td><code>Village</code></td>
-          <td>The kid's personalized Rive village character (<code>character2.8.riv</code>)</td>
+          <td>The kid's personalized Rive village character (<code>character2.91.riv</code>)</td>
           <td>Tasks where the kid's identity is more relevant than the activity &mdash; onboarding, goal milestones, identity-driven prompts</td>
         </tr>
       </tbody>
@@ -1073,7 +1073,7 @@
 
     <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
       <ul>
-        <li>The Village examples above render the live Rive animation from <code>character2.8.riv</code>, using the same init pattern as <a href="/design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a></li>
+        <li>The Village examples above render the live Rive animation from <code>character2.91.riv</code>, using the same init pattern as <a href="/design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a></li>
         <li>The character's appearance is driven by Rive state machine inputs for skin, hair, clothing, beard, glasses, eyes, earrings, and face details. See the <a href="/design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a> foundation for the full input list and allowed values</li>
         <li>The Village avatar uses the same <code>.card-avatar--big</code> and <code>.card-avatar--small</code> sizes as the Default variant, with the only difference being the circle content (Rive canvas instead of TossFace emoji)</li>
         <li>The Task Badge, state machine, subtitle copy, gems line, and interactivity rules are all identical between Default and Village. Only the avatar slot changes</li>
@@ -1099,7 +1099,7 @@
         </tr>
         <tr>
           <td><code>Village</code></td>
-          <td>Live Rive village character from <code>character2.8.riv</code> on a <code>--brand-100</code> background</td>
+          <td>Live Rive village character from <code>character2.91.riv</code> on a <code>--brand-100</code> background</td>
           <td>The kid's identity is the visual &mdash; onboarding, milestones, goal-unlock rewards. See <a href="/design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a> for the full Rive spec and customization inputs</td>
         </tr>
       </tbody>
@@ -1149,7 +1149,7 @@
 
     <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
       <ul>
-        <li>The Village variant uses the same Rive file, artboard, and state machine as the rest of the product &mdash; <code>character2.8.riv</code>, artboard <code>Village-character</code>, state machine <code>State Machine 1</code>. See <a href="/design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a> for the full customization input reference</li>
+        <li>The Village variant uses the same Rive file, artboard, and state machine as the rest of the product &mdash; <code>character2.91.riv</code>, artboard <code>Village-character</code>, state machine <code>State Machine 1</code>. See <a href="/design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a> for the full customization input reference</li>
         <li>The canvas is clipped by the circle container (<code>overflow: hidden</code>) and positioned with a negative <code>top</code> offset so only the character's head and shoulders are visible, per <code>feedback_avatar_grounded.md</code> (avatar always grounded)</li>
         <li>The progress ring described below is a separate SVG overlay and works identically on both variants &mdash; it stacks on top of whatever content is in the circle</li>
       </ul>
@@ -1377,7 +1377,7 @@
     <div class="prose">
       <ul>
         <li><strong>Circle container</strong> &mdash; Filled circle in <code>--brand-100</code>, <code>border-radius: var(--radius-full)</code>, <code>overflow: hidden</code> so child content (emoji or Rive canvas) is clipped to the circle</li>
-        <li><strong>Avatar content</strong> &mdash; Either the task emoji (<strong>Default</strong> variant, TossFace glyph sized 44 px on big / 26 px on small) or the Rive village character (<strong>Village</strong> variant, <code>character2.8.riv</code> loaded as a canvas inside the circle and clipped to the head-and-shoulders frame via a negative <code>top</code> offset)</li>
+        <li><strong>Avatar content</strong> &mdash; Either the task emoji (<strong>Default</strong> variant, TossFace glyph sized 44 px on big / 26 px on small) or the Rive village character (<strong>Village</strong> variant, <code>character2.91.riv</code> loaded as a canvas inside the circle and clipped to the head-and-shoulders frame via a negative <code>top</code> offset)</li>
         <li><strong>Track ring</strong> &mdash; Full-circle stroke in <code>--gray-300</code>, 4 px wide on big, 3 px on small. Always visible behind the progress arc when a ring is present</li>
         <li><strong>Progress arc</strong> &mdash; Same radius as the track, stroked in <code>--brand-500</code>, rounded caps, rotated so 0% starts at 12 o'clock. Uses <code>stroke-dasharray</code> with the filled length equal to <code>circumference &times; progress</code></li>
         <li><strong>Layering</strong> &mdash; The progress ring is rendered as an SVG <em>overlay</em> on top of the circle container, so the same ring works identically on both Default and Village variants</li>

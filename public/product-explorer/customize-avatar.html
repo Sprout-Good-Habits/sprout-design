@@ -511,7 +511,7 @@
   <div class="toc-sidebar" id="toc"></div>
 </div>
 
-<script>window.DS_META={title:'Customize Avatar',desc:'The screen where users customize their village character. They pick their skin tone, eye color, hairstyle, hair color, clothing, glasses, facial hair, earrings, face details, headwear, and background color.',owner:'Leti Schimmel',status:'Done',rive:'character2.8.riv',skill:'village-character.txt',device:['Phone','Tablet']};</script>
+<script>window.DS_META={title:'Customize Avatar',desc:'The screen where users customize their village character. They pick their skin tone, eye color, hairstyle, hair color, clothing, glasses, facial hair, earrings, face details, headwear, and background color.',owner:'Leti Schimmel',status:'Done',rive:'character2.91.riv',skill:'village-character2.91.txt',device:['Phone','Tablet']};</script>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 <script>
@@ -529,7 +529,9 @@
   ];
 
   var HAIR_STYLES = [
-    'Short','Short curly','Buzz cut','Side part','Curly','Long','Ponytail'
+    'Short','Short curly','Buzz cut','Side part','Curly','Long','Ponytail',
+    'Classic short','Middle part','Side sweep','Textured crop','Curly top',
+    'Side part 2','Short side sweep','Mullet','Buzz cut 2'
   ];
 
   var BEARD_TYPES = [
@@ -547,7 +549,7 @@
   ];
 
   var EYE_COLORS = [
-    '#000000','#252B37','#8C4A25','#B93815','#A15C07','#4F7A21','#0086C9','#155EEF','#535862'
+    '#000000','#3D3D3D','#A44407','#947300','#549002','#0B8890','#007FCF','#7386A1'
   ];
 
   var GLASS_TYPES = [
@@ -563,7 +565,7 @@
   ];
 
   var HEADWEAR_TYPES = [
-    'None','Style 1','Style 2','Style 3','Style 4'
+    'None','Baseball cap','Flat cap','Beanie 1','Beanie 2'
   ];
 
   var FACE_DETAILS = [
@@ -609,7 +611,7 @@
   function initRive() {
     try {
       riveInstance = new rive.Rive({
-        src: '/design-system/character2.8.riv',
+        src: '/design-system/character2.91.riv',
         canvas: document.getElementById('sprout-rive'),
         autoplay: true,
         artboard: 'Village-character',
@@ -712,7 +714,7 @@
         try {
           (function(opts) {
             var r = new rive.Rive({
-              src: '/design-system/character2.8.riv',
+              src: '/design-system/character2.91.riv',
               canvas: canvas,
               autoplay: true,
               artboard: 'Village-character',
