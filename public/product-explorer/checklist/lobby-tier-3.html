@@ -97,25 +97,24 @@
 
 /* ── Sky spacer for character ── */
 .sky-spacer {
-  height: 202px;
+  height: 194px;
   position: relative;
   flex-shrink: 0;
 }
-/* Canvas: 271.5 x 342, centered horizontally, 44px below vertical center of 194px spacer.
-   Center = 97px + 44px = 141px. Top edge = 141 - 171 = -30px. */
 .rive-wrap {
   position: absolute;
   left: 50%;
-  top: -30px;
-  width: 272px;
-  height: 342px;
   z-index: 0;
   pointer-events: none;
   transform: translateX(-50%);
-}
-.rive-canvas {
+  /* Sprout defaults */
+  top: -30px;
   width: 272px;
   height: 342px;
+}
+.rive-canvas {
+  width: 100%;
+  height: 100%;
 }
 
 /* ── Nose indicator ── */
@@ -402,7 +401,7 @@
     </div>
   </div>
 </div>
-<script>window.DS_META={title:'Checklist Lobby Tier 3',desc:'Ages 10-13. Vertical list of compact checklist rows. Kids scroll through tasks and complete them in any order. Each row shows the task emoji, name, and proof type icon.',owner:'Leti Schimmel',status:'Draft',rive:['sprot2.97_.riv'],skill:['sprout-character.txt'],device:'Phone',notes:'\
+<script>window.DS_META={title:'Checklist Lobby Tier 3',desc:'Ages 10-13. Vertical list of compact checklist rows. Kids scroll through tasks and complete them in any order. Each row shows the task emoji, name, and proof type icon.',owner:'Leti Schimmel',status:'Draft',rive:['sprot2.97_.riv','character2.91.riv'],skill:['sprout-character.txt','village-character2.91.txt'],device:'Phone',character:['Sprout','Village'],notes:'\
 <h2>How the Checklist Lobby Works</h2>\
 <p>The checklist lobby is the daily task screen for a parent-assigned checklist quest (e.g. morning routine). It shows all items the kid needs to complete with proof submission.</p>\
 <h3>Layout</h3>\
@@ -426,24 +425,58 @@
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
-var canvas = document.getElementById('rive-character');
-if (canvas && window.rive) {
-  var r = new rive.Rive({
-    src: '/design-system/sprot2.97_.riv',
-    canvas: canvas,
-    autoplay: true,
+var SPROUT_SRC = '/design-system/sprot2.97_.riv';
+var VILLAGE_SRC = '/design-system/character2.91.riv';
+var VILLAGE_PRESET = { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0, glassID:0, glassshadeID:0, eyeshadeID:3, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 };
+var r;
+
+function initLobbyRive(src) {
+  var canvas = document.getElementById('rive-character');
+  var wrap = canvas ? canvas.closest('.rive-wrap') : null;
+  if (!canvas || !window.rive) return;
+  if (r) { r.cleanup(); r = null; }
+  var isSprout = src === SPROUT_SRC;
+
+  // Adjust wrap sizing per character (both use top positioning; lobby-sheet z-index:1 grounds them)
+  if (wrap) {
+    wrap.style.bottom = 'auto';
+    if (isSprout) {
+      wrap.style.top = '-30px'; wrap.style.width = '272px'; wrap.style.height = '342px';
+      canvas.width = 544; canvas.height = 684;
+    } else {
+      wrap.style.top = '-108px'; wrap.style.width = '200px'; wrap.style.height = '403px';
+      canvas.width = 400; canvas.height = 806;
+    }
+  }
+
+  var opts = {
+    src: src, canvas: canvas, autoplay: true,
     stateMachines: 'State Machine 1',
     fit: rive.Fit.Contain,
-    alignment: rive.Alignment.BottomCenter,
-    onLoad: function() {
-      r.resizeDrawingSurfaceToCanvas();
+    alignment: rive.Alignment.BottomCenter
+  };
+  if (!isSprout) opts.artboard = 'Village-character';
+  opts.onLoad = function() {
+    r.resizeDrawingSurfaceToCanvas();
+    try {
       var inputs = r.stateMachineInputs('State Machine 1');
-      if (inputs) inputs.forEach(function(inp) {
-        if (inp.name === 'hairID') inp.value = 1;
-      });
-    }
-  });
+      if (inputs) {
+        if (isSprout) {
+          inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
+        } else {
+          inputs.forEach(function(inp) { if (VILLAGE_PRESET[inp.name] !== undefined) inp.value = VILLAGE_PRESET[inp.name]; });
+        }
+      }
+    } catch(e) {}
+  };
+  r = new rive.Rive(opts);
 }
+
+initLobbyRive(SPROUT_SRC);
+
+window.onCharacterChange = function(character) {
+  initLobbyRive(character === 'village' ? VILLAGE_SRC : SPROUT_SRC);
+};
 </script>
 </body>
 </html>

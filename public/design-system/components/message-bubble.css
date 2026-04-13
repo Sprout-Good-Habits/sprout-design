@@ -19,6 +19,8 @@
 .msg-avatar {
   width:32px; height:32px; border-radius:var(--radius-full, 9999px);
   background:var(--bg-sky, #e0f2fe);
+  border:2px solid var(--fg-white, #ffffff);
+  box-sizing:border-box;
   flex-shrink:0; overflow:hidden; position:relative;
 }
 .msg-avatar canvas {
@@ -149,7 +151,7 @@
 }
 .msg-typing-dots {
   display:flex; gap:var(--spacing-xs, 4px); align-items:center;
-  padding:var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
+  padding:var(--spacing-sm, 6px) var(--spacing-lg, 12px);
 }
 .typing-dot {
   width:var(--spacing-md, 8px); height:var(--spacing-md, 8px); border-radius:50%;

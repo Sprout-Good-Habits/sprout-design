@@ -425,6 +425,7 @@
     device: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>',
     time: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
     screen: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+    character: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
     download: '<svg viewBox="0 0 24 24" fill="none" stroke="#717680" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
     chevron: '<svg viewBox="0 0 12 12" fill="none" stroke="#414651" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 4.5 3 3 3-3"/></svg>'
   };
@@ -510,6 +511,31 @@
         html += '</div></div>';
       } else {
         html += '<span class="badge badge-gray">' + meta.device + '</span>';
+      }
+      html += '</div></div>';
+    }
+
+    // Character
+    if (meta.character) {
+      html += '<div class="meta-row">';
+      html += '<div class="meta-icon">' + META_ICONS.character + '</div>';
+      html += '<div class="meta-label">Character</div>';
+      html += '<div class="meta-value">';
+      if (Array.isArray(meta.character)) {
+        var charDefault = meta.characterDefault || meta.character[0];
+        html += '<div class="device-dropdown-wrap" id="character-dropdown-wrap">';
+        html += '<span class="badge badge-gray badge-device" id="character-badge" onclick="toggleMetaDropdown(event,\'character-dropdown\')">';
+        html += '<span id="character-badge-text">' + charDefault + '</span>' + META_ICONS.chevron;
+        html += '</span>';
+        html += '<div class="device-dropdown" id="character-dropdown">';
+        html += '<div class="device-dropdown-header">Select a character</div>';
+        for (var c = 0; c < meta.character.length; c++) {
+          var cActive = meta.character[c] === charDefault ? ' active' : '';
+          html += '<button class="device-dropdown-item' + cActive + '" data-character="' + meta.character[c].toLowerCase() + '" onclick="selectMetaOption(\'character\',' + c + ',this)">' + meta.character[c] + '</button>';
+        }
+        html += '</div></div>';
+      } else {
+        html += '<span class="badge badge-gray">' + meta.character + '</span>';
       }
       html += '</div></div>';
     }
@@ -608,6 +634,9 @@
     }
     if (type === 'time' && window.onTimeChange) {
       window.onTimeChange(btn.getAttribute('data-value'));
+    }
+    if (type === 'character' && window.onCharacterChange) {
+      window.onCharacterChange(btn.getAttribute('data-character'));
     }
     if (type === 'screen' && window.onScreenChange) {
       window.onScreenChange(index);

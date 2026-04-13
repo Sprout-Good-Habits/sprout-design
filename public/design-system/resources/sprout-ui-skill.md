@@ -1170,7 +1170,8 @@ Flat row for content lists. No card chrome.
 .msg-row { display:flex; width:370px; position:relative; }
 .msg-row.msg-incoming { align-items:flex-end; gap:var(--spacing-md, 8px); }
 .msg-row.msg-outgoing { justify-content:flex-end; }
-.msg-avatar { width:32px; height:32px; border-radius:var(--radius-full, 9999px); background:var(--bg-sky, #e0f2fe); flex-shrink:0; overflow:hidden; position:relative; }
+.msg-avatar { width:32px; height:32px; border-radius:var(--radius-full, 9999px); background:var(--bg-sky, #e0f2fe); border:2px solid var(--fg-white, #ffffff); box-sizing:border-box; flex-shrink:0; overflow:hidden; position:relative; }
+.msg-avatar canvas { position:absolute; top:-40px; left:50%; transform:translateX(-50%); display:block; }
 .msg-col { display:flex; flex-direction:column; gap:var(--spacing-xs, 4px); }
 .msg-col-in { align-items:flex-start; }
 .msg-col-out { align-items:flex-end; }
@@ -1187,11 +1188,30 @@ Flat row for content lists. No card chrome.
 
 /* Typing indicator */
 @keyframes typingDot { 0%, 60%, 100% { opacity:0.3; } 30% { opacity:1; } }
-.msg-typing-dots { display:flex; gap:var(--spacing-xs, 4px); align-items:center; padding:var(--spacing-xl, 16px) var(--spacing-2xl, 20px); }
+.msg-typing-dots { display:flex; gap:var(--spacing-xs, 4px); align-items:center; padding:var(--spacing-sm, 6px) var(--spacing-lg, 12px); }
 .typing-dot { width:8px; height:8px; border-radius:50%; background:var(--gray-400, #a4a7ae); animation:typingDot 1.4s ease-in-out infinite; }
 .typing-dot:nth-child(2) { animation-delay:0.2s; }
 .typing-dot:nth-child(3) { animation-delay:0.4s; }
 ```
+
+**msg-avatar Rive initialization:**
+The avatar in incoming messages is a live Rive canvas, not a static image. Settings differ per character type:
+
+**Sprout** (`sprot2.97_.riv`):
+- Buffer: `canvas.width=128; canvas.height=184;`
+- CSS: `canvas.style.width='96px'; canvas.style.height='138px';`
+- Alignment: `rive.Alignment.TopCenter`
+- CSS position: `top:-40px` (from `.msg-avatar canvas`)
+- Set `hairID=1` in onLoad
+
+**Village** (`character2.91.riv`, artboard `Village-character`):
+- Buffer: `canvas.width=92; canvas.height=132;`
+- CSS: `canvas.style.width='46px'; canvas.style.height='66px';`
+- Alignment: `rive.Alignment.Center`
+- CSS position: override to `canvas.style.top='-19px'`
+- Apply customization preset in onLoad
+
+HTML: `<div class="msg-avatar"><canvas class="msg-rive-avatar" width="128" height="184"></canvas></div>`
 
 ### SafetyOverlay
 
@@ -1648,19 +1668,73 @@ function showScreen(id) {
 
 ### Recipe: Checklist Lobby
 
-Carousel (tier 2) or list (tier 3) of checklist tasks with status flags.
+Daily task screen for parent-assigned checklists. Sky background with character in spacer, subtitles bubble, and rounded bottom sheet containing title, metrics, progress, and task list/carousel.
 
-**Tier 2 (carousel):** Uses same horizontal carousel pattern as Kid Home Carousel, but cards are `.cl-card` (370px wide) with emoji avatar, task name, and proof action button. Status flags (`.cl-flag--done`, `.cl-flag--warning`) are bookmark ribbons positioned `top:-2px; right:14px`.
+**Layout skeleton:**
+```html
+<div class="screen-sky-alt">
+  <!-- Status bar + Toolbar with back button -->
+  <div class="toolbar-wrap">...</div>
 
-**Tier 3 (list):** Vertical scrolling list of `.cl-row` items (compact rows). Rejected tasks expand to show action area:
-```css
-.cl-row--warning-expanded {
-  background: var(--bg-secondary); padding: 0;
-  flex-direction: column; align-items: stretch;
-}
-.cl-row-action { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-.cl-row-action .btn-sprout { width: 100%; }
+  <!-- Speech bubble (absolute, positioned next to toolbar) -->
+  <div class="subtitles-wrap">
+    <div class="subtitles subtitles-default subtitles-centered">
+      <p class="subtitles-text">...</p>
+    </div>
+  </div>
+
+  <!-- Character area -->
+  <div class="sky-spacer">
+    <div class="rive-wrap">
+      <canvas id="rive-character" class="rive-canvas" width="544" height="684"></canvas>
+    </div>
+  </div>
+
+  <!-- Bottom sheet (z-index:1 covers character's lower body, grounding it) -->
+  <div class="lobby-sheet">
+    <div class="lobby-title">Morning routine</div>
+    <div class="metrics-bar"><!-- 3x .metric with TossFace emoji --></div>
+    <div class="checklist-scroll">
+      <div class="progress-card"><!-- sticky progress bar --></div>
+      <div class="checklist-list"><!-- .cl-row (tier 3) or .cl-card carousel (tier 2) --></div>
+    </div>
+  </div>
+</div>
 ```
+
+**Character positioning (critical -- differs per character type):**
+```css
+.sky-spacer { height:194px; position:relative; flex-shrink:0; }
+.rive-wrap { position:absolute; left:50%; z-index:0; pointer-events:none; transform:translateX(-50%); }
+.rive-canvas { width:100%; height:100%; }
+.lobby-sheet { z-index:1; /* covers character bottom, grounding it */ }
+```
+
+**Sprout** (`sprot2.97_.riv`):
+- Wrap: `top:-30px; width:272px; height:342px;`
+- Canvas buffer: `544x684`
+- Alignment: `BottomCenter`
+- Set `hairID=1` in onLoad
+
+**Village** (`character2.91.riv`, artboard `Village-character`):
+- Wrap: `top:-108px; width:200px; height:403px;`
+- Canvas buffer: `400x806`
+- Alignment: `BottomCenter`
+- Apply customization preset in onLoad
+
+**Subtitles positioning:**
+```css
+.subtitles-wrap { position:absolute; left:80px; top:54px; width:242px; z-index:2; }
+```
+
+**Lobby sheet:**
+```css
+.lobby-sheet { background:var(--bg-secondary,#fafafa); border-radius:24px 24px 0 0; padding:24px 16px 0; flex:1; display:flex; flex-direction:column; gap:16px; overflow:hidden; position:relative; z-index:1; }
+```
+
+**Tier 2 (carousel):** Horizontal carousel of `.cl-card` (370px wide) with emoji avatar, task name, and proof action button. Status flags (`.cl-flag--done`, `.cl-flag--warning`) as bookmark ribbons.
+
+**Tier 3 (list):** Vertical scrolling `.cl-row` items. Progress card sticky at top of scroll area.
 
 ---
 

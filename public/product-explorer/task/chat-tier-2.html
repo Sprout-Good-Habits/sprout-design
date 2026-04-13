@@ -773,48 +773,72 @@
 
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
-  // Main screen Rive
-  var canvas = document.getElementById('rive-character');
-  if (canvas && window.rive) {
-    var r = new rive.Rive({
-      src: '/design-system/sprot2.97_.riv',
-      canvas: canvas,
-      autoplay: true,
-      stateMachines: 'State Machine 1',
-      fit: rive.Fit.Contain,
-      alignment: rive.Alignment.BottomCenter,
-      onLoad: function() {
+  var SPROUT_SRC = '/design-system/sprot2.97_.riv';
+  var VILLAGE_SRC = '/design-system/character2.91.riv';
+  var currentCharSrc = SPROUT_SRC;
+  var r, r2;
+
+  function initCharRive(src) {
+    currentCharSrc = src;
+    var isSprout = src === SPROUT_SRC;
+    var artboard = isSprout ? undefined : 'Village-character';
+    var alignment = isSprout ? rive.Alignment.BottomCenter : rive.Alignment.Center;
+
+    // Resize wrap + canvas for character type
+    var wrap = document.querySelector('.rive-wrap');
+    var canvas = document.getElementById('rive-character');
+    if (wrap && canvas) {
+      if (isSprout) {
+        wrap.style.width = '690px'; wrap.style.height = '690px'; wrap.style.bottom = '-196px';
+        canvas.width = 1380; canvas.height = 1380;
+        canvas.style.width = '690px'; canvas.style.height = '690px';
+      } else {
+        wrap.style.width = '500px'; wrap.style.height = '1000px'; wrap.style.bottom = '-256px';
+        canvas.width = 1000; canvas.height = 2000;
+        canvas.style.width = '500px'; canvas.style.height = '1000px';
+      }
+    }
+
+    // Main screen Rive
+    if (canvas && window.rive) {
+      if (r) { r.cleanup(); r = null; }
+      var opts = { src: src, canvas: canvas, autoplay: true, stateMachines: 'State Machine 1', fit: rive.Fit.Contain, alignment: alignment };
+      if (artboard) opts.artboard = artboard;
+      opts.onLoad = function() {
         r.resizeDrawingSurfaceToCanvas();
         try {
           var inputs = r.stateMachineInputs('State Machine 1');
           if (inputs) inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
         } catch(e) {}
-      }
-    });
-  }
+      };
+      r = new rive.Rive(opts);
+    }
 
-  // Camera card Rive
-  var camCanvas = document.getElementById('rive-camera');
-  if (camCanvas && window.rive) {
-    var r2 = new rive.Rive({
-      src: '/design-system/sprot2.97_.riv',
-      canvas: camCanvas,
-      autoplay: true,
-      stateMachines: 'State Machine 1',
-      fit: rive.Fit.Contain,
-      alignment: rive.Alignment.BottomCenter,
-      onLoad: function() {
+    // Camera card Rive
+    var camCanvas = document.getElementById('rive-camera');
+    if (camCanvas && window.rive) {
+      if (r2) { r2.cleanup(); r2 = null; }
+      var opts2 = { src: src, canvas: camCanvas, autoplay: true, stateMachines: 'State Machine 1', fit: rive.Fit.Contain, alignment: alignment };
+      if (artboard) opts2.artboard = artboard;
+      opts2.onLoad = function() {
         r2.resizeDrawingSurfaceToCanvas();
         try {
           var inputs = r2.stateMachineInputs('State Machine 1');
           if (inputs) inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
         } catch(e) {}
-      }
-    });
+      };
+      r2 = new rive.Rive(opts2);
+    }
   }
+
+  initCharRive(SPROUT_SRC);
+
+  window.onCharacterChange = function(character) {
+    initCharRive(character === 'village' ? VILLAGE_SRC : SPROUT_SRC);
+  };
 </script>
 
-<script>window.DS_META={title:'Chat Tier 2',desc:'Audio-first chat for younger kids. Tap the mic to record a voice note, use + to attach a photo.',owner:'Leti Schimmel',status:'Done',rive:'sprot2.97_.riv',device:['Phone','Tablet']};</script>
+<script>window.DS_META={title:'Chat Tier 2',desc:'Audio-first chat for younger kids. Tap the mic to record a voice note, use + to attach a photo.',owner:'Leti Schimmel',status:'Done',rive:'sprot2.97_.riv',device:['Phone','Tablet'],character:['Sprout','Village']};</script>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 </body>

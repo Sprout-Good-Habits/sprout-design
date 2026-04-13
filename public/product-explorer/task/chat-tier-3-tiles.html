@@ -780,7 +780,7 @@
   var btnMic = document.getElementById('btnMic');
 
   var composerArea = document.getElementById('composerArea');
-  var AVATAR_SRC = '/product-explorer/brand/assets/character-sprout-avatar.svg';
+  // AVATAR_SRC kept for fallback but Rive avatars are used when available
 
   var phoneScreen = document.getElementById('phone');
 
@@ -801,11 +801,12 @@
     var typingRow = document.createElement('div');
     typingRow.className = 'msg-row msg-incoming msg-typing';
     typingRow.innerHTML =
-      '<div class="msg-avatar"><img src="' + AVATAR_SRC + '" alt="Sprout"></div>' +
+      '<div class="msg-avatar"><canvas class="msg-rive-avatar" width="128" height="184"></canvas></div>' +
       '<div class="msg-col msg-col-in">' +
         '<div class="msg-bubble msg-bubble-in"><div class="msg-typing-dots"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>' +
       '</div>';
     chatThread.appendChild(typingRow);
+    if (window.initMsgAvatarRive) initMsgAvatarRive(typingRow.querySelector('.msg-rive-avatar'));
     scrollThread();
 
     setTimeout(function() {
@@ -813,10 +814,11 @@
       var row = document.createElement('div');
       row.className = 'msg-row msg-incoming';
       row.innerHTML =
-        '<div class="msg-avatar"><img src="' + AVATAR_SRC + '" alt="Sprout"></div>' +
+        '<div class="msg-avatar"><canvas class="msg-rive-avatar" width="128" height="184"></canvas></div>' +
         '<div class="msg-col msg-col-in">' +
           '<div class="msg-bubble msg-bubble-in">' + text + '</div>' +
         '</div>';
+      if (window.initMsgAvatarRive) initMsgAvatarRive(row.querySelector('.msg-rive-avatar'));
       chatThread.appendChild(row);
       scrollThread();
       if (cb) setTimeout(cb, 300);
@@ -1693,7 +1695,65 @@
 })();
 </script>
 
-<script>window.DS_META={title:'Chat Tier 3 + Tiles',desc:'Chat with interactive tile selection and matching pair activities.',owner:'Leti Schimmel',status:'Done',device:['Phone','Tablet']};</script>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script>
+  var SPROUT_SRC = '/design-system/sprot2.97_.riv';
+  var VILLAGE_SRC = '/design-system/character2.91.riv';
+  var currentCharType = 'sprout';
+  var msgAvatarInstances = [];
+
+  var VILLAGE_PRESET = { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0, glassID:0, glassshadeID:0, eyeshadeID:3, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 };
+
+  window.initMsgAvatarRive = function(canvas) {
+    if (!canvas || !window.rive) return;
+    var isSprout = currentCharType === 'sprout';
+    var src = isSprout ? SPROUT_SRC : VILLAGE_SRC;
+
+    if (isSprout) {
+      canvas.width = 128; canvas.height = 184;
+      canvas.style.width = '96px'; canvas.style.height = '138px';
+      canvas.style.top = '-40px';
+    } else {
+      canvas.width = 92; canvas.height = 132;
+      canvas.style.width = '46px'; canvas.style.height = '66px';
+      canvas.style.top = '-19px';
+    }
+
+    var opts = {
+      src: src, canvas: canvas, autoplay: true,
+      stateMachines: 'State Machine 1',
+      fit: rive.Fit.Contain,
+      alignment: isSprout ? rive.Alignment.TopCenter : rive.Alignment.Center
+    };
+    if (!isSprout) opts.artboard = 'Village-character';
+    opts.onLoad = function() {
+      r.resizeDrawingSurfaceToCanvas();
+      try {
+        var inputs = r.stateMachineInputs('State Machine 1');
+        if (inputs) {
+          if (isSprout) {
+            inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
+          } else {
+            inputs.forEach(function(inp) { if (VILLAGE_PRESET[inp.name] !== undefined) inp.value = VILLAGE_PRESET[inp.name]; });
+          }
+        }
+      } catch(e) {}
+    };
+    var r = new rive.Rive(opts);
+    msgAvatarInstances.push({ canvas: canvas, instance: r });
+  };
+
+  window.onCharacterChange = function(character) {
+    currentCharType = character;
+    msgAvatarInstances.forEach(function(item) { try { item.instance.cleanup(); } catch(e) {} });
+    msgAvatarInstances = [];
+    document.querySelectorAll('.msg-rive-avatar').forEach(function(canvas) {
+      initMsgAvatarRive(canvas);
+    });
+  };
+</script>
+
+<script>window.DS_META={title:'Chat Tier 3 + Tiles',desc:'Chat with interactive tile selection and matching pair activities.',owner:'Leti Schimmel',status:'Done',device:['Phone','Tablet'],character:['Sprout','Village']};</script>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 </body>
