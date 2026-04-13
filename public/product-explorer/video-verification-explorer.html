@@ -611,7 +611,7 @@
           <div class="camera-view">
             <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
               <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
-              <div class="progress-bar stepper"><div class="progress-track"><div class="progress-fill" style="width:60%"></div><div class="progress-checkpoints"><div class="progress-checkpoint checkpoint-number reached"><span class="progress-checkpoint-label">5</span></div><div class="progress-checkpoint checkpoint-number reached"><span class="progress-checkpoint-label">10</span></div><div class="progress-checkpoint checkpoint-number"><span class="progress-checkpoint-label">15</span></div><div class="progress-checkpoint checkpoint-number"><span class="progress-checkpoint-label">20</span></div></div></div></div>
+              <div class="progress-bar stepper"><div class="progress-track"><div class="progress-fill" style="width:60%"></div><div class="progress-checkpoints"><div class="progress-checkpoint checkpoint-number reached" style="left:25%"><span class="progress-checkpoint-label">5</span></div><div class="progress-checkpoint checkpoint-number reached" style="left:50%"><span class="progress-checkpoint-label">10</span></div><div class="progress-checkpoint checkpoint-number" style="left:75%"><span class="progress-checkpoint-label">15</span></div><div class="progress-checkpoint checkpoint-number" style="left:100%"><span class="progress-checkpoint-label">20</span></div></div></div></div>
             </div>
             <div class="conversational-feedback vv-feedback-slot">
               <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
@@ -643,7 +643,7 @@
           <div class="camera-view">
             <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
               <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
-              <div class="progress-bar stepper"><div class="progress-track"><div class="progress-fill" style="width:77%"></div><div class="progress-checkpoints"><div class="progress-checkpoint checkpoint-number reached"><span class="progress-checkpoint-label">10</span></div><div class="progress-checkpoint checkpoint-number reached"><span class="progress-checkpoint-label">20</span></div><div class="progress-checkpoint checkpoint-number"><span class="progress-checkpoint-label">30</span></div></div></div></div>
+              <div class="progress-bar stepper"><div class="progress-track"><div class="progress-fill" style="width:77%"></div><div class="progress-checkpoints"><div class="progress-checkpoint checkpoint-number reached" style="left:33.3%"><span class="progress-checkpoint-label">10</span></div><div class="progress-checkpoint checkpoint-number reached" style="left:66.7%"><span class="progress-checkpoint-label">20</span></div><div class="progress-checkpoint checkpoint-number" style="left:100%"><span class="progress-checkpoint-label">30</span></div></div></div></div>
             </div>
             <div class="conversational-feedback vv-feedback-slot">
               <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
@@ -1913,11 +1913,11 @@
     <div class="vv-group open">
       <div class="vv-group-label"><span class="chevron">&#9654;</span> IDLE &mdash; Pre-Camera</div>
       <div class="vv-group-items">
-        <div class="vv-screen-item active" data-screen="screen-task-detail" data-name="Task Detail" data-desc="Kid sees the task card with verification mode, expected duration, and a Start button. Tapping Start requests camera permissions and transitions to ACTIVE." data-status="new" data-state="idle">
+        <div class="vv-screen-item active" data-screen="screen-task-detail" data-name="Task Detail" data-desc="Kid sees the task card with verification mode, expected duration, and a Start button. Tapping Start requests camera permissions and transitions to ACTIVE." data-status="new" data-state="idle" data-rive="mouthselector:3">
           <span class="status-dot new"></span> Task Detail
           <span class="state-tag idle">IDLE</span>
         </div>
-        <div class="vv-screen-item" data-screen="screen-camera-permission" data-name="Camera Permission" data-desc="System camera permission prompt. If denied, kid sees an explanation screen with a link to Settings. Camera + microphone both requested." data-status="new" data-state="idle">
+        <div class="vv-screen-item" data-screen="screen-camera-permission" data-name="Camera Permission" data-desc="System camera permission prompt. If denied, kid sees an explanation screen with a link to Settings. Camera + microphone both requested." data-status="new" data-state="idle" data-rive="mouthselector:3">
           <span class="status-dot new"></span> Camera Permission
           <span class="state-tag idle">IDLE</span>
         </div>
@@ -1932,11 +1932,11 @@
     <div class="vv-group open">
       <div class="vv-group-label"><span class="chevron">&#9654;</span> ACTIVE &mdash; Show Me</div>
       <div class="vv-group-items">
-        <div class="vv-screen-item" data-screen="screen-show-me-clean-room" data-name="Show Me: Clean Room" data-desc="Kid points camera at the room. Single visual check. Agent says 'Show me your room!' and waits. No timer, no chunks. One verification call when kid taps capture or auto-triggers at high confidence." data-status="new" data-state="active" data-rive="idle">
+        <div class="vv-screen-item" data-screen="screen-show-me-clean-room" data-name="Show Me: Clean Room" data-desc="Kid points camera at the room. Single visual check. Agent says 'Show me your room!' and waits. No timer, no chunks. One verification call when kid taps capture or auto-triggers at high confidence." data-status="new" data-state="active" data-rive="mouthselector:3">
           <span class="status-dot new"></span> Clean Room
           <span class="state-tag active">ACTIVE</span>
         </div>
-        <div class="vv-screen-item" data-screen="screen-show-me-packed-bag" data-name="Show Me: Packed Bag" data-desc="Kid shows their packed school bag. Agent verifies contents are visible. Quick single-frame verification." data-status="new" data-state="active" data-rive="idle">
+        <div class="vv-screen-item" data-screen="screen-show-me-packed-bag" data-name="Show Me: Packed Bag" data-desc="Kid shows their packed school bag. Agent verifies contents are visible. Quick single-frame verification." data-status="new" data-state="active" data-rive="mouthselector:3">
           <span class="status-dot new"></span> Packed Bag
           <span class="state-tag active">ACTIVE</span>
         </div>
@@ -1955,7 +1955,7 @@
           <span class="status-dot new"></span> Brush Teeth (2 min)
           <span class="state-tag active">ACTIVE</span>
         </div>
-        <div class="vv-screen-item" data-screen="screen-watch-reading" data-name="Watch Me: Reading (20 min)" data-desc="Long quiet task. chunkInterval=120s. Infrequent check-ins — just confirm kid is present with a book. Agent stays mostly quiet." data-status="new" data-state="active" data-rive="idle">
+        <div class="vv-screen-item" data-screen="screen-watch-reading" data-name="Watch Me: Reading (20 min)" data-desc="Long quiet task. chunkInterval=120s. Infrequent check-ins — just confirm kid is present with a book. Agent stays mostly quiet." data-status="new" data-state="active" data-rive="smile">
           <span class="status-dot new"></span> Reading (20 min)
           <span class="state-tag active">ACTIVE</span>
         </div>
@@ -2074,15 +2074,15 @@
     <div class="vv-group open">
       <div class="vv-group-label"><span class="chevron">&#9654;</span> PAUSED</div>
       <div class="vv-group-items">
-        <div class="vv-screen-item" data-screen="screen-paused-snapshot" data-name="Session Paused (Kid View)" data-desc="Kid left mid-task with 42% readiness. Camera stops, progress preserved. Kid sees a summary card with 'Continue later' messaging. Readiness and check state frozen, not lost." data-status="new" data-state="paused">
+        <div class="vv-screen-item" data-screen="screen-paused-snapshot" data-name="Session Paused (Kid View)" data-desc="Kid left mid-task with 42% readiness. Camera stops, progress preserved. Kid sees a summary card with 'Continue later' messaging. Readiness and check state frozen, not lost." data-status="new" data-state="paused" data-rive="sad">
           <span class="status-dot new"></span> Paused Snapshot
           <span class="state-tag paused">PAUSE</span>
         </div>
-        <div class="vv-screen-item" data-screen="screen-paused-daily" data-name="Paused: Daily Task" data-desc="Task belongs to a daily cadence. Expiry: end of today (midnight local). Kid has until bedtime to come back and finish. Timer shows hours remaining." data-status="new" data-state="paused">
+        <div class="vv-screen-item" data-screen="screen-paused-daily" data-name="Paused: Daily Task" data-desc="Task belongs to a daily cadence. Expiry: end of today (midnight local). Kid has until bedtime to come back and finish. Timer shows hours remaining." data-status="new" data-state="paused" data-rive="sad">
           <span class="status-dot new"></span> Daily Task (expires tonight)
           <span class="state-tag paused">PAUSE</span>
         </div>
-        <div class="vv-screen-item" data-screen="screen-paused-weekly" data-name="Paused: Weekly Unit Task" data-desc="Task belongs to a weekly unit with no per-day deadline. Expiry: end of unit window. Kid has days to come back. Lower urgency messaging." data-status="new" data-state="paused">
+        <div class="vv-screen-item" data-screen="screen-paused-weekly" data-name="Paused: Weekly Unit Task" data-desc="Task belongs to a weekly unit with no per-day deadline. Expiry: end of unit window. Kid has days to come back. Lower urgency messaging." data-status="new" data-state="paused" data-rive="sad">
           <span class="status-dot new"></span> Weekly Unit (expires Sun)
           <span class="state-tag paused">PAUSE</span>
         </div>
@@ -2090,7 +2090,7 @@
           <span class="status-dot new"></span> Resume &rarr; ACTIVE
           <span class="state-tag active">ACTIVE</span>
         </div>
-        <div class="vv-screen-item" data-screen="screen-paused-expired" data-name="Expired While Paused" data-desc="Expiry timer fires (midnight for daily, end-of-unit for weekly). Auto-transitions to EVALUATE at whatever readiness was preserved. Kid sees 'Time ran out' next time they open the task." data-status="new" data-state="evaluate">
+        <div class="vv-screen-item" data-screen="screen-paused-expired" data-name="Expired While Paused" data-desc="Expiry timer fires (midnight for daily, end-of-unit for weekly). Auto-transitions to EVALUATE at whatever readiness was preserved. Kid sees 'Time ran out' next time they open the task." data-status="new" data-state="evaluate" data-rive="sad">
           <span class="status-dot new"></span> Expired &rarr; EVALUATE
           <span class="state-tag evaluate">EVAL</span>
         </div>
