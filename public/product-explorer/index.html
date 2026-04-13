@@ -7,15 +7,85 @@
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <style>
-.hero { margin-bottom: var(--spacing-6xl, 48px); }
-.overview-content {
-  max-width: 640px;
+.artifacts-index {
+  max-width: 720px;
+  width: 100%;
+  padding-top: 48px;
+  align-self: center;
 }
-.overview-content p {
-  font-size: var(--font-size-text-md, 16px);
-  color: var(--text-secondary, #414651);
-  line-height: var(--line-height-text-md, 24px);
-  margin-bottom: var(--spacing-xl, 16px);
+.artifacts-table {
+  width: 100%;
+  margin-top: 32px;
+}
+.at-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e9eaeb;
+  font-size: 14px;
+  font-weight: 500;
+  color: #717680;
+  line-height: 20px;
+}
+.at-header-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+}
+.at-header-left svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.at-header-right {
+  width: 120px;
+  flex-shrink: 0;
+  padding: 8px;
+}
+.at-body {
+  display: flex;
+  flex-direction: column;
+}
+.at-row {
+  display: flex;
+  text-decoration: none;
+  transition: background 0.1s;
+}
+.at-row:hover {
+  background: #fafafa;
+  text-decoration: none;
+}
+.at-name {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #181d27;
+  line-height: 20px;
+  border-right: 1px solid #e9eaeb;
+  border-bottom: 1px solid #e9eaeb;
+  border-top: 1px solid #e9eaeb;
+}
+.at-badge-col {
+  width: 120px;
+  flex-shrink: 0;
+  padding: 6px 8px;
+  border-bottom: 1px solid #e9eaeb;
+  border-top: 1px solid #e9eaeb;
+  display: flex;
+  align-items: center;
+}
+.at-badge {
+  background: #f0f9ff;
+  border: 1px solid #b9e6fe;
+  color: #026aa2;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  border-radius: 6px;
+  padding: 2px 6px;
+  white-space: nowrap;
 }
 </style>
 </head>
@@ -24,19 +94,47 @@
 <div class="main">
   <div class="content-area">
     <div class="page-content">
-      <div class="hero">
-        <div class="sec-title">Product Explorer</div>
-        <div class="sec-desc">Explore Sprout's product screens, user flows, and interaction patterns across the app experience.</div>
-      </div>
-
-      <div class="overview-content">
-        <p>This space documents the key screens and flows that make up the Sprout product experience. Use it to understand how components come together in context, review user journeys, and reference real implementation patterns.</p>
-        <p>More content coming soon.</p>
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="artifacts-index">
+        <h1 class="page-title">Product explorer</h1>
+        <div class="artifacts-table" id="artifacts-table"></div>
       </div>
     </div>
   </div>
 </div>
-<script>window.DS_NAV=[{label:'Artifacts',icon:'phone',collapsible:true,defaultOpen:true,children:[{label:'Chat',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2-tiles.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3-tiles.html'},{label:'Customize sprout',icon:'stars-01',href:'/product-explorer/customize-sprout.html'},{label:'Customize avatar',icon:'stars-02',href:'/product-explorer/customize-avatar.html'},{label:'Home',icon:'home',badge:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Home',icon:'home',badge:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'Activity',icon:'grid',href:'/product-explorer/kid-home/activity.html'},{label:'New Activity',icon:'grid',href:'/product-explorer/kid-home/new-activity.html'},{label:'Quest — Photo',icon:'grid',href:'/product-explorer/quest/photo.html'},{label:'Quest — Classic',icon:'grid',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quest — Guided',icon:'grid',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quest — Conversational',icon:'grid',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Design System',icon:'grid',collapsible:true,children:[{label:'Foundations',icon:'grid',href:'/foundations.html'},{label:'Components',icon:'grid',href:'/components.html'},{label:'Patterns',icon:'grid',href:'/patterns.html'},{label:'Resources',icon:'grid',href:'/resources.html'}]}];</script>
+<script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
+<script>
+(function() {
+  var nav = window.DS_NAV;
+  if (!nav || !nav[0] || !nav[0].children) return;
+  var items = nav[0].children;
+  var table = document.getElementById('artifacts-table');
+
+  var html = '<div class="at-header">';
+  html += '<div class="at-header-left">';
+  html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>';
+  html += 'Product explorer';
+  html += '</div>';
+  html += '<div class="at-header-right">Age group</div>';
+  html += '</div>';
+  html += '<div class="at-body">';
+
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i];
+    html += '<a class="at-row" href="' + item.href + '">';
+    html += '<div class="at-name">' + item.label + '</div>';
+    html += '<div class="at-badge-col">';
+    if (item.badge) {
+      html += '<span class="at-badge">' + item.badge + '</span>';
+    }
+    html += '</div>';
+    html += '</a>';
+  }
+
+  html += '</div>';
+  table.innerHTML = html;
+})();
+</script>
 </body>
 </html>

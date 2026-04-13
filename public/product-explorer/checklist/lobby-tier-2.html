@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Product Explorer — Checklist Lobby (Tier 2)</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/button-utility.css">
+<link rel="stylesheet" href="/design-system/components/buttons.css">
+<link rel="stylesheet" href="/design-system/components/toolbar.css">
+<link rel="stylesheet" href="/design-system/components/progress-bar.css">
+<link rel="stylesheet" href="/design-system/components/subtitles.css">
+<link rel="stylesheet" href="/design-system/components/card-avatar.css">
+<link rel="stylesheet" href="/design-system/components/checklist-item.css">
+<style>
+/* ── Device frame ── */
+.device-wrapper {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 32px;
+  padding: 4px;
+  box-shadow:
+    0 12px 16px -4px rgba(10,13,18,0.08),
+    0 4px 6px -2px rgba(10,13,18,0.03),
+    0 2px 2px -1px rgba(10,13,18,0.04);
+}
+.device-inner-shadow {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 28px;
+  padding: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.device-inner-shadow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 6px 2px rgba(10,13,18,0.08),
+    inset 0 0 4px 2px rgba(10,13,18,0.03);
+  z-index: 6;
+}
+.device-mockup {
+  background: var(--bg-sky, #e0f2fe);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 24px;
+  clip-path: inset(0 round 24px);
+  position: relative;
+}
+.device-screen {
+  width: 402px;
+  height: 874px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Status bar ── */
+.phone-status {
+  height: 54px;
+  padding: 14px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #181d27);
+}
+.phone-status-icons { display: flex; gap: 4px; align-items: center; }
+.phone-status-icons svg { width: 16px; height: 16px; }
+
+/* ── Screen background ── */
+.screen-sky-alt {
+  background: var(--bg-sky, #e0f2fe);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Toolbar override (base .toolbar from toolbar.css) ── */
+.toolbar-wrap {
+  flex-shrink: 0;
+  z-index: 3;
+}
+
+/* ── Subtitles positioning ── */
+.subtitles-wrap {
+  position: absolute;
+  left: 80px;
+  top: 54px;
+  width: 242px;
+  z-index: 2;
+}
+
+/* ── Sky spacer for character ── */
+/* Status bar ~54px + toolbar ~56px = ~110px above sky spacer.
+   Target: lobby-sheet starts at ~312px → spacer = 312 - 110 = 202px */
+.sky-spacer {
+  height: 202px;
+  position: relative;
+  flex-shrink: 0;
+}
+/* Canvas: 271.5 x 342, centered horizontally, 44px below vertical center of 194px spacer.
+   Center = 97px + 44px = 141px. Top edge = 141 - 171 = -30px. */
+.rive-wrap {
+  position: absolute;
+  left: 50%;
+  top: -30px;
+  width: 272px;
+  height: 342px;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+.rive-canvas {
+  width: 272px;
+  height: 342px;
+}
+
+/* ── Nose indicator ── */
+.sky-indicator {
+  position: absolute;
+  top: 164px;
+  left: 116px;
+  width: 16px;
+  height: 4px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 9999px;
+}
+
+/* ── Bottom sheet container ── */
+.lobby-sheet {
+  background: var(--bg-secondary, #fafafa);
+  border-radius: 24px 24px 0 0;
+  padding: 24px 16px 48px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.lobby-sheet::-webkit-scrollbar { display: none; }
+
+/* ── Title ── */
+.lobby-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-size: var(--font-size-display-sm, 30px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-display-sm, 38px);
+  color: var(--text-primary, #181d27);
+  text-align: center;
+}
+
+/* ── Metrics bar ── */
+.metrics-bar {
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.metric {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.metric-icon {
+  font-family: 'TossFace', sans-serif;
+  font-size: 32px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.metric-value {
+  display: flex;
+  flex-direction: column;
+  width: 63px;
+}
+.metric-number {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-lg, 18px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-text-lg, 28px);
+  color: var(--text-primary, #181d27);
+}
+.metric-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-secondary, #414651);
+}
+
+/* ── Progress card wrapper ── */
+.progress-card {
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.progress-card-title {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+/* Progress bar: no message row so collapse to track height. */
+.progress-card .progress-bar { height: 24px; }
+
+/* ── Checklist carousel ──
+   Matches Figma: flex row, gap 8px, centered, overflow scroll.
+   Cards are 370px wide in a 402px screen, so ~16px peek on each side. */
+.checklist-carousel {
+  display: flex;
+  gap: var(--spacing-md, 8px);
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 16px;
+  padding: 0 16px 12px;
+  margin: 0 -16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  min-width: 0;
+}
+.checklist-carousel::-webkit-scrollbar { display: none; }
+.checklist-carousel::after {
+  content: '';
+  flex: 0 0 8px;
+}
+.checklist-carousel .cl-card {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* ── Home indicator ── */
+.home-indicator {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 108px;
+  height: 4px;
+  background: black;
+  border-radius: 100px;
+  z-index: 10;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="two-col">
+        <div class="col-left">
+      <div class="device-wrapper">
+        <div class="device-inner-shadow">
+          <div class="device-mockup">
+            <div class="device-screen" id="device-screen">
+              <div class="screen-sky-alt">
+
+                <!-- Status bar -->
+                <div class="phone-status">
+                  <span>9:41</span>
+                  <div class="phone-status-icons">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
+                  </div>
+                </div>
+
+                <!-- Toolbar with back button -->
+                <div class="toolbar-wrap">
+                  <div class="toolbar">
+                    <div class="btn-util" aria-label="Go back">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary, #181d27)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Subtitles speech bubble -->
+                <div class="subtitles-wrap">
+                  <div class="subtitles subtitles-default subtitles-centered">
+                    <p class="subtitles-text">It's so good to have you back! Let's get started with your day!</p>
+                  </div>
+                </div>
+
+                <!-- Character area -->
+                <div class="sky-spacer">
+                  <div class="rive-wrap">
+                    <canvas id="rive-character" class="rive-canvas" width="544" height="684"></canvas>
+                  </div>
+                </div>
+
+                <!-- Bottom sheet -->
+                <div class="lobby-sheet">
+                  <div class="lobby-title">Morning routine</div>
+
+                  <!-- Metrics -->
+                  <div class="metrics-bar">
+                    <div class="metric">
+                      <div class="metric-icon">&#x1F525;</div>
+                      <div class="metric-value">
+                        <div class="metric-number">7</div>
+                        <div class="metric-label">Days</div>
+                      </div>
+                    </div>
+                    <div class="metric">
+                      <div class="metric-icon">&#x26A1;&#xFE0F;</div>
+                      <div class="metric-value">
+                        <div class="metric-number">20m</div>
+                        <div class="metric-label">Hustle</div>
+                      </div>
+                    </div>
+                    <div class="metric">
+                      <div class="metric-icon">&#x1F3C5;</div>
+                      <div class="metric-value">
+                        <div class="metric-number">+10%</div>
+                        <div class="metric-label">Skills</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Progress (uses progress-bar component from design system) -->
+                  <div class="progress-card">
+                    <div class="progress-card-title">Today's progress</div>
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="6" aria-label="Checklist progress">
+                      <div class="progress-track">
+                        <div class="progress-fill" style="width:0%;transition:none;"></div>
+                        <span class="progress-counter">0/6</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Checklist carousel -->
+                  <div class="checklist-carousel" id="checklist-carousel">
+
+                    <!-- To do: Photo -->
+                    <div class="cl-card">
+                      <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+                      <div class="cl-card-name">Get dressed</div>
+                      <button class="btn-sprout btn-secondary btn-sm"><div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F7;&#xFE0F;</span></div> TAKE PHOTO</button>
+                    </div>
+
+                    <!-- To do: Video -->
+                    <div class="cl-card">
+                      <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F963;</span></div></div>
+                      <div class="cl-card-name">Eat breakfast</div>
+                      <button class="btn-sprout btn-secondary btn-sm"><div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F9;&#xFE0F;</span></div> TAKE PHOTO</button>
+                    </div>
+
+                    <!-- To do: Chat -->
+                    <div class="cl-card">
+                      <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F392;</span></div></div>
+                      <div class="cl-card-name">Pack your bag</div>
+                      <button class="btn-sprout btn-secondary btn-sm"><div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4AC;</span></div> TAKE PHOTO</button>
+                    </div>
+
+                    <!-- To do: Photo -->
+                    <div class="cl-card">
+                      <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F45F;</span></div></div>
+                      <div class="cl-card-name">Put on shoes</div>
+                      <button class="btn-sprout btn-secondary btn-sm"><div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F7;&#xFE0F;</span></div> TAKE PHOTO</button>
+                    </div>
+
+                    <!-- Done: Photo (green flag, disabled button) -->
+                    <div class="cl-card cl-card--done">
+                      <div class="cl-flag cl-flag--done">
+                        <div class="cl-flag-body"><span class="cl-flag-icon">&#x2705;&#xFE0F;</span></div>
+                        <svg class="cl-flag-tail" viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="0.01"/><path d="M40 0H0L37.6 7.5C38.4 7.75 40 7 40 5.5V0Z"/></svg>
+                      </div>
+                      <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F6CF;&#xFE0F;</span></div></div>
+                      <div class="cl-card-name">Make your bed</div>
+                      <button class="btn-sprout btn-sm cl-card-btn--done"><div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F7;&#xFE0F;</span></div> TAKE PHOTO</button>
+                    </div>
+
+                    <!-- Warning: Chat (yellow flag, TRY AGAIN) -->
+                    <div class="cl-card cl-card--warning">
+                      <div class="cl-flag cl-flag--warning">
+                        <div class="cl-flag-body"><span class="cl-flag-icon">&#x26A0;&#xFE0F;</span></div>
+                        <svg class="cl-flag-tail" viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="0.01"/><path d="M40 0H0L37.6 7.5C38.4 7.75 40 7 40 5.5V0Z"/></svg>
+                      </div>
+                      <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F6BF;</span></div></div>
+                      <div class="cl-card-name">Use the bathroom</div>
+                      <button class="btn-sprout btn-secondary btn-sm"><div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4AC;</span></div> TRY AGAIN</button>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div><!-- /screen-sky-alt -->
+            </div><!-- /device-screen -->
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+      </div>
+        </div><!-- /col-left -->
+        <div class="col-right"></div><!-- /col-right -->
+      </div><!-- /two-col -->
+    </div>
+  </div>
+</div>
+<script>window.DS_META={title:'Checklist Lobby Tier 2',desc:'Ages 7-9. Horizontal carousel of checklist cards. Kids scroll through tasks and complete them in any order. Each card shows the task emoji, name, and proof-type action button.',owner:'Leti Schimmel',status:'Draft',rive:['sprot2.97_.riv'],skill:['sprout-character.txt'],device:'Phone',notes:'\
+<h2>How the Checklist Lobby Works</h2>\
+<p>The checklist lobby is the daily task screen for a parent-assigned checklist quest (e.g. morning routine). It shows all items the kid needs to complete with proof submission.</p>\
+<h3>Layout</h3>\
+<ul>\
+<li><strong>Back button:</strong> Returns to the home screen.</li>\
+<li><strong>Subtitles:</strong> A speech bubble with motivational text from Sprout.</li>\
+<li><strong>Sprout character:</strong> Animated Rive character in the sky area.</li>\
+<li><strong>Bottom sheet:</strong> Contains the title, metrics bar (streak, hustle, skills), progress card, and the checklist carousel.</li>\
+</ul>\
+<h3>Carousel behavior</h3>\
+<p>Items can be completed in any order. The carousel scrolls horizontally with snap-to-card behavior. Each card is a Checklist Item component (cl-card) with an emoji avatar, task name, and a btn-secondary btn-sm action button.</p>\
+<h3>Proof types</h3>\
+<ul>\
+<li><strong>Photo:</strong> Opens the camera.</li>\
+<li><strong>Video:</strong> Opens the video recorder.</li>\
+<li><strong>Chat:</strong> Opens a conversation with Sprout.</li>\
+</ul>\
+<h3>Progress</h3>\
+<p>The progress card shows a continuous progress bar with counter (0/6). It updates as items are approved by the parent.</p>\
+'};</script>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script>
+(function() {
+  // ── Rive character ──
+  var canvas = document.getElementById('rive-character');
+  if (canvas && window.rive) {
+    var r = new rive.Rive({
+      src: '/design-system/sprot2.97_.riv',
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: 'State Machine 1',
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.BottomCenter,
+      onLoad: function() {
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs('State Machine 1');
+          if (inputs) inputs.forEach(function(inp) { if (inp.name === 'hairID') inp.value = 1; });
+        } catch(e) {}
+      }
+    });
+  }
+
+  // ── Scroll carousel to first card ──
+  var carousel = document.getElementById('checklist-carousel');
+  if (carousel) {
+    carousel.scrollTo({ left: 0, behavior: 'instant' });
+  }
+})();
+</script>
+</body>
+</html>

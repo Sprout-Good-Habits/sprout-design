@@ -3,10 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Product Explorer — Tier 2</title>
+<title>Sprout Product Explorer — Tier 1</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
-<link rel="stylesheet" href="/design-system/components/tabs.css">
+<link rel="stylesheet" href="/design-system/components/button-utility.css">
+<link rel="stylesheet" href="/design-system/components/toolbar.css">
+<link rel="stylesheet" href="/design-system/components/progress-bar.css">
+<link rel="stylesheet" href="/design-system/components/subtitles.css">
+<link rel="stylesheet" href="/design-system/components/card-avatar.css">
+<link rel="stylesheet" href="/design-system/components/screen-time-card.css">
+<script src="/design-system/components/card-avatar.js" defer></script>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 /* ── Device frame ── */
@@ -39,7 +45,7 @@
   z-index: 6;
 }
 .device-mockup {
-  background: var(--bg-tertiary, #fafafa);
+  background: var(--bg-grass, #86cb3c);
   border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: 24px;
   clip-path: inset(0 round 24px);
@@ -49,8 +55,8 @@
   width: 402px;
   height: 874px;
   position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /* Tier 1 home locks vertical scroll — only the carousel scrolls horizontally. */
+  overflow: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -70,7 +76,7 @@
 .phone-status-icons { display: flex; gap: 4px; align-items: center; }
 .phone-status-icons svg { width: 16px; height: 16px; }
 
-/* ── Sky background ── */
+/* ── Screen background ── */
 .screen-sky-alt {
   background: var(--bg-sky, #e0f2fe);
   width: 100%;
@@ -79,12 +85,7 @@
   flex-direction: column;
 }
 
-/* ── Toolbar (sticky, like older) ── */
-@font-face {
-  font-family: 'TossFace';
-  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
-  font-display: swap;
-}
+/* ── Toolbar sticky wrapper (page-specific; base .toolbar comes from toolbar.css) ── */
 .toolbar-wrap {
   position: sticky;
   top: 0;
@@ -98,54 +99,40 @@
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
 }
-.toolbar-wrap.toolbar-sky {
-  background: rgba(224, 242, 254, 0.8);
-}
-.toolbar-wrap.toolbar-grass {
-  background: rgba(134, 203, 60, 0.8);
-}
-.toolbar {
+.toolbar-wrap.toolbar-sky { background: rgba(224, 242, 254, 0.8); }
+.toolbar-wrap.toolbar-grass { background: rgba(134, 203, 60, 0.8); }
+
+/* ── Subtitles positioning ── */
+.subtitles-wrap {
+  padding: 8px 16px 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 10px 6px;
-}
-.toolbar-trailing {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.btn-util {
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  padding: var(--spacing-lg, 12px);
-  background: var(--bg-primary, #ffffff);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-full, 9999px);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
-.btn-util-with-label { gap: var(--spacing-md, 8px); }
-.btn-util-label {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-md, 16px);
-  line-height: var(--line-height-text-md, 24px);
-  font-weight: var(--font-weight-regular, 400);
-  color: var(--text-secondary, #414651);
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
+.subtitles-wrap .subtitles {
+  width: 370px;
+  max-width: 100%;
 }
-.tf-icon {
-  font-family: 'TossFace', sans-serif;
-  font-size: 24px;
-  line-height: 1;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+
+/* ── Sky spacer for character ── */
+.sky-spacer {
+  height: 172px;
+  position: relative;
+}
+.rive-wrap {
+  position: absolute;
+  left: 50%;
+  width: 402px;
+  height: 402px;
+  z-index: 2;
+  pointer-events: none;
+  transform: translateX(-50%) scale(0.92);
+  transform-origin: bottom center;
+}
+.rive-canvas {
+  width: 402px;
+  height: 402px;
 }
 
 /* ── Grass ── */
@@ -154,6 +141,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 .grass-edge {
   height: 18px;
@@ -163,24 +151,234 @@
 .grass-fill {
   background: var(--bg-grass, #86cb3c);
   width: 100%;
-  padding-bottom: 0;
   flex: 1;
+  /* No horizontal padding so the carousel can use its own side scroll-padding.
+     Goal card and carousel set their own horizontal spacing. */
+  padding: 32px 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
 }
 
-/* ── Character ── */
-.rive-wrap {
-  position: absolute;
-  left: 50%;
-  width: 402px;
-  height: 402px;
-  z-index: 2;
-  pointer-events: none;
-  transform: translateX(-50%) scale(1);
-  transform-origin: bottom center;
+/* ── Goal progress card ── */
+.goal-card {
+  background: var(--sprout-600, #4f7a21);
+  border-radius: 16px;
+  margin: 0 16px;
+  padding: 12px 16px 12px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.08);
 }
-.rive-canvas {
-  width: 402px;
-  height: 402px;
+.goal-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--bg-primary, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', sans-serif;
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.goal-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.goal-title {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: 20px;
+  font-weight: var(--font-weight-bold, 700);
+  color: #ffffff;
+}
+
+/* ── Tier 1 Task Card carousel ──
+   Horizontal scroll with snap. Vertical padding leaves room for the card
+   box-shadow so nothing is clipped; horizontal padding acts as inset margin
+   so the first card has breathing room from the left edge. */
+.carousel-container {
+  display: flex;
+  gap: var(--spacing-lg, 12px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 16px;
+  padding: 0 16px 24px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+.carousel-container::-webkit-scrollbar { display: none; }
+.carousel-container::after {
+  /* trailing spacer so the last card has matching right margin when scrolled */
+  content: '';
+  flex: 0 0 8px;
+}
+.task-card {
+  position: relative;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  width: 370px;
+  height: 220px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-2xl, 16px);
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(10,13,18,0.06);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+.task-card-content {
+  padding: var(--spacing-xl, 16px);
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.task-card-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.task-card-name {
+  font-size: 30px;
+  line-height: 32px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  margin: 0;
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-card-sub {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-tertiary, #535862);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+.task-card-gems {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-tertiary, #535862);
+}
+.task-card-gems .tf-gem {
+  font-family: 'TossFace', sans-serif;
+  font-size: 14px;
+  line-height: 1;
+}
+.task-card.is-dim .task-card-name,
+.task-card.is-dim .task-card-sub,
+.task-card.is-dim .task-card-gems {
+  opacity: 0.5;
+}
+
+/* ── Task badge (40px bookmark tab) ── */
+.task-badge {
+  position: absolute;
+  top: 0;
+  right: 24px;
+  width: 40px;
+  height: 112px;
+  pointer-events: none;
+}
+.task-badge svg { display: block; width: 40px; }
+.task-badge-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.task-badge-icon .tf-badge {
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+}
+.tb-icon-muted { filter: grayscale(1) brightness(2); }
+.task-badge-streak {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-bold, 700);
+  color: #ffffff;
+  line-height: 1;
+  margin-top: var(--spacing-xs, 4px);
+}
+.tb-fill-available  { fill: var(--gray-300, #d5d7da); }
+.tb-fill-inProgress { fill: var(--gray-300, #d5d7da); }
+.tb-fill-submitted  { fill: var(--gray-400, #a4a7ae); }
+.tb-fill-completed  { fill: var(--red-400, #f97066); }
+.tb-fill-rejected   { fill: var(--yellow-400, #fac515); }
+
+/* ── Bottom tab bar ── */
+.tab-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) var(--spacing-4xl, 32px);
+  background: var(--bg-grass-secondary, #ceeab0);
+  border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+.tab-bar-item {
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px) var(--spacing-md, 8px);
+  border-radius: var(--radius-xl, 12px);
+  text-decoration: none;
+  cursor: default;
+  pointer-events: none;
+}
+.tab-bar-item.active {
+  background: var(--sprout-400, #86cb3c);
+  box-shadow: 0 1px 3px 0 rgba(10,13,18,0.1), 0 1px 2px -1px rgba(10,13,18,0.1);
+}
+.tab-bar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs, 4px);
+}
+.tab-bar-icon .tf {
+  font-family: 'TossFace', sans-serif;
+  font-size: 28px;
+  line-height: 1;
+}
+.tab-bar-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-primary, #181d27);
+  text-align: center;
 }
 
 /* ── Home indicator ── */
@@ -195,509 +393,6 @@
   border-radius: 100px;
   z-index: 10;
 }
-
-/* ── Today / Anytime Tabs (page-specific overrides; base from tabs.css) ── */
-.home-tabs {
-  margin: 48px 16px 0;
-}
-.home-tab-badge {
-  display: inline-flex;
-  padding: 3px 6px;
-  background: var(--gray-200, #e9eaeb);
-  color: var(--text-secondary, #414651);
-  border-radius: 100px;
-  font-size: 9px;
-  line-height: 13px;
-  font-weight: 400;
-}
-
-/* ── Task Card Carousel (on grass) ── */
-.carousel-container {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-padding: 0 12px;
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 8px 12px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  position: relative;
-  z-index: 1;
-}
-.carousel-container::-webkit-scrollbar { display: none; }
-.carousel-container::after {
-  content: '';
-  flex-shrink: 0;
-  width: 12px;
-}
-.task-card {
-  flex-shrink: 0;
-  width: 370px;
-  height: 392px;
-  border-radius: 16px;
-  padding: var(--spacing-2xl, 20px) var(--spacing-2xl, 20px) var(--spacing-3xl, 24px);
-  gap: var(--spacing-md, 8px);
-  display: flex;
-  flex-direction: column;
-  color: white;
-  scroll-snap-align: center;
-  position: relative;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  transition: opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), filter 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.5s cubic-bezier(0.5, 1.8, 0.3, 0.8);
-}
-
-/* ── "Now" glow ring ── */
-@keyframes now-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5), 0 0 0 0 rgba(11,165,236,0.3); }
-  50% { box-shadow: 0 0 0 4px rgba(255,255,255,0.6), 0 0 0 8px rgba(11,165,236,0.2); }
-}
-.task-card.card-now {
-  animation: now-glow 2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
-}
-
-/* Card layout */
-.card-badges {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  position: relative;
-  z-index: 2;
-}
-.card-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xxs, 2px);
-  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px);
-  border-radius: 100px;
-  font-size: var(--font-size-text-xs, 12px);
-  line-height: var(--line-height-text-xs, 16px);
-  font-weight: 400;
-}
-.card-badge .tf-icon {
-  font-family: 'TossFace', sans-serif;
-  font-size: 16px;
-  line-height: 1;
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-none, 0px);
-  margin-top: 0;
-  position: relative;
-  z-index: 2;
-}
-.card-name {
-  font-size: var(--font-size-text-xl, 20px);
-  font-weight: var(--font-weight-bold, 700);
-  line-height: var(--line-height-text-xl, 30px);
-}
-.card-desc {
-  font-size: var(--font-size-text-sm, 14px);
-  line-height: var(--line-height-text-sm, 20px);
-  font-weight: 400;
-  opacity: 0.85;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.card-emoji-area {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 2;
-}
-.card-emoji {
-  font-family: 'TossFace', sans-serif;
-  font-size: 120px;
-  line-height: 1;
-}
-
-/* Card CTA */
-.card-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-md, 8px);
-  height: 50px;
-  border-radius: var(--radius-2xl, 16px);
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-md, 16px);
-  font-weight: var(--font-weight-bold, 700);
-  background: var(--bg-primary, #ffffff);
-  color: var(--text-secondary, #414651);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  cursor: pointer;
-  position: relative;
-  z-index: 2;
-  flex-shrink: 0;
-  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
-}
-.card-cta .tf-cta {
-  font-family: 'TossFace', sans-serif;
-  font-size: 16px;
-  line-height: 1;
-}
-.card-cta-disabled {
-  background: var(--gray-300, #d5d7da);
-  color: var(--text-disabled, #717680);
-  border: 2px solid var(--gray-400, #a4a7ae);
-  box-shadow: 0 4px 0 0 var(--gray-400, #a4a7ae);
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-/* Flame: muted for incomplete */
-.flame-muted {
-  filter: grayscale(1) brightness(2);
-}
-
-/* Completed overlay */
-.card-completed-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  border-radius: 16px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Solid utility-500 card colors */
-.card-brand { background: var(--brand-500, #0ba5ec); }
-.card-blue-dark { background: var(--blue-dark-500, #2970ff); }
-.card-violet { background: var(--violet-500, #875bf7); }
-.card-pink { background: var(--pink-500, #ee46bc); }
-.card-red { background: var(--red-500, #f04438); }
-.card-orange { background: var(--orange-500, #ef6820); }
-.card-yellow { background: var(--yellow-500, #eaaa08); }
-.card-green { background: var(--green-500, #17b26a); }
-
-/* Badge utility-200 backgrounds */
-.badge-brand { background: var(--brand-200, #b9e6fe); color: var(--brand-700, #026aa2); }
-.badge-blue-dark { background: var(--blue-dark-200, #b2ccff); color: var(--blue-dark-700, #004eeb); }
-.badge-violet { background: var(--violet-200, #ddd6fe); color: var(--violet-700, #5925dc); }
-.badge-pink { background: var(--pink-200, #fcceee); color: var(--pink-700, #c11574); }
-.badge-red { background: var(--red-200, #fecdca); color: var(--red-700, #b42318); }
-.badge-orange { background: var(--orange-200, #f9dbaf); color: var(--orange-700, #b93815); }
-.badge-yellow { background: var(--yellow-200, #fedf89); color: var(--yellow-700, #a15c07); }
-.badge-green { background: var(--green-200, #abefc6); color: var(--green-700, #067647); }
-
-/* ── Streak counter glow (after emoji lands) ── */
-@keyframes streak-counter-glow {
-  0% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0.5); }
-  50% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 5px rgba(239,104,32,0.25); }
-  100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(239,104,32,0); }
-}
-.streak-counter-glow {
-  animation: streak-counter-glow 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
-}
-
-/* ── Reset button ── */
-.btn-reset {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #ffffff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-tertiary, #535862);
-  transition: all 0.15s;
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-.btn-reset:hover {
-  border-color: var(--border-primary, #d5d7da);
-  color: var(--text-primary, #181d27);
-}
-.btn-reset svg { width: 20px; height: 20px; }
-
-/* ── Gem claim animation ── */
-.gem-particle {
-  position: absolute;
-  font-family: 'TossFace', sans-serif;
-  font-size: 16px;
-  line-height: 1;
-  pointer-events: none;
-  z-index: 20;
-  will-change: transform, opacity;
-}
-
-@keyframes gem-counter-glow {
-  0% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0.5); }
-  50% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 5px rgba(11,165,236,0.25); }
-  100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
-}
-.gem-counter-glow {
-  animation: gem-counter-glow 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
-}
-
-/* Card claim transition */
-.card-claiming .card-cta {
-  opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.25s, transform 0.25s;
-}
-
-/* Card celebrate bounce */
-@keyframes card-celebrate {
-  0% { transform: scale(1); }
-  30% { transform: scale(1.03); }
-  60% { transform: scale(0.98); }
-  100% { transform: scale(1); }
-}
-.card-celebrate {
-  animation: card-celebrate 0.5s cubic-bezier(0.5, 1.8, 0.3, 0.8);
-}
-
-/* Hidden card (filtered out by tab) */
-.task-card.card-hidden {
-  display: none;
-}
-
-/* Locked card */
-.task-card.card-locked {
-  filter: grayscale(1) brightness(1.1);
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-/* Card claim resolve — scale down + fade, then collapse width so snap re-centers */
-.card-shrink-away {
-  animation: card-resolve 0.5s cubic-bezier(0.42, 0, 1, 1) forwards;
-  pointer-events: none;
-}
-@keyframes card-resolve {
-  0%   { transform: scale(1); opacity: 1; }
-  60%  { transform: scale(0.85); opacity: 0; }
-  100% { transform: scale(0.85); opacity: 0; }
-}
-.card-collapsed {
-  width: 0 !important;
-  min-width: 0 !important;
-  height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  overflow: hidden;
-  border: none !important;
-  flex-shrink: 0;
-  transition: width 0.5s cubic-bezier(0.42, 0, 1, 1),
-              height 0.5s cubic-bezier(0.42, 0, 1, 1),
-              padding 0.5s cubic-bezier(0.42, 0, 1, 1),
-              margin 0.5s cubic-bezier(0.42, 0, 1, 1);
-}
-
-/* Flying emoji */
-.flying-emoji {
-  position: absolute;
-  font-family: 'TossFace', sans-serif;
-  pointer-events: none;
-  z-index: 25;
-  will-change: transform, opacity;
-}
-
-/* ── Controls row ── */
-.controls-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-xl, 16px);
-}
-@media (max-width: 600px) {
-  .controls-row {
-    flex-direction: column;
-    gap: var(--spacing-md, 8px);
-  }
-  .controls-row .device-toggle {
-    width: 100%;
-  }
-  .controls-row .device-toggle .cat-tab {
-    flex: 1;
-    justify-content: center;
-  }
-}
-
-/* ── Device toggle (page-specific overrides; base from tabs.css) ── */
-.device-toggle .cat-tab {
-  height: 36px;
-  font-size: var(--font-size-text-sm, 14px);
-}
-.device-toggle .cat-tab svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-.device-toggle .cat-tab .device-icon {
-  stroke: var(--text-quaternary, #717680);
-  transition: stroke 0.15s;
-}
-.device-toggle .cat-tab.active .device-icon {
-  stroke: var(--text-secondary, #414651);
-}
-
-/* ── iPad overrides ── */
-.device-wrapper.ipad .device-screen {
-  width: 640px;
-  height: 854px;
-}
-.device-wrapper.ipad .task-card {
-  width: 225px;
-  height: 278px;
-  scroll-snap-align: start;
-}
-.device-wrapper.ipad .carousel-container {
-  scroll-padding: 0 12px;
-  scroll-snap-type: x mandatory;
-}
-.device-wrapper.ipad .card-emoji {
-  font-size: 72px;
-}
-.device-wrapper.ipad .anytime-grid {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: 1fr 1fr;
-  grid-auto-columns: calc((100% - 2 * 6px) / 3);
-  gap: 6px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 8px 12px;
-}
-.device-wrapper.ipad .anytime-grid::before,
-.device-wrapper.ipad .anytime-grid::after {
-  display: none;
-}
-.device-wrapper.ipad .anytime-page {
-  display: contents;
-}
-.device-wrapper.ipad .anytime-tile {
-  width: auto;
-  scroll-snap-align: none;
-}
-.device-wrapper.ipad .anytime-tile:nth-child(3n+1) {
-  scroll-snap-align: start;
-}
-
-/* ── Anytime gallery grid ── */
-.anytime-grid {
-  display: flex;
-  gap: 6px;
-  padding: 8px 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-padding: 0 12px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-.anytime-grid::-webkit-scrollbar { display: none; }
-.anytime-grid::before,
-.anytime-grid::after {
-  content: '';
-  flex-shrink: 0;
-  width: 6px;
-}
-.anytime-page {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  flex-shrink: 0;
-  width: calc(100% - 24px);
-  scroll-snap-align: start;
-}
-.anytime-tile {
-  border-radius: 16px;
-  padding: 12px;
-  height: 136px;
-  display: flex;
-  flex-direction: column;
-  color: white;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  overflow: hidden;
-}
-.anytime-tile-badges {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.anytime-tile-content {
-  display: flex;
-  flex-direction: column;
-  margin-top: 8px;
-}
-.anytime-tile .card-badge {
-  background: rgba(255,255,255,0.2);
-  color: white;
-}
-.anytime-tile-name {
-  font-size: var(--font-size-text-xs, 12px);
-  font-weight: var(--font-weight-semibold, 600);
-  line-height: 16px;
-}
-.anytime-tile-emoji {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'TossFace', sans-serif;
-  font-size: 56px;
-  line-height: 1;
-}
-
-/* ── Empty state ── */
-.empty-state {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  text-align: center;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-}
-.empty-state.visible {
-  display: flex;
-}
-.empty-state-emoji {
-  font-family: 'TossFace', sans-serif;
-  font-size: 64px;
-  line-height: 1;
-  margin-bottom: 12px;
-}
-.empty-state-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary, #181d27);
-  line-height: 24px;
-  margin-bottom: 4px;
-}
-.empty-state-desc {
-  font-size: 13px;
-  color: var(--text-tertiary, #535862);
-  line-height: 18px;
-  max-width: 220px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .task-card, .card-cta, .card-celebrate, .card-shrink-away, .card-collapse-slot,
-  .streak-counter-glow, .gem-counter-glow {
-    animation: none !important;
-    transition: opacity 0.1s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
-  }
-  .task-card.card-now {
-    animation: none !important;
-  }
-}
 </style>
 </head>
 <body>
@@ -709,255 +404,219 @@
 
       <div class="two-col">
         <div class="col-left">
-        <div class="device-wrapper">
-          <div class="device-inner-shadow">
-            <div class="device-mockup">
-              <div class="device-screen">
-                <div class="screen-sky-alt">
+      <div class="device-wrapper">
+        <div class="device-inner-shadow">
+          <div class="device-mockup">
+            <div class="device-screen" id="device-screen">
+              <div class="screen-sky-alt">
 
-                    <!-- Toolbar -->
-                    <div class="toolbar-wrap" id="toolbar-wrap">
-                      <div class="phone-status">
-                        <span>9:41</span>
-                        <div class="phone-status-icons">
-                          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
-                          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
-                          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
-                        </div>
-                      </div>
-                      <div class="toolbar">
-                        <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
-                        <div class="toolbar-trailing">
-                          <div class="btn-util btn-util-with-label" id="streak-counter"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label" id="streak-counter-label">100</span></div>
-                          <div class="btn-util btn-util-with-label" id="gem-counter"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label" id="gem-counter-label">100</span></div>
-                          <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+                <!-- Toolbar -->
+                <div class="toolbar-wrap" id="toolbar-wrap">
+                  <div class="phone-status">
+                    <span>9:41</span>
+                    <div class="phone-status-icons">
+                      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
+                    </div>
+                  </div>
+                  <div class="toolbar toolbar-kid-home">
+                    <div class="btn-util" aria-label="Parent area">
+                      <span class="tf-icon">&#x1F6E1;&#xFE0F;</span>
+                    </div>
+                    <div class="toolbar-trailing">
+                      <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+                      <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Subtitles -->
+                <div class="subtitles-wrap">
+                  <div class="subtitles subtitles-default subtitles-centered">
+                    <p class="subtitles-text">You need to complete 2 more habits to unlock your screentime</p>
+                  </div>
+                </div>
+
+                <!-- Sky spacer with Sprout character -->
+                <div class="sky-spacer">
+                  <div class="rive-wrap" style="bottom: -94px;">
+                    <canvas id="rive-character" class="rive-canvas" width="804" height="804"></canvas>
+                  </div>
+                </div>
+
+                <!-- Grass zone -->
+                <div class="grass-container">
+                  <div class="grass-edge"></div>
+                  <div class="grass-fill">
+
+                    <!-- Goal progress card -->
+                    <div class="goal-card">
+                      <div class="goal-thumb">&#x1F6A2;</div>
+                      <div class="goal-body">
+                        <div class="goal-title">Disney cruise</div>
+                        <div class="progress-bar" style="height:24px;" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="2000" aria-label="Disney cruise goal progress">
+                          <div class="progress-track">
+                            <div class="progress-fill" style="width:5%;transition:none;"></div>
+                            <span class="progress-counter">100/2000</span>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <!-- Grass with character -->
-                    <div class="grass-container" style="position: relative;">
-                      <div class="sky-spacer" style="height: 200px; position: relative;">
-                        <div class="rive-wrap" style="position: absolute; bottom: -120px;">
-                          <canvas id="rive-character" class="rive-canvas" width="804" height="804"></canvas>
+                    <!-- Task card carousel — 5 states, different tasks.
+                         Avatars use shared /design-system/components/card-avatar.css
+                         (.card-avatar.card-avatar--big). Village variant pulls
+                         character2.8.riv via /design-system/components/card-avatar.js
+                         auto-init. -->
+                    <div class="carousel-container" id="carousel">
+
+                      <!-- Screen Time Card — Blocked (3 of 5 habits done) -->
+                      <div class="st-card" role="article" aria-label="Screen time locked, 2 habits remaining" style="height:220px; flex-shrink:0; scroll-snap-align:start;">
+                        <div class="st-icon-area">
+                          <svg class="st-ring" width="80" height="80" viewBox="0 0 80 80">
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="var(--sprout-400, #86cb3c)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="60.05" />
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="var(--sprout-400, #86cb3c)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="14.81" />
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="var(--sprout-400, #86cb3c)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="-30.43" />
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="-75.67" />
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="-120.91" />
+                          </svg>
+                          <span class="st-center-icon"><span class="tf-icon">&#x1F512;</span></span>
+                        </div>
+                        <div class="st-content">
+                          <span class="st-label">Screentime</span>
+                          <span class="st-title">2 habits left</span>
+                          <span class="st-subtitle">Complete to unlock</span>
                         </div>
                       </div>
 
-                      <div class="grass-edge"></div>
-                      <div class="grass-fill">
-
-                        <!-- Today / Anytime Tabs -->
-                        <div class="tabs-container tabs-equal tabs-sliding home-tabs" id="home-tabs" role="tablist">
-                          <div class="slide-pill" id="home-pill"></div>
-                          <button class="cat-tab active" role="tab" aria-selected="true" data-filter="today">Today <span class="home-tab-badge" id="today-count">6</span></button>
-                          <button class="cat-tab" role="tab" aria-selected="false" data-filter="anytime">Anytime</button>
+                      <!-- available — Default avatar (book emoji) -->
+                      <div class="task-card">
+                        <div class="task-card-content">
+                          <div class="card-avatar card-avatar--big">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4D6;</span></div>
+                          </div>
+                          <div class="task-card-bottom">
+                            <div class="task-card-name">Read for 20 min</div>
+                            <div class="task-card-sub">Read a book and share what you liked</div>
+                            <div class="task-card-gems">Earn 15&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
                         </div>
-
-                        <!-- Card Carousel -->
-                        <div class="carousel-container" id="carousel">
-
-                          <!-- ── TODAY CARDS ── -->
-
-                          <!-- Read for 20 min — Reviewing -->
-                          <div class="task-card card-green" data-filter="today" data-id="read" data-show="morning afternoon" data-now="morning">
-                            <div class="card-badges">
-                              <span class="card-badge badge-green"><span class="tf-icon">&#x1F525;</span> 7 days</span>
-                              <span class="card-badge badge-green"><span class="tf-icon">&#x1F48E;</span> 15</span>
-                            </div>
-                            <div class="card-content">
-                              <div class="card-name">Read for 20 min</div>
-                              <div class="card-desc">Read a book and share what you liked</div>
-                            </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1F4D6;</span></div>
-                            <div class="card-cta card-cta-disabled">Reviewing...</div>
-                          </div>
-
-                          <!-- Homework — Rejected -->
-                          <div class="task-card card-orange" data-filter="today" data-id="homework" data-show="morning afternoon">
-                            <div class="card-badges">
-                              <span class="card-badge badge-orange"><span class="tf-icon flame-muted">&#x1F525;</span> 5 days</span>
-                              <span class="card-badge badge-orange"><span class="tf-icon">&#x1F48E;</span> 20</span>
-                            </div>
-                            <div class="card-content">
-                              <div class="card-name">Homework</div>
-                              <div class="card-desc">Finish your homework and take a photo</div>
-                            </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1F4DD;</span></div>
-                            <div class="card-cta">Try again</div>
-                          </div>
-
-                          <!-- Talk to Sprout — Not Started (NOW) -->
-                          <div class="task-card card-brand card-now" id="now-card" data-filter="today" data-id="sprout" data-show="afternoon" data-now="afternoon">
-                            <div class="card-badges">
-                              <span class="card-badge badge-brand"><span class="tf-icon flame-muted">&#x1F525;</span> 3 days</span>
-                              <span class="card-badge badge-brand"><span class="tf-icon">&#x1F48E;</span> 10</span>
-                            </div>
-                            <div class="card-content">
-                              <div class="card-name">Talk to Sprout</div>
-                              <div class="card-desc">Chat with Sprout about your day</div>
-                            </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1F4AC;</span></div>
-                            <div class="card-cta">Start</div>
-                          </div>
-
-                          <!-- Practice Piano — Claimable -->
-                          <div class="task-card card-violet" id="claim-card" data-filter="today" data-id="piano" data-show="afternoon">
-                            <div class="card-badges">
-                              <span class="card-badge badge-violet"><span class="tf-icon">&#x1F525;</span> 12 days</span>
-                              <span class="card-badge badge-violet"><span class="tf-icon">&#x1F48E;</span> 20</span>
-                            </div>
-                            <div class="card-content">
-                              <div class="card-name">Practice Piano</div>
-                              <div class="card-desc">Practice your piano for 15 minutes</div>
-                            </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1F3B9;</span></div>
-                            <div class="card-cta" id="claim-cta"><span class="tf-cta">&#x1F48E;</span> Claim</div>
-                          </div>
-
-                          <!-- Brush Teeth PM — Not Started -->
-                          <div class="task-card card-blue-dark" data-filter="today" data-id="brush" data-show="afternoon">
-                            <div class="card-badges">
-                              <span class="card-badge badge-blue-dark"><span class="tf-icon flame-muted">&#x1F525;</span> 8 days</span>
-                              <span class="card-badge badge-blue-dark"><span class="tf-icon">&#x1F48E;</span> 5</span>
-                            </div>
-                            <div class="card-content">
-                              <div class="card-name">Brush Teeth</div>
-                              <div class="card-desc">Take a photo brushing your teeth</div>
-                            </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1FAE7;</span></div>
-                            <div class="card-cta">Start</div>
-                          </div>
-
-                          <!-- Pack Backpack — Not Started -->
-                          <div class="task-card card-yellow" data-filter="today" data-id="pack" data-show="afternoon">
-                            <div class="card-badges">
-                              <span class="card-badge badge-yellow"><span class="tf-icon flame-muted">&#x1F525;</span> 2 days</span>
-                              <span class="card-badge badge-yellow"><span class="tf-icon">&#x1F48E;</span> 5</span>
-                            </div>
-                            <div class="card-content">
-                              <div class="card-name">Pack Backpack</div>
-                              <div class="card-desc">Get your backpack ready for tomorrow</div>
-                            </div>
-                            <div class="card-emoji-area"><span class="card-emoji">&#x1F392;</span></div>
-                            <div class="card-cta">Start</div>
-                          </div>
-
-                        </div><!-- /carousel -->
-
-                        <!-- ── ANYTIME GALLERY ── -->
-                        <div class="anytime-grid" id="anytime-grid" style="display:none;">
-
-                          <!-- Page 1 -->
-                          <div class="anytime-page">
-                            <div class="anytime-tile card-blue-dark">
-                              <div class="anytime-tile-badges">
-                                <span class="card-badge"><span class="tf-icon flame-muted">&#x1F525;</span> 10</span>
-                                <span class="card-badge"><span class="tf-icon">&#x1F48E;</span> 5</span>
-                              </div>
-                              <div class="anytime-tile-content">
-                                <div class="anytime-tile-name">Drink Water</div>
-                              </div>
-                              <div class="anytime-tile-emoji">&#x1F4A7;</div>
-                            </div>
-
-                            <div class="anytime-tile card-orange">
-                              <div class="anytime-tile-badges">
-                                <span class="card-badge"><span class="tf-icon flame-muted">&#x1F525;</span> 4</span>
-                                <span class="card-badge"><span class="tf-icon">&#x1F48E;</span> 10</span>
-                              </div>
-                              <div class="anytime-tile-content">
-                                <div class="anytime-tile-name">Tidy Room</div>
-                              </div>
-                              <div class="anytime-tile-emoji">&#x1F9F9;</div>
-                            </div>
-
-                            <div class="anytime-tile card-green">
-                              <div class="anytime-tile-badges">
-                                <span class="card-badge"><span class="tf-icon">&#x1F525;</span> 6</span>
-                                <span class="card-badge"><span class="tf-icon">&#x1F48E;</span> 10</span>
-                              </div>
-                              <div class="anytime-tile-content">
-                                <div class="anytime-tile-name">Go Outside</div>
-                              </div>
-                              <div class="anytime-tile-emoji">&#x1F3DE;&#xFE0F;</div>
-                            </div>
-
-                            <div class="anytime-tile card-violet">
-                              <div class="anytime-tile-badges">
-                                <span class="card-badge"><span class="tf-icon">&#x1F525;</span> 3</span>
-                                <span class="card-badge"><span class="tf-icon">&#x1F48E;</span> 15</span>
-                              </div>
-                              <div class="anytime-tile-content">
-                                <div class="anytime-tile-name">Draw Something</div>
-                              </div>
-                              <div class="anytime-tile-emoji">&#x1F3A8;</div>
-                            </div>
-                          </div>
-
-                          <!-- Page 2 -->
-                          <div class="anytime-page">
-                            <div class="anytime-tile card-pink">
-                              <div class="anytime-tile-badges">
-                                <span class="card-badge"><span class="tf-icon flame-muted">&#x1F525;</span> 2</span>
-                                <span class="card-badge"><span class="tf-icon">&#x1F48E;</span> 10</span>
-                              </div>
-                              <div class="anytime-tile-content">
-                                <div class="anytime-tile-name">Practice Music</div>
-                              </div>
-                              <div class="anytime-tile-emoji">&#x1F3B5;</div>
-                            </div>
-
-                            <div class="anytime-tile card-brand">
-                              <div class="anytime-tile-badges">
-                                <span class="card-badge"><span class="tf-icon">&#x1F525;</span> 5</span>
-                                <span class="card-badge"><span class="tf-icon">&#x1F48E;</span> 10</span>
-                              </div>
-                              <div class="anytime-tile-content">
-                                <div class="anytime-tile-name">Stretch</div>
-                              </div>
-                              <div class="anytime-tile-emoji">&#x1F9D8;</div>
-                            </div>
-
-                            <div class="anytime-tile card-yellow">
-                              <div class="anytime-tile-badges">
-                                <span class="card-badge"><span class="tf-icon flame-muted">&#x1F525;</span> 8</span>
-                                <span class="card-badge"><span class="tf-icon">&#x1F48E;</span> 20</span>
-                              </div>
-                              <div class="anytime-tile-content">
-                                <div class="anytime-tile-name">Write in Journal</div>
-                              </div>
-                              <div class="anytime-tile-emoji">&#x1F4DD;</div>
-                            </div>
-
-                            <div class="anytime-tile card-red">
-                              <div class="anytime-tile-badges">
-                                <span class="card-badge"><span class="tf-icon">&#x1F525;</span> 12</span>
-                                <span class="card-badge"><span class="tf-icon">&#x1F48E;</span> 15</span>
-                              </div>
-                              <div class="anytime-tile-content">
-                                <div class="anytime-tile-name">Help with Chores</div>
-                              </div>
-                            <div class="anytime-tile-emoji">&#x1F9F9;</div>
-                            </div>
-                          </div>
-
-                        </div><!-- /anytime-grid -->
-
-                        <!-- Empty state -->
-                        <div class="empty-state" id="empty-state">
-                          <span class="empty-state-emoji">&#x1F31F;</span>
-                          <div class="empty-state-title">Amazing job today!</div>
-                          <div class="empty-state-desc">You finished everything. Come back tomorrow and we will keep growing together!</div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-available" width="40" height="104"/><path class="tb-fill-available" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
                         </div>
+                      </div>
 
-                      </div><!-- /grass-fill -->
-                    </div><!-- /grass-container -->
-                  </div><!-- /screen-sky-alt -->
-              </div>
-              <div class="home-indicator"></div>
-            </div>
+                      <!-- inProgress — Default avatar (💬 speech balloon) with 50% progress ring -->
+                      <div class="task-card">
+                        <div class="task-card-content">
+                          <div class="card-avatar card-avatar--big">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4AC;</span></div>
+                            <svg class="card-avatar-ring" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="46" stroke="#d5d7da" stroke-width="4"/><circle cx="48" cy="48" r="46" stroke="#0ba5ec" stroke-width="4" stroke-dasharray="144.5 289" stroke-linecap="round" transform="rotate(-90 48 48)"/></svg>
+                          </div>
+                          <div class="task-card-bottom">
+                            <div class="task-card-name">Talk to Sprout</div>
+                            <div class="task-card-sub">Try it again</div>
+                            <div class="task-card-gems">Earn 10&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-inProgress" width="40" height="104"/><path class="tb-fill-inProgress" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+                        </div>
+                      </div>
+
+                      <!-- submitted — Default avatar, dimmed content -->
+                      <div class="task-card is-dim">
+                        <div class="task-card-content">
+                          <div class="card-avatar card-avatar--big">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4DD;</span></div>
+                          </div>
+                          <div class="task-card-bottom">
+                            <div class="task-card-name">Homework</div>
+                            <div class="task-card-sub">Reviewing...</div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-submitted" width="40" height="104"/><path class="tb-fill-submitted" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge">&#x23F3;</span></div>
+                        </div>
+                      </div>
+
+                      <!-- completed — Default avatar with dimmed content + streak badge -->
+                      <div class="task-card is-dim">
+                        <div class="task-card-content">
+                          <div class="card-avatar card-avatar--big">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F9B7;</span></div>
+                          </div>
+                          <div class="task-card-bottom">
+                            <div class="task-card-name">Brush Teeth</div>
+                            <div class="task-card-sub">Done!</div>
+                            <div class="task-card-gems">Earned 5&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-completed" width="40" height="104"/><path class="tb-fill-completed" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge">&#x1F525;</span><div class="task-badge-streak">9</div></div>
+                        </div>
+                      </div>
+
+                      <!-- rejected — Village avatar (Rive) -->
+                      <div class="task-card">
+                        <div class="task-card-content">
+                          <div class="card-avatar card-avatar--big">
+                            <div class="card-avatar-circle">
+                              <canvas class="card-avatar-canvas" width="244" height="348"></canvas>
+                            </div>
+                          </div>
+                          <div class="task-card-bottom">
+                            <div class="task-card-name">Practice Piano</div>
+                            <div class="task-card-sub">Try again!</div>
+                            <div class="task-card-gems">Earn 20&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-rejected" width="40" height="104"/><path class="tb-fill-rejected" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x26A0;&#xFE0F;</span></div>
+                        </div>
+                      </div>
+
+                    </div><!-- /carousel-container -->
+
+                  </div><!-- /grass-fill -->
+                </div><!-- /grass-container -->
+
+                <!-- Bottom tab bar -->
+                <nav class="tab-bar" role="navigation" aria-label="Main navigation">
+                  <a class="tab-bar-item active" role="tab" aria-current="page" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F3E0;&#xFE0F;</span></span>
+                    <span class="tab-bar-label">Home</span>
+                  </a>
+                  <a class="tab-bar-item" role="tab" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F4C5;</span></span>
+                    <span class="tab-bar-label">Calendar</span>
+                  </a>
+                  <a class="tab-bar-item" role="tab" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F9F0;</span></span>
+                    <span class="tab-bar-label">Projects</span>
+                  </a>
+                  <a class="tab-bar-item" role="tab" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F496;</span></span>
+                    <span class="tab-bar-label">Wishlist</span>
+                  </a>
+                  <a class="tab-bar-item" role="tab" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F600;</span></span>
+                    <span class="tab-bar-label">Profile</span>
+                  </a>
+                </nav>
+
+              </div><!-- /screen-sky-alt -->
+            </div><!-- /device-screen -->
+            <div class="home-indicator"></div>
           </div>
         </div>
+      </div>
         </div><!-- /col-left -->
         <div class="col-right"></div><!-- /col-right -->
       </div><!-- /two-col -->
@@ -965,8 +624,45 @@
     </div>
   </div>
 </div>
-<script>window.DS_META={title:'Home Tier 2',desc:'Kid home dashboard with scrollable task cards.',owner:'Leti Schimmel',status:'Done',rive:'sprot2.97_.riv',time:['Morning','Afternoon','Night'],timeDefault:'Afternoon',device:'Phone'};</script>
-<script>window.DS_NAV=[{label:'Artifacts',icon:'phone',collapsible:true,defaultOpen:true,children:[{label:'Chat',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2-tiles.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3-tiles.html'},{label:'Customize sprout',icon:'stars-01',href:'/product-explorer/customize-sprout.html'},{label:'Customize avatar',icon:'stars-02',href:'/product-explorer/customize-avatar.html'},{label:'Home',icon:'home',badge:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Home',icon:'home',badge:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'Activity',icon:'grid',href:'/product-explorer/kid-home/activity.html'},{label:'New Activity',icon:'grid',href:'/product-explorer/kid-home/new-activity.html'},{label:'Quest — Photo',icon:'grid',href:'/product-explorer/quest/photo.html'},{label:'Quest — Classic',icon:'grid',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quest — Guided',icon:'grid',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quest — Conversational',icon:'grid',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Design System',icon:'grid',collapsible:true,children:[{label:'Foundations',icon:'grid',href:'/foundations.html'},{label:'Components',icon:'grid',href:'/components.html'},{label:'Patterns',icon:'grid',href:'/patterns.html'},{label:'Resources',icon:'grid',href:'/resources.html'}]}];</script>
+<script>window.DS_META={title:'Home Tier 2',desc:'Ages 4-6. Carousel layout with big task cards. The screen time card is the first card in the carousel but hidden off-screen to the left; the carousel defaults to showing the first task card.',owner:'Leti Schimmel',status:'Draft',rive:['sprot2.97_.riv','character2.8.riv'],skill:['sprout-character.txt','village-character.txt'],device:'Phone',notes:'\
+<h2>How the Home Works</h2>\
+<p>The kid home is the daily dashboard where kids see their tasks, track progress toward a goal, and manage screen time.</p>\
+<h3>Layout</h3>\
+<ul>\
+<li><strong>Toolbar:</strong> Shield button (parent area access), fire streak counter, and gem balance.</li>\
+<li><strong>Subtitles:</strong> A motivational message from Sprout about the current state (e.g. habits remaining to unlock screen time).</li>\
+<li><strong>Sprout character:</strong> Animated Rive character sitting on the grass, reacts to the kid\'s progress.</li>\
+<li><strong>Goal card:</strong> Shows progress toward a long-term reward (e.g. "Disney cruise" with gem progress bar).</li>\
+<li><strong>Card carousel:</strong> Horizontally scrolling cards with snap behavior. Each card is 370x220px.</li>\
+</ul>\
+<h3>Carousel behavior</h3>\
+<p>Younger kids (ages 4-6) don\'t organize their own time the way older kids do. Instead of showing tabs for "Today" or "Anytime," the system decides which tasks to show and when. The carousel acts as a timeline:</p>\
+<ul>\
+<li><strong>Center card</strong> = the task the kid should focus on <em>right now</em>.</li>\
+<li><strong>Cards to the right</strong> = upcoming tasks (future).</li>\
+<li><strong>Cards to the left</strong> = past tasks (completed, submitted, or rejected).</li>\
+</ul>\
+<p>The carousel auto-scrolls to the current task on load, so the kid always lands on what matters most. The screen time card sits at the far left (position 0), before any past tasks, and the kid swipes right to reveal it.</p>\
+<h3>Task cards</h3>\
+<ul>\
+<li>Each card shows the task avatar, name, subtitle, gem reward, and a status badge (bookmark tab on the right).</li>\
+<li>Card states: available, in progress (with progress ring), submitted (dimmed, hourglass badge), completed (dimmed, fire streak badge), rejected (warning badge).</li>\
+</ul>\
+<h3>Screen time card</h3>\
+<ul>\
+<li>Shows the current screen time status with a segmented progress ring (one segment per habit).</li>\
+<li>Completed habits light up in sprout-400 green; remaining habits show as faded white segments.</li>\
+<li>Title shows how many habits are left; subtitle encourages completion.</li>\
+<li>When all habits are done, the card becomes tappable and the kid can spend gems to unlock screen time.</li>\
+</ul>\
+<h3>Tab bar</h3>\
+<ul>\
+<li>5 tabs: Home, Calendar, Projects, Wishlist, Profile.</li>\
+<li>Active tab uses sprout-400 green background.</li>\
+<li>Tabs are non-interactive in this prototype (display only).</li>\
+</ul>\
+'};</script>
+<script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
@@ -991,478 +687,24 @@
     });
   }
 
-  // ── Refs ──
-  var claimCta = document.getElementById('claim-cta');
-  var nightClaimCta = document.getElementById('night-claim-cta');
-  var claimCard = document.getElementById('claim-card');
-  var gemCounter = document.getElementById('gem-counter');
-  var gemLabel = document.getElementById('gem-counter-label');
-  var streakCounter = document.getElementById('streak-counter');
-  var deviceScreen = document.querySelector('.device-screen');
-  var deviceMockup = document.querySelector('.device-mockup');
+  // ── Scroll carousel to card 2 (screen time card is card 1, hidden to the left) ──
   var carousel = document.getElementById('carousel');
-  var homeTabs = document.querySelectorAll('#home-tabs .cat-tab');
-  var homeTabsContainer = document.getElementById('home-tabs');
-  var homePill = document.getElementById('home-pill');
-  var allCards = document.querySelectorAll('.task-card');
-  // (preview tabs removed — now using time dropdown)
-  var emptyState = document.getElementById('empty-state');
-
-  // ── Sliding pill logic ──
-  function moveHomePill(tab) {
-    if (!homePill || !homeTabsContainer) return;
-    var containerRect = homeTabsContainer.getBoundingClientRect();
-    var tabRect = tab.getBoundingClientRect();
-    var offsetLeft = tabRect.left - containerRect.left;
-    homePill.style.width = tabRect.width + 'px';
-    homePill.style.transform = 'translateX(' + (offsetLeft - 4) + 'px)';
-  }
-  // Init pill on first active tab
-  var firstActiveTab = homeTabsContainer.querySelector('.cat-tab.active');
-  if (firstActiveTab) {
-    // Disable transition for initial position
-    homePill.style.transition = 'none';
-    moveHomePill(firstActiveTab);
-    // Re-enable after paint
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() {
-        homePill.style.transition = '';
-      });
-    });
+  if (carousel && carousel.children.length > 1) {
+    var secondCard = carousel.children[1];
+    carousel.scrollTo({ left: secondCard.offsetLeft - 16, behavior: 'instant' });
   }
 
-  var gemReward = 20;
-  var gemCount = 8;
-  var claimedCards = {};
-  var currentPreview = 'afternoon';
-
-  // ── Card state definitions per preview ──
-  var cardStates = {
-    morning: {
-      read:     { cta: 'Start', now: true },
-      homework: { cta: 'Start', now: false },
-      water:    { cta: 'Start', locked: true },
-      tidy:     { cta: 'Start', locked: true },
-      outside:  { cta: 'Reviewing...', disabled: true, locked: true },
-      draw:     { cta: 'Claim', claim: true, locked: true }
-    },
-    afternoon: {
-      read:     { cta: 'Reviewing...', disabled: true, now: false },
-      homework: { cta: 'Try again', now: false },
-      sprout:   { cta: 'Start', now: true },
-      piano:    { cta: 'Claim', claim: true, now: false },
-      brush:    { cta: 'Start', now: false },
-      pack:     { cta: 'Start', now: false },
-      water:    { cta: 'Start', locked: true },
-      tidy:     { cta: 'Start', locked: true },
-      outside:  { cta: 'Reviewing...', disabled: true, locked: true },
-      draw:     { cta: 'Claim', claim: true, locked: true }
-    },
-    night: {
-      draw:     { cta: 'Claim', claim: true, now: true }
-    }
-  };
-
-  function getRelPos(el) {
-    var elRect = el.getBoundingClientRect();
-    var screenRect = deviceMockup.getBoundingClientRect();
-    return {
-      x: elRect.left - screenRect.left + elRect.width / 2,
-      y: elRect.top - screenRect.top + elRect.height / 2
-    };
+  // ── Toolbar scroll tint ──
+  var screen = document.getElementById('device-screen');
+  var toolbar = document.getElementById('toolbar-wrap');
+  if (screen && toolbar) {
+    screen.addEventListener('scroll', function() {
+      var y = screen.scrollTop;
+      toolbar.classList.remove('toolbar-sky', 'toolbar-grass');
+      if (y > 8 && y < 240) toolbar.classList.add('toolbar-sky');
+      else if (y >= 240) toolbar.classList.add('toolbar-grass');
+    }, { passive: true });
   }
-
-  // ── Apply a preview state ──
-  function applyPreview(state) {
-    currentPreview = state;
-    var states = cardStates[state];
-
-    // Hide empty state and anytime grid, restore carousel
-    emptyState.classList.remove('visible');
-    carousel.style.display = '';
-    anytimeGrid.style.display = 'none';
-
-    // Clean up flying emojis/particles
-    deviceMockup.querySelectorAll('.flying-emoji, .gem-particle').forEach(function(el) { el.remove(); });
-
-    // Show Today/Anytime tabs always; set default tab
-    homeTabsContainer.style.display = '';
-    if (state === 'night') {
-      homeTabs.forEach(function(t) {
-        var isActive = t.getAttribute('data-filter') === 'anytime';
-        t.classList.toggle('active', isActive);
-        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        if (isActive) moveHomePill(t);
-      });
-      carousel.style.display = 'none';
-      anytimeGrid.style.display = '';
-    } else {
-      homeTabs.forEach(function(t) {
-        var isActive = t.getAttribute('data-filter') === 'today';
-        t.classList.toggle('active', isActive);
-        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        if (isActive) moveHomePill(t);
-      });
-    }
-
-    // Process each card
-    allCards.forEach(function(card) {
-      var id = card.getAttribute('data-id');
-      var showIn = (card.getAttribute('data-show') || '').split(' ');
-      var cardState = states[id];
-
-      // Reset card classes
-      card.classList.remove('card-hidden', 'card-locked', 'card-now', 'card-claiming', 'card-celebrate', 'card-shrink-away', 'card-collapsed');
-      card.style.display = '';
-      card.style.transform = '';
-      card.style.opacity = '';
-      card.style.width = '';
-      card.style.padding = '';
-      card.style.margin = '';
-      card.style.overflow = '';
-
-      var overlay = card.querySelector('.card-completed-overlay');
-      if (overlay) overlay.remove();
-
-      if (!cardState || showIn.indexOf(state) === -1) {
-        card.classList.add('card-hidden');
-        return;
-      }
-
-      if (cardState.now) card.classList.add('card-now');
-      if (cardState.locked) card.classList.add('card-locked');
-
-      // Apply CTA
-      var cta = card.querySelector('.card-cta');
-      if (cta) {
-        cta.classList.remove('card-cta-disabled');
-        cta.style.visibility = '';
-        cta.style.opacity = '';
-        cta.style.transform = '';
-        if (cardState.disabled) {
-          cta.classList.add('card-cta-disabled');
-          cta.innerHTML = cardState.cta;
-        } else if (cardState.claim) {
-          cta.innerHTML = '<span class="tf-cta">&#x1F48E;</span> Claim';
-        } else {
-          cta.innerHTML = cardState.cta;
-        }
-      }
-
-      // Set filter attribute for tab filtering
-      if (state === 'night') {
-        card.setAttribute('data-filter', 'anytime');
-      } else {
-        var todayIds = ['read', 'homework', 'sprout', 'piano', 'brush', 'pack'];
-        if (todayIds.indexOf(id) !== -1) {
-          card.setAttribute('data-filter', 'today');
-        } else {
-          card.setAttribute('data-filter', 'anytime');
-        }
-      }
-    });
-
-    // Reset claim state
-    claimedCards = {};
-    gemLabel.textContent = '100';
-    streakCounter.classList.remove('streak-counter-glow');
-
-    // Apply tab filter
-    var activeTab = state === 'night' ? 'anytime' : 'today';
-    filterByTab(activeTab);
-    carousel.scrollLeft = 0;
-    setTimeout(function() {
-      scrollToNowCard(state);
-    }, 100);
-
-    // Scroll device to top
-    deviceScreen.scrollTop = 0;
-  }
-
-  function scrollToNowCard(state) {
-    var nowId = null;
-    var states = cardStates[state];
-    for (var id in states) {
-      if (states[id].now) { nowId = id; break; }
-    }
-    if (!nowId) return;
-    var target = null;
-    allCards.forEach(function(card) {
-      if (card.getAttribute('data-id') === nowId && !card.classList.contains('card-hidden')) {
-        target = card;
-      }
-    });
-    if (!target || !carousel) return;
-    var cardLeft = target.offsetLeft;
-    var cardWidth = target.offsetWidth;
-    var containerWidth = carousel.offsetWidth;
-    var scrollTarget = Math.max(0, cardLeft - (containerWidth - cardWidth) / 2);
-    smoothScrollTo(carousel, scrollTarget, 550);
-  }
-
-  function smoothScrollTo(el, to, duration) {
-    var from = el.scrollLeft;
-    var diff = to - from;
-    if (Math.abs(diff) < 1) return;
-    var start = null;
-    function step(ts) {
-      if (!start) start = ts;
-      var t = Math.min((ts - start) / duration, 1);
-      // iOS-style easing
-      var e = 1 - Math.pow(1 - t, 3);
-      el.scrollLeft = from + diff * e;
-      if (t < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  // ── Tab filtering ──
-  var anytimeGrid = document.getElementById('anytime-grid');
-
-  function filterByTab(tab) {
-    homeTabs.forEach(function(t) {
-      var isActive = t.getAttribute('data-filter') === tab;
-      t.classList.toggle('active', isActive);
-      t.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      if (isActive) moveHomePill(t);
-    });
-    if (tab === 'anytime') {
-      carousel.style.display = 'none';
-      anytimeGrid.style.display = '';
-    } else {
-      carousel.style.display = '';
-      anytimeGrid.style.display = 'none';
-      var states = cardStates[currentPreview];
-      allCards.forEach(function(card) {
-        var id = card.getAttribute('data-id');
-        var cardFilter = card.getAttribute('data-filter');
-        if (!states[id]) {
-          card.classList.add('card-hidden');
-          return;
-        }
-        if (cardFilter === tab) {
-          card.classList.remove('card-hidden');
-        } else {
-          card.classList.add('card-hidden');
-        }
-      });
-      carousel.scrollLeft = 0;
-      setTimeout(function() { scrollToNowCard(currentPreview); }, 50);
-    }
-  }
-
-  homeTabs.forEach(function(t) {
-    t.addEventListener('click', function() {
-      filterByTab(t.getAttribute('data-filter'));
-    });
-  });
-
-  window.onTimeChange = function(time) {
-    applyPreview(time.toLowerCase());
-  };
-
-  // ── Reset button ──
-  document.getElementById('reset-btn').addEventListener('click', function() {
-    applyPreview(currentPreview);
-  });
-
-  // ── Claim animation ──
-  function runClaimAnimation(targetCard, targetCta, flyEmojiChar, gemRewardAmount, onComplete) {
-    if (claimedCards[targetCard.getAttribute('data-id')]) return;
-    claimedCards[targetCard.getAttribute('data-id')] = true;
-
-    targetCard.classList.add('card-claiming');
-
-    var from = getRelPos(targetCta);
-    var to = getRelPos(gemCounter);
-    var landed = 0;
-
-    for (var i = 0; i < gemCount; i++) {
-      (function(index) {
-        var gem = document.createElement('span');
-        gem.className = 'gem-particle';
-        gem.textContent = '\uD83D\uDC8E';
-        gem.style.left = from.x + 'px';
-        gem.style.top = from.y + 'px';
-        gem.style.opacity = '0';
-        deviceMockup.appendChild(gem);
-
-        var delay = index * 60 + Math.random() * 40;
-        var duration = 500 + Math.random() * 200;
-        var spreadX = (Math.random() - 0.5) * 60;
-        var spreadY = (Math.random() - 0.5) * 30;
-        var midX = (from.x + to.x) / 2 + (Math.random() - 0.5) * 80;
-        var midY = Math.min(from.y, to.y) - 30 - Math.random() * 40;
-        var startTime = null;
-
-        function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
-
-        function animate(ts) {
-          if (!startTime) startTime = ts;
-          var elapsed = ts - startTime - delay;
-          if (elapsed < 0) { requestAnimationFrame(animate); return; }
-
-          var t = Math.min(elapsed / duration, 1);
-          var e = easeOutCubic(t);
-          var sx = from.x + spreadX * (1 - e);
-          var sy = from.y + spreadY * (1 - e);
-          var bx = (1 - e) * (1 - e) * sx + 2 * (1 - e) * e * midX + e * e * to.x;
-          var by = (1 - e) * (1 - e) * sy + 2 * (1 - e) * e * midY + e * e * to.y;
-          gem.style.transform = 'translate(-50%, -50%) translate(' + (bx - from.x) + 'px,' + (by - from.y) + 'px)';
-          gem.style.opacity = t < 0.1 ? (t / 0.1) : (t > 0.85 ? Math.max(0, 1 - (t - 0.85) / 0.15) : 1);
-
-          if (t < 1) {
-            requestAnimationFrame(animate);
-          } else {
-            gem.remove();
-            landed++;
-            gemCounter.classList.remove('gem-counter-glow');
-            void gemCounter.offsetWidth;
-            gemCounter.classList.add('gem-counter-glow');
-
-            if (landed === gemCount) {
-              var currentVal = parseInt(gemLabel.textContent, 10);
-              gemLabel.textContent = currentVal + gemRewardAmount;
-              startPhase2();
-            }
-          }
-        }
-        requestAnimationFrame(animate);
-      })(i);
-    }
-
-    function startPhase2() {
-      targetCard.classList.add('card-celebrate');
-
-      setTimeout(function() {
-        targetCard.classList.remove('card-celebrate');
-
-        // Fly emoji to streak counter
-        var cardEmojiEl = targetCard.querySelector('.card-emoji');
-        var emojiFrom = getRelPos(cardEmojiEl);
-        var streakTo = getRelPos(streakCounter);
-
-        var flyEmoji = document.createElement('span');
-        flyEmoji.className = 'flying-emoji';
-        flyEmoji.innerHTML = flyEmojiChar;
-        flyEmoji.style.fontSize = '40px';
-        flyEmoji.style.left = emojiFrom.x + 'px';
-        flyEmoji.style.top = emojiFrom.y + 'px';
-        flyEmoji.style.transform = 'translate(-50%, -50%)';
-        deviceScreen.appendChild(flyEmoji);
-
-        // Fade out + collapse the card — scroll-snap auto-centers the next card
-        targetCard.classList.remove('card-now');
-        targetCard.classList.add('card-shrink-away');
-
-        // After fade completes, collapse width so snap pulls the next card in
-        targetCard.addEventListener('animationend', function handler() {
-          targetCard.removeEventListener('animationend', handler);
-          targetCard.classList.add('card-collapsed');
-        });
-
-        // After everything settles, fire completion (glow the next card, etc.)
-        setTimeout(function() {
-          if (onComplete) onComplete();
-        }, 1100);
-
-        var flyStart = null;
-        function flyAnimate(ts) {
-          if (!flyStart) flyStart = ts;
-          var t = Math.min((ts - flyStart) / 600, 1);
-          var e = 1 - Math.pow(1 - t, 3);
-          var dx = (streakTo.x - emojiFrom.x) * e;
-          var dy = (streakTo.y - emojiFrom.y) * e;
-          var arcY = -40 * Math.sin(Math.PI * t);
-          flyEmoji.style.transform = 'translate(-50%, -50%) translate(' + dx + 'px,' + (dy + arcY) + 'px) scale(' + (1 - 0.73 * e) + ')';
-          flyEmoji.style.opacity = t > 0.8 ? Math.max(0, 1 - (t - 0.8) / 0.2) : 1;
-          if (t < 1) {
-            requestAnimationFrame(flyAnimate);
-          } else {
-            flyEmoji.remove();
-            streakCounter.classList.remove('streak-counter-glow');
-            void streakCounter.offsetWidth;
-            streakCounter.classList.add('streak-counter-glow');
-          }
-        }
-        requestAnimationFrame(flyAnimate);
-      }, 400);
-    }
-  }
-
-  function checkShowEmptyState() {
-    var visibleCards = 0;
-    allCards.forEach(function(card) {
-      if (!card.classList.contains('card-hidden') && !card.classList.contains('card-shrink-away') && !card.classList.contains('card-collapsed')) {
-        visibleCards++;
-      }
-    });
-    if (visibleCards === 0) {
-      setTimeout(function() {
-        carousel.style.display = 'none';
-        emptyState.classList.add('visible');
-      }, 400);
-    }
-  }
-
-  // ── Wire up claim CTAs ──
-  claimCta.addEventListener('click', function() {
-    runClaimAnimation(claimCard, claimCta, '&#x1F3B9;', gemReward, function() {
-      checkShowEmptyState();
-      // Snap has already re-centered; nudge to exact position and add glow
-      scrollToNowCard(currentPreview);
-    });
-  });
-
-  if (nightClaimCta) {
-    nightClaimCta.addEventListener('click', function() {
-      var drawCard = nightClaimCta.closest('.task-card');
-      runClaimAnimation(drawCard, nightClaimCta, '&#x1F3A8;', 15, function() {
-        checkShowEmptyState();
-      });
-    });
-  }
-
-  // ── Device toggle ──
-  var deviceBtns = document.querySelectorAll('.device-toggle .cat-tab');
-  var deviceWrapper = document.querySelector('.device-wrapper');
-  deviceBtns.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var device = btn.getAttribute('data-device');
-      deviceBtns.forEach(function(b) { b.classList.toggle('active', b === btn); });
-      if (device === 'ipad') {
-        deviceWrapper.classList.add('ipad');
-      } else {
-        deviceWrapper.classList.remove('ipad');
-      }
-      applyPreview(currentPreview);
-    });
-  });
-
-  // ── Toolbar scroll effect ──
-  var toolbarWrap = document.getElementById('toolbar-wrap');
-  var grassEdge = document.querySelector('.grass-edge');
-  var toolbarH = 56;
-  if (toolbarWrap && deviceScreen && grassEdge) {
-    deviceScreen.addEventListener('scroll', function() {
-      var scrolled = deviceScreen.scrollTop;
-      var grassOffset = grassEdge.offsetTop - scrolled;
-
-      if (grassOffset < toolbarH - 56) {
-        toolbarWrap.classList.remove('toolbar-sky');
-        toolbarWrap.classList.add('toolbar-grass');
-      } else if (scrolled > 10) {
-        toolbarWrap.classList.add('toolbar-sky');
-        toolbarWrap.classList.remove('toolbar-grass');
-      } else {
-        toolbarWrap.classList.remove('toolbar-sky');
-        toolbarWrap.classList.remove('toolbar-grass');
-      }
-    });
-  }
-
-  // ── Initialize ──
-  applyPreview('afternoon');
 })();
 </script>
 </body>

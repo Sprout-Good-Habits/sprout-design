@@ -600,12 +600,13 @@
     },
     "composition": {
       "requires": ["track", "fill"],
-      "allows": ["inner-highlight", "message", "spark-particles"],
+      "allows": ["inner-highlight", "message", "counter", "spark-particles"],
       "forbids": ["button", "icon"]
     },
     "variants": [
       { "name": "Default", "useWhen": "Standard progress display", "pairWith": [] },
-      { "name": "With message", "useWhen": "Streak feedback (3/5/10 in a row)", "pairWith": [] }
+      { "name": "With message", "useWhen": "Streak feedback (3/5/10 in a row)", "pairWith": [] },
+      { "name": "With counter", "useWhen": "Continuous bar needs an explicit current/total readout (e.g., 7/10); continuous only, not stepper", "pairWith": [] }
     ],
     "sizes": [
       { "name": "Default", "useWhen": "All contexts — 16px track height" }

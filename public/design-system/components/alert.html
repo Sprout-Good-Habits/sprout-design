@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System: Alert</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Alert",
+  "slug": "alert",
+  "intent": {
+    "purpose": "Interrupt the user with a centered modal card to confirm, acknowledge, or choose between actions",
+    "taskContext": ["confirmation", "acknowledgement", "destructive-action", "modal-choice"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["label", "primary-action"],
+    "allows": ["icon", "description", "secondary-action", "destructive-action"],
+    "forbids": ["nested-alert", "form-inputs", "long-content"]
+  },
+  "variants": [
+    { "name": "Stacked", "useWhen": "1–3 buttons, or when any button label is long", "pairWith": [], "sentiment": "neutral" },
+    { "name": "Side-by-side", "useWhen": "Exactly 2 short buttons: a cancel paired with a confirm", "pairWith": [], "sentiment": "neutral" }
+  ],
+  "sizes": [],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["centered-modal"]
+  },
+  "relationships": {
+    "related": ["Sheet", "FeedbackBanner", "ActionPrompt", "Toast"],
+    "escalatesTo": ["Sheet"],
+    "degradesTo": ["Toast"],
+    "groupsWith": ["Buttons"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "alertdialog",
+    "keyboard": ["Enter", "Space", "Tab", "Escape"],
+    "ariaAttributes": ["aria-labelledby", "aria-describedby", "aria-modal"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/buttons.css">
+<link rel="stylesheet" href="/components/alert.css">
+<style>
+/* ── Sentiment tags ── */
+.sentiment-tag {
+  display:inline-block;
+  font-size:var(--font-size-text-xs, 12px);
+  font-weight:var(--font-weight-medium, 500);
+  line-height:var(--line-height-text-xs, 18px);
+  padding:var(--spacing-xxs, 2px) var(--spacing-md, 8px);
+  border-radius:var(--radius-full, 9999px);
+  vertical-align:middle;
+  margin-left:var(--spacing-md, 8px);
+}
+.sentiment-neutral { background:var(--gray-50, #fafafa); color:var(--text-secondary, #414651); border:1px solid var(--border-secondary, #e9eaeb); }
+.sentiment-positive { background:var(--green-50, #ecfdf3); color:var(--green-700, #067647); }
+.sentiment-destructive { background:var(--red-50, #fef3f2); color:var(--red-700, #b42318); }
+
+/* ── Backdrop demo wrapper ── */
+.alert-demo-backdrop {
+  background:var(--gray-100, #f5f5f5);
+  border-radius:var(--radius-lg, 10px);
+  padding:var(--spacing-3xl, 24px);
+  display:flex; align-items:center; justify-content:center;
+  min-height:320px;
+}
+
+/* ── Phone placement frame ── */
+.phone-placeholder {
+  background:var(--gray-100, #f5f5f5);
+  border:1px dashed var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-md, 8px);
+  height:48px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-quaternary, #717680);
+}
+.phone-placeholder-lg { height:120px; }
+
+.device-scrim {
+  position:absolute; inset:0;
+  background:rgba(10,13,18,0.4);
+  display:flex; align-items:center; justify-content:center;
+  padding:var(--spacing-xl, 16px);
+}
+.device-scrim .alert { width:100%; max-width:340px; }
+
+@media(max-width:768px) {
+  .alert { width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Alert</div>
+    <div class="sec-desc">A centered modal card that interrupts the user with a blocking decision: confirming a destructive action, acknowledging an outcome, or choosing between two paths forward.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use an alert when the user must make a blocking decision before continuing.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use to confirm destructive actions like deleting, leaving, or logging out.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for post-action feedback tied to a single answer. Use <a href="/components/feedback-banner.html">Feedback Banner</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for passive notifications that don&rsquo;t need a response. Use <a href="/components/toast.html">Toast</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for multi-step content or form inputs. Use <a href="/components/sheet.html">Sheet</a> instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Stacked</span>
+        <div class="alert">
+          <div class="alert-icon">&#9888;&#65039;</div>
+          <div class="alert-content">
+            <div class="alert-label">Label</div>
+            <div class="alert-desc">Description</div>
+          </div>
+          <div class="alert-actions">
+            <button class="btn-sprout btn-primary btn-md">Label</button>
+            <button class="btn-sprout btn-destructive btn-md">Label</button>
+            <button class="btn-sprout btn-secondary btn-md">Label</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Side-by-side</span>
+        <div class="alert">
+          <div class="alert-icon">&#9888;&#65039;</div>
+          <div class="alert-content">
+            <div class="alert-label">Label</div>
+            <div class="alert-desc">Description</div>
+          </div>
+          <div class="alert-actions alert-actions-row">
+            <button class="btn-sprout btn-secondary btn-md">Label</button>
+            <button class="btn-sprout btn-primary btn-md">Label</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Types ════ -->
+  <div class="doc-section">
+    <h2>Types</h2>
+    <p>The alert is a neutral card. Its visual treatment is always the same. Choose a layout based on how many buttons you need and how long the labels are. Sentiment is carried by the buttons inside, not the alert container.</p>
+
+    <h3>Stacked <span class="sentiment-tag sentiment-neutral">Default</span></h3>
+    <p>Use when you have one, two, or three actions, or when any button label is long enough to wrap. Full-width buttons stack vertically with the primary action on top.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">1 button</span>
+        <div class="alert">
+          <div class="alert-icon">&#127881;</div>
+          <div class="alert-content">
+            <div class="alert-label">You&rsquo;re all set!</div>
+            <div class="alert-desc">Your lesson is ready to start.</div>
+          </div>
+          <div class="alert-actions">
+            <button class="btn-sprout btn-primary btn-md">Continue</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">2 buttons</span>
+        <div class="alert">
+          <div class="alert-icon">&#9208;&#65039;</div>
+          <div class="alert-content">
+            <div class="alert-label">Leaving this session?</div>
+            <div class="alert-desc">No worries, your progress is saved for later!</div>
+          </div>
+          <div class="alert-actions">
+            <button class="btn-sprout btn-primary btn-md">Keep going</button>
+            <button class="btn-sprout btn-secondary btn-md">Pause &amp; Save</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">3 buttons</span>
+        <div class="alert">
+          <div class="alert-icon">&#128276;</div>
+          <div class="alert-content">
+            <div class="alert-label">Turn on reminders?</div>
+            <div class="alert-desc">We&rsquo;ll nudge you at your learning time.</div>
+          </div>
+          <div class="alert-actions">
+            <button class="btn-sprout btn-primary btn-md">Yes, turn on</button>
+            <button class="btn-sprout btn-destructive btn-md">No thanks</button>
+            <button class="btn-sprout btn-secondary btn-md">Maybe later</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Side-by-side <span class="sentiment-tag sentiment-neutral">Default</span></h3>
+    <p>Use only when you have exactly two short buttons, typically a cancel paired with a confirm. The secondary action sits on the left, the primary on the right. If either label is long, use stacked instead.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Cancel &middot; Confirm</span>
+        <div class="alert">
+          <div class="alert-icon">&#128064;</div>
+          <div class="alert-content">
+            <div class="alert-label">Show answer?</div>
+            <div class="alert-desc">You&rsquo;ll lose your streak.</div>
+          </div>
+          <div class="alert-actions alert-actions-row">
+            <button class="btn-sprout btn-secondary btn-md">Cancel</button>
+            <button class="btn-sprout btn-primary btn-md">Show</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Cancel &middot; Destructive</span>
+        <div class="alert">
+          <div class="alert-icon">&#128465;&#65039;</div>
+          <div class="alert-content">
+            <div class="alert-label">Delete draft?</div>
+            <div class="alert-desc">This can&rsquo;t be undone.</div>
+          </div>
+          <div class="alert-actions alert-actions-row">
+            <button class="btn-sprout btn-secondary btn-md">Cancel</button>
+            <button class="btn-sprout btn-destructive btn-md">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Icon</strong> (optional): 40&times;40px TossFace emoji above the content. Use to reinforce tone (warning, celebration, deletion).</li>
+        <li><strong>Label</strong> (required): text-md (16px) bold, centered. States the decision the user needs to make.</li>
+        <li><strong>Description</strong> (optional): text-md (16px) regular, centered. Explains the consequence or adds context.</li>
+        <li><strong>Primary action</strong> (required): the main path forward. In stacked layout it sits on top; in side-by-side it sits on the right.</li>
+        <li><strong>Secondary action</strong> (optional): cancel, dismiss, or alternative path. Never place the only action as a secondary button.</li>
+        <li><strong>Destructive action</strong> (optional): use <code>btn-destructive</code> for actions that can&rsquo;t be undone.</li>
+      </ul>
+    </div>
+    <p>The container is a fixed 370px white card with a 2px border, 12px radius, and a large drop shadow that lifts it off the backdrop.</p>
+  </div>
+
+  <!-- ════ Content composition ════ -->
+  <div class="doc-section">
+    <h2>Content Composition</h2>
+    <p>All elements except the label and one action button are optional. Compose only what the moment needs.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Label + 1 button</span>
+        <div class="alert">
+          <div class="alert-content">
+            <div class="alert-label">Saved!</div>
+          </div>
+          <div class="alert-actions">
+            <button class="btn-sprout btn-primary btn-md">Continue</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Label + description</span>
+        <div class="alert">
+          <div class="alert-content">
+            <div class="alert-label">Lesson complete</div>
+            <div class="alert-desc">You earned 10 gems.</div>
+          </div>
+          <div class="alert-actions">
+            <button class="btn-sprout btn-primary btn-md">Continue</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Icon + full content</span>
+        <div class="alert">
+          <div class="alert-icon">&#127881;</div>
+          <div class="alert-content">
+            <div class="alert-label">New badge unlocked</div>
+            <div class="alert-desc">You learned 5 new words this week.</div>
+          </div>
+          <div class="alert-actions alert-actions-row">
+            <button class="btn-sprout btn-secondary btn-md">Later</button>
+            <button class="btn-sprout btn-primary btn-md">View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Placement ════ -->
+  <div class="doc-section">
+    <h2>Placement</h2>
+    <p>The alert is always presented as a modal, centered over a dimmed backdrop that covers the entire viewport. The content behind it is not interactive until the user picks an action.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Center the alert vertically and horizontally on screen.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Cover the viewport with a dimmed scrim at roughly 40% opacity.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Animate the alert with a short fade + scale-in. Respect <code>prefers-reduced-motion</code>.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t place an alert inline within scrolling content.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t stack alerts. Resolve one before showing another.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Stacked &middot; Modal</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen" style="height:580px;position:relative;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;gap:var(--spacing-lg, 12px);padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);">
+                  <div class="phone-placeholder">Header</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Lesson content</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Answer options</div>
+                </div>
+                <div class="device-scrim">
+                  <div class="alert">
+                    <div class="alert-icon">&#9208;&#65039;</div>
+                    <div class="alert-content">
+                      <div class="alert-label">Leaving this session?</div>
+                      <div class="alert-desc">No worries, your progress is saved for later!</div>
+                    </div>
+                    <div class="alert-actions">
+                      <button class="btn-sprout btn-primary btn-md">Keep going</button>
+                      <button class="btn-sprout btn-secondary btn-md">Pause &amp; Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Side-by-side &middot; Modal</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen" style="height:580px;position:relative;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;gap:var(--spacing-lg, 12px);padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);">
+                  <div class="phone-placeholder">Header</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Drafts</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Draft list</div>
+                </div>
+                <div class="device-scrim">
+                  <div class="alert">
+                    <div class="alert-icon">&#128465;&#65039;</div>
+                    <div class="alert-content">
+                      <div class="alert-label">Delete draft?</div>
+                      <div class="alert-desc">This can&rsquo;t be undone.</div>
+                    </div>
+                    <div class="alert-actions alert-actions-row">
+                      <button class="btn-sprout btn-secondary btn-md">Cancel</button>
+                      <button class="btn-sprout btn-destructive btn-md">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Content guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content</h2>
+    <p>Alert copy should:</p>
+    <div class="prose">
+      <ul>
+        <li>Ask the decision clearly in the label: &ldquo;Leave this lesson?&rdquo;, &ldquo;Delete draft?&rdquo;</li>
+        <li>State the consequence in the description: &ldquo;Your progress will be saved&rdquo;, &ldquo;This can&rsquo;t be undone&rdquo;</li>
+        <li>Use verb-first button labels that match the decision (&ldquo;Leave&rdquo;, &ldquo;Delete&rdquo;, &ldquo;Continue&rdquo;), not &ldquo;Yes&rdquo; / &ldquo;No&rdquo;</li>
+        <li>Keep the label under 40 characters and descriptions under 80 characters</li>
+        <li>Put the recommended or safe action as primary; destructive options use <code>btn-destructive</code></li>
+        <li>Avoid blame or jargon. Kids should feel in control, not scolded</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token Reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All alert styles map to Sprout design tokens. The alert container is neutral; button tokens come from the <a href="/components/buttons.html">Buttons</a> component.</p>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Width</td><td>370px (fluid below 420px)</td></tr>
+        <tr><td>Background</td><td><code>--bg-primary</code></td></tr>
+        <tr><td>Border</td><td>2px solid <code>--border-secondary</code></td></tr>
+        <tr><td>Border radius</td><td><code>--radius-xl</code> (12px)</td></tr>
+        <tr><td>Container padding</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Section gap</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Action button gap</td><td>10px</td></tr>
+        <tr><td>Label font</td><td><code>--font-size-text-md</code> (16px) / <code>--line-height-text-md</code> (24px) / bold</td></tr>
+        <tr><td>Label color</td><td><code>--text-primary</code></td></tr>
+        <tr><td>Description font</td><td><code>--font-size-text-md</code> (16px) / <code>--line-height-text-md</code> (24px) / regular</td></tr>
+        <tr><td>Description color</td><td><code>--text-secondary</code></td></tr>
+        <tr><td>Icon size</td><td>40&times;40px (TossFace 32px)</td></tr>
+        <tr><td>Shadow</td><td>0 12px 16px -4px rgba(10,13,18,.08), 0 4px 6px -2px rgba(10,13,18,.03), 0 2px 2px -1px rgba(10,13,18,.04)</td></tr>
+        <tr><td>Backdrop scrim</td><td>rgba(10,13,18,0.4)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Use <code>role="alertdialog"</code> with <code>aria-modal="true"</code> so assistive tech treats the alert as a blocking dialog.</li>
+        <li><strong>Labelling:</strong> Point <code>aria-labelledby</code> at the label element and <code>aria-describedby</code> at the description element.</li>
+        <li><strong>Focus management:</strong> When the alert opens, move focus to the primary action (or the least-destructive action). Trap focus inside the alert while it&rsquo;s open; restore focus to the trigger when it closes.</li>
+        <li><strong>Keyboard:</strong> <kbd>Tab</kbd> cycles through buttons, <kbd>Enter</kbd> or <kbd>Space</kbd> activates the focused button, and <kbd>Escape</kbd> triggers the cancel/dismiss action when present.</li>
+        <li><strong>Touch targets:</strong> All buttons meet the 44&times;44px minimum touch target.</li>
+        <li><strong>Contrast:</strong> Label and description pass WCAG AA on the white container; button contrast is handled by the <a href="/components/buttons.html">Buttons</a> component.</li>
+        <li><strong>Motion:</strong> If animating the open/close transition, respect <code>prefers-reduced-motion</code> by disabling the fade + scale.</li>
+        <li><strong>Backdrop:</strong> The scrim should not be the only way to dismiss. Always provide a visible cancel action for destructive alerts.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: April 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

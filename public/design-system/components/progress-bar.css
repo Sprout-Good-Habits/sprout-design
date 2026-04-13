@@ -76,6 +76,23 @@
   flex-shrink:0;
 }
 
+/* ── Counter (optional current/total label centered on the track) ── */
+.progress-counter {
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:var(--line-height-text-xs, 16px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-quaternary, #717680);
+  text-align:center;
+  white-space:nowrap;
+  mix-blend-mode:multiply;
+  pointer-events:none;
+  z-index:1;
+}
+
 /* ── Sparkle confetti animation ── */
 @keyframes sparkle-pop {
   0%   { opacity:0; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(0); }

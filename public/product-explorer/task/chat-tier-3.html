@@ -6,7 +6,8 @@
 <title>Sprout Product Explorer — Chat Tier 3</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
-<link rel="stylesheet" href="/design-system/components/tabs.css">
+<link rel="stylesheet" href="/design-system/components/segmented-control.css">
+<link rel="stylesheet" href="/design-system/components/message-bubble.css">
 <style>
 /* ── Device frame (from shared styles.css) ── */
 .device-wrapper {
@@ -59,10 +60,6 @@
   width: 640px;
   height: 854px;
 }
-.device-wrapper.ipad .msg-col { max-width: 536px; }
-.device-wrapper.ipad .msg-bubble { max-width: 480px; }
-.device-wrapper.ipad .msg-images { max-width: 536px; }
-.device-wrapper.ipad .msg-bubble-audio { width: 360px; }
 
 /* ── Chat toolbar ── */
 .chat-toolbar {
@@ -127,154 +124,6 @@
   scrollbar-width: none;
 }
 .chat-thread::-webkit-scrollbar { display: none; }
-
-/* ── Message bubbles ── */
-.msg-row {
-  display: flex;
-  width: 100%;
-}
-.msg-outgoing {
-  justify-content: flex-end;
-}
-.msg-incoming {
-  align-items: flex-end;
-  gap: var(--spacing-md, 8px);
-}
-.msg-col {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  max-width: 330px;
-}
-.msg-col-out {
-  align-items: flex-end;
-}
-.msg-col-in {
-  align-items: flex-start;
-}
-.msg-sender {
-  font-family: -apple-system, 'SF Pro', sans-serif;
-  font-size: 11px;
-  line-height: 13px;
-  letter-spacing: 0.06px;
-  color: var(--text-secondary, #414651);
-  padding-left: var(--spacing-xl, 16px);
-}
-.msg-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full, 9999px);
-  flex-shrink: 0;
-  overflow: hidden;
-  background: var(--bg-sky, #e0f2fe);
-  border: 2px solid white;
-  position: relative;
-}
-.msg-avatar img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.msg-bubble {
-  border-radius: var(--radius-4xl, 24px);
-  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
-  max-width: 256px;
-  min-width: 90px;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-sm, 14px);
-  line-height: var(--line-height-text-sm, 20px);
-  font-weight: var(--font-weight-regular, 400);
-  color: var(--text-primary, #181d27);
-  word-wrap: break-word;
-}
-.msg-bubble-out {
-  background: var(--brand-200, #b9e6fe);
-}
-.msg-bubble-in {
-  background: var(--bg-primary, #ffffff);
-}
-.msg-images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  max-width: 330px;
-}
-.msg-images-out {
-  justify-content: flex-end;
-}
-.msg-image {
-  width: 104px;
-  height: 104px;
-  border-radius: 20px;
-  flex-shrink: 0;
-}
-
-/* Typing indicator */
-@keyframes typingDot {
-  0%, 60%, 100% { opacity: 0.3; }
-  30% { opacity: 1; }
-}
-.msg-typing .msg-bubble-in {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  padding: 16px 20px;
-}
-.typing-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--gray-400, #a4a7ae);
-  animation: typingDot 1.4s ease-in-out infinite;
-}
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-/* ── Audio message in thread ── */
-.msg-bubble-audio {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs, 4px);
-  width: 256px;
-}
-.msg-audio-row {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-.msg-audio-play {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gray-200, #e9eaeb);
-  border-radius: var(--radius-full, 9999px);
-  padding: var(--spacing-sm, 6px);
-  cursor: pointer;
-}
-.msg-audio-play svg { width: 20px; height: 20px; color: var(--text-primary, #181d27); }
-.msg-audio-play svg.hidden { display: none; }
-.msg-audio-waveform {
-  flex: 1;
-  display: flex;
-  gap: 2px;
-  align-items: center;
-  height: 20px;
-  overflow: hidden;
-}
-.msg-audio-waveform .waveform-bar {
-  width: 2px;
-  border-radius: 1px;
-}
-.msg-audio-label {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-xs, 12px);
-  line-height: var(--line-height-text-xs, 16px);
-  font-weight: var(--font-weight-regular, 400);
-  color: var(--text-secondary, #414651);
-}
 
 /* ── Status bar ── */
 .status-bar {
@@ -1233,7 +1082,7 @@
     typingRow.innerHTML =
       '<div class="msg-avatar"><img src="/product-explorer/brand/assets/character-sprout-avatar.svg" alt="Sprout"></div>' +
       '<div class="msg-col msg-col-in">' +
-        '<div class="msg-bubble msg-bubble-in"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>' +
+        '<div class="msg-bubble msg-bubble-in"><div class="msg-typing-dots"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>' +
       '</div>';
     chatThread.appendChild(typingRow);
     scrollThread();
@@ -1649,7 +1498,7 @@
 </script>
 
 <script>window.DS_META={title:'Chat Tier 3',desc:'Text-based chat with avatars and typing indicators for older kids.',owner:'Leti Schimmel',status:'Done',device:['Phone','Tablet']};</script>
-<script>window.DS_NAV=[{label:'Artifacts',icon:'phone',collapsible:true,defaultOpen:true,children:[{label:'Chat',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2-tiles.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3-tiles.html'},{label:'Customize sprout',icon:'stars-01',href:'/product-explorer/customize-sprout.html'},{label:'Customize avatar',icon:'stars-02',href:'/product-explorer/customize-avatar.html'},{label:'Home',icon:'home',badge:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Home',icon:'home',badge:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'Activity',icon:'grid',href:'/product-explorer/kid-home/activity.html'},{label:'New Activity',icon:'grid',href:'/product-explorer/kid-home/new-activity.html'},{label:'Quest — Photo',icon:'grid',href:'/product-explorer/quest/photo.html'},{label:'Quest — Classic',icon:'grid',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quest — Guided',icon:'grid',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quest — Conversational',icon:'grid',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Design System',icon:'grid',collapsible:true,children:[{label:'Foundations',icon:'grid',href:'/foundations.html'},{label:'Components',icon:'grid',href:'/components.html'},{label:'Patterns',icon:'grid',href:'/patterns.html'},{label:'Resources',icon:'grid',href:'/resources.html'}]}];</script>
+<script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 </body>
 </html>

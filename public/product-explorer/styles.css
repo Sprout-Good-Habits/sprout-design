@@ -443,9 +443,18 @@ code {
   padding: 48px;
   display: flex;
   flex-direction: column;
-  display: flex;
-  flex-direction: column;
   gap: 32px;
+}
+
+/* ── Fixed preview on large screens ── */
+@media (min-width:1025px) {
+  .main { overflow: hidden !important; }
+  .content-area { height: 100vh; display: flex; flex-direction: column; }
+  .page-content { flex: 1; min-height: 0; overflow: hidden; }
+  .two-col { height: 100% !important; min-height: 0; align-items: stretch; }
+  .col-left { display: flex; align-items: center; justify-content: center; overflow: hidden; height: auto !important; }
+  .col-left .device-wrapper { transform-origin: center center !important; }
+  .col-right { overflow-y: auto; }
 }
 .page-title {
   font-size: 36px;
@@ -459,6 +468,33 @@ code {
   color: #535862;
   line-height: 24px;
   margin-top: -16px;
+}
+.page-notes {
+  font-size: 15px;
+  color: #414651;
+  line-height: 24px;
+}
+.page-notes h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #181d27;
+  margin: 0 0 8px;
+}
+.page-notes h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #181d27;
+  margin: 16px 0 4px;
+}
+.page-notes ul {
+  margin: 4px 0 12px;
+  padding-left: 20px;
+}
+.page-notes li {
+  margin-bottom: 4px;
+}
+.page-notes p {
+  margin: 0 0 8px;
 }
 .meta-rows {
   display: flex;
@@ -552,6 +588,7 @@ code {
   .card-grid-3 { grid-template-columns: 1fr 1fr; }
   .page-content { padding: var(--spacing-5xl, 40px) var(--spacing-3xl, 24px) var(--spacing-3xl, 24px); }
   .two-col { grid-template-columns: 1fr !important; gap: 24px; }
+  .col-right { order: -1; }
   .col-left { padding: 24px; }
   .col-right { padding: 24px; }
 }

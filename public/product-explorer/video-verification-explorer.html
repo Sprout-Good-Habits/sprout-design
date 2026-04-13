@@ -1,0 +1,2663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Sprout Product Explorer — Video Verification</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/buttons.css">
+<link rel="stylesheet" href="/design-system/components/button-utility.css">
+<link rel="stylesheet" href="/design-system/components/alert.css">
+<link rel="stylesheet" href="/design-system/components/toolbar.css">
+<link rel="stylesheet" href="/design-system/components/avatar.css">
+<link rel="stylesheet" href="/design-system/components/message-bubble.css">
+<link rel="stylesheet" href="/design-system/components/progress-bar.css">
+<link rel="stylesheet" href="/design-system/components/toast.css">
+<link rel="stylesheet" href="/design-system/components/loading.css">
+<link rel="stylesheet" href="/design-system/components/stat-card.css">
+<link rel="stylesheet" href="/design-system/components/subtitles.css">
+<link rel="stylesheet" href="/design-system/components/conversational-feedback.css">
+<link rel="stylesheet" href="/design-system/components/button-recording.css">
+<link rel="stylesheet" href="/design-system/patterns/success-screen.css">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script src="/design-system/components/stat-card.js"></script>
+<style>
+/* Page-specific styles only — shared styles come from tokens.css + styles.css */
+
+
+/* TossFace on emoji elements */
+.emoji,.task-meta-pill,.tab-icon,.celebration-emoji,.gems-earned,.agent-avatar,.sfw-overlay .icon,.quest-close-btn{font-family:'TossFace',sans-serif}
+.task-card h3+div,.proof-thumb{font-family:'TossFace',sans-serif}
+
+/* Device frame */
+.device-wrapper{background:var(--bg-primary,#ffffff);border:1px solid rgba(0,0,0,0.08);border-radius:32px;padding:4px;box-shadow:0 12px 16px -4px rgba(10,13,18,0.08),0 4px 6px -2px rgba(10,13,18,0.03),0 2px 2px -1px rgba(10,13,18,0.04)}
+.device-inner-shadow{background:var(--bg-primary,#ffffff);border-radius:28px;padding:4px;overflow:hidden;position:relative}
+.device-inner-shadow::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 6px 2px rgba(10,13,18,0.08),inset 0 0 4px 2px rgba(10,13,18,0.03);z-index:6}
+.device-mockup{background:var(--bg-sky,#e0f2fe);border:2px solid var(--border-secondary,#e9eaeb);border-radius:24px;clip-path:inset(0 round 24px);position:relative}
+.device-screen{width:402px;height:874px;position:relative;overflow:hidden;display:flex;flex-direction:column}
+
+/* VV Nav */
+.vv-nav{width:100%;background:#fff;border:1px solid var(--border-secondary,#e9eaeb);border-radius:12px;display:flex;flex-direction:column;overflow:hidden}
+.vv-nav-header{padding:16px 16px 12px;border-bottom:1px solid #eee}
+.vv-nav-title{font-size:15px;font-weight:700;color:var(--text-primary)}
+.vv-nav-subtitle{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.vv-nav-body{max-height:400px;overflow-y:auto;padding:8px 0}
+.vv-group{margin-bottom:2px}
+.vv-group-label{display:flex;align-items:center;gap:6px;padding:8px 16px;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;cursor:pointer;user-select:none}
+.vv-group-label:hover{color:var(--text-secondary)}
+.vv-group-label .chevron{font-size:10px;transition:transform 0.15s}
+.vv-group.open .chevron{transform:rotate(90deg)}
+.vv-group-items{display:none;padding:0 0 4px}
+.vv-group.open .vv-group-items{display:block}
+.vv-screen-item{display:flex;align-items:center;gap:8px;padding:6px 16px 6px 28px;font-size:12px;color:var(--text-secondary);cursor:pointer;border-left:2px solid transparent;transition:all 0.1s}
+.vv-screen-item:hover{background:#f5f5f5;color:var(--text-primary)}
+.vv-screen-item.active{background:var(--brand-50);color:var(--brand-600);border-left-color:var(--brand-500);font-weight:600}
+.vv-screen-item .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.vv-screen-item .status-dot.built{background:var(--green-500)}
+.vv-screen-item .status-dot.new{background:var(--brand-500)}
+.vv-screen-item .status-dot.future{background:var(--violet-400)}
+.state-tag{font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;text-transform:uppercase;letter-spacing:0.3px;margin-left:auto;flex-shrink:0}
+.state-tag.idle{background:#e0f2fe;color:#0086c9}
+.state-tag.active{background:#dcfae6;color:#079455}
+.state-tag.evaluate{background:#fef7c3;color:#ca8504}
+.state-tag.approved{background:#dcfae6;color:#079455}
+.state-tag.parent-review{background:#fef6ee;color:#e04f16}
+.state-tag.error{background:#fee4e2;color:#f04438}
+.state-tag.paused{background:#ece9fe;color:#7839ee}
+
+/* VV Controls section */
+.vv-controls{display:flex;flex-direction:column;gap:16px;margin-top:24px}
+
+/* State machine diagram */
+.state-diagram{display:flex;align-items:center;gap:8px;margin-bottom:20px;padding:12px 20px;background:#fff;border-radius:12px;border:1px solid var(--border-secondary);flex-wrap:wrap;justify-content:center}
+.state-node{font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;background:var(--gray-100);color:var(--gray-500);transition:all 0.2s}
+.state-node.current{transform:scale(1.1);box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.state-node.idle.current{background:#e0f2fe;color:#0086c9}
+.state-node.active.current{background:#dcfae6;color:#079455}
+.state-node.evaluate.current{background:#fef7c3;color:#ca8504}
+.state-node.approved.current{background:#dcfae6;color:#079455}
+.state-node.parent-review.current{background:#fef6ee;color:#e04f16}
+.state-node.error.current{background:#fee4e2;color:#f04438}
+.state-node.paused.current{background:#ece9fe;color:#7839ee}
+.state-arrow{font-size:14px;color:var(--gray-400)}
+
+.screen-indicator{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.screen-indicator .label{font-size:14px;font-weight:600;color:var(--text-primary)}
+.screen-indicator .status-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:0.5px}
+.screen-indicator .status-badge.built{background:var(--green-50);color:var(--green-600)}
+.screen-indicator .status-badge.new{background:var(--brand-50);color:var(--brand-600)}
+.screen-indicator .status-badge.future{background:var(--violet-50);color:var(--violet-600)}
+
+.desc-panel{margin-top:16px;text-align:left}
+.desc-panel h3{font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:4px}
+.desc-panel p{font-size:13px;color:var(--text-tertiary);line-height:1.5}
+
+/* iOS native alert overlay */
+.ios-alert-overlay{position:absolute;inset:0;background:rgba(10,13,18,0.2);display:none;align-items:center;justify-content:center;z-index:60}
+.ios-alert-overlay.active{display:flex}
+.ios-alert-card{width:300px;padding:14px;border-radius:34px;position:relative;display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.85);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);box-shadow:0 8px 32px rgba(0,0,0,0.12)}
+.ios-alert-title-group{display:flex;flex-direction:column;gap:10px;padding:8px 8px 24px;text-align:left;font-size:17px;color:#000;letter-spacing:-0.43px;line-height:22px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro','Helvetica Neue',sans-serif}
+.ios-alert-title{font-weight:590}
+.ios-alert-body{font-weight:400}
+.ios-alert-buttons{display:flex;gap:16px;width:100%}
+.ios-alert-btn{flex:1;height:48px;display:flex;align-items:center;justify-content:center;border-radius:100px;background:rgba(120,120,128,0.16);font-size:17px;font-weight:510;color:#000;letter-spacing:-0.43px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro','Helvetica Neue',sans-serif;cursor:default;user-select:none}
+
+/* Rive info card */
+.rive-card{width:100%;background:#fff;border:1px solid var(--border-secondary);border-radius:12px;overflow:hidden}
+.rive-card-header{padding:14px 16px 10px;border-bottom:1px solid var(--border-secondary);display:flex;align-items:center;gap:8px}
+.rive-card-header h3{font-size:13px;font-weight:700;color:var(--text-primary)}
+.rive-card-body{padding:12px 16px}
+.rive-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:10px}
+.rive-row:last-child{margin-bottom:0}
+.rive-label{font-size:11px;font-weight:600;color:var(--text-quaternary);min-width:64px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.3px;padding-top:1px}
+.rive-value{font-size:12px;color:var(--text-secondary);line-height:1.5}
+.rive-value code{background:var(--gray-100);padding:1px 6px;border-radius:4px;font-size:11px;font-family:'SF Mono',monospace}
+.rive-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:0.3px}
+.rive-tag.covered{background:#dcfae6;color:#079455}
+.rive-tag.missing{background:#fee4e2;color:#f04438}
+.rive-tag.category{margin-right:4px}
+.rive-card-empty{padding:24px 16px;text-align:center;color:var(--text-quaternary);font-size:12px}
+
+/* Status bar */
+.status-bar{height:62px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;z-index:50;pointer-events:none;background:transparent}
+/* When a camera screen is active, status bar overlays the camera view */
+.device-screen.camera-active .status-bar{position:absolute;top:0;left:0;right:0;z-index:5}
+.device-screen.camera-active .screen-stack{flex:none;height:100%}
+.status-bar-time{font-size:17px;font-weight:600;color:#181d27;letter-spacing:-.01em}
+.status-bar-icons{display:flex;align-items:center;gap:6px}
+.status-bar-icons svg{display:block}
+
+.screen-stack{flex:1;overflow:hidden;position:relative}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.screen.active{display:flex}
+
+/* Camera view base */
+.camera-view{position:relative;height:100%;display:flex;flex-direction:column;background:#d9d9d9}
+.camera-bg{position:absolute;inset:0;background:#d9d9d9}
+
+/* New toolbar */
+/* Progress bar and toolbar styles now served by progress-bar.css and toolbar.css */
+
+/* Conversational feedback slot — positions the Video pattern's
+   .conversational-feedback + .subtitles.subtitles-overlay over the
+   camera viewfinder. The component styling itself comes from
+   /design-system/components/conversational-feedback.css + subtitles.css. */
+.vv-feedback-slot{position:absolute;top:128px;left:0;right:0;padding:0 16px;z-index:10;box-sizing:border-box}
+
+/* Avatar portrait — explorer-specific canvas scaling for Sprout.
+   The design-system avatar-portrait.css is NOT imported because this
+   prototype uses .rive-avatar (not .rive-user/.rive-sprout) and needs
+   its own 2.64x transform to render the Sprout plant character. */
+.avatar-portrait{width:120px;height:176px;border-radius:24px;background:#b9e6fe;overflow:hidden;flex-shrink:0;position:relative}
+.avatar-portrait canvas{position:absolute;left:50%;top:-116px;width:100%;height:100%;display:block;transform:translateX(-50%) scale(2.64);transform-origin:center top}
+.avatar-portrait-spacer{width:120px;height:176px;flex-shrink:0;visibility:hidden}
+
+/* Hero-card expand: iOS Photos-style shape transition. The hero-card's shape (top/left/width/height/border-radius/background) animates from the conversational feedback tile (120×176 at (16,128), 24px radius, #b9e6fe bg) to full screen (402×874, 0 radius, sky bg). Canvas inside also transitions from avatar-portrait face closeup to natural grounded position, synchronized with the card. Timing: 500ms on cubic-bezier(.32,.72,0,1) to approximate iOS sheet / matched-geometry spring. */
+.vv-morph-stage{position:relative;height:100%;overflow:hidden;background:transparent}
+/* Gray camera bg fades out over the full card expand duration (500ms). */
+.morph-camera-bg{position:absolute;inset:0;background:#d9d9d9;z-index:1;transition:opacity .5s cubic-bezier(.32,.72,0,1)}
+/* Top bar + speech bubble (habit UI) fade IMMEDIATELY, within the first 100ms. */
+.morph-habit-ui{position:absolute;inset:0;z-index:2;transition:opacity .1s ease-out}
+.morph-camera-bg.fade-out,.morph-habit-ui.fade-out{opacity:0;pointer-events:none}
+/* Hero card: default = full screen (the expanded state). .is-portrait = conversational feedback tile shape. */
+.hero-card{position:absolute;top:0;left:0;width:402px;height:874px;background:var(--bg-sky,#e0f2fe);border-radius:0;overflow:hidden;z-index:3;transition:top .5s cubic-bezier(.32,.72,0,1),left .5s cubic-bezier(.32,.72,0,1),width .5s cubic-bezier(.32,.72,0,1),height .5s cubic-bezier(.32,.72,0,1),border-radius .5s cubic-bezier(.32,.72,0,1),background-color .5s cubic-bezier(.32,.72,0,1)}
+.vv-morph-stage.is-portrait .hero-card{top:128px;left:16px;width:120px;height:176px;background:#b9e6fe;border-radius:24px}
+/* Grass: anchored to the card's BOTTOM edge with bottom:0 so it always sits at the bottom 113px of whatever the card's current height is, visible throughout the entire hero-card expansion. Hidden in the static portrait state via opacity:0, fades in over 500ms concurrent with the card shape transition. */
+.hero-card .morph-grass{position:absolute;bottom:0;left:0;right:0;height:113px;pointer-events:none;opacity:1;transition:opacity .5s cubic-bezier(.32,.72,0,1)}
+.vv-morph-stage.is-portrait .hero-card .morph-grass{opacity:0}
+.hero-card .morph-grass>div:first-child{width:100%;height:24px;border-radius:24px 24px 0 0;background:#86cb3c}
+.hero-card .morph-grass>div:last-child{width:100%;height:89px;background:#86cb3c}
+/* Canvas: directly inside hero-card. Expanded state = 690×690 SQUARE canvas at top:380, left:-144, exactly matches screen-approved-full's positioning and size. The square canvas gives Rive horizontal padding to accommodate raised arms (celebration pose) without clipping. IMPORTANT: left is a FIXED pixel value (-144px), NOT calc(50% - 345px), because the card's width animates between 120 and 402, a percentage-based left would move the canvas layout box by 141px and break the portrait transform math. With fixed -144, canvas layout is identical in both states; only the transform below changes. Portrait state = same layout box, transform shifts and zooms so Sprout's face lands at the tile center. z-index:2 puts the character above the grass so Sprout's body is never clipped by the grass strip, matching /foundations/character.html layering. */
+.hero-card canvas.rive-avatar{position:absolute;display:block;left:-144px;top:380px;width:690px;height:690px;z-index:2;transform:none;transform-origin:345px 304px;pointer-events:none;transition:transform .5s cubic-bezier(.32,.72,0,1)}
+.vv-morph-stage.is-portrait .hero-card canvas.rive-avatar{transform:translate(-141px,-596px) scale(.515)}
+/* Title fades in right as the card settles. Delay = 0.5s (card duration), so the copy lands as the scene finishes moving. Fades in "from above" via translateY. */
+.hero-card .morph-title-group{position:absolute;top:100px;left:0;right:0;display:flex;flex-direction:column;align-items:center;text-align:center;padding:16px 16px 0;opacity:1;transform:translateY(0);transition:opacity .3s ease-out .5s,transform .3s ease-out .5s}
+.vv-morph-stage.is-portrait .hero-card .morph-title-group{opacity:0;transform:translateY(-20px);transition:opacity .1s ease-out,transform .1s ease-out}
+.hero-card .morph-title-group h2{font-size:30px;font-weight:700;color:var(--text-primary);margin-bottom:4px}
+.hero-card .morph-title-group p{font-size:18px;color:var(--text-tertiary);line-height:28px;max-width:370px}
+.morph-home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:#181d27;z-index:20}
+
+/* Bottom bar slot — positions the Video pattern's Button Recording +
+   two Button Utility icons over the camera viewfinder. The button
+   styling itself comes from /design-system/components/button-recording.css
+   and /design-system/components/button-utility.css. */
+.vv-bottom-bar{position:absolute;bottom:45px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:10}
+.vv-btn-hidden{opacity:0;pointer-events:none}
+
+/* Agent bubble */
+.agent-bubble-row{display:flex;align-items:flex-end;gap:8px;margin:8px 20px;animation:bubbleIn 0.3s ease-out}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.agent-avatar{width:36px;height:36px;border-radius:50%;background:var(--sprout-400);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.agent-msg{background:rgba(255,255,255,0.95);color:var(--text-primary);font-size:13px;line-height:1.4;padding:10px 14px;border-radius:16px 16px 16px 4px;max-width:240px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+
+/* Task card */
+.task-card{background:#fff;border-radius:16px;margin:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.task-card h3{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:4px}
+.task-card .task-desc{font-size:13px;color:var(--text-tertiary);line-height:1.5;margin-bottom:12px}
+.task-card .task-meta{display:flex;gap:8px;flex-wrap:wrap}
+.task-meta-pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--gray-100);color:var(--gray-600)}
+
+/* Celebration screen */
+.celebration{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:linear-gradient(135deg, #f5fbee 0%, #e0f2fe 100%);text-align:center;padding:40px 24px}
+.celebration-emoji{font-size:80px;margin-bottom:16px;animation:bounce 0.6s ease-out}
+@keyframes bounce{0%{transform:scale(0.3)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.celebration h2{font-size:24px;font-weight:800;color:var(--text-primary);margin-bottom:8px}
+.celebration p{font-size:14px;color:var(--text-tertiary);line-height:1.5;max-width:260px}
+.gems-earned{display:inline-flex;align-items:center;gap:6px;background:#fff;padding:8px 16px;border-radius:99px;margin-top:16px;font-size:15px;font-weight:700;color:var(--sprout-600);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+/* Parent review screen */
+.parent-screen{height:100%;background:#fff;display:flex;flex-direction:column}
+.parent-header{padding:16px;border-bottom:1px solid var(--border-secondary)}
+.parent-header h2{font-size:18px;font-weight:700;color:var(--text-primary)}
+.parent-header .sub{font-size:12px;color:var(--text-tertiary);margin-top:2px}
+.parent-body{flex:1;padding:16px;overflow-y:auto}
+.proof-card{background:var(--gray-50);border-radius:12px;padding:16px;margin-bottom:12px}
+.proof-card h4{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
+.proof-thumb{width:100%;height:140px;border-radius:8px;background:var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px}
+.proof-stats{display:flex;gap:12px;flex-wrap:wrap}
+.proof-stat{font-size:11px;color:var(--text-tertiary)}
+.proof-stat strong{color:var(--text-primary)}
+.parent-actions{padding:16px;display:flex;gap:12px;border-top:1px solid var(--border-secondary)}
+.btn-approve{flex:1;padding:14px;border-radius:12px;background:var(--sprout-500);color:#fff;font-size:14px;font-weight:600;text-align:center;cursor:pointer;border:none}
+.btn-reject{flex:1;padding:14px;border-radius:12px;background:var(--gray-100);color:var(--text-secondary);font-size:14px;font-weight:600;text-align:center;cursor:pointer;border:none}
+
+/* SFW overlay (legacy — kept for any stray references) */
+.sfw-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.85);z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;backdrop-filter:blur(20px)}
+.sfw-overlay .icon{font-size:56px;margin-bottom:16px}
+.sfw-overlay h3{font-size:18px;font-weight:700;color:#fff;margin-bottom:8px}
+.sfw-overlay p{font-size:13px;color:rgba(255,255,255,0.7);line-height:1.5;max-width:260px}
+
+/* SFW Safety Gate: character-led pause (redesign).
+   Background stays identical to every other camera screen.
+   Pause signal is carried entirely by Sprout's copy and the
+   soft-disabled record button below. */
+.btn-record.is-paused{opacity:0.4;pointer-events:none;transition:opacity 0.2s ease}
+
+/* Network overlay */
+.network-overlay{position:absolute;inset:0;z-index:35;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:120px}
+
+/* Alert scrim — dims the camera view behind a centered .alert */
+.alert-scrim{position:absolute;inset:0;background:rgba(10,13,18,0.4);z-index:15;display:flex;align-items:center;justify-content:center;padding:var(--spacing-xl, 16px)}
+.alert-scrim .alert{width:100%;max-width:340px}
+
+/* Evaluate overlay */
+.evaluate-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.7);z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.evaluate-card{background:#fff;border-radius:20px;padding:32px 28px;text-align:center;max-width:300px;box-shadow:0 8px 40px rgba(0,0,0,0.2)}
+.evaluate-card .spinner{width:48px;height:48px;border:4px solid var(--gray-200);border-top-color:var(--brand-500);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.evaluate-card h3{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:4px}
+.evaluate-card p{font-size:13px;color:var(--text-tertiary)}
+
+/* Light screen bg */
+.light-screen{background:linear-gradient(180deg, #f0f9ff 0%, #fff 40%);height:100%;display:flex;flex-direction:column}
+.screen-header{padding:12px 16px;display:flex;align-items:center;gap:12px}
+.screen-header .back{font-size:20px;color:var(--brand-500);cursor:pointer}
+.screen-header h2{font-size:17px;font-weight:700;color:var(--text-primary)}
+
+/* Tab bar */
+.tab-bar{height:50px;background:#fff;border-top:1px solid var(--border-secondary);display:flex;align-items:center;justify-content:space-around;flex-shrink:0}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--text-quaternary)}
+.tab-item.active{color:var(--sprout-500)}
+.tab-icon{font-size:18px}
+
+/* Home indicator */
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(0,0,0,0.15);border-radius:99px;z-index:200}
+
+
+/* Avatar expression variants */
+.agent-avatar.happy{background:var(--sprout-400)}
+.agent-avatar.encouraging{background:var(--brand-400)}
+.agent-avatar.excited{background:var(--yellow-400)}
+.agent-avatar.celebrating{background:var(--sprout-300);animation:bounce 0.6s ease-out}
+.agent-avatar.concerned{background:var(--orange-400)}
+.agent-avatar.neutral{background:var(--gray-400)}
+
+/* Stat card row inside approved result screens */
+.screen .stat-card-row{margin-top:24px;max-width:370px}
+.screen .stat-card.is-entering{opacity:0;transform:scale(0.8);animation:stat-card-pop 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8) forwards}
+.screen .stat-card-row .stat-card.is-entering:nth-child(1){animation-delay:200ms}
+.screen .stat-card-row .stat-card.is-entering:nth-child(2){animation-delay:300ms}
+@keyframes stat-card-pop{to{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){
+  .screen .stat-card.is-entering{animation:none;opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="two-col">
+        <div class="col-left">
+          <div class="device-wrapper" id="device-wrapper">
+            <div class="device-inner-shadow">
+              <div class="device-mockup">
+                <div class="device-screen">
+                  <div class="status-bar">
+                    <span class="status-bar-time">9:41</span>
+                    <span class="status-bar-icons">
+                      <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+                      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+                      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+                    </span>
+                  </div>
+                  <div class="screen-stack">
+        <!-- ==================== IDLE SCREENS ==================== -->
+
+        <!-- Task Detail -->
+        <div class="screen active" id="screen-task-detail">
+          <div style="background:var(--bg-sky,#e0f2fe);height:100%;position:relative;overflow:hidden">
+
+            <!-- Toolbar: Quest Default -->
+            <div class="toolbar toolbar-quest" style="position:absolute;top:0;left:0;right:0;z-index:10">
+              <div class="quest-close"><svg viewBox="0 0 32 32" fill="none"><path d="M10 10l12 12M22 10l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:0%"></div></div></div>
+            </div>
+
+            <!-- Chat thread (populated by JS animation) -->
+            <div id="taskDetailThread" style="position:absolute;top:56px;left:0;right:0;bottom:330px;overflow-y:auto;overflow-x:hidden;padding:16px;display:flex;flex-direction:column;gap:8px;z-index:5;scrollbar-width:none"></div>
+
+            <!-- Sprout character (Rive) -->
+            <div style="position:absolute;bottom:-196px;left:50%;transform:translateX(-50%);width:690px;height:690px;z-index:2;pointer-events:none">
+              <canvas class="rive-avatar" width="1380" height="1380" style="width:690px;height:690px"></canvas>
+            </div>
+
+            <!-- Grass -->
+            <div style="position:absolute;bottom:0;left:0;right:0;z-index:1;pointer-events:none">
+              <div style="width:100%;height:24px;border-radius:24px 24px 0 0;background:#86cb3c"></div>
+              <div style="width:100%;height:89px;background:#86cb3c"></div>
+            </div>
+
+            <!-- Start button -->
+            <div style="position:absolute;bottom:45px;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:0 16px">
+              <button id="taskDetailStartBtn" class="btn-sprout btn-primary btn-lg state-disabled" style="width:100%">Start</button>
+            </div>
+
+            <!-- Home indicator -->
+            <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:#181d27;z-index:20"></div>
+          </div>
+        </div>
+
+        <!-- Camera Permission — native iOS alert overlaying the task-detail screen -->
+        <div class="screen" id="screen-camera-permission">
+          <div style="background:var(--bg-sky,#e0f2fe);height:100%;position:relative;overflow:hidden">
+
+            <!-- Toolbar: Quest Default -->
+            <div class="toolbar toolbar-quest" style="position:absolute;top:0;left:0;right:0;z-index:10">
+              <div class="quest-close"><svg viewBox="0 0 32 32" fill="none"><path d="M10 10l12 12M22 10l-12 12" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:0%"></div></div></div>
+            </div>
+
+            <!-- Sprout character (static) -->
+            <div style="position:absolute;bottom:-196px;left:50%;transform:translateX(-50%);width:690px;height:690px;z-index:2;pointer-events:none">
+              <canvas class="rive-avatar" width="1380" height="1380" style="width:690px;height:690px"></canvas>
+            </div>
+
+            <!-- Grass -->
+            <div style="position:absolute;bottom:0;left:0;right:0;z-index:1;pointer-events:none">
+              <div style="width:100%;height:24px;border-radius:24px 24px 0 0;background:#86cb3c"></div>
+              <div style="width:100%;height:89px;background:#86cb3c"></div>
+            </div>
+
+            <!-- Start button (disabled, behind overlay) -->
+            <div style="position:absolute;bottom:45px;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:0 16px">
+              <button class="btn-sprout btn-primary btn-lg state-disabled" style="width:100%" disabled>Start</button>
+            </div>
+
+            <!-- Home indicator -->
+            <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:#181d27;z-index:20"></div>
+
+          </div>
+        </div>
+
+        <!-- Camera Initializing -->
+        <div class="screen" id="screen-camera-init">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:0%"></div></div></div>
+            </div>
+            <!-- Loading overlay -->
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5">
+              <div class="loading-inline">
+                <svg class="spinner-circle spinner-lg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" stroke="rgba(255,255,255,0.5)" stroke-width="3" stroke-linecap="round"/><path d="M14 3a11 11 0 0 1 11 11" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/></svg>
+                <span class="loading-text">Starting camera...</span>
+              </div>
+            </div>
+            <div class="vv-bottom-bar" style="opacity:0.4;pointer-events:none">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-start" aria-label="Start recording">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg>
+                </span>
+              </button>
+              <button class="btn-util" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- ==================== ACTIVE: SHOW ME ==================== -->
+
+        <!-- Show Me: Clean Room -->
+        <div class="screen" id="screen-show-me-clean-room">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:0%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Show me your room! Point the camera around so I can see it</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Show Me: Packed Bag -->
+        <div class="screen" id="screen-show-me-packed-bag">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:0%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Open your bag and show me what's inside!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- ==================== ACTIVE: WATCH ME ==================== -->
+
+        <!-- Watch Me: Piano -->
+        <div class="screen" id="screen-watch-piano">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:40%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Sounding good! Keep it up, you've got 6 more minutes</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Watch Me: Brush Teeth -->
+        <div class="screen" id="screen-watch-teeth">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:75%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Almost done! Don't forget the back teeth</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Watch Me: Reading -->
+        <div class="screen" id="screen-watch-reading">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:50%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Looking good, keep reading!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Watch Me: Soccer -->
+        <div class="screen" id="screen-watch-soccer">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:33%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Great effort out there! Keep those drills going</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- ==================== ACTIVE: COUNT ME ==================== -->
+
+        <!-- Count Me: Pushups -->
+        <div class="screen" id="screen-count-pushups">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar stepper"><div class="progress-track"><div class="progress-fill" style="width:60%"></div><div class="progress-checkpoints"><div class="progress-checkpoint checkpoint-number reached"><span class="progress-checkpoint-label">5</span></div><div class="progress-checkpoint checkpoint-number reached"><span class="progress-checkpoint-label">10</span></div><div class="progress-checkpoint checkpoint-number"><span class="progress-checkpoint-label">15</span></div><div class="progress-checkpoint checkpoint-number"><span class="progress-checkpoint-label">20</span></div></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">That's 12! Halfway there, 8 more to go!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Count Me: Jumping Jacks -->
+        <div class="screen" id="screen-count-jumping">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar stepper"><div class="progress-track"><div class="progress-fill" style="width:77%"></div><div class="progress-checkpoints"><div class="progress-checkpoint checkpoint-number reached"><span class="progress-checkpoint-label">10</span></div><div class="progress-checkpoint checkpoint-number reached"><span class="progress-checkpoint-label">20</span></div><div class="progress-checkpoint checkpoint-number"><span class="progress-checkpoint-label">30</span></div></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">23! You're crushing it! Just 7 more!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- ==================== ACTIVE: COMBINED ==================== -->
+
+        <!-- Combined: Piano + Reps -->
+        <div class="screen" id="screen-combined-piano">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar stepper"><div class="progress-track"><div class="progress-fill" style="width:40%"></div><div class="progress-checkpoints"><div class="progress-checkpoint checkpoint-icon reached"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="progress-checkpoint checkpoint-icon reached"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="progress-checkpoint checkpoint-icon"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="progress-checkpoint checkpoint-icon"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="progress-checkpoint checkpoint-icon"><svg class="progress-checkpoint-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">That's 2 play-throughs done! 3 more to go. You're sounding better each time</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- ==================== EDGE CASES ==================== -->
+
+        <!-- SFW Safety Gate (character-led pause) -->
+        <div class="screen" id="screen-sfw-warning">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:45%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Hmm, something doesn't look right. Point the camera at your task and start recording again!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop is-paused" aria-label="Recording paused" aria-disabled="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Network Drop -->
+        <div class="screen" id="screen-network-drop">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:55%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Don't worry, keep going! I'm still recording and will check everything once we're back online</p></div>
+            </div>
+            <div style="position:absolute;bottom:129px;left:20px;right:20px;z-index:10">
+              <div class="toast toast-warning" style="width:100%">
+                <span class="toast-icon">&#128268;</span>
+                <div class="toast-content">
+                  <div class="toast-title">No connection &mdash; recording locally</div>
+                </div>
+                <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+              </div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Kid Idle -->
+        <div class="screen" id="screen-kid-idle">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:25%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Hey, I'm still here! Ready when you are</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Duration Cap -->
+        <div class="screen" id="screen-duration-cap">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:85%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Great effort! Time to wrap up. Let me check how you did</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Kid Quits Early -->
+        <div class="screen" id="screen-kid-quits">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:35%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Taking a break? Your progress is saved!</p></div>
+            </div>
+            <div class="alert-scrim">
+              <div class="alert" role="alertdialog" aria-modal="true" aria-labelledby="kid-quits-label" aria-describedby="kid-quits-desc">
+                <div class="alert-icon">&#9208;&#65039;</div>
+                <div class="alert-content">
+                  <div class="alert-label" id="kid-quits-label">Taking a break?</div>
+                  <div class="alert-desc" id="kid-quits-desc">You&rsquo;re at 35%, your progress is saved! You can come back and finish later.</div>
+                </div>
+                <div class="alert-actions alert-actions-row">
+                  <button class="btn-sprout btn-secondary btn-md">Pause &amp; Save</button>
+                  <button class="btn-sprout btn-primary btn-md">Keep Going</button>
+                </div>
+              </div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- ==================== READINESS ACCUMULATION ==================== -->
+
+        <!-- R0: Session Start -->
+        <div class="screen" id="screen-r-zero">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:0%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Ready when you are! Start playing whenever you like</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- R1: First Chunk Confirms -->
+        <div class="screen" id="screen-r-first-chunk">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:10%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Nice, you've started! Keep playing</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- R2: Building Momentum (25%) -->
+        <div class="screen" id="screen-r-building">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:25%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Keep going, you're getting into a groove!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- R3: Idle Detected (flat) -->
+        <div class="screen" id="screen-r-idle-flat">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:30%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Hey, I'm still here! Ready when you are</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- R4: Resume After Idle -->
+        <div class="screen" id="screen-r-resume">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:37%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Welcome back! That sounded great, keep it up</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- R5: Halfway (50%) -->
+        <div class="screen" id="screen-r-halfway">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:50%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Halfway there! You've got this</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- R6: Deep Review Bump -->
+        <div class="screen" id="screen-r-review-bump">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:65%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Your left hand technique is getting smoother! I can hear you nailing those transitions between the verses</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- R7: Almost Done (85%) -->
+        <div class="screen" id="screen-r-almost">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:85%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Almost done! One more minute -- finish strong!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- R8: Final Push (95%) -->
+        <div class="screen" id="screen-r-approaching">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:95%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">So close! Just a few more seconds!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- R9: Hit 100% -->
+        <div class="screen" id="screen-r-complete">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:100%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">AMAZING JOB, Ben! All 5 play-throughs done! You're a rockstar!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- SFW Hold (Readiness Frozen — character-led pause) -->
+        <div class="screen" id="screen-r-sfw-hold">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:50">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:45%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot" style="top:120px;z-index:50">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">I can't see your task right now. Point the camera back so we can keep going!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop is-paused" aria-label="Recording paused" aria-disabled="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- ==================== PAUSED ==================== -->
+
+        <!-- Paused: Snapshot (kid just left) -->
+        <div class="screen" id="screen-paused-snapshot">
+          <div class="light-screen">
+            <div class="screen-header">
+              <span class="back">&larr;</span>
+              <h2>Piano Practice</h2>
+            </div>
+            <div style="flex:1;padding:0 16px;overflow-y:auto">
+              <div style="text-align:center;padding:24px 0 16px">
+                <div style="width:64px;height:64px;border-radius:50%;background:var(--violet-50);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 12px">&#9208;</div>
+                <h3 style="font-size:18px;font-weight:700;color:var(--text-primary)">Session Paused</h3>
+                <p style="font-size:13px;color:var(--text-tertiary);margin-top:4px">Your progress is saved &mdash; come back anytime!</p>
+              </div>
+
+              <div class="task-card" style="margin:0 0 12px">
+                <div style="font-size:11px;font-weight:600;color:var(--text-quaternary);text-transform:uppercase;margin-bottom:8px">Progress Snapshot</div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-primary)">Readiness</span>
+                  <div style="flex:1;height:8px;background:var(--gray-200);border-radius:99px;overflow:hidden"><div style="width:42%;height:100%;background:var(--yellow-400);border-radius:99px"></div></div>
+                  <span style="font-size:13px;font-weight:700;color:var(--text-primary)">42%</span>
+                </div>
+                <div style="font-size:13px;color:var(--text-secondary);line-height:1.6">
+                  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-secondary)"><span>Active time</span><strong>4 min 12 sec</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-secondary)"><span>Play-throughs</span><strong>2 of 5</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-secondary)"><span>Chunks processed</span><strong>4</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:4px 0"><span>Sessions</span><strong>1</strong></div>
+                </div>
+              </div>
+
+              <div style="background:var(--sprout-50);border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid var(--sprout-200)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                  <div style="width:28px;height:28px;border-radius:50%;background:var(--sprout-400);display:flex;align-items:center;justify-content:center;font-size:14px">&#127793;</div>
+                  <span style="font-size:13px;font-weight:600;color:var(--sprout-600)">Sprout says:</span>
+                </div>
+                <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">You were doing great! 2 play-throughs done. Take a break and come back when you're ready for the next 3.</p>
+              </div>
+
+              <div style="padding:0 0 24px">
+                <div style="background:var(--sprout-500);color:#fff;text-align:center;padding:16px;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 0 var(--sprout-700);margin-bottom:8px">
+                  Continue Quest &#127929;
+                </div>
+                <div style="text-align:center;font-size:12px;color:var(--text-quaternary);margin-top:8px">Quest expires tonight at midnight</div>
+              </div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item"><span class="tab-icon">&#128106;</span>Family</div>
+              <div class="tab-item"><span class="tab-icon">&#9889;</span>Activity</div>
+              <div class="tab-item active"><span class="tab-icon">&#128172;</span>Chats</div>
+              <div class="tab-item"><span class="tab-icon">&#128142;</span>Rewards</div>
+              <div class="tab-item"><span class="tab-icon">&#128100;</span>Profile</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paused: Daily Task -->
+        <div class="screen" id="screen-paused-daily">
+          <div class="light-screen">
+            <div class="screen-header">
+              <span class="back">&larr;</span>
+              <h2>Today's Quests</h2>
+            </div>
+            <div style="flex:1;padding:0 16px;overflow-y:auto">
+              <div class="task-card" style="border-left:4px solid var(--violet-400)">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div style="width:36px;height:36px;border-radius:10px;background:var(--sprout-100);display:flex;align-items:center;justify-content:center;font-size:18px">&#127929;</div>
+                    <div>
+                      <h3 style="font-size:15px">Piano Practice</h3>
+                      <div style="font-size:11px;color:var(--text-quaternary)">Come Fly With Me</div>
+                    </div>
+                  </div>
+                  <div style="background:var(--violet-50);color:var(--violet-600);font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase">Paused</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                  <div style="flex:1;height:6px;background:var(--gray-200);border-radius:99px;overflow:hidden"><div style="width:42%;height:100%;background:var(--yellow-400);border-radius:99px"></div></div>
+                  <span style="font-size:12px;font-weight:600;color:var(--text-secondary)">42%</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--orange-500)">
+                    <span>&#9200;</span> Expires tonight at midnight
+                  </div>
+                  <div style="background:var(--sprout-500);color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;cursor:pointer">Continue</div>
+                </div>
+              </div>
+
+              <div class="task-card" style="opacity:0.7;border-left:4px solid var(--green-400)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <div style="width:36px;height:36px;border-radius:10px;background:var(--green-50);display:flex;align-items:center;justify-content:center;font-size:18px">&#129703;</div>
+                  <div>
+                    <h3 style="font-size:15px">Brush Teeth</h3>
+                    <div style="font-size:11px;color:var(--green-500)">&#10003; Completed &mdash; +5 gems</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item"><span class="tab-icon">&#128106;</span>Family</div>
+              <div class="tab-item"><span class="tab-icon">&#9889;</span>Activity</div>
+              <div class="tab-item active"><span class="tab-icon">&#128172;</span>Chats</div>
+              <div class="tab-item"><span class="tab-icon">&#128142;</span>Rewards</div>
+              <div class="tab-item"><span class="tab-icon">&#128100;</span>Profile</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paused: Weekly Unit Task -->
+        <div class="screen" id="screen-paused-weekly">
+          <div class="light-screen">
+            <div class="screen-header">
+              <span class="back">&larr;</span>
+              <h2>This Week's Quests</h2>
+            </div>
+            <div style="flex:1;padding:0 16px;overflow-y:auto">
+              <div class="task-card" style="border-left:4px solid var(--violet-400)">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div style="width:36px;height:36px;border-radius:10px;background:var(--sprout-100);display:flex;align-items:center;justify-content:center;font-size:18px">&#127929;</div>
+                    <div>
+                      <h3 style="font-size:15px">Piano Practice</h3>
+                      <div style="font-size:11px;color:var(--text-quaternary)">Come Fly With Me &mdash; 5 times</div>
+                    </div>
+                  </div>
+                  <div style="background:var(--violet-50);color:var(--violet-600);font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase">Paused</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                  <div style="flex:1;height:6px;background:var(--gray-200);border-radius:99px;overflow:hidden"><div style="width:42%;height:100%;background:var(--yellow-400);border-radius:99px"></div></div>
+                  <span style="font-size:12px;font-weight:600;color:var(--text-secondary)">42%</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-tertiary)">
+                    <span>&#128197;</span> Unit ends Sunday
+                  </div>
+                  <div style="background:var(--sprout-500);color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;cursor:pointer">Continue</div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item"><span class="tab-icon">&#128106;</span>Family</div>
+              <div class="tab-item"><span class="tab-icon">&#9889;</span>Activity</div>
+              <div class="tab-item active"><span class="tab-icon">&#128172;</span>Chats</div>
+              <div class="tab-item"><span class="tab-icon">&#128142;</span>Rewards</div>
+              <div class="tab-item"><span class="tab-icon">&#128100;</span>Profile</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resume from Pause -->
+        <div class="screen" id="screen-paused-resume">
+          <div class="camera-view">
+            <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+              <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+              <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:42%"></div></div></div>
+            </div>
+            <div class="conversational-feedback vv-feedback-slot">
+              <div class="avatar-portrait"><canvas class="rive-avatar"></canvas></div>
+              <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Welcome back! You were at 42% -- let's finish those last 3 play-throughs!</p></div>
+            </div>
+            <div class="vv-bottom-bar">
+              <button class="btn-util" aria-label="Flip camera">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                </div>
+              </button>
+              <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                <span class="btn-record-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                </span>
+              </button>
+              <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                <div class="btn-util-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Expired While Paused -->
+        <div class="screen" id="screen-paused-expired">
+          <div class="light-screen">
+            <div class="screen-header">
+              <span class="back">&larr;</span>
+              <h2>Piano Practice</h2>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center">
+              <div style="width:64px;height:64px;border-radius:50%;background:var(--yellow-50);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:16px">&#9200;</div>
+              <h3 style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:6px">Time Ran Out</h3>
+              <p style="font-size:14px;color:var(--text-tertiary);line-height:1.5;max-width:260px;margin-bottom:20px">Your piano practice session expired at midnight. Let's see how you did with what you completed!</p>
+
+              <div style="background:var(--gray-50);border-radius:14px;padding:16px;width:280px;text-align:left;border:1px solid var(--border-secondary);margin-bottom:16px">
+                <div style="font-size:11px;font-weight:600;color:var(--text-quaternary);text-transform:uppercase;margin-bottom:8px">Final Snapshot</div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                  <span style="font-size:12px;color:var(--text-secondary)">Readiness</span>
+                  <div style="flex:1;height:6px;background:var(--gray-200);border-radius:99px;overflow:hidden"><div style="width:42%;height:100%;background:var(--yellow-400);border-radius:99px"></div></div>
+                  <span style="font-size:12px;font-weight:700">42%</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-tertiary);line-height:1.6">
+                  <div>&#127929; 2 of 5 play-throughs</div>
+                  <div>&#9201; 4 min 12 sec active</div>
+                  <div>&#128336; Paused at 3:42 PM, expired at midnight</div>
+                </div>
+              </div>
+
+              <div style="background:var(--yellow-50);border-radius:10px;padding:12px;width:280px;text-align:left;border:1px solid var(--yellow-200);margin-bottom:16px">
+                <div style="font-size:11px;font-weight:600;color:var(--yellow-600);margin-bottom:4px">&#9881; Parent threshold: 80%</div>
+                <div style="font-size:12px;color:var(--text-tertiary)">42% is below threshold &mdash; sent to parent for review.</div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:28px;height:28px;border-radius:50%;background:var(--sprout-400);display:flex;align-items:center;justify-content:center;font-size:14px">&#127793;</div>
+                <div style="background:var(--sprout-50);padding:8px 14px;border-radius:12px;font-size:12px;color:var(--text-secondary);text-align:left;max-width:220px">You gave it a solid start! Next time, try picking up where you left off earlier</div>
+              </div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item"><span class="tab-icon">&#128106;</span>Family</div>
+              <div class="tab-item"><span class="tab-icon">&#9889;</span>Activity</div>
+              <div class="tab-item active"><span class="tab-icon">&#128172;</span>Chats</div>
+              <div class="tab-item"><span class="tab-icon">&#128142;</span>Rewards</div>
+              <div class="tab-item"><span class="tab-icon">&#128100;</span>Profile</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TRANSITION (prototypes) ==================== -->
+
+        <!-- Transition: Expand (prototype) — same behavior as screen-evaluate-processing -->
+        <div class="screen" id="screen-transition-expand">
+          <div class="vv-morph-stage is-portrait">
+
+            <!-- Gray camera bg -->
+            <div class="morph-camera-bg"></div>
+
+            <!-- Habit recording UI layer -->
+            <div class="morph-habit-ui">
+              <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+                <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+                <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:100%"></div></div></div>
+              </div>
+              <div class="conversational-feedback vv-feedback-slot">
+                <div class="avatar-portrait-spacer"></div>
+                <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Nice work! Let me check your video&hellip;</p></div>
+              </div>
+              <div class="vv-bottom-bar">
+                <button class="btn-util" aria-label="Flip camera">
+                  <div class="btn-util-icon">
+                    <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                  </div>
+                </button>
+                <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                  <span class="btn-record-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                  </span>
+                </button>
+                <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                  <div class="btn-util-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hero card: expands from portrait tile to full screen after 1.2s hold -->
+            <div class="hero-card">
+              <div class="morph-grass">
+                <div></div>
+                <div></div>
+              </div>
+              <canvas class="rive-avatar" width="2400" height="2400"></canvas>
+              <div class="morph-title-group">
+                <h2>Checking your work...</h2>
+                <p>Almost done!</p>
+              </div>
+            </div>
+
+            <div class="subtitles subtitles-overlay subtitles-centered" style="display:none"><p class="subtitles-text">Checking your work... Almost done!</p></div>
+            <div class="morph-home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Transition: Shrink (prototype) — reverse direction: starts expanded, shrinks to portrait tile after hold -->
+        <div class="screen" id="screen-transition-shrink">
+          <div class="vv-morph-stage">
+
+            <!-- Gray camera bg (revealed as card shrinks and uncovers it) -->
+            <div class="morph-camera-bg"></div>
+
+            <!-- Habit recording UI layer — starts hidden (fade-out), fades in as card shrinks and uncovers -->
+            <div class="morph-habit-ui fade-out">
+              <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+                <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+                <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:100%"></div></div></div>
+              </div>
+              <div class="conversational-feedback vv-feedback-slot">
+                <div class="avatar-portrait-spacer"></div>
+                <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">AMAZING JOB, Ben! All 5 play-throughs done! You're a rockstar!</p></div>
+              </div>
+              <div class="vv-bottom-bar">
+                <button class="btn-util" aria-label="Flip camera">
+                  <div class="btn-util-icon">
+                    <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                  </div>
+                </button>
+                <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                  <span class="btn-record-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                  </span>
+                </button>
+                <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                  <div class="btn-util-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hero card: starts full screen (no .is-portrait on stage), shrinks to portrait tile after 1.2s hold -->
+            <div class="hero-card">
+              <div class="morph-grass">
+                <div></div>
+                <div></div>
+              </div>
+              <canvas class="rive-avatar" width="2400" height="2400"></canvas>
+              <div class="morph-title-group">
+                <h2>Amazing job, Ben!</h2>
+                <p>You nailed all 5 play-throughs!</p>
+              </div>
+            </div>
+
+            <div class="subtitles subtitles-overlay subtitles-centered" style="display:none"><p class="subtitles-text">Amazing job, Ben! You nailed all 5 play-throughs!</p></div>
+            <div class="morph-home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- ==================== EVALUATE ==================== -->
+
+        <!-- Evaluate: Processing — static end state only (no transition; the transition prototype lives at screen-transition-expand) -->
+        <div class="screen" id="screen-evaluate-processing">
+          <div class="vv-morph-stage">
+
+            <!-- Gray camera bg (habit phase, fades out) -->
+            <div class="morph-camera-bg"></div>
+
+            <!-- Habit recording UI layer (fades out) -->
+            <div class="morph-habit-ui">
+              <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+                <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+                <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:100%"></div></div></div>
+              </div>
+              <div class="conversational-feedback vv-feedback-slot">
+                <div class="avatar-portrait-spacer"></div>
+                <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">Nice work! Let me check your video&hellip;</p></div>
+              </div>
+              <div class="vv-bottom-bar">
+                <button class="btn-util" aria-label="Flip camera">
+                  <div class="btn-util-icon">
+                    <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                  </div>
+                </button>
+                <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                  <span class="btn-record-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                  </span>
+                </button>
+                <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                  <div class="btn-util-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hero card: single element that transforms from portrait thumbnail to full screen. Contents inside (sprout, grass, title) scale with the card as one unit. -->
+            <div class="hero-card">
+              <div class="morph-grass">
+                <div></div>
+                <div></div>
+              </div>
+              <canvas class="rive-avatar" width="2400" height="2400"></canvas>
+              <div class="morph-title-group">
+                <h2>Checking your work...</h2>
+                <p>Almost done!</p>
+              </div>
+            </div>
+
+            <!-- Hidden subtitle for mouth animation (drives startMouthAnim) -->
+            <div class="subtitles subtitles-overlay subtitles-centered" style="display:none"><p class="subtitles-text">Checking your work... Almost done!</p></div>
+
+            <!-- Home indicator -->
+            <div class="morph-home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- Evaluate: Natural Completion — static end state only (no transition; the transition prototype lives at screen-transition-shrink/expand) -->
+        <div class="screen" id="screen-evaluate-natural">
+          <div class="vv-morph-stage">
+
+            <!-- Gray camera bg (habit phase, fades out) -->
+            <div class="morph-camera-bg"></div>
+
+            <!-- Habit recording UI layer (fades out) -->
+            <div class="morph-habit-ui">
+              <div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+                <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+                <div class="progress-bar"><div class="progress-track"><div class="progress-fill" style="width:100%"></div></div></div>
+              </div>
+              <div class="conversational-feedback vv-feedback-slot">
+                <div class="avatar-portrait-spacer"></div>
+                <div class="subtitles subtitles-overlay subtitles-centered"><p class="subtitles-text">AMAZING JOB, Ben! All 5 play-throughs done! You're a rockstar!</p></div>
+              </div>
+              <div class="vv-bottom-bar">
+                <button class="btn-util" aria-label="Flip camera">
+                  <div class="btn-util-icon">
+                    <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
+                  </div>
+                </button>
+                <button class="btn-record btn-record-secondary btn-record-stop" aria-label="Stop recording" aria-pressed="true">
+                  <span class="btn-record-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+                  </span>
+                </button>
+                <button class="btn-util vv-btn-hidden" aria-label="Toggle flash">
+                  <div class="btn-util-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hero card: single element that transforms from portrait thumbnail to full screen. Contents inside (sprout, grass, title) scale with the card as one unit. -->
+            <div class="hero-card">
+              <div class="morph-grass">
+                <div></div>
+                <div></div>
+              </div>
+              <canvas class="rive-avatar" width="2400" height="2400"></canvas>
+              <div class="morph-title-group">
+                <h2>Amazing job, Ben!</h2>
+                <p>You nailed all 5 play-throughs!</p>
+              </div>
+            </div>
+
+            <!-- Hidden subtitle for mouth animation (drives startMouthAnim) -->
+            <div class="subtitles subtitles-overlay subtitles-centered" style="display:none"><p class="subtitles-text">Amazing job, Ben! You nailed all 5 play-throughs!</p></div>
+
+            <!-- Home indicator -->
+            <div class="morph-home-indicator"></div>
+          </div>
+        </div>
+
+        <!-- ==================== APPROVED ==================== -->
+
+        <!-- Approved: Full — Result Screen pattern (/patterns/success-screen.html) -->
+        <div class="screen" id="screen-approved-full">
+          <div class="result-screen">
+            <div class="result-content">
+              <h2 class="result-title">Quest Complete!</h2>
+              <p class="result-desc">You practiced for 10 minutes and nailed almost every one. I'm so proud of you!</p>
+              <div class="stat-card-row">
+                <div class="stat-card stat-card--target">
+                  <div class="stat-card-label">GREAT</div>
+                  <div class="stat-card-value">
+                    <span class="stat-card-icon">&#127919;</span>
+                    <span class="stat-card-number" data-count-to="94" data-count-format="percent">94%</span>
+                  </div>
+                </div>
+                <div class="stat-card stat-card--duration">
+                  <div class="stat-card-label">SPEEDY</div>
+                  <div class="stat-card-value">
+                    <span class="stat-card-icon">&#9202;&#65039;</span>
+                    <span class="stat-card-number" data-count-to="600" data-count-format="time">10:00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hidden subtitle for mouth animation -->
+            <div class="subtitles subtitles-overlay subtitles-centered" style="display:none"><p class="subtitles-text">You practiced for 10 minutes and nailed almost every one. I'm so proud of you!</p></div>
+
+            <canvas class="rive-avatar" width="1380" height="1380"></canvas>
+            <div class="grass-container">
+              <div class="grass-edge"></div>
+              <div class="grass-fill"></div>
+            </div>
+            <button class="btn-sprout btn-primary btn-lg">Continue</button>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+
+        <!-- Approved: Partial — Result Screen pattern (/patterns/success-screen.html) -->
+        <div class="screen" id="screen-approved-partial">
+          <div class="result-screen">
+            <div class="result-content">
+              <h2 class="result-title">Good Effort!</h2>
+              <p class="result-desc">You practiced for 8 minutes and got through 4 of 5 play-throughs. So close!</p>
+              <div class="stat-card-row">
+                <div class="stat-card stat-card--target">
+                  <div class="stat-card-label">GREAT</div>
+                  <div class="stat-card-value">
+                    <span class="stat-card-icon">&#127919;</span>
+                    <span class="stat-card-number" data-count-to="80" data-count-format="percent">80%</span>
+                  </div>
+                </div>
+                <div class="stat-card stat-card--duration">
+                  <div class="stat-card-label">SPEEDY</div>
+                  <div class="stat-card-value">
+                    <span class="stat-card-icon">&#9202;&#65039;</span>
+                    <span class="stat-card-number" data-count-to="480" data-count-format="time">8:00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hidden subtitle for mouth animation -->
+            <div class="subtitles subtitles-overlay subtitles-centered" style="display:none"><p class="subtitles-text">You practiced for 8 minutes and got through 4 of 5 play-throughs. So close!</p></div>
+
+            <canvas class="rive-avatar" width="1380" height="1380"></canvas>
+            <div class="grass-container">
+              <div class="grass-edge"></div>
+              <div class="grass-fill"></div>
+            </div>
+            <button class="btn-sprout btn-primary btn-lg">Continue</button>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+
+        <!-- ==================== PARENT_REVIEW ==================== -->
+
+        <!-- Parent Review: Kid View (Pending) — Result Screen pattern (/patterns/success-screen.html) -->
+        <div class="screen" id="screen-parent-pending">
+          <div class="result-screen">
+            <div class="result-content">
+              <h2 class="result-title">Sent to Your Parents</h2>
+              <p class="result-desc">I sent your practice session to your parents so they can take a look. We'll hear back from them soon!</p>
+            </div>
+
+            <!-- Hidden subtitle for mouth animation -->
+            <div class="subtitles subtitles-overlay subtitles-centered" style="display:none"><p class="subtitles-text">I sent your practice session to your parents so they can take a look. We'll hear back from them soon!</p></div>
+
+            <canvas class="rive-avatar" width="1380" height="1380"></canvas>
+            <div class="grass-container">
+              <div class="grass-edge"></div>
+              <div class="grass-fill"></div>
+            </div>
+            <button class="btn-sprout btn-primary btn-lg">Continue</button>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+
+        <!-- Parent Review: Detail -->
+        <div class="screen" id="screen-parent-review-detail">
+          <div class="parent-screen">
+            <div class="status-bar">
+              <span class="status-bar-time">9:52</span>
+              <span class="status-bar-icons">
+                <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+                <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+              </span>
+            </div>
+            <div class="parent-header">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="font-size:20px;cursor:pointer">&larr;</span>
+                <div>
+                  <h2>Review: Piano Practice</h2>
+                  <div class="sub">Ben &bull; Today 9:41 AM &bull; Pending</div>
+                </div>
+              </div>
+            </div>
+            <div class="parent-body">
+              <div class="proof-card">
+                <h4>&#128247; Last Verified Frame</h4>
+                <div class="proof-thumb">&#127929;</div>
+                <div class="proof-stats">
+                  <div class="proof-stat"><strong>42%</strong> readiness</div>
+                  <div class="proof-stat"><strong>5:23</strong> active time</div>
+                  <div class="proof-stat"><strong>8:12</strong> total session</div>
+                </div>
+              </div>
+
+              <div class="proof-card">
+                <h4>&#129302; Agent Summary</h4>
+                <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">Ben practiced piano for about 5 minutes of the 10-minute session. Completed 2 of 5 play-throughs of "Come Fly With Me." Seemed distracted during the middle portion — had a few idle stretches where he wasn't actively playing.</p>
+              </div>
+
+              <div class="proof-card">
+                <h4>&#128203; Check Results</h4>
+                <div style="margin-top:8px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px">
+                    <span style="color:var(--green-500)">&#10003;</span>
+                    <span style="color:var(--text-secondary)">Watch: Actively playing</span>
+                    <span style="margin-left:auto;font-size:11px;color:var(--text-quaternary)">52% active</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:13px">
+                    <span style="color:var(--red-500)">&#10007;</span>
+                    <span style="color:var(--text-secondary)">Count: 5 play-throughs</span>
+                    <span style="margin-left:auto;font-size:11px;color:var(--text-quaternary)">2/5</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background:var(--yellow-50);border-radius:10px;padding:12px;margin-bottom:12px;border:1px solid var(--yellow-200)">
+                <div style="font-size:11px;font-weight:600;color:var(--yellow-600);margin-bottom:4px">&#9881; Your threshold: 80%</div>
+                <div style="font-size:12px;color:var(--text-tertiary)">Ben scored 42%. Adjust your threshold in Settings &gt; Parenting Style if you'd like to be more lenient.</div>
+              </div>
+            </div>
+            <div class="parent-actions">
+              <button class="btn-reject">Request Redo</button>
+              <button class="btn-approve">Approve Anyway</button>
+            </div>
+          </div>
+        </div>
+
+
+                  </div><!-- /screen-stack -->
+
+                  <!-- Native iOS camera permission alert (overlays entire device screen incl status bar) -->
+                  <div class="ios-alert-overlay" id="iosAlertOverlay">
+                    <div class="ios-alert-card">
+                      <div class="ios-alert-title-group">
+                        <div class="ios-alert-title">&ldquo;Sprout&rdquo; Would Like to Access the Camera</div>
+                        <div class="ios-alert-body">Show your Sprout around</div>
+                      </div>
+                      <div class="ios-alert-buttons">
+                        <div class="ios-alert-btn">Don&rsquo;t Allow</div>
+                        <div class="ios-alert-btn">Allow</div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div><!-- /device-screen -->
+              </div><!-- /device-mockup -->
+            </div><!-- /device-inner-shadow -->
+          </div><!-- /device-wrapper -->
+        </div><!-- /col-left -->
+
+        <div class="col-right"></div>
+      </div><!-- /two-col -->
+
+      <div class="vv-controls" id="vv-controls" style="display:none">
+
+<div class="state-diagram" id="stateDiagram">
+  <div class="state-node idle current" id="state-idle">IDLE</div>
+  <div class="state-arrow">&rarr;</div>
+  <div class="state-node active" id="state-active">ACTIVE</div>
+  <div class="state-arrow">&harr;</div>
+  <div class="state-node paused" id="state-paused">PAUSED</div>
+  <div class="state-arrow">&rarr;</div>
+  <div class="state-node evaluate" id="state-evaluate">EVALUATE</div>
+  <div class="state-arrow">&rarr;</div>
+  <div class="state-node approved" id="state-approved">APPROVED</div>
+  <div class="state-arrow" style="margin-left:-4px">/</div>
+  <div class="state-node parent-review" id="state-parent-review">PARENT_REVIEW</div>
+</div>
+
+<div class="screen-indicator">
+  <span class="label" id="screenLabel">Task Detail</span>
+  <span class="status-badge new" id="screenBadge">new</span>
+</div>
+
+<div class="vv-nav">
+  <div class="vv-nav-header">
+    <div class="vv-nav-title">Camera State Machine</div>
+    <div class="vv-nav-subtitle">Video Verification Flow &mdash; UX Explorer</div>
+  </div>
+  <div class="vv-nav-body">
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> IDLE &mdash; Pre-Camera</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item active" data-screen="screen-task-detail" data-name="Task Detail" data-desc="Kid sees the task card with verification mode, expected duration, and a Start button. Tapping Start requests camera permissions and transitions to ACTIVE." data-status="new" data-state="idle">
+          <span class="status-dot new"></span> Task Detail
+          <span class="state-tag idle">IDLE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-camera-permission" data-name="Camera Permission" data-desc="System camera permission prompt. If denied, kid sees an explanation screen with a link to Settings. Camera + microphone both requested." data-status="new" data-state="idle">
+          <span class="status-dot new"></span> Camera Permission
+          <span class="state-tag idle">IDLE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-camera-init" data-name="Camera Initializing" data-desc="Brief loading state while camera session starts, SFW model loads, and first frame is captured. Transitions to ACTIVE once camera feed is live." data-status="new" data-state="active">
+          <span class="status-dot new"></span> Camera Initializing
+          <span class="state-tag idle">IDLE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE: Show Me -->
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> ACTIVE &mdash; Show Me</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-show-me-clean-room" data-name="Show Me: Clean Room" data-desc="Kid points camera at the room. Single visual check. Agent says 'Show me your room!' and waits. No timer, no chunks. One verification call when kid taps capture or auto-triggers at high confidence." data-status="new" data-state="active" data-rive="idle">
+          <span class="status-dot new"></span> Clean Room
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-show-me-packed-bag" data-name="Show Me: Packed Bag" data-desc="Kid shows their packed school bag. Agent verifies contents are visible. Quick single-frame verification." data-status="new" data-state="active" data-rive="idle">
+          <span class="status-dot new"></span> Packed Bag
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE: Watch Me -->
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> ACTIVE &mdash; Watch Me</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-watch-piano" data-name="Watch Me: Piano (10 min)" data-desc="Camera on, avatar present. chunkInterval=60s, reviewInterval=180s. Agent encourages at chunk boundaries. Readiness fills based on active duration ratio." data-status="new" data-state="active" data-rive="smile">
+          <span class="status-dot new"></span> Piano Practice (10 min)
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-watch-teeth" data-name="Watch Me: Brush Teeth (2 min)" data-desc="Short task. chunkInterval=15s. Agent confirms presence and brushing activity. Fast readiness accumulation." data-status="new" data-state="active" data-rive="smile">
+          <span class="status-dot new"></span> Brush Teeth (2 min)
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-watch-reading" data-name="Watch Me: Reading (20 min)" data-desc="Long quiet task. chunkInterval=120s. Infrequent check-ins — just confirm kid is present with a book. Agent stays mostly quiet." data-status="new" data-state="active" data-rive="idle">
+          <span class="status-dot new"></span> Reading (20 min)
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-watch-soccer" data-name="Watch Me: Soccer Drills (15 min)" data-desc="Outdoor task. chunkInterval=30s, reviewInterval=300s. Agent reacts to effort. Moderate encouragement frequency." data-status="new" data-state="active" data-rive="laugh">
+          <span class="status-dot new"></span> Soccer Drills (15 min)
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE: Count Me (Phase 2) -->
+    <div class="vv-group">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> ACTIVE &mdash; Count Me (P2)</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-count-pushups" data-name="Count Me: 20 Pushups" data-desc="On-device pose detection counts reps. Agent announces each rep. chunkInterval=15s for server verification in parallel. Readiness = repsCompleted/target." data-status="future" data-state="active" data-rive="surprise">
+          <span class="status-dot future"></span> 20 Pushups
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-count-jumping" data-name="Count Me: Jumping Jacks" data-desc="Fast rep counting. On-device vision detects up/down state transitions. Each rep increments counter. Agent celebrates milestones." data-status="future" data-state="active" data-rive="laugh">
+          <span class="status-dot future"></span> Jumping Jacks
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE: Combined -->
+    <div class="vv-group">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> ACTIVE &mdash; Combined Checks</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-combined-piano" data-name="Piano + 5 Repetitions" data-desc="Two checks: watch_me (actively playing) + count_me (5 play-throughs). Both must pass. Readiness = average of both check progress values." data-status="new" data-state="active" data-rive="smile">
+          <span class="status-dot new"></span> Piano + Rep Count
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE: Readiness Accumulation -->
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> Readiness Accumulation</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-r-zero" data-name="R0: Session Start (0%)" data-desc="Camera just activated. Readiness at 0%. First chunk pending. Agent greets kid. Avatar expression: NEUTRAL/READY. Bar empty, no color yet." data-status="new" data-state="active" data-rive="characterwave">
+          <span class="status-dot new"></span> R0: Session Start (0%)
+          <span class="state-tag active">0%</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-first-chunk" data-name="R1: First Chunk Confirms (+8%)" data-desc="First chunk returns positive. Readiness jumps 0 to 8%. Bar appears with orange fill. Agent expression shifts to ENCOURAGING. Delta badge shows +8%." data-status="new" data-state="active" data-rive="smile">
+          <span class="status-dot new"></span> R1: First Chunk (+8%)
+          <span class="state-tag active">8%</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-building" data-name="R2: Building Momentum (25%)" data-desc="Several chunks confirmed. Readiness climbing steadily. Bar orange transitioning to yellow. Agent expression: HAPPY. Regular encouragement cadence." data-status="new" data-state="active" data-rive="smile">
+          <span class="status-dot new"></span> R2: Building (25%)
+          <span class="state-tag active">25%</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-idle-flat" data-name="R3: Idle Detected (25% flat)" data-desc="Kid stops doing task. Chunk returns negative. Readiness stays flat at 25%. Bar stops growing. Agent expression: CONCERNED. Gentle nudge." data-status="new" data-state="active" data-rive="doubtful">
+          <span class="status-dot new"></span> R3: Idle Flatline (25%)
+          <span class="state-tag active">FLAT</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-resume" data-name="R4: Resumes After Idle (+12%)" data-desc="Kid starts again. Next chunk confirms activity. Readiness jumps 25 to 37%. Bar resumes growing. Agent expression: ENCOURAGING. 'Welcome back!'" data-status="new" data-state="active" data-rive="characterwave">
+          <span class="status-dot new"></span> R4: Resume (+12%)
+          <span class="state-tag active">37%</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-halfway" data-name="R5: Halfway Point (50%)" data-desc="Readiness crosses 50%. Bar transitions orange to yellow. Agent tone shifts to 'Halfway there!' Avatar expression: HAPPY/EXCITED. Milestone moment for animation." data-status="new" data-state="active" data-rive="surprise">
+          <span class="status-dot new"></span> R5: Halfway (50%)
+          <span class="state-tag active">50%</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-review-bump" data-name="R6: Deep Review Bump (+15%)" data-desc="reviewInterval fires. Longer video analyzed. Richer feedback. Readiness gets a larger bump (65%). Bar visibly jumps. Agent gives detailed feedback. Expression: HAPPY." data-status="new" data-state="active" data-rive="smile">
+          <span class="status-dot new"></span> R6: Review Bump (65%)
+          <span class="state-tag active">65%</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-almost" data-name="R7: Almost Done (85%)" data-desc="Readiness in high zone. Bar turns green. Agent expression: EXCITED. 'Almost done!' Anticipation building. Chunks still flowing." data-status="new" data-state="active" data-rive="laugh">
+          <span class="status-dot new"></span> R7: Almost Done (85%)
+          <span class="state-tag active">85%</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-approaching" data-name="R8: Final Push (95%)" data-desc="One or two chunks from completion. Bar nearly full green. Agent expression: VERY EXCITED. 'So close!' Maximum anticipation." data-status="new" data-state="active" data-rive="surprise">
+          <span class="status-dot new"></span> R8: Final Push (95%)
+          <span class="state-tag active">95%</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-complete" data-name="R9: Hit 100% (Celebration)" data-desc="Readiness = 1.0. Bar full green with glow. Confetti burst. Agent expression: CELEBRATING. 'Amazing job!' Camera stops. Transition to APPROVED." data-status="new" data-state="evaluate" data-rive="celebration">
+          <span class="status-dot new"></span> R9: Complete! (100%)
+          <span class="state-tag approved">100%</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-r-sfw-hold" data-name="SFW Hold (Readiness Frozen)" data-desc="SFW gate fires mid-session. Viewfinder gets a soft frosted wash (not a black modal). Progress bar dims and shows a pulsing paused dot (not red). Sprout stays present with a searching expression and reassures the kid. Privacy chip promotes the on-device trust message. Resumes automatically when the task is back in frame." data-status="new" data-state="active" data-rive="thinking">
+          <span class="status-dot new"></span> SFW Hold (Frozen)
+          <span class="state-tag paused">HOLD</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE: Edge Cases -->
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> ACTIVE &mdash; Edge Cases</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-sfw-warning" data-name="SFW Safety Gate" data-desc="On-device SFW check flags a sampled frame. Camera feed gets a frosted blur (no black modal, no X icon). Sprout stays on stage with a searching expression and asks the kid to point back at the task. Recording is soft-disabled (not stopped). Resumes automatically on reframe. After 5+ consecutive failures, character copy escalates toward EVALUATE in the same bubble." data-status="new" data-state="paused" data-rive="thinking">
+          <span class="status-dot new"></span> SFW Triggered
+          <span class="state-tag paused">SFW</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-network-drop" data-name="Network Drop" data-desc="Connectivity lost mid-session. Recording continues locally. Chunks queue for upload. Readiness stays flat (no server confirmation). Agent shows offline banner." data-status="new" data-state="active" data-rive="smile">
+          <span class="status-dot new"></span> Network Drop
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-kid-idle" data-name="Kid Idle / Not Doing Task" data-desc="Chunk analysis detects kid not doing the task. Readiness stays flat. Agent nudges: 'Hey, I'm still here! Ready when you are.' After extended idle, gentle reminder." data-status="new" data-state="active" data-rive="thinking">
+          <span class="status-dot new"></span> Kid Idle
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-duration-cap" data-name="Duration Cap Hit" data-desc="Absolute duration cap reached (2x expected or 60 min max). Forces EVALUATE at current readiness. Kid sees 'Time's up!' message." data-status="new" data-state="active" data-rive="smile">
+          <span class="status-dot new"></span> Duration Cap
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-kid-quits" data-name="Kid Quits Early" data-desc="Kid backgrounds app, closes camera, or navigates away. Soft stop signal fires. If readiness > 0, transitions to PAUSED (not EVALUATE). Kid can come back later." data-status="new" data-state="paused" data-rive="sad">
+          <span class="status-dot new"></span> Kid Quits &rarr; PAUSED
+          <span class="state-tag paused">PAUSE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAUSED -->
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> PAUSED</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-paused-snapshot" data-name="Session Paused (Kid View)" data-desc="Kid left mid-task with 42% readiness. Camera stops, progress preserved. Kid sees a summary card with 'Continue later' messaging. Readiness and check state frozen, not lost." data-status="new" data-state="paused">
+          <span class="status-dot new"></span> Paused Snapshot
+          <span class="state-tag paused">PAUSE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-paused-daily" data-name="Paused: Daily Task" data-desc="Task belongs to a daily cadence. Expiry: end of today (midnight local). Kid has until bedtime to come back and finish. Timer shows hours remaining." data-status="new" data-state="paused">
+          <span class="status-dot new"></span> Daily Task (expires tonight)
+          <span class="state-tag paused">PAUSE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-paused-weekly" data-name="Paused: Weekly Unit Task" data-desc="Task belongs to a weekly unit with no per-day deadline. Expiry: end of unit window. Kid has days to come back. Lower urgency messaging." data-status="new" data-state="paused">
+          <span class="status-dot new"></span> Weekly Unit (expires Sun)
+          <span class="state-tag paused">PAUSE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-paused-resume" data-name="Resume from Pause" data-desc="Kid comes back and taps Continue. Camera re-initializes. Readiness picks up from 42%. Agent: 'Welcome back! Let's finish this!' New session appended to sessions array." data-status="new" data-state="active" data-rive="characterwave">
+          <span class="status-dot new"></span> Resume &rarr; ACTIVE
+          <span class="state-tag active">ACTIVE</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-paused-expired" data-name="Expired While Paused" data-desc="Expiry timer fires (midnight for daily, end-of-unit for weekly). Auto-transitions to EVALUATE at whatever readiness was preserved. Kid sees 'Time ran out' next time they open the task." data-status="new" data-state="evaluate">
+          <span class="status-dot new"></span> Expired &rarr; EVALUATE
+          <span class="state-tag evaluate">EVAL</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSITION (prototypes) -->
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> TRANSITION</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-transition-expand" data-name="Expand (Prototype)" data-desc="Hero-card expand animation: Sprout starts in the conversational feedback tile (top-left) and the card auto-expands to a full-screen result screen after a 1.2s hold. Demonstrates the transition from paused/camera state into the evaluate result view." data-status="new" data-state="evaluate" data-rive="doubtful">
+          <span class="status-dot new"></span> Expand
+          <span class="state-tag evaluate">PROTO</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-transition-shrink" data-name="Shrink (Prototype)" data-desc="Reverse of Expand: starts in the full-screen result layout and the card auto-shrinks back into the conversational feedback tile after a 1.2s hold. Demonstrates collapsing a result view back into an active/paused camera state." data-status="new" data-state="evaluate" data-rive="celebration">
+          <span class="status-dot new"></span> Shrink
+          <span class="state-tag evaluate">PROTO</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVALUATE -->
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> EVALUATE</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-evaluate-processing" data-name="Evaluating..." data-desc="Readiness score is compared against parent's autoApproveThreshold. Brief processing state while final verification call runs (if needed)." data-status="new" data-state="evaluate" data-rive="doubtful">
+          <span class="status-dot new"></span> Processing
+          <span class="state-tag evaluate">EVAL</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-evaluate-natural" data-name="Natural Completion (1.0)" data-desc="Readiness hit 1.0 naturally. Agent celebrates immediately. No threshold check needed. Always auto-approves." data-status="new" data-state="evaluate" data-rive="celebration">
+          <span class="status-dot new"></span> Natural Completion
+          <span class="state-tag evaluate">EVAL</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPROVED -->
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> APPROVED</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-approved-full" data-name="Approved (Full Completion)" data-desc="Kid completed everything. Readiness = 1.0. Big celebration, full gems awarded. 'Amazing job!'" data-status="new" data-state="approved" data-rive="celebration">
+          <span class="status-dot new"></span> Full Completion
+          <span class="state-tag approved">OK</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-approved-partial" data-name="Approved (Partial, Above Threshold)" data-desc="Readiness < 1.0 but >= threshold. Smaller celebration. 'Good effort! You got most of it done.' Partial gems." data-status="new" data-state="approved" data-rive="celebration">
+          <span class="status-dot new"></span> Partial (Above Threshold)
+          <span class="state-tag approved">OK</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PARENT_REVIEW -->
+    <div class="vv-group open">
+      <div class="vv-group-label"><span class="chevron">&#9654;</span> PARENT_REVIEW</div>
+      <div class="vv-group-items">
+        <div class="vv-screen-item" data-screen="screen-parent-pending" data-name="Sent to Parent (Kid View)" data-desc="Readiness below threshold. Kid sees 'Sent to your parent for review' with agent summary. Not a failure message — encouraging tone." data-status="new" data-state="parent-review" data-rive="smile">
+          <span class="status-dot new"></span> Kid: Pending Review
+          <span class="state-tag parent-review">REVIEW</span>
+        </div>
+        <div class="vv-screen-item" data-screen="screen-parent-review-detail" data-name="Parent Review Screen" data-desc="Parent sees: last verified frame, agent summary, readiness score, session duration, active time. Approve or Request Redo buttons." data-status="new" data-state="parent-review">
+          <span class="status-dot new"></span> Parent: Review Detail
+          <span class="state-tag parent-review">REVIEW</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="rive-card" id="riveCard">
+  <div class="rive-card-header">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--brand-500)"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1"/></svg>
+    <h3>Sprout Animation</h3>
+  </div>
+  <div class="rive-card-body" id="riveCardBody">
+    <div class="rive-card-empty">Select a camera screen to see Rive details</div>
+  </div>
+</div>
+
+<div class="desc-panel">
+  <h3 id="descTitle">Task Detail</h3>
+  <p id="descText">Kid sees the task card with verification mode, expected duration, and a Start button. Tapping Start requests camera permissions and transitions to ACTIVE.</p>
+</div>
+
+      </div><!-- /vv-controls -->
+    </div>
+  </div>
+</div>
+
+<script>
+// State machine highlight
+var stateMap = {
+  'idle': 'state-idle',
+  'active': 'state-active',
+  'evaluate': 'state-evaluate',
+  'approved': 'state-approved',
+  'parent-review': 'state-parent-review',
+  'paused': 'state-paused',
+  'error': 'state-active'
+};
+
+function setActiveScreen(item) {
+  // Deactivate all
+  document.querySelectorAll('.vv-screen-item').forEach(function(n) { n.classList.remove('active'); });
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+
+  // Activate clicked
+  item.classList.add('active');
+  var screenId = item.getAttribute('data-screen');
+  var screen = document.getElementById(screenId);
+  if (screen) screen.classList.add('active');
+
+  // Update description
+  document.getElementById('descTitle').textContent = item.getAttribute('data-name') || '';
+  document.getElementById('descText').textContent = item.getAttribute('data-desc') || '';
+
+  // Update badge
+  var badge = document.getElementById('screenBadge');
+  var status = item.getAttribute('data-status') || 'new';
+  badge.className = 'status-badge ' + status;
+  badge.textContent = status;
+
+  // Update label
+  document.getElementById('screenLabel').textContent = item.getAttribute('data-name') || '';
+
+  // Toggle camera-active on device-screen for transparent status bar overlay
+  var state = item.getAttribute('data-state') || 'idle';
+  var deviceScreen = document.querySelector('.device-screen');
+  if (deviceScreen) {
+    if (state !== 'idle') {
+      deviceScreen.classList.add('camera-active');
+    } else {
+      deviceScreen.classList.remove('camera-active');
+    }
+  }
+
+  // Update state machine diagram
+  document.querySelectorAll('.state-node').forEach(function(n) { n.classList.remove('current'); });
+  var stateId = stateMap[state];
+  if (stateId) {
+    var stateNode = document.getElementById(stateId);
+    if (stateNode) stateNode.classList.add('current');
+  }
+}
+
+// Click handlers
+document.querySelectorAll('.vv-screen-item[data-screen]').forEach(function(item) {
+  item.addEventListener('click', function() { setActiveScreen(this); });
+});
+
+// Nav group toggle
+document.querySelectorAll('.vv-group-label').forEach(function(label) {
+  label.addEventListener('click', function() {
+    this.parentElement.classList.toggle('open');
+  });
+});
+</script>
+
+<script>
+var activeRive = null;
+var riveBytes = null;
+var mouthInterval = null;
+var mouthTimeout = null;
+
+function startMouthAnim() {
+  stopMouthAnim();
+  if (!activeRive) return;
+  var inputs = activeRive.stateMachineInputs('State Machine 1');
+  if (!inputs) return;
+
+  var talkToggle = null;
+  var talkAnim = null;
+  var mouthSel = null;
+  inputs.forEach(function(inp) {
+    if (inp.name === 'talkingmouth toggle') talkToggle = inp;
+    if (inp.name === 'talkinganimation') talkAnim = inp;
+    if (inp.name === 'mouthselector') mouthSel = inp;
+  });
+
+  // Get subtitle text to calculate duration
+  var activeScreen = document.querySelector('.screen.active');
+  var subtitle = activeScreen ? activeScreen.querySelector('.subtitles-text') : null;
+  var text = subtitle ? subtitle.textContent : '';
+  var wordCount = text.split(/\s+/).filter(Boolean).length;
+  var duration = Math.max(1500, wordCount * 250);
+
+  // Enable talking
+  if (talkToggle) talkToggle.value = true;
+  if (talkAnim) talkAnim.value = true;
+
+  // Cycle mouth shapes to simulate speech
+  if (mouthSel) {
+    var shapes = [0,3,7,1,10,4,0,8,2,11,5,0,6,9,1,12,3,0];
+    var step = 0;
+    mouthInterval = setInterval(function() {
+      if (!activeRive) { stopMouthAnim(); return; }
+      mouthSel.value = shapes[step % shapes.length];
+      step++;
+    }, 150);
+  }
+
+  // Stop after duration
+  mouthTimeout = setTimeout(function() {
+    stopMouthAnim();
+  }, duration);
+}
+
+function stopMouthAnim() {
+  if (mouthInterval) { clearInterval(mouthInterval); mouthInterval = null; }
+  if (mouthTimeout) { clearTimeout(mouthTimeout); mouthTimeout = null; }
+  if (activeRive) {
+    var inputs = activeRive.stateMachineInputs('State Machine 1');
+    if (inputs) {
+      inputs.forEach(function(inp) {
+        if (inp.name === 'talkingmouth toggle') inp.value = false;
+        if (inp.name === 'talkinganimation') inp.value = false;
+        if (inp.name === 'mouthselector') inp.value = 0;
+      });
+    }
+  }
+}
+
+function initActiveAvatar() {
+  var activeScreen = document.querySelector('.screen.active');
+  if (!activeScreen) return;
+  var canvas = activeScreen.querySelector('.rive-avatar');
+  if (!canvas) return;
+
+  // Use canvas's own dimensions if set, otherwise default for avatar-portrait
+  if (!canvas.getAttribute('width') || canvas.width <= 1) {
+    canvas.width = 480;
+    canvas.height = 704;
+  }
+
+  stopMouthAnim();
+  if (activeRive) {
+    try { activeRive.cleanup(); } catch(e) {}
+    activeRive = null;
+  }
+
+  var activeNav = document.querySelector('.vv-screen-item.active');
+  var riveAction = activeNav ? activeNav.getAttribute('data-rive') : null;
+
+  var opts = {
+    canvas: canvas,
+    autoplay: true,
+    stateMachines: 'State Machine 1',
+    fit: rive.Fit.Contain,
+    alignment: rive.Alignment.BottomCenter,
+    onLoad: function() {
+      var inputs = activeRive.stateMachineInputs('State Machine 1');
+      if (!inputs) return;
+      inputs.forEach(function(input) {
+        if (input.name === 'hairID') input.value = 1;
+      });
+      setTimeout(function() {
+        if (!activeRive) return;
+        // Fire expression trigger if not idle
+        if (riveAction && riveAction !== 'idle') {
+          var parts = riveAction.split(':');
+          var inputName = parts[0];
+          var inputValue = parts.length > 1 ? Number(parts[1]) : null;
+          var currentInputs = activeRive.stateMachineInputs('State Machine 1');
+          if (currentInputs) {
+            currentInputs.forEach(function(input) {
+              if (input.name.trim() === inputName) {
+                if (inputValue !== null) {
+                  input.value = inputValue;
+                } else {
+                  input.fire();
+                }
+              }
+            });
+          }
+        }
+        // Skip auto mouth anim for Task Detail — message streaming controls it
+        var activeScreenEl = document.querySelector('.screen.active');
+        if (activeScreenEl && activeScreenEl.id === 'screen-task-detail') return;
+
+        // Start mouth animation after expression plays out
+        // Reactive expressions need more time before speaking
+        var mouthDelays = {
+          'surprise':900, 'laugh':900,
+          'celebration':1700, 'characterwave':1200
+        };
+        var triggerName = riveAction ? riveAction.split(':')[0] : 'idle';
+        var mouthDelay = mouthDelays[triggerName] || 200;
+        setTimeout(startMouthAnim, mouthDelay);
+      }, 300);
+    }
+  };
+
+  if (riveBytes) {
+    opts.buffer = riveBytes;
+  } else {
+    opts.src = 'https://sprout-hq.vercel.app/assets/sprot2.97.riv';
+  }
+
+  activeRive = new rive.Rive(opts);
+}
+
+function startRive() {
+  fetch('https://sprout-hq.vercel.app/assets/sprot2.97.riv')
+    .then(function(r) { return r.arrayBuffer(); })
+    .then(function(buf) {
+      riveBytes = buf;
+      initActiveAvatar();
+    })
+    .catch(function() {
+      initActiveAvatar();
+    });
+}
+
+if (typeof rive !== 'undefined') {
+  startRive();
+} else {
+  document.querySelector('script[src*="rive"]').addEventListener('load', startRive);
+}
+
+// Rive character state data from Notion DB
+var riveStates = {
+  'looking:1': {state:'Focusing (eye contact)',category:'Attention',catColor:'#0086c9',catBg:'#e0f2fe',rive:'Default idle (needs new animation)',riveStatus:'Missing',trigger:'Child is speaking or actively doing the task',howItWorks:'Currently using default idle. TODO: Create a focused attention animation with narrowed eyes to simulate concentrated sight, distinct from the relaxed idle state.',visual:'Eyes locked forward, still body, slight lean-in',metaphor:'Listening intently to what you\'re saying'},
+  'looking:2': {state:'Looking away',category:'Attention',catColor:'#0086c9',catBg:'#e0f2fe',rive:'looking (Number 0-3)',riveStatus:'Covered',trigger:'Brief idle break (timed)',howItWorks:'Cycle looking through values to create natural wandering eye movement',visual:'Eyes wander up or to the side, then return',metaphor:'Momentary natural distraction'},
+  'looking:0': {state:'Glancing at task',category:'Attention',catColor:'#0086c9',catBg:'#e0f2fe',rive:'looking (Number 0-3)',riveStatus:'Covered',trigger:'Child submits photo/video',howItWorks:'Set looking to 0 or 2 to shift gaze to the side',visual:'Eyes shift down or to the side briefly',metaphor:'Looking at something you shared on screen'},
+  'idle': {state:'Idle / Present',category:'Attention',catColor:'#0086c9',catBg:'#e0f2fe',rive:'Default idle loop',riveStatus:'Covered',trigger:'Default, no active interaction',howItWorks:'Character automatically plays breathing/swaying idle animation. NOTE: For "Show Me" screens (Clean Room, etc.) we should expand the looking input to support looking "down" so Sprout can glance at what the kid is showing.',visual:'Gentle breathing, small sways, occasional blinks',metaphor:'Person calmly on camera, waiting'},
+  'thinking': {state:'Thinking',category:'Processing',catColor:'#7839ee',catBg:'#ece9fe',rive:'thinking (Trigger)',riveStatus:'Covered',trigger:'Evaluating the child\'s submission',howItWorks:'Fire the thinking trigger for contemplative look',visual:'Eyes up/to the side, mouth slightly pursed, subtle head tilt',metaphor:'Hmm, let me think about that\u2026'},
+  'doubtful': {state:'Analyzing',category:'Processing',catColor:'#7839ee',catBg:'#ece9fe',rive:'doubtful (Trigger)',riveStatus:'Covered',trigger:'Actively processing photo/video content',howItWorks:'Fire the doubtful trigger for focused, slightly skeptical expression',visual:'Eyes narrow slightly, focused gaze, small nods',metaphor:'Studying what you just showed them'},
+  'surprise': {state:'Surprised',category:'Emotion',catColor:'#ca8504',catBg:'#fef7c3',rive:'surprise (Trigger)',riveStatus:'Covered',trigger:'Unexpected or impressive submission',howItWorks:'Fire the surprise trigger for startled/impressed look',visual:'Eyes widen, mouth opens, slight backward lean',metaphor:'Genuine "Wow!" reaction'},
+  'smile': {state:'Encouraging',category:'Emotion',catColor:'#ca8504',catBg:'#fef7c3',rive:'smile (Trigger)',riveStatus:'Covered',trigger:'Child is attempting but hasn\'t succeeded yet',howItWorks:'Fire the smile trigger for warmth and support',visual:'Warm smile, gentle nods, open posture',metaphor:'Supportive friend cheering you on'},
+  'celebration': {state:'Celebrating',category:'Emotion',catColor:'#ca8504',catBg:'#fef7c3',rive:'celebration (Trigger)',riveStatus:'Covered',trigger:'Entire task completed successfully',howItWorks:'Fire the celebration trigger for full-body bouncy animation',visual:'Wide smile, bouncy full-body movement, eyes bright',metaphor:'Big "That\'s awesome!" finale moment'},
+  'sad': {state:'Gentle concern',category:'Emotion',catColor:'#ca8504',catBg:'#fef7c3',rive:'sad (Trigger)',riveStatus:'Covered',trigger:'Submission doesn\'t match / error state',howItWorks:'Fire sad trigger as closest match (dedicated concern animation missing)',visual:'Slight frown, head tilt, empathetic expression',metaphor:'Hmm, that\'s not quite right, but it\'s okay'},
+  'smugface': {state:'Reacting (micro)',category:'Communication',catColor:'#079455',catBg:'#dcfae6',rive:'smugface (Trigger)',riveStatus:'Covered',trigger:'Quick acknowledgment of child\'s action',howItWorks:'Fire smugface trigger for cheeky knowing expression',visual:'Brief nod, quick smile, eyebrow raise',metaphor:'Small "mm-hmm" or "got it" reactions'},
+  'mouthselector:3': {state:'Talking / Explaining',category:'Communication',catColor:'#079455',catBg:'#dcfae6',rive:'visemes + mouthselector (Number 0-6)',riveStatus:'Covered',trigger:'Sprout is delivering instructions or feedback',howItWorks:'Uses visemes synced to speech + mouthselector for base mouth style',visual:'Mouth animates, hand gestures, eye contact',metaphor:'Explaining something on a call'},
+  'characterwave': {state:'Waving hello',category:'Transition',catColor:'#e04f16',catBg:'#fdead7',rive:'characterwave (Trigger)',riveStatus:'Covered',trigger:'Start of session / greeting',howItWorks:'Fire characterwave trigger for wave + big smile',visual:'Wave animation, big smile',metaphor:'Hey! Can you see me?'}
+};
+
+function updateRiveCard(item) {
+  var body = document.getElementById('riveCardBody');
+  var riveAction = item ? item.getAttribute('data-rive') : null;
+  if (!riveAction) {
+    body.innerHTML = '<div class="rive-card-empty">No Rive animation for this screen</div>';
+    return;
+  }
+  var data = riveStates[riveAction];
+  if (!data) {
+    body.innerHTML = '<div class="rive-card-empty">Rive action: <code>' + riveAction + '</code></div>';
+    return;
+  }
+  body.innerHTML =
+    '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px">' +
+      '<span class="rive-tag category" style="background:' + data.catBg + ';color:' + data.catColor + '">' + data.category + '</span>' +
+      '<span class="rive-tag ' + (data.riveStatus === 'Covered' ? 'covered' : 'missing') + '">' + data.riveStatus + '</span>' +
+    '</div>' +
+    '<div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:12px">' + data.state + '</div>' +
+    '<div class="rive-row"><span class="rive-label">Input</span><span class="rive-value"><code>' + data.rive + '</code></span></div>' +
+    '<div class="rive-row"><span class="rive-label">Trigger</span><span class="rive-value">' + data.trigger + '</span></div>' +
+    '<div class="rive-row"><span class="rive-label">Visual</span><span class="rive-value">' + data.visual + '</span></div>' +
+    '<div class="rive-row"><span class="rive-label">Metaphor</span><span class="rive-value">' + data.metaphor + '</span></div>' +
+    '<div class="rive-row"><span class="rive-label">How</span><span class="rive-value">' + data.howItWorks + '</span></div>';
+}
+
+var origSetActive = setActiveScreen;
+setActiveScreen = function(item) {
+  origSetActive(item);
+  updateRiveCard(item);
+  setTimeout(initActiveAvatar, 50);
+};
+
+// Init card for default screen
+updateRiveCard(document.querySelector('.vv-screen-item.active'));
+
+// ── Task Detail message streaming animation ──
+var taskDetailMessages = [
+  'Hey Jay! Ready to practice piano?',
+  'Today you\u2019ll play \u201CCome Fly With Me\u201D 5 times.',
+  'Take your time, nail those notes, and earn 15 gems! I\u2019ll watch you play and cheer you on!',
+  'Tap Start when you\u2019re ready at the piano.'
+];
+var taskDetailAnimTimer = null;
+
+function animateTaskDetail() {
+  var thread = document.getElementById('taskDetailThread');
+  if (!thread) return;
+  thread.innerHTML = '';
+  var startBtn = document.getElementById('taskDetailStartBtn');
+  if (startBtn) startBtn.classList.add('state-disabled');
+  var msgIdx = 0;
+
+  function showNextMessage() {
+    if (msgIdx >= taskDetailMessages.length) {
+      stopMouthAnim();
+      var startBtn = document.getElementById('taskDetailStartBtn');
+      if (startBtn) startBtn.classList.remove('state-disabled');
+      return;
+    }
+    var text = taskDetailMessages[msgIdx];
+    msgIdx++;
+
+    // Show message immediately with word streaming
+    {
+      var row = document.createElement('div');
+      row.className = 'msg-row msg-incoming';
+      var col = document.createElement('div');
+      col.className = 'msg-col msg-col-in';
+      var bubble = document.createElement('div');
+      bubble.className = 'msg-bubble msg-bubble-in';
+      bubble.textContent = '';
+      col.appendChild(bubble);
+      row.appendChild(col);
+      thread.appendChild(row);
+      thread.scrollTop = thread.scrollHeight;
+
+      // Stream words + mouth animation together
+      var words = text.split(' ');
+      bubble.textContent = words[0];
+      startMouthAnim();
+      var wi = 1;
+      var wordInterval = setInterval(function() {
+        if (wi < words.length) {
+          bubble.textContent += ' ' + words[wi];
+          wi++;
+          thread.scrollTop = thread.scrollHeight;
+        } else {
+          clearInterval(wordInterval);
+          stopMouthAnim();
+          // Pause before next message
+          taskDetailAnimTimer = setTimeout(showNextMessage, 400 + Math.random() * 300);
+        }
+      }, 120);
+    }
+  }
+
+  // Start after a brief delay
+  taskDetailAnimTimer = setTimeout(showNextMessage, 800);
+}
+
+function stopTaskDetailAnim() {
+  if (taskDetailAnimTimer) {
+    clearTimeout(taskDetailAnimTimer);
+    taskDetailAnimTimer = null;
+  }
+}
+
+// Hook into screen switching — animate when Task Detail becomes active + toggle iOS alert
+var origSetActive2 = setActiveScreen;
+setActiveScreen = function(item) {
+  stopTaskDetailAnim();
+  origSetActive2(item);
+
+  // Toggle iOS camera permission alert overlay
+  var overlay = document.getElementById('iosAlertOverlay');
+  if (overlay) {
+    if (item.getAttribute('data-screen') === 'screen-camera-permission') {
+      overlay.classList.add('active');
+    } else {
+      overlay.classList.remove('active');
+    }
+  }
+
+  if (item.getAttribute('data-screen') === 'screen-task-detail') {
+    // Wait for Rive to init, then start message animation
+    setTimeout(animateTaskDetail, 1000);
+  }
+};
+
+// Camera-zoom morph: Processing + Natural Completion
+var morphTimer = null;
+function stopMorph() { if (morphTimer) { clearTimeout(morphTimer); morphTimer = null; } }
+
+var origSetActive4 = setActiveScreen;
+setActiveScreen = function(item) {
+  stopMorph();
+  origSetActive4(item);
+
+  var id = item.getAttribute('data-screen');
+  // Only the Transition prototype screens run the hero-card morph animation. The Evaluate screens (processing, natural completion) are now static end states.
+  var morphIds = ['screen-transition-expand','screen-transition-shrink'];
+  if (morphIds.indexOf(id) === -1) return;
+
+  var screen = document.getElementById(id);
+  if (!screen) return;
+  var stage = screen.querySelector('.vv-morph-stage');
+  var cam   = screen.querySelector('.morph-camera-bg');
+  var ui    = screen.querySelector('.morph-habit-ui');
+  var title = screen.querySelector('.morph-title-group');
+  if (!stage || !cam || !ui || !title) return;
+
+  // Shrink prototype runs the animation in reverse — starts expanded, then adds .is-portrait after the hold.
+  var isShrink = (id === 'screen-transition-shrink');
+
+  // Reset to initial state based on direction
+  if (isShrink) {
+    // Start in expanded state: no .is-portrait, habit UI hidden (card covers it anyway)
+    stage.classList.remove('is-portrait');
+    ui.classList.add('fade-out');
+  } else {
+    // Start in portrait tile: .is-portrait, habit UI visible
+    stage.classList.add('is-portrait');
+    ui.classList.remove('fade-out');
+  }
+  cam.classList.remove('fade-out');
+  title.classList.remove('fade-in');
+
+  // Auto-trigger the reverse morph after 1.2s hold — enough time for the Rive trigger (~350ms) to register
+  morphTimer = setTimeout(function() {
+    if (isShrink) {
+      // Shrink: add .is-portrait so CSS transitions run in reverse. Reveal habit UI as the card shrinks.
+      stage.classList.add('is-portrait');
+      ui.classList.remove('fade-out');
+    } else {
+      // Expand: remove .is-portrait so CSS transitions run forward. Hide habit UI.
+      stage.classList.remove('is-portrait');
+      ui.classList.add('fade-out');
+    }
+    // Note: NOT fading .morph-camera-bg — gray stays fully opaque throughout and is naturally hidden once the full-screen card covers it (expand) or revealed as the card shrinks away (shrink).
+    title.classList.add('fade-in');
+  }, 1200);
+};
+
+// Auto-start on page load if Task Detail is the default screen
+setTimeout(function() {
+  var activeItem = document.querySelector('.vv-screen-item.active');
+  if (activeItem && activeItem.getAttribute('data-screen') === 'screen-task-detail') {
+    setTimeout(animateTaskDetail, 1500);
+  }
+}, 100);
+
+// Stat card entry + counter animation on approved result screens
+var origSetActive5 = setActiveScreen;
+setActiveScreen = function(item) {
+  origSetActive5(item);
+  var id = item.getAttribute('data-screen');
+  if (id !== 'screen-approved-full' && id !== 'screen-approved-partial') return;
+  var screen = document.getElementById(id);
+  if (!screen) return;
+  var row = screen.querySelector('.stat-card-row');
+  if (!row) return;
+  // Replay the CSS entry animation by removing and re-adding the class
+  var cards = row.querySelectorAll('.stat-card');
+  cards.forEach(function (c) {
+    c.classList.remove('is-entering');
+    void c.offsetWidth; // force reflow so the animation restarts
+    c.classList.add('is-entering');
+  });
+  // Count the numbers up via the shared helper
+  if (window.SproutStatCard) {
+    SproutStatCard.animateRow(row);
+  }
+};
+</script>
+
+<script>window.DS_META={title:'Video Verification Explorer',desc:'Camera state machine explorer showing all screens across IDLE, ACTIVE, PAUSED, EVALUATE, APPROVED, and PARENT_REVIEW states.',owner:'Leti Schimmel',status:'In Progress',rive:'sprot2.97.riv',skill:'sprout-character.txt',device:['Phone']};</script>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+<script>
+// Move vv-controls into col-right after shell.js buildMetadata runs
+// Use setTimeout(0) inside DOMContentLoaded to ensure it runs after shell.js's DOMContentLoaded handler
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    var controls = document.getElementById('vv-controls');
+    var colRight = document.querySelector('.col-right');
+    if (controls && colRight) {
+      colRight.appendChild(controls);
+      controls.style.display = '';
+    }
+  }, 0);
+});
+</script>
+</body>
+</html>

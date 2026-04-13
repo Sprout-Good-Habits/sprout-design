@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Safety Overlay</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "SafetyOverlay",
+  "slug": "safety-overlay",
+  "intent": {
+    "purpose": "Obscure the camera feed with a non-alarming dark overlay when the on-device SFW check detects inappropriate content during a recording session",
+    "taskContext": ["camera-recording", "video-verification", "sfw-check-failure"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["icon", "heading", "description"],
+    "allows": ["fine-print"],
+    "forbids": ["buttons", "interactive-elements", "images"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "SFW check fails and the camera feed must be obscured", "pairWith": [], "sentiment": "neutral" },
+    { "name": "With fine print", "useWhen": "Additional context about on-device processing is needed", "pairWith": [], "sentiment": "neutral" }
+  ],
+  "sizes": [],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["absolute-fill"]
+  },
+  "relationships": {
+    "related": ["CameraPreview", "VideoVerification"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": []
+  },
+  "states": ["visible", "hidden"],
+  "accessibility": {
+    "role": "alert",
+    "keyboard": [],
+    "ariaAttributes": ["aria-live", "aria-label"],
+    "minTouchTarget": "n/a"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/safety-overlay.css">
+<style>
+/* ── Demo: simulated camera background ── */
+.camera-sim {
+  position: relative;
+  width: 320px;
+  height: 420px;
+  border-radius: var(--radius-2xl, 16px);
+  overflow: hidden;
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+}
+.camera-sim-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--font-size-text-xs, 12px);
+  color: rgba(255,255,255,0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Phone frame for placement ── */
+.phone-frame {
+  width: 366px;
+  height: 680px;
+  border-radius: var(--radius-4xl, 24px);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  display: flex;
+  flex-direction: column;
+  background: #1a1a1a;
+}
+.phone-camera-feed {
+  flex: 1;
+  position: relative;
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.phone-camera-feed-label {
+  font-size: var(--font-size-text-xs, 12px);
+  color: rgba(255,255,255,0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@media(max-width:768px) {
+  .camera-sim { width: 100%; }
+  .phone-frame { width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Safety Overlay</div>
+    <div class="sec-desc">A full-screen dark overlay with backdrop blur that appears when the on-device SFW (safe-for-work) check fails during a camera recording session. It obscures the camera feed and shows a non-alarming &ldquo;Camera Paused&rdquo; message to the child.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when the on-device SFW check detects inappropriate content in the camera feed.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Keep the messaging calm and non-alarming &mdash; the child should not feel scared or in trouble.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t add interactive elements (buttons, links) &mdash; the overlay clears automatically when the camera feed is appropriate again.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for general error states &mdash; use <a href="/components/feedback-banner.html">Feedback Banner</a> instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="camera-sim">
+          <div class="camera-sim-label">Camera feed</div>
+          <div class="safety-overlay">
+            <div class="safety-overlay-icon">&#128683;</div>
+            <h3 class="safety-overlay-heading">Camera Paused</h3>
+            <p class="safety-overlay-desc">Something doesn&rsquo;t look right. Point the camera at the task and we&rsquo;ll continue.</p>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">With fine print</span>
+        <div class="camera-sim">
+          <div class="camera-sim-label">Camera feed</div>
+          <div class="safety-overlay">
+            <div class="safety-overlay-icon">&#128683;</div>
+            <h3 class="safety-overlay-heading">Camera Paused</h3>
+            <p class="safety-overlay-desc">Something doesn&rsquo;t look right. Point the camera at the task and we&rsquo;ll continue.</p>
+            <div class="safety-overlay-fine-print">SFW check &mdash; frame not sent to server</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Hierarchy ════ -->
+  <div class="doc-section">
+    <h2>Hierarchy</h2>
+    <p>The safety overlay has a single visual hierarchy. It always uses a dark, blurred backdrop to fully obscure the camera feed regardless of content.</p>
+
+    <h3>Default</h3>
+    <p>The only variant. A dark semi-transparent background (85% opacity) with a 20px backdrop blur ensures the camera feed is completely obscured. Centered content uses white text on dark to maintain readability and a calm tone.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Without fine print</span>
+        <div class="camera-sim">
+          <div class="camera-sim-label">Camera feed</div>
+          <div class="safety-overlay">
+            <div class="safety-overlay-icon">&#128683;</div>
+            <h3 class="safety-overlay-heading">Camera Paused</h3>
+            <p class="safety-overlay-desc">Something doesn&rsquo;t look right. Point the camera at the task and we&rsquo;ll continue.</p>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">With fine print</span>
+        <div class="camera-sim">
+          <div class="camera-sim-label">Camera feed</div>
+          <div class="safety-overlay">
+            <div class="safety-overlay-icon">&#128683;</div>
+            <h3 class="safety-overlay-heading">Camera Paused</h3>
+            <p class="safety-overlay-desc">Something doesn&rsquo;t look right. Point the camera at the task and we&rsquo;ll continue.</p>
+            <div class="safety-overlay-fine-print">SFW check &mdash; frame not sent to server</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Icon</strong> (required) &mdash; 56px emoji. Provides an immediate visual signal that the camera is paused. Use a neutral, non-scary icon.</li>
+        <li><strong>Heading</strong> (required) &mdash; Text-lg (18px) bold, white. Short, calm label like &ldquo;Camera Paused&rdquo;.</li>
+        <li><strong>Description</strong> (required) &mdash; Text-sm (14px) regular, white at 70% opacity. Explains what happened and what to do next. Max width 260px to keep lines readable.</li>
+        <li><strong>Fine print</strong> (optional) &mdash; Text-xs (12px) regular, white at 40% opacity. Technical note for transparency, e.g. &ldquo;SFW check &mdash; frame not sent to server&rdquo;.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Placement ════ -->
+  <div class="doc-section">
+    <h2>Placement</h2>
+    <p>The safety overlay fills its parent container using <code>position: absolute; inset: 0</code>. The parent (camera preview) must have <code>position: relative</code> and <code>overflow: hidden</code>.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Always position the overlay as a direct child of the camera preview container.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <code>z-index: 40</code> to ensure it sits above camera controls and recording indicators.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use <code>position: fixed</code> &mdash; the overlay should be scoped to the camera area, not the full viewport.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">In phone frame</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen" style="height:580px;display:flex;flex-direction:column;background:#1a1a1a;">
+                <div class="phone-camera-feed">
+                  <span class="phone-camera-feed-label">Camera feed</span>
+                  <div class="safety-overlay">
+                    <div class="safety-overlay-icon">&#128683;</div>
+                    <h3 class="safety-overlay-heading">Camera Paused</h3>
+                    <p class="safety-overlay-desc">Something doesn&rsquo;t look right. Point the camera at the task and we&rsquo;ll continue.</p>
+                    <div class="safety-overlay-fine-print">SFW check &mdash; frame not sent to server</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Content guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content</h2>
+    <p>Safety overlay copy should:</p>
+    <div class="prose">
+      <ul>
+        <li>Be calm, reassuring, and never blame the child &mdash; use neutral phrases like &ldquo;Camera Paused&rdquo; rather than &ldquo;Inappropriate content detected&rdquo;.</li>
+        <li>Give a clear, simple instruction for what to do next &mdash; &ldquo;Point the camera at the task and we&rsquo;ll continue.&rdquo;</li>
+        <li>Avoid technical jargon in the heading and description &mdash; save technical details for the optional fine-print line.</li>
+        <li>Keep the description to one or two short sentences maximum.</li>
+        <li>Use the fine-print line to communicate privacy-relevant info (e.g. that the frame is not sent to a server) if needed for transparency.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token Reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All safety overlay styles map to Sprout design tokens where possible. This table shows the exact token or value used for each property.</p>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>rgba(0, 0, 0, 0.85)</code></td></tr>
+        <tr><td>Backdrop blur</td><td><code>blur(20px)</code></td></tr>
+        <tr><td>Padding</td><td><code>--spacing-5xl</code> (40px)</td></tr>
+        <tr><td>Z-index</td><td><code>40</code></td></tr>
+        <tr><td>Icon size</td><td>56px</td></tr>
+        <tr><td>Icon margin-bottom</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Heading font</td><td><code>--font-size-text-lg</code> (18px) / <code>--line-height-text-lg</code> (28px) / bold</td></tr>
+        <tr><td>Heading color</td><td><code>#fff</code></td></tr>
+        <tr><td>Heading margin-bottom</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Description font</td><td><code>--font-size-text-sm</code> (14px) / <code>--line-height-text-sm</code> (20px) / regular</td></tr>
+        <tr><td>Description color</td><td><code>rgba(255, 255, 255, 0.7)</code></td></tr>
+        <tr><td>Description max-width</td><td>260px</td></tr>
+        <tr><td>Fine-print margin-top</td><td><code>--spacing-3xl</code> (24px)</td></tr>
+        <tr><td>Fine-print font</td><td><code>--font-size-text-xs</code> (12px) / <code>--line-height-text-xs</code> (16px) / regular</td></tr>
+        <tr><td>Fine-print color</td><td><code>rgba(255, 255, 255, 0.4)</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Live region:</strong> The overlay should use <code>role="alert"</code> and <code>aria-live="assertive"</code> so screen readers announce the pause immediately when it appears.</li>
+        <li><strong>Label:</strong> Add <code>aria-label="Camera paused"</code> to the overlay container for additional context.</li>
+        <li><strong>No interaction required:</strong> The overlay has no interactive elements &mdash; it clears automatically when the camera feed is appropriate again, so no keyboard handling is needed.</li>
+        <li><strong>Contrast:</strong> White text on the dark overlay background (85% black) exceeds WCAG AAA contrast ratios. The 70% opacity description text also passes AA.</li>
+        <li><strong>Motion:</strong> If using a fade-in animation, respect <code>prefers-reduced-motion</code> by disabling the transition.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: April 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

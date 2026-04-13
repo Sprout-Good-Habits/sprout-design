@@ -1,0 +1,249 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Checklist Item
+   A single checklist task with tier-aware formatting
+   and state-driven proof actions.
+   ═══════════════════════════════════════════════════ */
+
+/* TossFace @font-face is declared globally in /design-system/styles.css.
+   No duplicate declaration needed here. */
+
+/* ══════════════════════════════════════
+   STATUS FLAG — bookmark ribbon
+   Reused across Tier 2 card variants
+   ══════════════════════════════════════ */
+.cl-flag {
+  position: absolute;
+  top: -2px;
+  right: 14px;
+  width: 40px;
+  height: 112px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
+.cl-flag-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--spacing-xl, 16px);
+}
+.cl-flag--warning .cl-flag-body { background: var(--yellow-400, #fac515); }
+.cl-flag--done    .cl-flag-body { background: var(--green-400, #47cd89); }
+.cl-flag-icon {
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  mix-blend-mode: luminosity;
+}
+.cl-flag-tail {
+  width: 40px;
+  height: 8px;
+}
+.cl-flag--warning .cl-flag-tail { fill: var(--yellow-400, #fac515); }
+.cl-flag--done    .cl-flag-tail { fill: var(--green-400, #47cd89); }
+
+/* ══════════════════════════════════════
+   FORMAT 1: Tier 2 Card
+   Bigger card used in checklist carousel
+   ══════════════════════════════════════ */
+.cl-card {
+  position: relative;
+  width: 370px;
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-2xl, 16px);
+  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl, 16px);
+  align-items: flex-start;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  box-sizing: border-box;
+}
+
+/* Emoji avatar — uses the shared card-avatar component (card-avatar.css).
+   Checklist cards need 88px / 40px emoji (smaller than card-avatar--big's 96px / 44px). */
+.cl-card .card-avatar { width: 88px; height: 88px; }
+.cl-card .card-avatar-emoji { font-size: 40px; }
+
+/* Task name */
+.cl-card-name {
+  font-size: var(--font-size-text-lg, 18px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-text-lg, 28px);
+  color: var(--text-primary, #181d27);
+  min-width: 100%;
+}
+
+/* Proof action button — reuses btn-sprout btn-secondary btn-sm from buttons.css.
+   Override width to fill the card. */
+.cl-card .btn-sprout { width: 100%; }
+
+/* Proof icon inside button */
+.cl-card-btn-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cl-card-btn-icon .cl-emoji-sm {
+  font-family: 'TossFace', sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Done state: solid gray filled button */
+.cl-card-btn--done {
+  background: var(--fg-disabled, #a4a7ae);
+  color: var(--text-disabled, #717680);
+  border: none;
+  box-shadow: none;
+}
+
+/* ══════════════════════════════════════
+   FORMAT 2: Tier 3 Row
+   Compact inline row for checklist list
+   ══════════════════════════════════════ */
+.cl-row {
+  position: relative;
+  width: 370px;
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-2xl, 16px);
+  box-shadow: 0px 4px 0px 0px var(--gray-200, #e9eaeb);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  box-sizing: border-box;
+}
+
+/* Emoji icon (small) */
+.cl-row-emoji {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cl-row-emoji .cl-emoji-xs {
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Task name */
+.cl-row-name {
+  flex: 1;
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status bullet */
+.cl-row-bullet {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full, 9999px);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cl-row-bullet--todo {
+  border: 2px solid var(--border-secondary, #e9eaeb);
+}
+.cl-row-bullet--done {
+  background: var(--green-500, #17b26a);
+}
+.cl-row-bullet--done svg {
+  width: 16px;
+  height: 16px;
+}
+.cl-row-bullet--warning {
+  background: var(--yellow-500, #eaaa08);
+  color: #ffffff;
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-regular, 400);
+}
+
+/* Proof icon (small) */
+.cl-row-proof {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cl-row-proof .cl-emoji-xs {
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Done state: strikethrough */
+.cl-row--done .cl-row-name {
+  text-decoration: line-through;
+  color: var(--text-quaternary, #717680);
+}
+
+/* Warning expanded state: wraps the row + action area */
+.cl-row--warning-expanded {
+  background: var(--bg-secondary, #fafafa);
+  padding: 0;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+}
+.cl-row--warning-expanded .cl-row-inner {
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-2xl, 16px);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+}
+.cl-row-action {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+  align-items: center;
+  padding: var(--spacing-lg, 12px);
+}
+.cl-row-action-desc {
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-tertiary, #535862);
+  text-align: center;
+  width: 100%;
+}
+/* Retry button — reuses btn-sprout btn-secondary btn-md from buttons.css.
+   Override width to fill the action area. */
+.cl-row-action .btn-sprout { width: 100%; }
+
+/* ══════════════════════════════════════
+   Demo layout helpers
+   ══════════════════════════════════════ */
+.cl-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-3xl, 24px);
+  justify-items: center;
+}
+.cl-demo-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl, 16px);
+  align-items: center;
+}

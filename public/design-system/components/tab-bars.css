@@ -33,6 +33,7 @@
 /* ── Active tab ── */
 .tab-bar-item.active {
   background:var(--bg-grass-tertiary, #e6f4d7);
+  box-shadow:0 1px 3px 0 rgba(10,13,18,0.1), 0 1px 2px -1px rgba(10,13,18,0.1);
 }
 
 /* ── Icon wrapper ── */
@@ -42,16 +43,10 @@
   justify-content:center;
   padding:var(--spacing-xs, 4px);
 }
-.tab-bar-icon img {
-  width:28px;
-  height:28px;
-  display:block;
-}
-
-/* ── Inactive icon: desaturated ── */
-.tab-bar-item:not(.active) .tab-bar-icon img {
-  filter:grayscale(1);
-  mix-blend-mode:luminosity;
+.tab-bar-icon .tf {
+  font-family:'TossFace', sans-serif;
+  font-size:28px;
+  line-height:1;
 }
 
 /* ── Tab label ── */

@@ -1,6 +1,6 @@
 /* ============================================
-   Sprout Tabs Component
-   Shared styles — import in any page that uses tabs-container
+   Sprout Segmented Control Component
+   Shared styles — import in any page that uses segmented-control
    ============================================ */
 
 /* ── TossFace emoji font ── */
@@ -10,8 +10,8 @@
   font-display:swap;
 }
 
-/* ── Tabs container ── */
-.tabs-container {
+/* ── Segmented control container ── */
+.segmented-control {
   display:flex;
   gap:var(--spacing-xs, 4px);
   padding:var(--spacing-xs, 4px);
@@ -21,20 +21,20 @@
   align-items:center;
 }
 
-/* ── Equal-width: tabs stretch to fill ── */
-.tabs-equal .cat-tab { flex:1; }
+/* ── Equal-width: segments stretch to fill ── */
+.segmented-control-equal .segment { flex:1; }
 
-/* ── Content-width: tabs size to content, scroll if needed ── */
-.tabs-content-width {
+/* ── Content-width: segments size to content, scroll if needed ── */
+.segmented-control-content-width {
   overflow-x:auto;
   scrollbar-width:none;
   -webkit-overflow-scrolling:touch;
 }
-.tabs-content-width::-webkit-scrollbar { display:none; }
-.tabs-content-width .cat-tab { flex:none; }
+.segmented-control-content-width::-webkit-scrollbar { display:none; }
+.segmented-control-content-width .segment { flex:none; }
 
-/* ── Tab button base ── */
-.cat-tab {
+/* ── Segment button base ── */
+.segment {
   display:flex;
   align-items:center;
   justify-content:center;
@@ -53,7 +53,7 @@
 }
 
 /* ── Icon ── */
-.cat-tab .tf-icon {
+.segment .tf-icon {
   font-family:'TossFace', sans-serif;
   font-size:24px;
   line-height:1;
@@ -65,7 +65,7 @@
 }
 
 /* ── Label ── */
-.cat-tab .tab-label {
+.segment .segment-label {
   font-family:var(--font-family-body, 'Inter', sans-serif);
   font-size:var(--font-size-text-md, 16px);
   line-height:var(--line-height-text-md, 24px);
@@ -78,49 +78,49 @@
 /* ── States ── */
 
 /* Default — transparent, desaturated icon, muted label */
-.cat-tab:hover {
+.segment:hover {
   background:var(--bg-primary-hover, #fafafa);
 }
 
 /* Current (selected) — .active alias for product explorer compat */
-.cat-tab.current,
-.cat-tab.active {
+.segment.current,
+.segment.active {
   background:var(--bg-primary, #ffffff);
   box-shadow:
     0 1px 3px 0 rgba(10,13,18,0.1),
     0 1px 2px -1px rgba(10,13,18,0.1);
 }
-.cat-tab.current .tf-icon,
-.cat-tab.active .tf-icon { mix-blend-mode:normal; }
-.cat-tab.current .tab-label,
-.cat-tab.active .tab-label { color:var(--text-secondary, #414651); }
+.segment.current .tf-icon,
+.segment.active .tf-icon { mix-blend-mode:normal; }
+.segment.current .segment-label,
+.segment.active .segment-label { color:var(--text-secondary, #414651); }
 
 /* Active / Pressed */
-.cat-tab.state-pressed {
+.segment.state-pressed {
   background:var(--bg-primary, #ffffff);
   box-shadow:none;
 }
-.cat-tab.state-pressed .tf-icon { mix-blend-mode:normal; }
-.cat-tab.state-pressed .tab-label { color:var(--text-secondary, #414651); }
+.segment.state-pressed .tf-icon { mix-blend-mode:normal; }
+.segment.state-pressed .segment-label { color:var(--text-secondary, #414651); }
 
 /* Disabled */
-.cat-tab.state-disabled {
+.segment.state-disabled {
   cursor:not-allowed;
   pointer-events:none;
   opacity:0.5;
 }
-.cat-tab.state-disabled .tf-icon { mix-blend-mode:luminosity; }
+.segment.state-disabled .tf-icon { mix-blend-mode:luminosity; }
 
 /* ── Active label only (icon+active-label variant) ── */
-.tabs-active-label .cat-tab .tab-label { display:none; }
-.tabs-active-label .cat-tab.current .tab-label,
-.tabs-active-label .cat-tab.active .tab-label { display:block; }
+.segmented-control-active-label .segment .segment-label { display:none; }
+.segmented-control-active-label .segment.current .segment-label,
+.segmented-control-active-label .segment.active .segment-label { display:block; }
 
 /* ── Sliding pill ── */
-.tabs-sliding {
+.segmented-control-sliding {
   position:relative;
 }
-.tabs-sliding .slide-pill {
+.segmented-control-sliding .slide-pill {
   position:absolute;
   top:var(--spacing-xs, 4px);
   left:var(--spacing-xs, 4px);
@@ -135,7 +135,7 @@
   pointer-events:none;
   z-index:0;
 }
-.tabs-sliding .cat-tab {
+.segmented-control-sliding .segment {
   position:relative;
   z-index:1;
   background:transparent !important;

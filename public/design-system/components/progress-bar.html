@@ -16,13 +16,14 @@
   },
   "composition": {
     "requires": ["track", "fill"],
-    "allows": ["inner-highlight", "message", "spark-particles", "checkpoints"],
+    "allows": ["inner-highlight", "message", "spark-particles", "checkpoints", "counter"],
     "forbids": ["button", "icon"]
   },
   "variants": [
     { "name": "Default", "useWhen": "Standard progress display", "pairWith": [] },
     { "name": "With message", "useWhen": "Streak feedback (3/5/10 in a row)", "pairWith": [] },
-    { "name": "With checkpoints", "useWhen": "Exercise-count milestone markers (5/10/20)", "pairWith": [] }
+    { "name": "With checkpoints", "useWhen": "Exercise-count milestone markers (5/10/20)", "pairWith": [] },
+    { "name": "With counter", "useWhen": "Numeric current/total label centered on the bar (continuous only)", "pairWith": [] }
   ],
   "sizes": [
     { "name": "Continuous", "useWhen": "Standard progress — 24px track height" },
@@ -212,6 +213,12 @@
           <div class="progress-track"><div class="progress-fill" style="width:50%;transition:none;"></div></div>
         </div>
       </div>
+      <div class="demo-item">
+        <span class="demo-label">With counter</span>
+        <div class="progress-bar" style="width:323px;">
+          <div class="progress-track" style="position:relative;"><div class="progress-fill" style="width:50%;transition:none;"></div><span class="progress-counter">5/10</span></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -246,6 +253,7 @@
         <li><strong>Fill / Progression</strong> (required) &mdash; Animated fill inside the track. Background: <code>--brand-500</code>. Min-width: 32px. Padding: 4px vertical, 8px horizontal.</li>
         <li><strong>Inner highlight</strong> (required) &mdash; 4px tall white 50% opacity bar inside the fill, creating a glossy/3D effect.</li>
         <li><strong>Message</strong> (optional) &mdash; Bold text-xs label above the bar in <code>--brand-500</code> (#0ba5ec). Used for streak callouts like &ldquo;3 in a row!&rdquo;</li>
+        <li><strong>Counter</strong> (optional) &mdash; Semibold text-xs label centered on the track showing current/total (e.g. &ldquo;3/10&rdquo;). Uses <code>mix-blend-mode:multiply</code> so it reads against both the fill and track background. Continuous type only.</li>
       </ul>
     </div>
   </div>
@@ -320,6 +328,67 @@
         <li><strong>Left clamp:</strong> If the fill is too narrow, the message left-aligns to stay readable.</li>
         <li><strong>Right clamp:</strong> If centering would push past the track edge, it snaps to the right edge.</li>
       </ul>
+    </div>
+  </div>
+
+  <!-- With counter -->
+  <div class="doc-section">
+    <h2>With counter</h2>
+    <p>An optional counter label sits centered on the track, showing a <code>current/total</code> value. The label uses <code>mix-blend-mode:multiply</code> so it remains readable against both the gray track and the blue fill. This option is available on the continuous type only.</p>
+
+    <div class="demo demo-col demo-transparent" style="gap:16px;max-width:323px;">
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">0 / 10</p>
+        <div class="progress-bar"><div class="progress-track" style="position:relative;"><div class="progress-fill" style="width:0%;min-width:24px;transition:none;"></div><span class="progress-counter">0/10</span></div></div>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">3 / 10</p>
+        <div class="progress-bar"><div class="progress-track" style="position:relative;"><div class="progress-fill" style="width:30%;transition:none;"></div><span class="progress-counter">3/10</span></div></div>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">5 / 10</p>
+        <div class="progress-bar"><div class="progress-track" style="position:relative;"><div class="progress-fill" style="width:50%;transition:none;"></div><span class="progress-counter">5/10</span></div></div>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">8 / 10</p>
+        <div class="progress-bar"><div class="progress-track" style="position:relative;"><div class="progress-fill" style="width:80%;transition:none;"></div><span class="progress-counter">8/10</span></div></div>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;">10 / 10</p>
+        <div class="progress-bar"><div class="progress-track" style="position:relative;"><div class="progress-fill" style="width:100%;transition:none;"></div><span class="progress-counter">10/10</span></div></div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Position:</strong> Absolutely centered on the track (horizontally and vertically).</li>
+        <li><strong>Font:</strong> Semibold text-xs (12px / 16px, weight 600) in <code>--text-quaternary</code> (#717680).</li>
+        <li><strong>Blend:</strong> <code>mix-blend-mode:multiply</code> makes the text darken against the blue fill, keeping it legible at any progress level.</li>
+        <li><strong>Format:</strong> <code>current/total</code> with no spaces (e.g. &ldquo;3/10&rdquo;).</li>
+        <li><strong>Type restriction:</strong> Continuous only. Do not combine with checkpoints (stepper type).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Counter: Interactive demo -->
+  <div class="doc-section">
+    <h2>Counter: Interactive demo</h2>
+    <p>Click to advance. The counter updates on each step.</p>
+
+    <div class="demo demo-col" style="gap:16px;">
+      <div style="width:323px;">
+        <div class="progress-bar" id="counter-demo-bar">
+          <div class="progress-track" style="position:relative;">
+            <div class="progress-fill" id="counter-demo-fill" style="width:10%;"></div>
+            <span class="progress-counter" id="counter-demo-label">1/10</span>
+          </div>
+        </div>
+      </div>
+      <div class="demo-controls">
+        <button class="demo-btn" id="counter-next-btn" onclick="counterDemoAdvance()">Correct answer &rarr;</button>
+        <button class="demo-btn demo-btn-secondary" onclick="counterDemoReset()">Reset</button>
+        <span class="demo-step-label" id="counter-step-label">Step 1 / 10</span>
+      </div>
     </div>
   </div>
 
@@ -632,6 +701,9 @@
         <tr><td>Message font</td><td>text-xs / bold</td><td>12px / 16px, 700</td></tr>
         <tr><td>Message color</td><td><code>--brand-500</code></td><td>#0ba5ec</td></tr>
         <tr><td>Message fade</td><td>&mdash;</td><td>300ms ease in/out, 2s hold</td></tr>
+        <tr><td>Counter font</td><td>text-xs / semibold</td><td>12px / 16px, 600</td></tr>
+        <tr><td>Counter color</td><td><code>--text-quaternary</code></td><td>#717680</td></tr>
+        <tr><td>Counter blend</td><td>&mdash;</td><td>mix-blend-mode: multiply</td></tr>
         <tr><td>Container height</td><td>&mdash;</td><td>42px (with message space)</td></tr>
       </tbody>
     </table>
@@ -646,6 +718,9 @@
         <tr><td><code>progress</code></td><td>Number (0&ndash;100)</td><td>0</td><td>Percentage fill width of the bar</td></tr>
         <tr><td><code>showMessage</code></td><td>Boolean</td><td>false</td><td>Toggle streak message visibility</td></tr>
         <tr><td><code>messageText</code></td><td>String</td><td>&ldquo;MESSAGE&rdquo;</td><td>Content of the streak message label</td></tr>
+        <tr><td><code>showCounter</code></td><td>Boolean</td><td>false</td><td>Show centered current/total counter on the track (continuous type only)</td></tr>
+        <tr><td><code>counterCurrent</code></td><td>Number</td><td>0</td><td>Current value displayed in the counter</td></tr>
+        <tr><td><code>counterTotal</code></td><td>Number</td><td>10</td><td>Total value displayed in the counter</td></tr>
       </tbody>
     </table>
   </div>
@@ -933,6 +1008,37 @@ function cpiDemoReset() {
   cpiUpdateCheckpoints(0);
   document.getElementById('cpi-next-btn').textContent = 'Correct answer \u2192';
   document.getElementById('cpi-next-btn').disabled = false;
+}
+
+// ── Counter interactive demo ──
+var counterStep = 1;
+var COUNTER_TOTAL = 10;
+
+function counterDemoAdvance() {
+  if (counterStep >= COUNTER_TOTAL) return;
+  counterStep++;
+  var pct = Math.round((counterStep / COUNTER_TOTAL) * 100);
+  var fill = document.getElementById('counter-demo-fill');
+  var bar = document.getElementById('counter-demo-bar');
+  fill.style.width = pct + '%';
+  document.getElementById('counter-demo-label').textContent = counterStep + '/' + COUNTER_TOTAL;
+  document.getElementById('counter-step-label').textContent = 'Step ' + counterStep + ' / ' + COUNTER_TOTAL;
+
+  setTimeout(function() { fireSpark(bar, fill); }, 420);
+
+  if (counterStep >= COUNTER_TOTAL) {
+    document.getElementById('counter-next-btn').textContent = 'Complete!';
+    document.getElementById('counter-next-btn').disabled = true;
+  }
+}
+
+function counterDemoReset() {
+  counterStep = 1;
+  document.getElementById('counter-demo-fill').style.width = '10%';
+  document.getElementById('counter-demo-label').textContent = '1/' + COUNTER_TOTAL;
+  document.getElementById('counter-step-label').textContent = 'Step 1 / ' + COUNTER_TOTAL;
+  document.getElementById('counter-next-btn').textContent = 'Correct answer \u2192';
+  document.getElementById('counter-next-btn').disabled = false;
 }
 </script>
 </body>

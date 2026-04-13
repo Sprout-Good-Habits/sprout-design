@@ -15,7 +15,8 @@
     'stars-02': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 22v-6M4.5 8V2M2 4.5h5M2 19.5h5M13 3l-1.74 4.52L6.74 9.5l4.52 1.74L13 15.76l1.74-4.52 4.52-1.74-4.52-1.74L13 3zM18 14l-1.16 3.01L13.83 18.17l3.01 1.16L18 22.34l1.16-3.01 3.01-1.16-3.01-1.16L18 14z"/></svg>',
     home: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21V13.6c0-.56 0-.84.109-1.054a1 1 0 0 1 .437-.437C9.76 12 10.04 12 10.6 12h2.8c.56 0 .84 0 1.054.109a1 1 0 0 1 .437.437C15 12.76 15 13.04 15 13.6V21M11.018 2.764L4.235 8.039c-.316.252-.473.378-.588.536a1.5 1.5 0 0 0-.228.507C3.36 9.277 3.36 9.464 3.36 9.838v7.845c0 .84 0 1.26.164 1.581a1.5 1.5 0 0 0 .655.655c.321.164.741.164 1.581.164h12.48c.84 0 1.26 0 1.581-.164a1.5 1.5 0 0 0 .655-.655c.164-.321.164-.741.164-1.581V9.838c0-.374 0-.561-.06-.736a1.5 1.5 0 0 0-.227-.507c-.116-.158-.273-.284-.589-.536l-6.783-5.275c-.246-.191-.369-.287-.504-.324a.5.5 0 0 0-.272 0c-.135.037-.258.133-.504.324z"/></svg>',
     grid: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
-    menu: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>'
+    menu: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>',
+    'video-recorder': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 10 5-3v10l-5-3"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>'
   };
 
   var CHEVRON_UP = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 10 4-4 4 4"/></svg>';
@@ -54,6 +55,9 @@
     '.nav-chevron svg{width:16px;height:16px;}',
     /* When badge + chevron coexist, chevron after badge */
     '.nav-section .nav-chevron{margin-left:0;}',
+    /* Section link (clickable label in collapsible header) */
+    '.nav-section-link{flex:1;color:#414651;text-decoration:none;font-size:14px;font-weight:500;line-height:20px;}',
+    '.nav-section-link:hover{text-decoration:none;}',
     /* Children container */
     '.nav-children{display:flex;flex-direction:column;gap:4px;}',
     '.nav-children.collapsed{display:none;}',
@@ -129,7 +133,11 @@
 
         html += '<div class="nav-section' + active + '" data-collapsible="true">';
         if (icon) html += '<span class="nav-icon">' + icon + '</span>';
-        html += '<span class="nav-section-label">' + item.label + '</span>';
+        if (item.href) {
+          html += '<a class="nav-section-link" href="' + item.href + '">' + item.label + '</a>';
+        } else {
+          html += '<span class="nav-section-label">' + item.label + '</span>';
+        }
         html += '<span class="nav-chevron">' + (expanded ? CHEVRON_UP : CHEVRON_DOWN) + '</span>';
         html += '</div>';
 
@@ -191,9 +199,9 @@
     for (var i = 0; i < sections.length; i++) {
       (function (sectionEl) {
         sectionEl.addEventListener('click', function (e) {
-          // For collapsible divs, always toggle. For link sections, toggle on chevron or prevent default.
-          var isLink = sectionEl.tagName === 'A';
-          if (isLink) e.preventDefault();
+          // If clicking a link inside the section, let it navigate
+          if (e.target.closest('.nav-section-link')) return;
+          e.preventDefault();
 
           var children = sectionEl.nextElementSibling;
           if (!children || !children.classList.contains('nav-children')) return;
@@ -262,17 +270,18 @@
     if (!bc) return;
 
     var page = findCurrentPage();
-    if (!page) return;
 
-    // Hamburger menu button (visible on mobile)
+    // Hamburger menu button (always visible)
     var html = '<button class="breadcrumb-menu-btn" aria-label="Toggle sidebar">' + ICONS.menu + '</button>';
 
-    if (page.section) {
+    if (page && page.section) {
       html += '<a href="/product-explorer/">' + page.section + '</a>';
       html += '<span class="breadcrumb-sep">/</span>' +
         '<span class="breadcrumb-current">' + page.label + '</span>';
-    } else {
+    } else if (page) {
       html += '<span class="breadcrumb-current">' + page.label + '</span>';
+    } else {
+      html += '<span class="breadcrumb-current">Product explorer</span>';
     }
 
     bc.innerHTML = html;
@@ -546,6 +555,11 @@
     }
 
     html += '</div>'; // /meta-rows
+
+    // Notes (free-form HTML below metadata)
+    if (meta.notes) {
+      html += '<div class="page-notes">' + meta.notes + '</div>';
+    }
 
     colRight.innerHTML = html;
   }

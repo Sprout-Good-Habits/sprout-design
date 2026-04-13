@@ -3,11 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Product Explorer — Tier 3</title>
+<title>Sprout Product Explorer — Tier 2 &amp; Tier 3</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/button-utility.css">
 <link rel="stylesheet" href="/design-system/components/buttons.css">
-<link rel="stylesheet" href="/design-system/components/tabs.css">
+<link rel="stylesheet" href="/design-system/components/segmented-control.css">
+<link rel="stylesheet" href="/design-system/components/toolbar.css">
+<link rel="stylesheet" href="/design-system/components/progress-bar.css">
+<link rel="stylesheet" href="/design-system/components/subtitles.css">
+<link rel="stylesheet" href="/design-system/components/card-avatar.css">
+<link rel="stylesheet" href="/design-system/components/screen-time-card.css">
+<script src="/design-system/components/card-avatar.js" defer></script>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 /* ── Device frame ── */
@@ -40,7 +47,7 @@
   z-index: 6;
 }
 .device-mockup {
-  background: var(--bg-tertiary, #fafafa);
+  background: var(--bg-grass, #86cb3c);
   border: 2px solid var(--border-secondary, #e9eaeb);
   border-radius: 24px;
   clip-path: inset(0 round 24px);
@@ -50,12 +57,8 @@
   width: 402px;
   height: 874px;
   position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  overflow: hidden;
 }
-.device-screen::-webkit-scrollbar { display: none; }
 
 /* ── Status bar ── */
 .phone-status {
@@ -71,104 +74,42 @@
 .phone-status-icons { display: flex; gap: 4px; align-items: center; }
 .phone-status-icons svg { width: 16px; height: 16px; }
 
-/* ── Sky background ── */
+/* ── Screen background ── */
 .screen-sky-alt {
   background: var(--bg-sky, #e0f2fe);
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-/* ── Toolbar ── */
-@font-face {
-  font-family: 'TossFace';
-  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
-  font-display: swap;
-}
+/* ── Toolbar (page-specific; base .toolbar comes from toolbar.css) ── */
 .toolbar-wrap {
-  position: sticky;
-  top: 0;
   z-index: 4;
-  transition:
-    background 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
-  -webkit-backdrop-filter: blur(0px);
-  backdrop-filter: blur(0px);
-}
-.toolbar-wrap.toolbar-sky,
-.toolbar-wrap.toolbar-grass {
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-}
-.toolbar-wrap.toolbar-sky {
-  background: rgba(224, 242, 254, 0.8);
-}
-.toolbar-wrap.toolbar-grass {
-  background: rgba(134, 203, 60, 0.8);
-}
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 10px 6px;
-}
-.toolbar-trailing {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.btn-util {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-lg, 12px);
-  background: var(--bg-primary, #ffffff);
-  border: 2px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-full, 9999px);
-  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
-  flex-shrink: 0;
-}
-.btn-util-with-label { gap: var(--spacing-md, 8px); }
-.btn-util-label {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-md, 16px);
-  line-height: var(--line-height-text-md, 24px);
-  font-weight: var(--font-weight-regular, 400);
-  color: var(--text-secondary, #414651);
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-.tf-icon {
-  font-family: 'TossFace', sans-serif;
-  font-size: 24px;
-  line-height: 1;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
 }
 
-/* ── Grass (absolute, pinned to bottom of scroll content) ── */
-.grass-container {
-  width: 100%;
-  flex: 1;
+/* ── Subtitles positioning ── */
+.subtitles-wrap {
+  padding: 8px 16px 0;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
 }
-.grass-edge {
-  height: 18px;
-  background: var(--bg-grass, #86cb3c);
-  border-radius: 18px 18px 0 0;
+.subtitles-wrap .subtitles {
+  width: 370px;
+  max-width: 100%;
 }
-.grass-fill {
-  background: var(--bg-grass, #86cb3c);
-  width: 100%;
-  padding-bottom: 0;
-  flex: 1;
+
+/* ── Sky spacer for character ── */
+.sky-spacer {
+  height: 172px;
+  position: relative;
+  flex-shrink: 0;
 }
-/* ── Character (absolute, feet on grass edge) ── */
 .rive-wrap {
   position: absolute;
   left: 50%;
@@ -176,7 +117,7 @@
   height: 402px;
   z-index: 2;
   pointer-events: none;
-  transform: translateX(-50%) scale(1);
+  transform: translateX(-50%) scale(0.92);
   transform-origin: bottom center;
 }
 .rive-canvas {
@@ -184,489 +125,317 @@
   height: 402px;
 }
 
-/* ── Today / Anytime Tabs (pill style) — overrides on shared tabs.css ── */
-.home-tabs {
-  margin: 48px 16px 0;
-  border-radius: var(--radius-xl, 16px);
-}
-.home-tabs .cat-tab {
-  height: 28px;
-  font-size: var(--font-size-text-xs, 12px);
-  line-height: 16px;
-  border-radius: var(--radius-xl, 12px);
-  overflow: hidden;
-}
-.home-tab-badge {
-  display: inline-flex;
-  padding: 3px 6px;
-  background: var(--gray-200, #e9eaeb);
-  color: var(--text-secondary, #414651);
-  border-radius: 100px;
-  font-size: 9px;
-  line-height: 13px;
-  font-weight: 400;
-}
-
-/* ── Progress section ── */
-.progress-section {
-  padding: 16px 12px 0;
+/* ── Grass ── */
+.grass-container {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  z-index: 3;
+  min-height: 0;
 }
-.progress-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-.progress-title {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 14px;
-  font-weight: var(--font-weight-bold, 700);
-  color: var(--text-primary, #181d27);
-  line-height: 20px;
-}
-.progress-controls {
-  display: flex;
-  gap: 4px;
-}
-.btn-util-sm {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 4px 8px;
-  background: var(--bg-primary, #ffffff);
-  border: 1.5px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-full, 9999px);
-  box-shadow: 0 1.5px 0 0 var(--gray-200, #e9eaeb);
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 10px;
-  font-weight: var(--font-weight-semibold, 600);
-  color: var(--text-secondary, #414651);
+.grass-edge {
+  height: 18px;
+  background: var(--bg-grass, #86cb3c);
+  border-radius: 18px 18px 0 0;
   flex-shrink: 0;
 }
-.btn-util-sm .tf-sm {
+.grass-fill {
+  background: var(--bg-grass, #86cb3c);
+  width: 100%;
+  flex: 1;
+  padding: 32px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Scrollable task area ── */
+.task-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 16px;
+}
+.task-scroll::-webkit-scrollbar { display: none; }
+.task-scroll .segmented-control {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex-shrink: 0;
+}
+/* ── Tab panels ── */
+.tab-panel { display: none; }
+.tab-panel.active { display: contents; }
+
+/* ── Goal progress card ── */
+.goal-card {
+  background: var(--sprout-600, #4f7a21);
+  border-radius: 16px;
+  padding: 12px 16px 12px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+.goal-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--bg-primary, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', sans-serif;
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.goal-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.goal-title {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: 20px;
+  font-weight: var(--font-weight-bold, 700);
+  color: #ffffff;
+}
+/* ── Task List Card (Tier 2 & 3) ──
+   Mirrors the spec from /design-system/components/quest-card.html.
+   CardAvatar styles come from /design-system/components/card-avatar.css. */
+.task-inbox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+}
+.task-list-card {
+  position: relative;
+  height: 80px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-2xl, 16px);
+  padding-left: var(--spacing-lg, 12px);
+  padding-right: 60px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  box-shadow: 0 2px 0 0 rgba(10,13,18,0.08);
+}
+.task-list-card-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  flex: 1;
+  min-width: 0;
+}
+.task-list-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+}
+.task-list-card-name {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+.task-list-card-sub {
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--text-quaternary, #717680);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+.task-list-card-gems {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--text-quaternary, #717680);
+}
+.task-list-card-gems .tf-gem {
   font-family: 'TossFace', sans-serif;
   font-size: 11px;
   line-height: 1;
 }
-
-/* ── Task list ── */
-.task-list {
-  padding: 0 16px 32px;
-  position: relative;
-  z-index: 3;
+.task-list-card.is-dim .task-list-card-name,
+.task-list-card.is-dim .task-list-card-sub,
+.task-list-card.is-dim .task-list-card-gems {
+  opacity: 0.5;
 }
 
-/* ── Anytime gallery grid ── */
-.anytime-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  padding: 8px 16px;
-  position: relative;
-  z-index: 3;
-}
-.anytime-tile {
-  border-radius: 16px;
-  padding: 12px;
-  height: 136px;
+/* Tier 3 rejected — expanded card with action area */
+.task-list-card--expanded {
+  background: var(--bg-secondary, #fafafa);
+  height: auto;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  color: white;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  overflow: hidden;
+  align-items: stretch;
 }
-.anytime-tile.tile-brand { background: var(--brand-500, #0ba5ec); }
-.anytime-tile.tile-blue-dark { background: var(--blue-dark-500, #2970ff); }
-.anytime-tile.tile-violet { background: var(--violet-500, #875bf7); }
-.anytime-tile.tile-pink { background: var(--pink-500, #ee46bc); }
-.anytime-tile.tile-red { background: var(--red-500, #f04438); }
-.anytime-tile.tile-orange { background: var(--orange-500, #ef6820); }
-.anytime-tile.tile-yellow { background: var(--yellow-500, #eaaa08); }
-.anytime-tile.tile-green { background: var(--green-500, #17b26a); }
-.anytime-tile .task-badge {
-  background: rgba(255,255,255,0.2);
-  color: white;
-  padding: 3px 6px;
-  border-radius: 100px;
-  gap: 3px;
-  font-weight: 400;
-  line-height: 13px;
-}
-.anytime-tile .badge-num {
-  min-width: 0;
-}
-.anytime-tile-badges {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.anytime-tile-content {
-  display: flex;
-  flex-direction: column;
-  margin-top: 8px;
-}
-.anytime-tile-name {
-  font-size: var(--font-size-text-xs, 12px);
-  font-weight: var(--font-weight-semibold, 600);
-  line-height: 16px;
-}
-.anytime-tile-emoji {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'TossFace', sans-serif;
-  font-size: 56px;
-  line-height: 1;
-}
-
-/* Section headers */
-.section-label {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-xs, 12px);
-  font-weight: var(--font-weight-bold, 700);
-  color: var(--text-tertiary, #535862);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 10px 0 4px;
-}
-
-/* ── Task row (notification style — tappable, no action buttons) ── */
-.task-row {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md, 8px);
+.task-list-card--expanded .task-list-card-row {
   background: var(--bg-primary, #ffffff);
   border-radius: var(--radius-2xl, 16px);
-  padding: var(--spacing-lg, 12px);
-  margin-bottom: 5px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.task-row:active {
-  background: var(--gray-50, #fafafa);
-}
-.task-emoji-box {
-  width: 52px;
-  height: 52px;
-  border-radius: 6px;
-  padding: var(--spacing-md, 8px);
+  padding: var(--spacing-xl, 16px);
+  padding-right: 72px;
+  gap: var(--spacing-lg, 12px);
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
-/* Emoji status badge overlay */
-.emoji-status-badge {
-  position: absolute;
-  bottom: -3px;
-  right: -3px;
-  width: 16px;
-  height: 16px;
-  background: var(--bg-primary, #ffffff);
-  border-radius: 4px;
+.task-list-card--expanded .task-list-card-row .task-badge { right: 16px; }
+.task-list-card-action {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+  align-items: stretch;
   justify-content: center;
-  font-family: 'TossFace', sans-serif;
-  font-size: 12px;
-  line-height: 1;
+  padding: var(--spacing-lg, 12px);
+  background: transparent;
 }
-.task-emoji-box .tf-task {
-  font-family: 'TossFace', sans-serif;
-  font-size: 36px;
-  line-height: 1;
-}
-
-/* Emoji box color variants — match kids card solids */
-.emoji-brand { background: var(--brand-500, #0ba5ec); }
-.emoji-blue-dark { background: var(--blue-dark-500, #2970ff); }
-.emoji-violet { background: var(--violet-500, #875bf7); }
-.emoji-pink { background: var(--pink-500, #ee46bc); }
-.emoji-red { background: var(--red-500, #f04438); }
-.emoji-orange { background: var(--orange-500, #ef6820); }
-.emoji-yellow { background: var(--yellow-500, #eaaa08); }
-.emoji-green { background: var(--green-500, #17b26a); }
-
-.task-info {
-  flex: 1;
-  min-width: 0;
-}
-.task-name {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-md, 16px);
-  font-weight: var(--font-weight-bold, 700);
-  color: var(--text-secondary, #414651);
-  line-height: var(--line-height-text-md, 24px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.task-time {
+.task-list-card-action-desc {
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: var(--font-weight-regular, 400);
-  color: var(--text-quaternary, #717680);
   line-height: var(--line-height-text-xs, 16px);
-}
-.task-desc {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 12px;
   color: var(--text-tertiary, #535862);
-  line-height: var(--line-height-text-xs, 16px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: center;
+}
+/* Action CTA uses the shared .btn-sprout.btn-secondary.btn-md from
+   /design-system/components/buttons.css. Override width to fill the
+   action area; the base .btn-sprout has a fixed 320 px width. */
+.task-list-card-action .btn-sprout {
+  width: 100%;
 }
 
-/* Right side: badges + inline status */
-.task-trailing {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
+/* ── Task badge (40px bookmark tab) ── */
+.task-badge {
+  position: absolute;
+  top: 0;
+  right: 12px;
+  width: 40px;
+  height: 68px;
+  pointer-events: none;
 }
-.task-badges {
+.task-badge svg { display: block; width: 40px; }
+.task-badge-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.task-list-card .task-badge-icon .tf-badge {
+  font-family: 'TossFace', sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  display: inline-block;
+}
+.tb-icon-muted { filter: grayscale(1) brightness(2); }
+.task-badge-streak {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-bold, 700);
+  color: #ffffff;
+  line-height: 1;
+  margin-top: var(--spacing-xs, 4px);
+}
+.tb-fill-available  { fill: var(--gray-300, #d5d7da); }
+.tb-fill-inProgress { fill: var(--gray-300, #d5d7da); }
+.tb-fill-submitted  { fill: var(--gray-400, #a4a7ae); }
+.tb-fill-completed  { fill: var(--red-400, #f97066); }
+.tb-fill-rejected   { fill: var(--yellow-400, #fac515); }
+
+/* ── Section label ── */
+.section-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: var(--font-weight-bold, 700);
+  color: #ffffff;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 0 2px;
+  margin-bottom: -4px;
+}
+
+/* ── Bottom tab bar ── */
+.tab-bar {
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xl, 16px) var(--spacing-xl, 16px) var(--spacing-4xl, 32px);
+  background: var(--bg-grass-secondary, #ceeab0);
+  border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
-.task-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 12px;
-  font-weight: var(--font-weight-regular, 400);
-  color: var(--text-secondary, #414651);
-  line-height: 1;
-}
-.badge-num {
-  display: inline-block;
-  font-variant-numeric: tabular-nums;
-  min-width: 18px;
-  text-align: left;
-}
-.task-badge .tf-icon {
-  font-family: 'TossFace', sans-serif;
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-  line-height: 1;
-}
-
-/* Row state modifiers */
-.task-row-reviewing {
-  cursor: default;
-}
-.task-row-reviewing:active {
-  background: var(--bg-primary, #ffffff);
-}
-.task-row-claimed {
-  cursor: default;
-}
-.task-row-claimed:active {
-  background: var(--bg-primary, #ffffff);
-}
-
-/* ── Rejected card — iOS Live Activity style ── */
-.task-card-rejected {
-  background: var(--bg-secondary, #fafafa);
-  border-radius: var(--radius-2xl, 16px);
-  margin-bottom: 5px;
-  overflow: hidden;
-}
-.task-card-rejected .task-row {
-  margin-bottom: 0;
-  border: none;
-  border-radius: 0;
-  cursor: default;
-  position: relative;
-  z-index: 1;
-  box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
-}
-.task-card-rejected .task-row:active {
-  background: var(--bg-primary, #ffffff);
-}
-/* ── Task action area (unified component) ── */
-.task-action-area {
+.tab-bar-item {
+  flex: 1 0 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-md, 8px);
-  padding: var(--spacing-lg, 12px);
-  background: var(--bg-secondary, #fafafa);
-  border-radius: var(--radius-2xl, 16px);
-}
-.action-label {
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: 12px;
-  color: var(--text-tertiary, #535862);
-  line-height: var(--line-height-text-xs, 16px);
-  text-align: center;
-}
-/* ── btn-sprout overrides (base from buttons.css) ── */
-.btn-sprout { width: 100%; }
-
-/* ── Claimable card — iOS Live Activity style ── */
-.task-card-claim {
-  background: var(--bg-secondary, #fafafa);
-  border-radius: var(--radius-2xl, 16px);
-  margin-bottom: 5px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(10,13,18,0.06);
-}
-.task-card-claim .task-row {
-  margin-bottom: 0;
-  border: none;
-  border-radius: 0;
+  justify-content: center;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px) var(--spacing-md, 8px);
+  border-radius: var(--radius-xl, 12px);
+  text-decoration: none;
   cursor: default;
-  position: relative;
-  z-index: 1;
-  box-shadow: 0 1px 2px 0 rgba(10,13,18,0.05);
+  pointer-events: none;
 }
-.task-card-claim .task-row:active {
-  background: var(--bg-primary, #ffffff);
+.tab-bar-item.active {
+  background: var(--sprout-400, #86cb3c);
+  box-shadow: 0 1px 3px 0 rgba(10,13,18,0.1), 0 1px 2px -1px rgba(10,13,18,0.1);
 }
-.action-label strong {
-  color: var(--text-primary, #181d27);
-  line-height: 14px;
-  text-align: center;
+.tab-bar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs, 4px);
 }
-.btn-sprout .tf-claim {
+.tab-bar-icon .tf {
   font-family: 'TossFace', sans-serif;
-  font-size: 16px;
+  font-size: 28px;
   line-height: 1;
 }
-
-/* Claimed transition for the card */
-.task-card-claimed .task-action-area {
-  padding: var(--spacing-lg, 12px);
-}
-.task-card-claimed .action-label {
-  color: var(--green-600, #079455);
-  font-weight: var(--font-weight-semibold, 600);
-}
-.task-card-claimed {
-  opacity: 1;
-}
-
-/* ── Done stack (iOS notification style) ── */
-.done-stack {
-  position: relative;
-  margin-bottom: 12px;
-  cursor: pointer;
-}
-.done-stack-items {
-  position: relative;
-}
-/* All cards share transition */
-.done-stack-items .task-row {
-  transition:
-    transform 0.5s cubic-bezier(0.42, 0, 1, 1),
-    opacity 0.4s cubic-bezier(0.42, 0, 1, 1),
-    margin-bottom 0.5s cubic-bezier(0.42, 0, 1, 1);
-  margin-bottom: 0;
-}
-/* Collapsed: thin strips peeking below */
-.done-stack.collapsed .done-stack-items {
-  padding-bottom: 0;
-}
-.done-stack.collapsed .done-stack-items .task-row {
-  position: absolute;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-.done-stack.collapsed .done-stack-items .task-row:nth-child(1) {
-  position: relative;
-  pointer-events: auto;
-  z-index: 3;
-  border-radius: var(--radius-2xl, 16px);
-  margin-bottom: 0;
-}
-.done-stack.collapsed .done-stack-items .task-row:nth-child(2) {
-  top: 100%;
-  bottom: auto;
-  z-index: 2;
-  height: 5px;
-  min-height: 0;
-  padding: 0;
-  transform: translateY(0);
-  margin-left: 6px;
-  margin-right: 6px;
-  border-radius: 0 0 8px 8px;
-  opacity: 0.7;
-}
-.done-stack.collapsed .done-stack-items .task-row:nth-child(3) {
-  top: 100%;
-  bottom: auto;
-  z-index: 1;
-  height: 5px;
-  min-height: 0;
-  padding: 0;
-  transform: translateY(5px);
-  margin-left: 12px;
-  margin-right: 12px;
-  border-radius: 0 0 6px 6px;
-  opacity: 0.45;
-}
-.done-stack.collapsed .done-stack-items .task-row:nth-child(n+4) {
-  opacity: 0;
-  transform: translateY(calc(100% + 5px));
-}
-.done-stack.collapsed .done-stack-items .task-row:nth-child(2) *,
-.done-stack.collapsed .done-stack-items .task-row:nth-child(3) * {
-  visibility: hidden;
-}
-/* Expanded: normal flow */
-.done-stack.expanded .done-stack-items {
-  padding-bottom: 0;
-}
-.done-stack.expanded .done-stack-items .task-row {
-  position: relative;
-  pointer-events: auto;
-  transform: none;
-  opacity: 1;
-  z-index: auto;
-  margin-bottom: 5px;
-  height: auto;
-  min-height: 0;
-  padding: var(--spacing-lg, 12px);
-  margin-left: 0;
-  margin-right: 0;
-  border-radius: var(--radius-2xl, 16px);
-  overflow: visible;
-}
-.done-stack.expanded .done-stack-items .task-row * {
-  visibility: visible;
-}
-/* Chevron toggle */
-.done-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-}
-.done-toggle-chevron {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  color: var(--text-tertiary, #535862);
-  transition: transform 0.5s cubic-bezier(0.42, 0, 1, 1);
-}
-.done-toggle-chevron.expanded {
-  transform: rotate(180deg);
-}
-
-/* Flame muted for non-active streaks */
-.flame-muted {
-  filter: grayscale(1) brightness(2);
+.tab-bar-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-primary, #181d27);
+  text-align: center;
 }
 
 /* ── Home indicator ── */
@@ -681,134 +450,6 @@
   border-radius: 100px;
   z-index: 10;
 }
-
-/* ── Reset button ── */
-.btn-reset {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  background: var(--bg-primary, #ffffff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-tertiary, #535862);
-  transition: all 0.15s;
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-.btn-reset:hover {
-  border-color: var(--border-primary, #d5d7da);
-  color: var(--text-primary, #181d27);
-}
-.btn-reset svg { width: 20px; height: 20px; }
-
-/* ── Gem claim animation ── */
-.gem-particle {
-  position: absolute;
-  font-family: 'TossFace', sans-serif;
-  font-size: 16px;
-  line-height: 1;
-  pointer-events: none;
-  z-index: 20;
-  will-change: transform, opacity;
-}
-
-@keyframes gem-counter-glow {
-  0% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0.5); }
-  50% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 5px rgba(11,165,236,0.25); }
-  100% { box-shadow: 0 2px 0 0 var(--gray-200, #e9eaeb), 0 0 0 0 rgba(11,165,236,0); }
-}
-.gem-counter-glow {
-  animation: gem-counter-glow 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
-}
-
-/* ── Controls row ── */
-.controls-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-xl, 16px);
-}
-@media (max-width: 600px) {
-  .controls-row {
-    flex-direction: column;
-    gap: var(--spacing-md, 8px);
-  }
-  .controls-row .device-toggle {
-    width: 100%;
-  }
-  .controls-row .device-toggle .cat-tab {
-    flex: 1;
-    justify-content: center;
-  }
-}
-
-/* ── Device toggle — overrides on shared tabs.css ── */
-.device-toggle .cat-tab {
-  height: 36px;
-}
-.device-toggle .cat-tab svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-.device-toggle .cat-tab .device-icon {
-  stroke: var(--text-quaternary, #717680);
-  transition: stroke 0.15s;
-}
-.device-toggle .cat-tab.active .device-icon {
-  stroke: var(--text-secondary, #414651);
-}
-
-/* ── iPad overrides ── */
-.device-wrapper.ipad .device-screen {
-  width: 640px;
-  height: 854px;
-}
-.device-wrapper.ipad .anytime-grid {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-/* ── Empty state (all done) ── */
-.empty-state {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  text-align: center;
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-}
-.empty-state.visible {
-  display: flex;
-}
-.empty-state-emoji {
-  font-family: 'TossFace', sans-serif;
-  font-size: 64px;
-  line-height: 1;
-  margin-bottom: 12px;
-}
-.empty-state-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary, #181d27);
-  line-height: 24px;
-  margin-bottom: 4px;
-}
-.empty-state-desc {
-  font-size: 13px;
-  color: var(--text-tertiary, #535862);
-  line-height: 18px;
-  max-width: 220px;
-}
-@media (prefers-reduced-motion: reduce) {
-  .gem-counter-glow, .task-card {
-    animation: none !important;
-    transition: opacity 0.1s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
-  }
-}
 </style>
 </head>
 <body>
@@ -820,417 +461,352 @@
 
       <div class="two-col">
         <div class="col-left">
-        <div class="device-wrapper">
-          <div class="device-inner-shadow">
-            <div class="device-mockup">
-              <div class="device-screen">
-                <div class="screen-sky-alt">
+      <div class="device-wrapper">
+        <div class="device-inner-shadow">
+          <div class="device-mockup">
+            <div class="device-screen" id="device-screen">
+              <div class="screen-sky-alt">
 
-                    <!-- Toolbar -->
-                    <div class="toolbar-wrap" id="toolbar-wrap">
-                      <div class="phone-status">
-                        <span>9:41</span>
-                        <div class="phone-status-icons">
-                          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
-                          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
-                          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
-                        </div>
-                      </div>
-                      <div class="toolbar">
-                        <div class="btn-util"><span class="tf-icon">&#x1F6E1;&#xFE0F;</span></div>
-                        <div class="toolbar-trailing">
-                          <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
-                          <div class="btn-util btn-util-with-label" id="gem-counter"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label" id="gem-counter-label">100</span></div>
-                          <div class="btn-util"><span class="tf-icon">&#x1F600;</span></div>
+                <!-- Toolbar -->
+                <div class="toolbar-wrap" id="toolbar-wrap">
+                  <div class="phone-status">
+                    <span>9:41</span>
+                    <div class="phone-status-icons">
+                      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="2" height="7" rx="0.5"/><rect x="5" y="4" width="2" height="9" rx="0.5"/><rect x="9" y="2" width="2" height="11" rx="0.5"/><rect x="13" y="0" width="2" height="13" rx="0.5"/></svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a7.5 7.5 0 0 0-5.3 2.2l1.1 1.1A6 6 0 0 1 8 4.5a6 6 0 0 1 4.2 1.8l1.1-1.1A7.5 7.5 0 0 0 8 3zm0 3a4.5 4.5 0 0 0-3.2 1.3l1.1 1.1A3 3 0 0 1 8 7.5a3 3 0 0 1 2.1.9l1.1-1.1A4.5 4.5 0 0 0 8 6zm0 3a1.5 1.5 0 0 0-1.1.5L8 11l1.1-1.5A1.5 1.5 0 0 0 8 9z"/></svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="2.5" y="5.5" width="8" height="5" rx="0.5"/><path d="M13 7v2a1 1 0 0 0 1-1v0a1 1 0 0 0-1-1z"/></svg>
+                    </div>
+                  </div>
+                  <div class="toolbar toolbar-kid-home">
+                    <div class="btn-util" aria-label="Parent area">
+                      <span class="tf-icon">&#x1F6E1;&#xFE0F;</span>
+                    </div>
+                    <div class="toolbar-trailing">
+                      <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F525;</span><span class="btn-util-label">100</span></div>
+                      <div class="btn-util btn-util-with-label"><span class="tf-icon">&#x1F48E;</span><span class="btn-util-label">100</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Subtitles -->
+                <div class="subtitles-wrap">
+                  <div class="subtitles subtitles-default subtitles-centered">
+                    <p class="subtitles-text">You need to complete 2 more habits to unlock your screentime</p>
+                  </div>
+                </div>
+
+                <!-- Sky spacer with Sprout character -->
+                <div class="sky-spacer">
+                  <div class="rive-wrap" style="bottom: -94px;">
+                    <canvas id="rive-character" class="rive-canvas" width="804" height="804"></canvas>
+                  </div>
+                </div>
+
+                <!-- Grass zone -->
+                <div class="grass-container">
+                  <div class="grass-edge"></div>
+                  <div class="grass-fill">
+
+                    <!-- Goal progress card -->
+                    <div class="goal-card">
+                      <div class="goal-thumb">&#x1F6A2;</div>
+                      <div class="goal-body">
+                        <div class="goal-title">Disney cruise</div>
+                        <div class="progress-bar" style="height:24px;" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="2000" aria-label="Disney cruise goal progress">
+                          <div class="progress-track">
+                            <div class="progress-fill" style="width:5%;transition:none;"></div>
+                            <span class="progress-counter">100/2000</span>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <!-- Grass with character -->
-                    <div class="grass-container" style="position: relative;">
-                      <!-- Sky spacer (pushes grass down to show sky) -->
-                      <div class="sky-spacer" style="height: 200px; position: relative;">
-                        <!-- Character — absolute, feet on grass edge -->
-                        <div class="rive-wrap" style="position: absolute; bottom: -120px;">
-                          <canvas id="rive-character" class="rive-canvas" width="804" height="804"></canvas>
+                    <div class="task-scroll">
+                    <!-- Segmented control -->
+                    <div class="segmented-control segmented-control-equal segmented-control-active-label segmented-control-sliding" id="home-tabs" role="tablist">
+                      <div class="slide-pill" id="slide-pill"></div>
+                      <button class="segment" role="tab" aria-selected="false" data-panel="scheduled" aria-label="Screentime"><span class="tf-icon">&#x23F2;&#xFE0F;</span><span class="segment-label">Screentime</span></button>
+                      <button class="segment active" role="tab" aria-selected="true" data-panel="today"><span class="tf-icon">&#x1F4CC;</span><span class="segment-label">Today</span></button>
+                      <button class="segment" role="tab" aria-selected="false" data-panel="anytime" aria-label="Anytime"><span class="tf-icon">&#x1F4CB;&#xFE0F;</span><span class="segment-label">Anytime</span></button>
+                    </div>
+
+                    <!-- ═══ TODAY panel ═══ -->
+                    <div class="tab-panel active" id="panel-today">
+                    <div class="section-label">Now</div>
+                    <div class="task-inbox">
+                      <!-- available -->
+                      <div class="task-list-card">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4AC;</span></div>
+                            <svg class="card-avatar-ring" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="26" stroke="#d5d7da" stroke-width="3"/><circle cx="28" cy="28" r="26" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="81.7 163" stroke-linecap="round" transform="rotate(-90 28 28)"/></svg>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Talk to Sprout</div>
+                            <div class="task-list-card-sub">Chat with Sprout about your day</div>
+                            <div class="task-list-card-gems">Earn 10&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-inProgress" width="40" height="60"/><path class="tb-fill-inProgress" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+                        </div>
+                      </div>
+                      <!-- available -->
+                      <div class="task-list-card">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4D6;</span></div>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Read for 20 min</div>
+                            <div class="task-list-card-sub">Read a book and share what you liked</div>
+                            <div class="task-list-card-gems">Earn 15&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- ── EARLIER ── -->
+                    <div class="section-label">Earlier</div>
+                    <div class="task-inbox">
+                      <!-- rejected — expanded card with action area, Village avatar (Rive) -->
+                      <div class="task-list-card task-list-card--expanded">
+                        <div class="task-list-card-row">
+                          <div class="task-list-card-content">
+                            <div class="card-avatar card-avatar--small">
+                              <div class="card-avatar-circle">
+                                <canvas class="card-avatar-canvas" width="142" height="204"></canvas>
+                              </div>
+                            </div>
+                            <div class="task-list-card-text">
+                              <div class="task-list-card-name">Practice Piano</div>
+                              <div class="task-list-card-sub">Try again!</div>
+                              <div class="task-list-card-gems">Earn 10&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                            </div>
+                          </div>
+                          <div class="task-badge">
+                            <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-rejected" width="40" height="60"/><path class="tb-fill-rejected" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                            <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x26A0;&#xFE0F;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-list-card-action">
+                          <div class="task-list-card-action-desc">Take a new photo to complete this task</div>
+                          <button class="btn-sprout btn-secondary btn-md" type="button">TRY AGAIN</button>
+                        </div>
+                      </div>
+                      <!-- submitted -->
+                      <div class="task-list-card is-dim">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4DD;</span></div>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Homework</div>
+                            <div class="task-list-card-sub">Reviewing...</div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-submitted" width="40" height="60"/><path class="tb-fill-submitted" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge">&#x23F3;</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- ── LATER ── -->
+                    <div class="section-label">Later</div>
+                    <div class="task-inbox">
+                      <div class="task-list-card">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F3B9;</span></div>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Music Practice</div>
+                            <div class="task-list-card-sub">Practice for 15 minutes</div>
+                            <div class="task-list-card-gems">Earn 10&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- ── DONE ── -->
+                    <div class="section-label">Done</div>
+                    <div class="task-inbox">
+                      <!-- completed with streak -->
+                      <div class="task-list-card is-dim">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F9B7;</span></div>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Brush Teeth</div>
+                            <div class="task-list-card-sub">Done!</div>
+                            <div class="task-list-card-gems">Earned 5&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-completed" width="40" height="60"/><path class="tb-fill-completed" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge">&#x1F525;</span><div class="task-badge-streak">9</div></div>
+                        </div>
+                      </div>
+                      <!-- completed -->
+                      <div class="task-list-card is-dim">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F6BF;</span></div>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Take a Shower</div>
+                            <div class="task-list-card-sub">Done!</div>
+                            <div class="task-list-card-gems">Earned 5&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-completed" width="40" height="60"/><path class="tb-fill-completed" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge">&#x1F525;</span><div class="task-badge-streak">4</div></div>
+                        </div>
+                      </div>
+                    </div>
+                    </div><!-- /panel-today -->
+
+                    <!-- ═══ ANYTIME panel ═══ -->
+                    <div class="tab-panel" id="panel-anytime">
+                    <div class="task-inbox">
+                      <div class="task-list-card">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F415;</span></div>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Walk the Dog</div>
+                            <div class="task-list-card-sub">Take Buddy for a 15 min walk</div>
+                            <div class="task-list-card-gems">Earn 10&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+                        </div>
+                      </div>
+                      <div class="task-list-card">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F3DE;&#xFE0F;</span></div>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Play Outside</div>
+                            <div class="task-list-card-sub">Spend 20 min playing outdoors</div>
+                            <div class="task-list-card-gems">Earn 15&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+                        </div>
+                      </div>
+                      <div class="task-list-card">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F9F1;</span></div>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Build with Lego</div>
+                            <div class="task-list-card-sub">Work on your Lego set</div>
+                            <div class="task-list-card-gems">Earn 10&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+                        </div>
+                      </div>
+                      <div class="task-list-card">
+                        <div class="task-list-card-content">
+                          <div class="card-avatar card-avatar--small">
+                            <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F3A8;</span></div>
+                          </div>
+                          <div class="task-list-card-text">
+                            <div class="task-list-card-name">Draw Something</div>
+                            <div class="task-list-card-sub">Draw or color for 15 min</div>
+                            <div class="task-list-card-gems">Earn 10&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                          </div>
+                        </div>
+                        <div class="task-badge">
+                          <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                          <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    </div><!-- /panel-anytime -->
+
+                    <!-- ═══ SCREENTIME panel ═══ -->
+                    <div class="tab-panel" id="panel-scheduled">
+
+                      <!-- Screen Time Card — Blocked (3 of 5 habits done) -->
+                      <div class="st-card" role="article" aria-label="Screen time locked, 2 habits remaining">
+                        <div class="st-icon-area">
+                          <svg class="st-ring" width="80" height="80" viewBox="0 0 80 80">
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="var(--sprout-400, #86cb3c)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="60.05" />
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="var(--sprout-400, #86cb3c)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="14.81" />
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="var(--sprout-400, #86cb3c)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="-30.43" />
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="-75.67" />
+                            <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="38.24 187.96" stroke-dashoffset="-120.91" />
+                          </svg>
+                          <span class="st-center-icon"><span class="tf-icon">&#x1F512;</span></span>
+                        </div>
+                        <div class="st-content">
+                          <span class="st-label">Screentime</span>
+                          <span class="st-title">2 habits left</span>
+                          <span class="st-subtitle">Complete to unlock</span>
                         </div>
                       </div>
 
-                      <div class="grass-edge"></div>
-                      <div class="grass-fill">
+                    </div><!-- /panel-scheduled (screentime) -->
 
-                        <!-- Today / Anytime Tabs -->
-                        <div class="tabs-container tabs-equal home-tabs" id="home-tabs">
-                          <div class="cat-tab active" data-home-tab="today">Today <span class="home-tab-badge" id="today-count">8</span></div>
-                          <div class="cat-tab" data-home-tab="anytime">Anytime</div>
-                        </div>
+                    </div><!-- /task-scroll -->
 
+                  </div><!-- /grass-fill -->
 
-                        <!-- Task list -->
-                        <div class="task-list">
+                  <!-- Bottom tab bar -->
+                  <nav class="tab-bar" role="navigation" aria-label="Main navigation">
+                  <a class="tab-bar-item active" role="tab" aria-current="page" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F3E0;&#xFE0F;</span></span>
+                    <span class="tab-bar-label">Home</span>
+                  </a>
+                  <a class="tab-bar-item" role="tab" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F4C5;</span></span>
+                    <span class="tab-bar-label">Calendar</span>
+                  </a>
+                  <a class="tab-bar-item" role="tab" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F9F0;</span></span>
+                    <span class="tab-bar-label">Projects</span>
+                  </a>
+                  <a class="tab-bar-item" role="tab" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F496;</span></span>
+                    <span class="tab-bar-label">Wishlist</span>
+                  </a>
+                  <a class="tab-bar-item" role="tab" href="#">
+                    <span class="tab-bar-icon"><span class="tf">&#x1F600;</span></span>
+                    <span class="tab-bar-label">Profile</span>
+                  </a>
+                  </nav>
+                </div><!-- /grass-container -->
 
-                          <!-- ── NOW ── -->
-                          <div class="section-label" data-show="morning afternoon" data-tab="today">Now</div>
-
-                          <!-- Morning NOW: Read for 20 min — Not Started -->
-                          <div class="task-row" data-show="morning" data-now="morning" data-tab="today">
-                            <div class="task-emoji-box emoji-green"><span class="tf-task">&#x1F4D6;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">8:00 AM</div>
-                              <div class="task-name">Read for 20 min</div>
-                              <div class="task-desc">Grab your book and a cozy spot</div>
-                            </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">7</span></span>
-                                <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">15</span></span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- 6: Talk to Sprout — Not Started (Brand) 5:00 PM -->
-                          <div class="task-row" id="task-1" data-show="afternoon" data-now="afternoon" data-tab="today">
-                            <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F4AC;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">5:00 PM</div>
-                              <div class="task-name">Talk to Sprout</div>
-                              <div class="task-desc">Chat with Sprout about your day</div>
-                            </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
-                                <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">10</span></span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- ── EARLIER TODAY ── -->
-                          <div class="section-label" data-show="afternoon" data-tab="today">Earlier Today</div>
-
-                          <!-- 3: Read for 20 min — Reviewing (Green) 3:30 PM -->
-                          <div class="task-row task-row-reviewing" data-show="afternoon" data-tab="today">
-                            <div class="task-emoji-box emoji-green">
-                              <span class="tf-task">&#x1F4D6;</span>
-                              <span class="emoji-status-badge">&#x1F504;</span>
-                            </div>
-                            <div class="task-info">
-                              <div class="task-time">3:30 PM</div>
-                              <div class="task-name">Read for 20 min</div>
-                              <div class="task-desc">Reviewing...</div>
-                            </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">7</span></span>
-                                <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">15</span></span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- 4: Homework — Rejected (Orange) 4:00 PM -->
-                          <div class="task-card-rejected" id="task-2" data-show="afternoon" data-tab="today">
-                            <div class="task-row">
-                              <div class="task-emoji-box emoji-orange">
-                                <span class="tf-task">&#x1F4DD;</span>
-                                <span class="emoji-status-badge">&#x274E;</span>
-                              </div>
-                              <div class="task-info">
-                                <div class="task-time">4:00 PM</div>
-                                <div class="task-name">Homework</div>
-                                <div class="task-desc">Photo wasn't clear enough</div>
-                              </div>
-                              <div class="task-trailing">
-                                <div class="task-badges">
-                                  <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">5</span></span>
-                                  <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">20</span></span>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="task-action-area">
-                              <span class="action-label">Take a new photo to complete this task</span>
-                              <button class="btn-sprout btn-secondary btn-sm">Try Again</button>
-                            </div>
-                          </div>
-
-                          <!-- 5: Practice Piano — Claimable (Violet) 4:30 PM -->
-                          <div class="task-card-claim" id="task-4" data-show="afternoon" data-tab="today">
-                            <div class="task-row">
-                              <div class="task-emoji-box emoji-violet">
-                                <span class="tf-task">&#x1F3B9;</span>
-                                <span class="emoji-status-badge">&#x2705;</span>
-                              </div>
-                              <div class="task-info">
-                                <div class="task-time">4:30 PM</div>
-                                <div class="task-name">Practice Piano</div>
-                                <div class="task-desc">Completed, ready to claim!</div>
-                              </div>
-                              <div class="task-trailing">
-                                <div class="task-badges">
-                                  <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">12</span></span>
-                                  <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">20</span></span>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="task-action-area" id="claim-area">
-                              <span class="action-label">Task complete, claim your reward!</span>
-                              <button class="btn-sprout btn-secondary btn-sm" id="claim-btn"><span class="tf-claim">&#x1F48E;</span> Claim</button>
-                            </div>
-                          </div>
-
-                          <!-- ── UP NEXT ── -->
-                          <div class="section-label" data-show="morning afternoon" data-tab="today">Up Next</div>
-
-                          <!-- Morning Up Next: Homework — Not Started -->
-                          <div class="task-row" data-show="morning" data-tab="today">
-                            <div class="task-emoji-box emoji-orange"><span class="tf-task">&#x1F4DD;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">4:00 PM</div>
-                              <div class="task-name">Homework</div>
-                              <div class="task-desc">Math worksheet, pages 12 and 13</div>
-                            </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">5</span></span>
-                                <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">20</span></span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- Morning Up Next: Talk to Sprout -->
-                          <div class="task-row" data-show="morning" data-tab="today">
-                            <div class="task-emoji-box emoji-brand"><span class="tf-task">&#x1F4AC;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">5:00 PM</div>
-                              <div class="task-name">Talk to Sprout</div>
-                              <div class="task-desc">Chat with Sprout about your day</div>
-                            </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">3</span></span>
-                                <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">10</span></span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- Morning Up Next: Practice Piano -->
-                          <div class="task-row" data-show="morning" data-tab="today">
-                            <div class="task-emoji-box emoji-violet"><span class="tf-task">&#x1F3B9;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">4:30 PM</div>
-                              <div class="task-name">Practice Piano</div>
-                              <div class="task-desc">Practice for 15 minutes</div>
-                            </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">12</span></span>
-                                <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">20</span></span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- 7: Brush Teeth (PM) — Not Started (Blue Dark) 8:00 PM -->
-                          <div class="task-row" data-show="morning afternoon" data-tab="today">
-                            <div class="task-emoji-box emoji-blue-dark"><span class="tf-task">&#x1FAE7;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">8:00 PM</div>
-                              <div class="task-name">Brush Teeth</div>
-                              <div class="task-desc">Evening brushing before bed</div>
-                            </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">8</span></span>
-                                <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">5</span></span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- 8: Pack Backpack — Not Started (Yellow) 8:30 PM -->
-                          <div class="task-row" data-show="morning afternoon" data-tab="today">
-                            <div class="task-emoji-box emoji-yellow"><span class="tf-task">&#x1F392;</span></div>
-                            <div class="task-info">
-                              <div class="task-time">8:30 PM</div>
-                              <div class="task-name">Pack Backpack</div>
-                              <div class="task-desc">Get ready for tomorrow</div>
-                            </div>
-                            <div class="task-trailing">
-                              <div class="task-badges">
-                                <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">2</span></span>
-                                <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">5</span></span>
-                              </div>
-                            </div>
-                          </div>
-
-                        </div><!-- /task-list -->
-
-                        <!-- ── ANYTIME GALLERY ── -->
-                        <div class="anytime-grid" data-tab="anytime" data-show="morning afternoon">
-
-                          <div class="anytime-tile tile-blue-dark">
-                            <div class="anytime-tile-badges">
-                              <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">10</span></span>
-                              <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">5</span></span>
-                            </div>
-                            <div class="anytime-tile-content">
-                              <div class="anytime-tile-name">Drink Water</div>
-                            </div>
-                            <div class="anytime-tile-emoji">&#x1F4A7;</div>
-                          </div>
-
-                          <div class="anytime-tile tile-orange">
-                            <div class="anytime-tile-badges">
-                              <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">4</span></span>
-                              <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">10</span></span>
-                            </div>
-                            <div class="anytime-tile-content">
-                              <div class="anytime-tile-name">Tidy Room</div>
-                            </div>
-                            <div class="anytime-tile-emoji">&#x1F9F9;</div>
-                          </div>
-
-                          <div class="anytime-tile tile-green">
-                            <div class="anytime-tile-badges">
-                              <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">6</span></span>
-                              <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">10</span></span>
-                            </div>
-                            <div class="anytime-tile-content">
-                              <div class="anytime-tile-name">Go Outside</div>
-                            </div>
-                            <div class="anytime-tile-emoji">&#x1F3DE;&#xFE0F;</div>
-                          </div>
-
-                          <div class="anytime-tile tile-violet" id="night-claim-tile">
-                            <div class="anytime-tile-badges">
-                              <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">3</span></span>
-                              <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">15</span></span>
-                            </div>
-                            <div class="anytime-tile-content">
-                              <div class="anytime-tile-name">Draw Something</div>
-                            </div>
-                            <div class="anytime-tile-emoji">&#x1F3A8;</div>
-                          </div>
-
-                          <div class="anytime-tile tile-pink">
-                            <div class="anytime-tile-badges">
-                              <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">2</span></span>
-                              <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">10</span></span>
-                            </div>
-                            <div class="anytime-tile-content">
-                              <div class="anytime-tile-name">Practice Music</div>
-                            </div>
-                            <div class="anytime-tile-emoji">&#x1F3B5;</div>
-                          </div>
-
-                          <div class="anytime-tile tile-brand">
-                            <div class="anytime-tile-badges">
-                              <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">5</span></span>
-                              <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">10</span></span>
-                            </div>
-                            <div class="anytime-tile-content">
-                              <div class="anytime-tile-name">Stretch</div>
-                            </div>
-                            <div class="anytime-tile-emoji">&#x1F9D8;</div>
-                          </div>
-
-                          <div class="anytime-tile tile-yellow">
-                            <div class="anytime-tile-badges">
-                              <span class="task-badge"><span class="tf-icon flame-muted">&#x1F525;</span><span class="badge-num">8</span></span>
-                              <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">20</span></span>
-                            </div>
-                            <div class="anytime-tile-content">
-                              <div class="anytime-tile-name">Write in Journal</div>
-                            </div>
-                            <div class="anytime-tile-emoji">&#x1F4DD;</div>
-                          </div>
-
-                          <div class="anytime-tile tile-red">
-                            <div class="anytime-tile-badges">
-                              <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">12</span></span>
-                              <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">15</span></span>
-                            </div>
-                            <div class="anytime-tile-content">
-                              <div class="anytime-tile-name">Help with Chores</div>
-                            </div>
-                            <div class="anytime-tile-emoji">&#x1F9F9;</div>
-                          </div>
-
-                        </div><!-- /anytime-grid -->
-
-                        <div class="task-list" style="padding-top:0;">
-
-                          <!-- ── DONE (stacked, bottom) ── -->
-                          <div class="section-label done-toggle" id="done-toggle" data-show="morning afternoon night" data-tab="today">Done <svg class="done-toggle-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5l3 3 3-3"/></svg></div>
-
-                          <div class="done-stack collapsed" id="done-stack" data-show="morning afternoon night" data-tab="today">
-                            <div class="done-stack-items">
-                              <!-- Most recent on top -->
-                              <div class="task-row task-row-claimed">
-                                <div class="task-emoji-box emoji-brand">
-                                  <span class="tf-task">&#x1F4D6;</span>
-                                  <span class="emoji-status-badge">&#x2705;</span>
-                                </div>
-                                <div class="task-info">
-                                  <div class="task-time">8:00 AM</div>
-                                  <div class="task-name">Morning Reading</div>
-                                  <div class="task-desc">Read for 15 minutes</div>
-                                </div>
-                                <div class="task-trailing">
-                                  <div class="task-badges">
-                                    <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">7</span></span>
-                                    <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">10</span></span>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="task-row task-row-claimed">
-                                <div class="task-emoji-box emoji-blue-dark">
-                                  <span class="tf-task">&#x1FAE7;</span>
-                                  <span class="emoji-status-badge">&#x2705;</span>
-                                </div>
-                                <div class="task-info">
-                                  <div class="task-time">7:15 AM</div>
-                                  <div class="task-name">Brush Teeth</div>
-                                  <div class="task-desc">Morning brushing</div>
-                                </div>
-                                <div class="task-trailing">
-                                  <div class="task-badges">
-                                    <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">8</span></span>
-                                    <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">5</span></span>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="task-row task-row-claimed">
-                                <div class="task-emoji-box emoji-green">
-                                  <span class="tf-task">&#x1F6CF;&#xFE0F;</span>
-                                  <span class="emoji-status-badge">&#x2705;</span>
-                                </div>
-                                <div class="task-info">
-                                  <div class="task-time">7:00 AM</div>
-                                  <div class="task-name">Make Bed</div>
-                                  <div class="task-desc">Tidy up your bed before school</div>
-                                </div>
-                                <div class="task-trailing">
-                                  <div class="task-badges">
-                                    <span class="task-badge"><span class="tf-icon">&#x1F525;</span><span class="badge-num">15</span></span>
-                                    <span class="task-badge"><span class="tf-icon">&#x1F48E;</span><span class="badge-num">5</span></span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div class="empty-state" id="empty-state">
-                            <span class="empty-state-emoji">&#x1F31F;</span>
-                            <div class="empty-state-title">Amazing job today!</div>
-                            <div class="empty-state-desc">You finished everything. Come back tomorrow and we will keep growing together!</div>
-                          </div>
-
-                        </div><!-- /task-list -->
-                      </div><!-- /grass-fill -->
-                    </div><!-- /grass-container -->
-                  </div><!-- /screen-sky-alt -->
-              </div>
-              <div class="home-indicator"></div>
-            </div>
+              </div><!-- /screen-sky-alt -->
+            </div><!-- /device-screen -->
+            <div class="home-indicator"></div>
           </div>
         </div>
+      </div>
         </div><!-- /col-left -->
         <div class="col-right"></div><!-- /col-right -->
       </div><!-- /two-col -->
@@ -1238,12 +814,44 @@
     </div>
   </div>
 </div>
-<script>window.DS_META={title:'Home Tier 3',desc:'Kid home dashboard with task progress and anytime activity gallery.',owner:'Leti Schimmel',status:'Done',rive:'sprot2.97_.riv',time:['Morning','Afternoon','Night'],timeDefault:'Afternoon',device:'Phone'};</script>
-<script>window.DS_NAV=[{label:'Artifacts',icon:'phone',collapsible:true,defaultOpen:true,children:[{label:'Chat',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2-tiles.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3-tiles.html'},{label:'Customize sprout',icon:'stars-01',href:'/product-explorer/customize-sprout.html'},{label:'Customize avatar',icon:'stars-02',href:'/product-explorer/customize-avatar.html'},{label:'Home',icon:'home',badge:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Home',icon:'home',badge:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'Activity',icon:'grid',href:'/product-explorer/kid-home/activity.html'},{label:'New Activity',icon:'grid',href:'/product-explorer/kid-home/new-activity.html'},{label:'Quest — Photo',icon:'grid',href:'/product-explorer/quest/photo.html'},{label:'Quest — Classic',icon:'grid',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quest — Guided',icon:'grid',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quest — Conversational',icon:'grid',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Design System',icon:'grid',collapsible:true,children:[{label:'Foundations',icon:'grid',href:'/foundations.html'},{label:'Components',icon:'grid',href:'/components.html'},{label:'Patterns',icon:'grid',href:'/patterns.html'},{label:'Resources',icon:'grid',href:'/resources.html'}]}];</script>
+<script>window.DS_META={title:'Home Tier 3',desc:'Ages 7-13. Inbox-style task list with a segmented control for Screentime, Today, and Anytime tabs.',owner:'Leti Schimmel',status:'Draft',rive:['sprot2.97_.riv','character2.8.riv'],skill:['sprout-character.txt','village-character.txt'],device:'Phone',notes:'\
+<h2>How the Home Works</h2>\
+<p>The kid home is the daily dashboard where kids see their tasks, track progress toward a goal, and manage screen time.</p>\
+<h3>Layout</h3>\
+<ul>\
+<li><strong>Toolbar:</strong> Shield button (parent area access), fire streak counter, and gem balance.</li>\
+<li><strong>Subtitles:</strong> A motivational message from Sprout about the current state (e.g. habits remaining to unlock screen time).</li>\
+<li><strong>Sprout character:</strong> Animated Rive character sitting on the grass, reacts to the kid\'s progress.</li>\
+<li><strong>Goal card:</strong> Shows progress toward a long-term reward (e.g. "Disney cruise" with gem progress bar).</li>\
+<li><strong>Segmented control:</strong> Three tabs to organize content: Screentime, Today, and Anytime.</li>\
+</ul>\
+<h3>Segmented control tabs</h3>\
+<ul>\
+<li><strong>Screentime tab</strong> (timer icon): Shows the screen time card with the current screen time status. The segmented ring shows habit completion (one segment per task). When all habits are done, the kid can spend gems to unlock screen time.</li>\
+<li><strong>Today tab</strong> (pin icon, default): Shows tasks grouped by time: Now, Earlier, Later, and Done. Each task is a compact 80px list card with avatar, name, subtitle, gem reward, and status badge.</li>\
+<li><strong>Anytime tab</strong> (clipboard icon): Tasks that can be completed at any time, not tied to a schedule.</li>\
+</ul>\
+<h3>Task card states</h3>\
+<ul>\
+<li><strong>Available:</strong> Default state, gray badge, muted fire icon.</li>\
+<li><strong>In progress:</strong> Progress ring on avatar showing completion percentage.</li>\
+<li><strong>Submitted:</strong> Dimmed content, hourglass badge, waiting for parent review.</li>\
+<li><strong>Completed:</strong> Dimmed content, red badge with fire icon and streak counter.</li>\
+<li><strong>Rejected:</strong> Expanded card with action area and "Try again" button, yellow warning badge.</li>\
+</ul>\
+<h3>Tab bar</h3>\
+<ul>\
+<li>5 tabs: Home, Calendar, Projects, Wishlist, Profile.</li>\
+<li>Active tab uses sprout-400 green background.</li>\
+<li>Tabs are non-interactive in this prototype (display only).</li>\
+</ul>\
+'};</script>
+<script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <script>
 (function() {
+  // ── Rive character ──
   var canvas = document.getElementById('rive-character');
   if (canvas && window.rive) {
     var r = new rive.Rive({
@@ -1263,316 +871,44 @@
     });
   }
 
-  // ── Shared helpers ──
-  var gemCounter = document.getElementById('gem-counter');
-  var gemLabel = document.getElementById('gem-counter-label');
-  var deviceScreen = document.querySelector('.device-screen');
-  var deviceMockup = document.querySelector('.device-mockup');
-  var doneStack = document.getElementById('done-stack');
-  var doneItems = doneStack ? doneStack.querySelector('.done-stack-items') : null;
-  var spring = 'cubic-bezier(0.5, 1.8, 0.3, 0.8)';
-  var emptyState = document.getElementById('empty-state');
-  var todayCount = document.getElementById('today-count');
+  // ── Segmented control tab switching with sliding pill ──
+  var tabContainer = document.getElementById('home-tabs');
+  var pill = document.getElementById('slide-pill');
+  var segments = document.querySelectorAll('#home-tabs .segment');
 
-  function getRelPos(el) {
-    var r = el.getBoundingClientRect(), s = deviceMockup.getBoundingClientRect();
-    return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height / 2 };
+  function movePill(seg) {
+    pill.style.width = seg.offsetWidth + 'px';
+    pill.style.transform = 'translateX(' + (seg.offsetLeft - 4) + 'px)';
   }
 
-  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+  // Init pill on active segment (defer to ensure layout is settled)
+  var firstActive = tabContainer.querySelector('.segment.active');
+  if (firstActive && pill) requestAnimationFrame(function() { movePill(firstActive); });
 
-  // ── Gem fly animation ──
-  function flyGems(fromEl, reward, onDone) {
-    var from = getRelPos(fromEl), to = getRelPos(gemCounter);
-    var count = Math.min(reward, 8), landed = 0;
-    for (var i = 0; i < count; i++) {
-      (function(idx) {
-        var gem = document.createElement('span');
-        gem.className = 'gem-particle';
-        gem.textContent = '\uD83D\uDC8E';
-        gem.style.left = from.x + 'px';
-        gem.style.top = from.y + 'px';
-        gem.style.opacity = '0';
-        deviceMockup.appendChild(gem);
-        var delay = idx * 60 + Math.random() * 40;
-        var dur = 500 + Math.random() * 200;
-        var sx = (Math.random() - 0.5) * 50, sy = (Math.random() - 0.5) * 25;
-        var mx = (from.x + to.x) / 2 + (Math.random() - 0.5) * 60;
-        var my = Math.min(from.y, to.y) - 20 - Math.random() * 30;
-        var start = null;
-        function tick(ts) {
-          if (!start) start = ts;
-          var el = ts - start - delay;
-          if (el < 0) { requestAnimationFrame(tick); return; }
-          var t = Math.min(el / dur, 1), e = easeOutCubic(t);
-          var fx = from.x + sx * (1 - e), fy = from.y + sy * (1 - e);
-          var bx = (1-e)*(1-e)*fx + 2*(1-e)*e*mx + e*e*to.x;
-          var by = (1-e)*(1-e)*fy + 2*(1-e)*e*my + e*e*to.y;
-          gem.style.transform = 'translate(-50%,-50%) translate('+(bx-from.x)+'px,'+(by-from.y)+'px)';
-          gem.style.opacity = t < 0.1 ? t/0.1 : t > 0.85 ? Math.max(0,1-(t-0.85)/0.15) : 1;
-          if (t < 1) { requestAnimationFrame(tick); }
-          else {
-            gem.remove(); landed++;
-            gemCounter.classList.remove('gem-counter-glow');
-            void gemCounter.offsetWidth;
-            gemCounter.classList.add('gem-counter-glow');
-            if (landed === count) {
-              var cur = parseInt(gemLabel.textContent, 10);
-              gemLabel.textContent = cur + reward;
-              if (onDone) onDone();
-            }
-          }
-        }
-        requestAnimationFrame(tick);
-      })(i);
-    }
-  }
-
-  // ── Claim handler (works for any claim card) ──
-  function handleClaim(card, btn) {
-    var reward = parseInt(btn.textContent.replace(/\D/g,''), 10) || 5;
-    var badges = card.querySelectorAll('.badge-num');
-    if (badges.length >= 2) reward = parseInt(badges[1].textContent, 10) || 5;
-    var isNightCard = (card.id === 'night-claim-card' && currentPreview === 'night');
-
-    flyGems(btn, reward, function() {
-      setTimeout(function() {
-        var actionArea = card.querySelector('.task-action-area');
-        var row = card.querySelector('.task-row');
-        actionArea.style.transition = 'max-height 0.35s '+spring+', padding 0.35s '+spring+', opacity 0.15s '+spring;
-        actionArea.style.maxHeight = actionArea.offsetHeight + 'px';
-        actionArea.style.overflow = 'hidden';
-        void actionArea.offsetWidth;
-        actionArea.style.opacity = '0';
-        actionArea.style.maxHeight = '0';
-        actionArea.style.padding = '0 10px';
-        var emojiBox = card.querySelector('.task-emoji-box');
-        if (!emojiBox.querySelector('.emoji-status-badge')) {
-          var b = document.createElement('span');
-          b.className = 'emoji-status-badge';
-          b.textContent = '\u2705';
-          emojiBox.appendChild(b);
-        }
-        row.style.transition = 'box-shadow 0.35s '+spring;
-        row.style.boxShadow = 'none';
-        row.style.cursor = 'default';
-
-        setTimeout(function() {
-          if (isNightCard) {
-            // In night mode, after claiming the last task, show empty state
-            card.style.transition = 'opacity 0.35s '+spring+', max-height 0.35s '+spring;
-            card.style.opacity = '0';
-            card.style.maxHeight = card.offsetHeight + 'px';
-            void card.offsetWidth;
-            card.style.maxHeight = '0';
-            card.style.overflow = 'hidden';
-            // Hide the Anytime section label too
-            var sectionLabels = document.querySelectorAll('.section-label[data-show]');
-            sectionLabels.forEach(function(lbl) {
-              if (lbl.dataset.show.indexOf('night') !== -1 && !lbl.id) {
-                lbl.style.transition = 'opacity 0.35s '+spring;
-                lbl.style.opacity = '0';
-                setTimeout(function() { lbl.style.display = 'none'; }, 350);
-              }
-            });
-            setTimeout(function() {
-              card.style.display = 'none';
-              emptyState.classList.add('visible');
-            }, 370);
-          } else {
-            var clonedRow = row.cloneNode(true);
-            clonedRow.classList.add('task-row-claimed');
-            clonedRow.style.marginBottom = '5px';
-            clonedRow.style.borderRadius = '10px';
-            card.remove();
-            if (doneItems) {
-              doneItems.insertBefore(clonedRow, doneItems.firstChild);
-            }
-          }
-        }, 370);
-      }, 150);
-    });
-  }
-
-  // ── Attach claim to all claim buttons via delegation ──
-  document.querySelector('.task-list').addEventListener('click', function(e) {
-    var btn = e.target.closest('.btn-sprout');
-    if (!btn) return;
-    var card = btn.closest('.task-card-claim');
-    if (!card || card.dataset.claimed) return;
-    card.dataset.claimed = '1';
-    handleClaim(card, btn);
-  });
-
-  // ── Done stack toggle ──
-  var doneToggle = document.getElementById('done-toggle');
-  var chevron = doneToggle ? doneToggle.querySelector('.done-toggle-chevron') : null;
-  if (doneStack && doneToggle) {
-    function toggleDone() {
-      var isCollapsed = doneStack.classList.contains('collapsed');
-      doneStack.classList.toggle('collapsed', !isCollapsed);
-      doneStack.classList.toggle('expanded', isCollapsed);
-      if (chevron) chevron.classList.toggle('expanded', isCollapsed);
-    }
-    doneToggle.addEventListener('click', toggleDone);
-    doneStack.addEventListener('click', function() {
-      if (doneStack.classList.contains('collapsed')) toggleDone();
-    });
-  }
-
-  // ── Toolbar scroll effect ──
-  var toolbarWrap = document.getElementById('toolbar-wrap');
-  var scrollContainer = document.querySelector('.device-screen');
-  var grassEdge = document.querySelector('.grass-edge');
-  var toolbarH = 56;
-  if (toolbarWrap && scrollContainer && grassEdge) {
-    scrollContainer.addEventListener('scroll', function() {
-      var scrolled = scrollContainer.scrollTop;
-      var grassOffset = grassEdge.offsetTop - scrolled;
-
-      if (grassOffset < toolbarH - 56) {
-        toolbarWrap.classList.remove('toolbar-sky');
-        toolbarWrap.classList.add('toolbar-grass');
-      } else if (scrolled > 10) {
-        toolbarWrap.classList.add('toolbar-sky');
-        toolbarWrap.classList.remove('toolbar-grass');
-      } else {
-        toolbarWrap.classList.remove('toolbar-sky');
-        toolbarWrap.classList.remove('toolbar-grass');
-      }
-    });
-  }
-
-  // ── Preview tabs ──
-  var currentPreview = 'afternoon';
-  // (preview tabs removed — now using time dropdown)
-  var allShowItems = document.querySelectorAll('[data-show]');
-
-  var todayCounts = {
-    morning: '10',
-    afternoon: '8',
-    night: '1'
-  };
-
-  function applyPreview(state) {
-    currentPreview = state;
-    // Show/hide elements based on data-show attribute + data-tab
-    allShowItems.forEach(function(el) {
-      var shows = el.dataset.show.split(' ');
-      var showByTime = shows.indexOf(state) !== -1;
-      var showByTab = !el.dataset.tab || el.dataset.tab === currentHomeTab;
-      if (showByTime && showByTab) {
-        el.style.display = '';
-        // Reset any inline styles from night claim animation
-        el.style.opacity = '';
-        el.style.maxHeight = '';
-        el.style.overflow = '';
-      } else {
-        el.style.display = 'none';
-      }
-    });
-    // Reset empty state
-    emptyState.classList.remove('visible');
-    // Reset claimed state on night card
-    var nightCard = document.getElementById('night-claim-card');
-    if (nightCard) {
-      nightCard.dataset.claimed = '';
-      var actionArea = nightCard.querySelector('.task-action-area');
-      if (actionArea) {
-        actionArea.style.transition = '';
-        actionArea.style.maxHeight = '';
-        actionArea.style.overflow = '';
-        actionArea.style.opacity = '';
-        actionArea.style.padding = '';
-      }
-      var row = nightCard.querySelector('.task-row');
-      if (row) {
-        row.style.boxShadow = '';
-        row.style.cursor = '';
-        row.style.transition = '';
-      }
-      nightCard.style.display = '';
-      nightCard.style.opacity = '';
-      nightCard.style.maxHeight = '';
-      nightCard.style.overflow = '';
-    }
-    // Update today tab count
-    if (todayCount) {
-      todayCount.textContent = todayCounts[state] || todayCounts.afternoon;
-    }
-    // Scroll device to top
-    if (deviceScreen) deviceScreen.scrollTop = 0;
-  }
-
-  window.onTimeChange = function(time) {
-    applyPreview(time.toLowerCase());
-  };
-
-  // ── Device toggle ──
-  var deviceBtns = document.querySelectorAll('.device-toggle .cat-tab');
-  var deviceWrapper = document.querySelector('.device-wrapper');
-  deviceBtns.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var device = btn.getAttribute('data-device');
-      deviceBtns.forEach(function(b) { b.classList.toggle('active', b === btn); });
-      if (device === 'ipad') {
-        deviceWrapper.classList.add('ipad');
-      } else {
-        deviceWrapper.classList.remove('ipad');
-      }
-      applyPreview(currentPreview);
+  segments.forEach(function(seg) {
+    seg.addEventListener('click', function() {
+      var panel = seg.getAttribute('data-panel');
+      segments.forEach(function(s) {
+        s.classList.remove('active');
+        s.setAttribute('aria-selected', 'false');
+      });
+      seg.classList.add('active');
+      seg.setAttribute('aria-selected', 'true');
+      requestAnimationFrame(function() { movePill(seg); });
+      document.querySelectorAll('.task-scroll .tab-panel').forEach(function(p) {
+        p.classList.remove('active');
+      });
+      var target = document.getElementById('panel-' + panel);
+      if (target) target.classList.add('active');
+      // Scroll back to top when switching tabs
+      var scroll = document.querySelector('.task-scroll');
+      if (scroll) scroll.scrollTop = 0;
     });
   });
 
-  // ── Home tabs (Today / Anytime) ──
-  var currentHomeTab = 'today';
-  var homeTabs = document.querySelectorAll('.home-tabs .cat-tab');
-  var allTabItems = document.querySelectorAll('[data-tab]');
-
-  var taskLists = document.querySelectorAll('.task-list');
-
-  function applyHomeTab(tab) {
-    currentHomeTab = tab;
-    homeTabs.forEach(function(t) {
-      t.classList.toggle('active', t.dataset.homeTab === tab);
-    });
-    // Hide task-list containers on anytime tab
-    taskLists.forEach(function(tl) { tl.style.display = tab === 'anytime' ? 'none' : ''; });
-    var firstAnytime = true;
-    allTabItems.forEach(function(el) {
-      el.style.marginTop = '';
-      if (el.dataset.tab === tab) {
-        // Respect data-show visibility
-        if (el.dataset.show) {
-          var shows = el.dataset.show.split(' ');
-          el.style.display = shows.indexOf(currentPreview) !== -1 ? '' : 'none';
-        } else {
-          el.style.display = '';
-        }
-        // Add top spacing to first visible anytime item
-        if (tab === 'anytime' && firstAnytime && el.style.display !== 'none') {
-          el.style.marginTop = '10px';
-          firstAnytime = false;
-        }
-      } else {
-        el.style.display = 'none';
-      }
-    });
-  }
-
-  homeTabs.forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      applyHomeTab(tab.dataset.homeTab);
-    });
-  });
-
-  // Initialize with afternoon view + today tab
-  applyPreview('afternoon');
-  applyHomeTab('today');
-
-  // ── Reset ──
-  document.getElementById('reset-btn').addEventListener('click', function() {
-    location.reload();
+  window.addEventListener('resize', function() {
+    var active = tabContainer.querySelector('.segment.active');
+    if (active && pill) movePill(active);
   });
 })();
 </script>

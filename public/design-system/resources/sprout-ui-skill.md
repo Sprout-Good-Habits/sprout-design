@@ -44,7 +44,7 @@ TossFace emoji font (used instead of system emoji everywhere):
 5. **Pair font size + line height tokens.** E.g. `font-size: var(--font-size-text-md)` with `line-height: var(--line-height-text-md)`.
 6. **Always include the Sprout character** on screens with the branded background.
 7. **Inside Sheets, only use documented components.** Never create custom or ad-hoc components (e.g. pills, chips, custom buttons). Always translate the design intent through the Component Lookup table — use Tile for selections, Button for actions, Input for text entry, etc.
-8. **Always reference existing implementations first.** Before writing character positioning, canvas sizing, or Rive init code, search the codebase for a working example (e.g. `product-explorer/kid-home/timeline.html` for Sprout, `components/avatar.html` for Village Character). Copy the exact values — never guess.
+8. **Always reference existing implementations first.** Before writing character positioning, canvas sizing, or Rive init code, search the codebase for a working example (e.g. `product-explorer/kid-home/tier-2.html` for Sprout, `components/avatar.html` for Village Character). Copy the exact values — never guess.
 9. **Characters are always grounded.** The bottom edge of the container always clips the character. It is never floating in empty space. This applies everywhere — avatars, profile banners, loading screens, home screens.
 
 ---

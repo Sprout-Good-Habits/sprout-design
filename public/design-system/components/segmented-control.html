@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Segmented Control</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Segmented Control",
+  "slug": "segmented-control",
+  "intent": {
+    "purpose": "Allow users to switch between related views or categories within the same context",
+    "taskContext": ["content-filtering", "category-switching", "view-toggling"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["segment-button"],
+    "allows": ["icon", "label", "badge"],
+    "forbids": ["nested-segmented-controls"]
+  },
+  "variants": [
+    { "name": "Icon + Label", "useWhen": "Space allows and labels aid comprehension", "pairWith": [] },
+    { "name": "Icon only", "useWhen": "Many segments or space is limited, icons are self-explanatory", "pairWith": [] },
+    { "name": "Icon + Active Label", "useWhen": "Space is limited but the active segment benefits from a text label", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Medium", "useWhen": "Default — 44px touch target" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline"]
+  },
+  "relationships": {
+    "related": ["Sheet"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": []
+  },
+  "states": ["default", "hover", "current", "active-pressed", "disabled"],
+  "accessibility": {
+    "role": "tablist + tab",
+    "keyboard": ["ArrowLeft", "ArrowRight", "Tab", "Enter", "Space"],
+    "ariaAttributes": ["aria-selected", "aria-controls", "aria-label", "role"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/segmented-control.css">
+<style>
+/* ── Demo helpers ── */
+.demo-sc-wrap {
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-3xl, 24px);
+}
+.demo-sc-row {
+  max-width:500px;
+}
+.demo-sc-row-wide {
+  max-width:700px;
+}
+.hero-demo-hint {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  color:var(--text-quaternary, #717680);
+  margin-top:var(--spacing-lg, 12px);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Segmented Control</div>
+    <div class="sec-desc">Horizontal segmented control for switching between related views or categories. Uses a pill-in-container pattern with iOS-style sliding transitions.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a segmented control when content can be separated into related categories that share the same hierarchy level.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use a segmented control for sequential steps or navigation between unrelated pages. Use a navigation bar instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Hero demo ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Interactive &middot; tap to switch</span>
+        <div class="demo-sc-row-wide">
+          <div class="segmented-control segmented-control-equal segmented-control-sliding" id="hero-tabs" role="tablist">
+            <div class="slide-pill" id="hero-pill"></div>
+            <button class="segment current" role="tab" aria-selected="true" data-hero-tab="0"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Skin tone</span></button>
+            <button class="segment" role="tab" aria-selected="false" data-hero-tab="1"><span class="tf-icon">&#x1FAAE;</span><span class="segment-label">Hairstyle</span></button>
+            <button class="segment" role="tab" aria-selected="false" data-hero-tab="2"><span class="tf-icon">&#x1F9E2;</span><span class="segment-label">Headwear</span></button>
+            <button class="segment" role="tab" aria-selected="false" data-hero-tab="3"><span class="tf-icon">&#x1F45A;</span><span class="segment-label">Clothing</span></button>
+          </div>
+          <p class="hero-demo-hint">Click any segment to see the iOS-style sliding pill animation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Variants ════ -->
+  <div class="doc-section">
+    <h2>Variants</h2>
+    <p>Segmented controls come in three display variants depending on the available space and the clarity of the icons used.</p>
+
+    <h3>Icon + Label</h3>
+    <p>The default variant. Each segment shows a TossFace icon alongside a text label. Use when space allows and labels help users understand the categories.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when you have 2&ndash;4 segments and enough horizontal space for labels.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t truncate labels. Switch to icon-only if space is tight.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Icon + Label</span>
+        <div class="demo-sc-row">
+          <div class="segmented-control segmented-control-equal" role="tablist">
+            <button class="segment current" role="tab" aria-selected="true"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Skin tone</span></button>
+            <button class="segment" role="tab" aria-selected="false"><span class="tf-icon">&#x1FAAE;</span><span class="segment-label">Hairstyle</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Icon only</h3>
+    <p>Shows only TossFace icons with no labels. Use when you have many segments (5+) or when the icons are universally understood. Always provide an <code>aria-label</code> for accessibility.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for 5+ segments where labels would cause overflow, or for universally understood icons.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use icon-only if the icons are ambiguous. Labels prevent misinterpretation.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Icon only &middot; 7 segments</span>
+        <div class="demo-sc-row-wide">
+          <div class="segmented-control segmented-control-equal" role="tablist">
+            <button class="segment current" role="tab" aria-selected="true" aria-label="Skin tone"><span class="tf-icon">&#x1F600;</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Eyes"><span class="tf-icon">&#x1F440;</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Hair"><span class="tf-icon">&#x1FAAE;</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Facial hair"><span class="tf-icon">&#x1F453;</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Headwear"><span class="tf-icon">&#x1F9E2;</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Clothing"><span class="tf-icon">&#x1F45A;</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Background"><span class="tf-icon">&#x1FA9F;</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Icon + Active Label</h3>
+    <p>Shows icons for all segments but reveals a text label only on the currently selected segment. A good middle ground when you have 3&ndash;5 segments and want to confirm the user&rsquo;s selection without cluttering inactive segments.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when 3&ndash;5 segments and you want to reinforce which segment is active with a label.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix with icon+label. Pick one variant per segmented control.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Icon + Active Label</span>
+        <div class="demo-sc-row-wide">
+          <div class="segmented-control segmented-control-equal segmented-control-active-label" role="tablist">
+            <button class="segment current" role="tab" aria-selected="true"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Skin tone</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Eyes"><span class="tf-icon">&#x1F440;</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Hair"><span class="tf-icon">&#x1FAAE;</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Headwear"><span class="tf-icon">&#x1F9E2;</span></button>
+            <button class="segment" role="tab" aria-selected="false" aria-label="Clothing"><span class="tf-icon">&#x1F45A;</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Layout ════ -->
+  <div class="doc-section">
+    <h2>Layout</h2>
+    <p>Segmented controls support two layout modes that control how segments distribute within the container.</p>
+
+    <h3>Equal width</h3>
+    <p>Each segment stretches equally to fill the container. Use when you have a fixed number of segments (2&ndash;5) and want a balanced, symmetrical appearance.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Equal width &middot; 3 segments</span>
+        <div class="demo-sc-row">
+          <div class="segmented-control segmented-control-equal" role="tablist">
+            <button class="segment current" role="tab" aria-selected="true"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Face</span></button>
+            <button class="segment" role="tab" aria-selected="false"><span class="tf-icon">&#x1FAAE;</span><span class="segment-label">Hair</span></button>
+            <button class="segment" role="tab" aria-selected="false"><span class="tf-icon">&#x1F45A;</span><span class="segment-label">Outfit</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use equal width when all segments are roughly the same length and the count is low (2&ndash;5).</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t force equal width on 6+ segments. The touch targets become too narrow.</li>
+      </ul>
+    </div>
+
+    <h3>Content width</h3>
+    <p>Each segment sizes to its content. The container scrolls horizontally with a hidden scrollbar when segments overflow. Use when segment labels vary in length or you have many segments.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Content width &middot; scrollable</span>
+        <div class="demo-sc-row" style="max-width:360px;">
+          <div class="segmented-control segmented-control-content-width" role="tablist">
+            <button class="segment current" role="tab" aria-selected="true"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Skin tone</span></button>
+            <button class="segment" role="tab" aria-selected="false"><span class="tf-icon">&#x1FAAE;</span><span class="segment-label">Hairstyle</span></button>
+            <button class="segment" role="tab" aria-selected="false"><span class="tf-icon">&#x1F453;</span><span class="segment-label">Facial hair</span></button>
+            <button class="segment" role="tab" aria-selected="false"><span class="tf-icon">&#x1F9E2;</span><span class="segment-label">Headwear</span></button>
+            <button class="segment" role="tab" aria-selected="false"><span class="tf-icon">&#x1F45A;</span><span class="segment-label">Clothing</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use content width when segment labels vary significantly in length or when you have 5+ segments.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t hide the scroll affordance entirely. Ensure the last visible segment is partially clipped to hint at scrollability.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>Each segment button has five states. The selected segment uses a white pill with a subtle shadow to lift it from the container, following iOS segmented control conventions.</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(5, 1fr);">
+      <div class="state-cell"><span class="state-cell-label">Default</span></div>
+      <div class="state-cell"><span class="state-cell-label">Hover</span></div>
+      <div class="state-cell"><span class="state-cell-label">Current</span></div>
+      <div class="state-cell"><span class="state-cell-label">Pressed</span></div>
+      <div class="state-cell"><span class="state-cell-label">Disabled</span></div>
+
+      <div class="state-cell">
+        <button class="segment" style="pointer-events:none"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Label</span></button>
+      </div>
+      <div class="state-cell">
+        <button class="segment" style="pointer-events:none;background:var(--bg-primary-hover, #fafafa)"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Label</span></button>
+      </div>
+      <div class="state-cell">
+        <button class="segment current" style="pointer-events:none"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Label</span></button>
+      </div>
+      <div class="state-cell">
+        <button class="segment state-pressed" style="pointer-events:none"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Label</span></button>
+      </div>
+      <div class="state-cell">
+        <button class="segment state-disabled" style="pointer-events:none"><span class="tf-icon">&#x1F600;</span><span class="segment-label">Label</span></button>
+      </div>
+    </div>
+
+    <table class="token-table" style="margin-top:var(--spacing-3xl, 24px);">
+      <thead><tr><th>Property</th><th>Default</th><th>Hover</th><th>Current</th><th>Pressed</th><th>Disabled</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td>transparent</td><td><code>--bg-primary-hover</code></td><td><code>--bg-primary</code></td><td><code>--bg-primary</code></td><td>transparent</td></tr>
+        <tr><td>Shadow</td><td>none</td><td><code>shadow-sm</code></td><td><code>shadow-sm</code></td><td>none</td><td>none</td></tr>
+        <tr><td>Icon blend</td><td>luminosity</td><td>luminosity</td><td>normal</td><td>normal</td><td>luminosity</td></tr>
+        <tr><td>Label color</td><td><code>--text-quaternary</code></td><td><code>--text-quaternary</code></td><td><code>--text-secondary</code></td><td><code>--text-secondary</code></td><td><code>--text-quaternary</code></td></tr>
+        <tr><td>Opacity</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0.5</td></tr>
+        <tr><td>Cursor</td><td>pointer</td><td>pointer</td><td>pointer</td><td>pointer</td><td>not-allowed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Animation ════ -->
+  <div class="doc-section">
+    <h2>Animation</h2>
+    <p>Segment switching follows iOS segmented control principles: the active pill slides smoothly to the newly selected segment rather than snapping instantly. This gives spatial continuity and helps users track which segment they selected.</p>
+
+    <h3>Transition spec</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Duration</td><td><strong>200ms</strong></td><td>Fast enough to feel responsive, slow enough to be perceived</td></tr>
+        <tr><td>Easing</td><td><code>cubic-bezier(0.25, 0.1, 0.25, 1.0)</code></td><td>iOS standard ease, smooth deceleration</td></tr>
+        <tr><td>Properties</td><td><code>background, box-shadow</code></td><td>Only visual properties, no layout shift</td></tr>
+        <tr><td>Reduced motion</td><td><code>duration: 0ms</code></td><td>Respect <code>prefers-reduced-motion: reduce</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Implementation</h3>
+    <p>For a true iOS-style sliding pill, position a pseudo-element behind the segments and animate its <code>transform: translateX()</code> to the selected segment&rsquo;s position. This avoids animating <code>width</code> or <code>left</code> (which trigger layout) and runs entirely on the compositor for 60fps.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>CSS approach:</strong> Apply <code>transition: background 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)</code> on each segment button. The active background and shadow will crossfade smoothly.</li>
+        <li><strong>Sliding pill approach (advanced):</strong> Use an absolutely positioned <code>::before</code> on the container whose <code>width</code> and <code>transform</code> are set via CSS custom properties (<code>--segment-left</code>, <code>--segment-width</code>) updated by JavaScript on segment change. Animate with <code>transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)</code>.</li>
+        <li><strong>Reduced motion:</strong> Wrap transitions in <code>@media (prefers-reduced-motion: no-preference) { }</code>. When motion is reduced, the pill should snap instantly.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Overflow ════ -->
+  <div class="doc-section">
+    <h2>Overflow &amp; Scrolling</h2>
+    <p>When the segment count exceeds the available width (typically 5+ with labels, or 8+ icon-only), the container scrolls horizontally with a hidden scrollbar.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Hidden scrollbar:</strong> Use <code>scrollbar-width: none</code> and <code>::-webkit-scrollbar { display: none }</code> to hide the browser scrollbar while keeping swipe/drag scrolling functional.</li>
+        <li><strong>Clip hint:</strong> The last partially visible segment acts as a scroll affordance. Do not add padding that hides this clipping.</li>
+        <li><strong>Scroll-into-view:</strong> When a segment is selected programmatically or via keyboard, scroll it into view with <code>scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })</code>.</li>
+        <li><strong>Touch:</strong> Use <code>-webkit-overflow-scrolling: touch</code> for momentum scrolling on iOS.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token Reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All segmented control styles map to Sprout design tokens.</p>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Container background</td><td><code>--bg-secondary</code> (#fafafa)</td></tr>
+        <tr><td>Container border</td><td><code>1px solid --border-secondary</code></td></tr>
+        <tr><td>Container radius</td><td><code>--radius-lg</code> (10px)</td></tr>
+        <tr><td>Container padding</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Segment gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Segment height</td><td>44px</td></tr>
+        <tr><td>Segment padding</td><td><code>--spacing-md</code> (8px) &times; <code>--spacing-lg</code> (12px)</td></tr>
+        <tr><td>Segment radius</td><td><code>--radius-sm</code> (6px)</td></tr>
+        <tr><td>Segment gap (icon&ndash;label)</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Icon size</td><td>24 &times; 24px (TossFace)</td></tr>
+        <tr><td>Font</td><td><code>--font-family-body</code> / <code>--font-weight-semibold</code> (600)</td></tr>
+        <tr><td>Font size</td><td><code>--font-size-text-md</code> (16px)</td></tr>
+        <tr><td>Line height</td><td><code>--line-height-text-md</code> (24px)</td></tr>
+        <tr><td>Active shadow</td><td><code>shadow-sm</code> (0 1px 3px, 0 1px 2px)</td></tr>
+        <tr><td>Transition</td><td>200ms <code>cubic-bezier(0.25, 0.1, 0.25, 1)</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Roles:</strong> The container must have <code>role="tablist"</code>. Each segment button must have <code>role="tab"</code>. Each associated panel must have <code>role="tabpanel"</code>.</li>
+        <li><strong>ARIA:</strong> Set <code>aria-selected="true"</code> on the active segment, <code>"false"</code> on all others. Link segments to panels with <code>aria-controls="panel-id"</code> and panels back with <code>aria-labelledby="segment-id"</code>.</li>
+        <li><strong>Keyboard:</strong> Use roving <code>tabindex</code>: the active segment has <code>tabindex="0"</code>, all others <code>tabindex="-1"</code>. <kbd>ArrowLeft</kbd> / <kbd>ArrowRight</kbd> move focus between segments. <kbd>Home</kbd> / <kbd>End</kbd> jump to first/last. <kbd>Enter</kbd> or <kbd>Space</kbd> activate the focused segment.</li>
+        <li><strong>Icon-only:</strong> When labels are hidden, every segment <strong>must</strong> have an <code>aria-label</code> describing the category (e.g. <code>aria-label="Skin tone"</code>).</li>
+        <li><strong>Touch targets:</strong> The 44px segment height meets the minimum 44&times;44px touch target guideline (Apple HIG / WCAG 2.5.8).</li>
+        <li><strong>Motion:</strong> All transitions respect <code>prefers-reduced-motion</code>. Wrap animation declarations in <code>@media (prefers-reduced-motion: no-preference)</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: April 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+(function() {
+  var container = document.getElementById('hero-tabs');
+  var pill = document.getElementById('hero-pill');
+  var segments = container.querySelectorAll('.segment');
+  if (!container || !pill || !segments.length) return;
+
+  function movePill(segment) {
+    var containerRect = container.getBoundingClientRect();
+    var segmentRect = segment.getBoundingClientRect();
+    var offsetLeft = segmentRect.left - containerRect.left;
+    pill.style.width = segmentRect.width + 'px';
+    pill.style.transform = 'translateX(' + (offsetLeft - 4) + 'px)';
+  }
+
+  // Init pill position
+  movePill(segments[0]);
+
+  segments.forEach(function(segment) {
+    segment.addEventListener('click', function() {
+      segments.forEach(function(s) {
+        s.classList.remove('current');
+        s.setAttribute('aria-selected', 'false');
+        s.querySelector('.tf-icon').style.mixBlendMode = 'luminosity';
+        var label = s.querySelector('.segment-label');
+        if (label) label.style.color = '';
+      });
+      segment.classList.add('current');
+      segment.setAttribute('aria-selected', 'true');
+      segment.querySelector('.tf-icon').style.mixBlendMode = 'normal';
+      var label = segment.querySelector('.segment-label');
+      if (label) label.style.color = 'var(--text-secondary, #414651)';
+      movePill(segment);
+    });
+  });
+
+  // Reposition on resize
+  window.addEventListener('resize', function() {
+    var active = container.querySelector('.segment.current');
+    if (active) movePill(active);
+  });
+})();
+</script>
+</body>
+</html>

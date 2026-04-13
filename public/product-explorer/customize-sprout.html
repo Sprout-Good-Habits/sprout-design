@@ -6,7 +6,7 @@
 <title>Sprout Product Explorer — Customize Sprout</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
-<link rel="stylesheet" href="/design-system/components/tabs.css">
+<link rel="stylesheet" href="/design-system/components/segmented-control.css">
 <link rel="stylesheet" href="/design-system/components/tile.css">
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <style>
@@ -372,11 +372,11 @@
                 <!-- Customizer panel -->
                 <div class="customizer-panel">
                   <!-- Category tabs (TossFace icons) -->
-                  <div class="tabs-container tabs-equal tabs-sliding" id="category-tabs">
+                  <div class="segmented-control segmented-control-equal segmented-control-sliding" id="category-tabs" role="tablist">
                     <div class="slide-pill" id="slide-pill"></div>
-                    <button class="cat-tab active" data-panel="skin" aria-label="Skin tone" title="Skin tone"><span class="tf-icon">&#x1F600;</span></button>
-                    <button class="cat-tab" data-panel="hair" aria-label="Hairstyle" title="Hairstyle"><span class="tf-icon">&#x1FAAE;</span></button>
-                    <button class="cat-tab" data-panel="voice" aria-label="Voice" title="Voice"><span class="tf-icon">&#x1F399;&#xFE0F;</span></button>
+                    <button class="segment active" data-panel="skin" aria-label="Skin tone" title="Skin tone" role="tab" aria-selected="true"><span class="tf-icon">&#x1F600;</span></button>
+                    <button class="segment" data-panel="hair" aria-label="Hairstyle" title="Hairstyle" role="tab" aria-selected="false"><span class="tf-icon">&#x1FAAE;</span></button>
+                    <button class="segment" data-panel="voice" aria-label="Voice" title="Voice" role="tab" aria-selected="false"><span class="tf-icon">&#x1F399;&#xFE0F;</span></button>
                   </div>
 
                   <!-- Panel sections -->
@@ -438,7 +438,7 @@
 </div>
 
 <script>window.DS_META={title:'Customize Sprout',desc:'The screen where users customize the Sprout mascot character. They pick skin tone, hairstyle, and voice.',owner:'Leti Schimmel',status:'Done',rive:'sprot2.97_.riv',skill:'sprout-character.txt',device:['Phone','Tablet']};</script>
-<script>window.DS_NAV=[{label:'Artifacts',icon:'phone',collapsible:true,defaultOpen:true,children:[{label:'Chat',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2.html'},{label:'Chat',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 2',href:'/product-explorer/task/chat-tier-2-tiles.html'},{label:'Chat Tiles',icon:'message-chat',badge:'Tier 3',href:'/product-explorer/task/chat-tier-3-tiles.html'},{label:'Customize sprout',icon:'stars-01',href:'/product-explorer/customize-sprout.html'},{label:'Customize avatar',icon:'stars-02',href:'/product-explorer/customize-avatar.html'},{label:'Home',icon:'home',badge:'Tier 2',href:'/product-explorer/kid-home/tier-2.html'},{label:'Home',icon:'home',badge:'Tier 3',href:'/product-explorer/kid-home/tier-3.html'},{label:'Activity',icon:'grid',href:'/product-explorer/kid-home/activity.html'},{label:'New Activity',icon:'grid',href:'/product-explorer/kid-home/new-activity.html'},{label:'Quest — Photo',icon:'grid',href:'/product-explorer/quest/photo.html'},{label:'Quest — Classic',icon:'grid',href:'/product-explorer/quest/quiz-classic.html'},{label:'Quest — Guided',icon:'grid',href:'/product-explorer/quest/quiz-guided.html'},{label:'Quest — Conversational',icon:'grid',href:'/product-explorer/quest/quiz-conversational.html'}]},{label:'Design System',icon:'grid',collapsible:true,children:[{label:'Foundations',icon:'grid',href:'/foundations.html'},{label:'Components',icon:'grid',href:'/components.html'},{label:'Patterns',icon:'grid',href:'/patterns.html'},{label:'Resources',icon:'grid',href:'/resources.html'}]}];</script>
+<script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 <script>
 (function() {
@@ -599,30 +599,36 @@
   // ── Tab switching with sliding pill ──
   var tabContainer = document.getElementById('category-tabs');
   var pill = document.getElementById('slide-pill');
-  var tabs = document.querySelectorAll('.cat-tab');
+  var tabs = document.querySelectorAll('#category-tabs .segment');
 
   function movePill(tab) {
-    var containerRect = tabContainer.getBoundingClientRect();
-    var tabRect = tab.getBoundingClientRect();
-    var offsetLeft = tabRect.left - containerRect.left;
-    pill.style.width = tabRect.width + 'px';
-    pill.style.transform = 'translateX(' + (offsetLeft - 4) + 'px)';
+    pill.style.width = tab.offsetWidth + 'px';
+    pill.style.transform = 'translateX(' + (tab.offsetLeft - 4) + 'px)';
   }
 
-  // Init pill on first active tab
-  var firstActive = tabContainer.querySelector('.cat-tab.active');
-  if (firstActive && pill) movePill(firstActive);
+  // Init pill on first active segment
+  var firstActive = tabContainer.querySelector('.segment.active');
+  if (firstActive && pill) requestAnimationFrame(function() { movePill(firstActive); });
 
   tabs.forEach(function(tab) {
     tab.addEventListener('click', function() {
       var panel = tab.getAttribute('data-panel');
-      tabs.forEach(function(t) { t.classList.remove('active'); });
+      tabs.forEach(function(t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
       tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
       document.querySelectorAll('.panel-section').forEach(function(p) { p.classList.remove('active'); });
       var target = document.getElementById('panel-' + panel);
       if (target) target.classList.add('active');
       if (pill) movePill(tab);
     });
+  });
+
+  window.addEventListener('resize', function() {
+    var active = tabContainer.querySelector('.segment.active');
+    if (active && pill) movePill(active);
   });
 
   // ── Populate panels ──

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Design System — Tab Bars</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "TabBars",
+  "slug": "tab-bars",
+  "intent": {
+    "purpose": "Provide persistent bottom navigation between top-level sections of the kid-facing app using emoji icons and text labels",
+    "taskContext": ["primary-navigation", "section-switching", "app-chrome"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["tab-item", "icon", "label"],
+    "allows": ["badge", "notification-dot"],
+    "forbids": ["nested-tab-bar", "action-button", "overflow-menu"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Standard bottom navigation with 5 tabs", "pairWith": ["Toolbar"] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "Full-width, fixed to bottom of viewport" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["bottom-fixed"]
+  },
+  "relationships": {
+    "related": ["Toolbar", "Tabs"],
+    "escalatesTo": [],
+    "degradesTo": ["Tabs"],
+    "groupsWith": ["Toolbar"]
+  },
+  "states": ["default", "active"],
+  "accessibility": {
+    "role": "navigation",
+    "keyboard": ["Tab", "ArrowLeft", "ArrowRight"],
+    "ariaAttributes": ["aria-label", "aria-current"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/tab-bars.css">
+<style>
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+/* ── Phone frame for in-context demos ── */
+.phone-frame {
+  width:402px; height:260px;
+  background:var(--bg-sky, #e0f2fe);
+  border-radius:36px; overflow:hidden;
+  position:relative;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  display:flex; flex-direction:column;
+  justify-content:flex-end;
+}
+.phone-frame-grass {
+  background:linear-gradient(180deg, var(--bg-sky, #e0f2fe) 0%, var(--bg-sky, #e0f2fe) 60%, var(--sprout-300, #acdc79) 100%);
+}
+.phone-content-placeholder {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-quaternary, #717680);
+}
+
+/* ── Anatomy callout markers ── */
+.anatomy-marker {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:20px; height:20px; border-radius:var(--radius-full, 9999px);
+  background:var(--violet-500, #875bf7); color:#fff;
+  font-size:11px; font-weight:var(--font-weight-bold, 700);
+  position:absolute; z-index:10; pointer-events:none;
+}
+
+/* Anatomy wrapper */
+.anatomy-demo { position:relative; display:inline-block; }
+.anatomy-demo .tab-bar { width:402px; }
+
+/* ── Token table overrides ── */
+.token-table { margin-top:var(--spacing-xl, 16px); }
+
+/* ── State demo tabs ── */
+.state-demo-row {
+  display:flex; gap:var(--spacing-3xl, 24px); flex-wrap:wrap;
+}
+
+/* Let demos be wider */
+.demo { flex-wrap:wrap; }
+.demo-item { min-width:402px; }
+
+@media(max-width:768px) {
+  .phone-frame, .anatomy-demo .tab-bar, .demo-item { width:100%; min-width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Tab Bars</div>
+    <div class="sec-desc">The tab bar is the primary bottom navigation for the kid-facing app. It provides persistent access to the five top-level sections (Home, Calendar, Projects, Wishlist, and Profile) using colorful TossFace emoji icons.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use as the persistent bottom navigation in the kid app.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Always show all five tabs. Never hide or conditionally remove tabs.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Pair with the <a href="/components/toolbar.html" style="color:var(--brand-500)">Toolbar</a> at the top for complete app chrome.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for secondary or nested navigation. Use <a href="/components/segmented-control.html" style="color:var(--brand-500)">Segmented Control</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use in the parent app. The tab bar is kid-facing only.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Variant overview ── -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="phone-frame phone-frame-grass">
+          <div class="phone-content-placeholder">Screen content</div>
+          <nav class="tab-bar" role="navigation" aria-label="Main navigation">
+            <div class="tab-bar-item active" role="tab" aria-current="page">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Home icon">&#x1F3E0;&#xFE0F;</span></div>
+              <span class="tab-bar-label">Home</span>
+            </div>
+            <div class="tab-bar-item" role="tab">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Calendar icon">&#x1F4C5;</span></div>
+              <span class="tab-bar-label">Calendar</span>
+            </div>
+            <div class="tab-bar-item" role="tab">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Projects icon">&#x1F9F0;</span></div>
+              <span class="tab-bar-label">Projects</span>
+            </div>
+            <div class="tab-bar-item" role="tab">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Wishlist icon">&#x1F496;</span></div>
+              <span class="tab-bar-label">Wishlist</span>
+            </div>
+            <div class="tab-bar-item" role="tab">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Profile icon">&#x1F600;</span></div>
+              <span class="tab-bar-label">Profile</span>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── When to use ── -->
+  <div class="doc-section">
+    <h2>When to use</h2>
+    <p>The tab bar is the only sanctioned primary navigation pattern in the kid-facing app. It stays visible across all top-level screens so kids always have a clear path home.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Always visible.</strong> The tab bar persists across all five main sections. It hides only during full-screen quest/exercise flows.</li>
+        <li><strong>Five fixed tabs.</strong> Home, Calendar, Projects, Wishlist, Profile. The order and set are fixed and should not change.</li>
+        <li><strong>Active state.</strong> The current tab gets a lighter pill background (<code>bg-grass-tertiary</code>) with a subtle shadow. Inactive tabs have no background or shadow.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Anatomy ── -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>Each tab consists of an icon slot and a label. The bar itself sits at the bottom of the viewport with a rounded top edge and extra bottom padding for the home indicator.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Structure</span>
+        <div class="anatomy-demo">
+          <span class="anatomy-marker" style="top:-8px;left:50%;transform:translateX(-50%)">1</span>
+          <span class="anatomy-marker" style="top:18px;left:68px">2</span>
+          <span class="anatomy-marker" style="top:52px;left:68px">3</span>
+          <span class="anatomy-marker" style="top:18px;left:170px">4</span>
+          <nav class="tab-bar" role="navigation" aria-label="Anatomy demo">
+            <div class="tab-bar-item active" role="tab">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Home icon">&#x1F3E0;&#xFE0F;</span></div>
+              <span class="tab-bar-label">Home</span>
+            </div>
+            <div class="tab-bar-item" role="tab">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Calendar icon">&#x1F4C5;</span></div>
+              <span class="tab-bar-label">Calendar</span>
+            </div>
+            <div class="tab-bar-item" role="tab">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Projects icon">&#x1F9F0;</span></div>
+              <span class="tab-bar-label">Projects</span>
+            </div>
+            <div class="tab-bar-item" role="tab">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Wishlist icon">&#x1F496;</span></div>
+              <span class="tab-bar-label">Wishlist</span>
+            </div>
+            <div class="tab-bar-item" role="tab">
+              <div class="tab-bar-icon"><span class="tf" aria-label="Profile icon">&#x1F600;</span></div>
+              <span class="tab-bar-label">Profile</span>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>1. Container.</strong> Full-width bar with <code>bg-grass-secondary</code> background, <code>radius-4xl</code> top corners, and 32 px bottom padding for safe area.</li>
+        <li><strong>2. Icon.</strong> 28&times;28 px TossFace emoji. All tabs show full-color icons.</li>
+        <li><strong>3. Label.</strong> <code>text-xs</code> regular (12 px / 16 px). Always visible, centered below the icon.</li>
+        <li><strong>4. Tab item.</strong> Flexible column with <code>radius-xl</code>. Active tab gets the <code>bg-grass-tertiary</code> pill highlight and <code>shadow-sm</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── States ── -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>Each tab has two visual states that make the current section obvious at a glance.</p>
+    <div class="state-demo-row">
+      <div>
+        <div class="demo">
+          <div class="demo-item">
+            <span class="demo-label">Active</span>
+            <div class="tab-bar" style="width:120px;padding:var(--spacing-xs,4px) var(--spacing-md,8px)">
+              <div class="tab-bar-item active">
+                <div class="tab-bar-icon"><span class="tf" aria-label="Home icon">&#x1F3E0;&#xFE0F;</span></div>
+                <span class="tab-bar-label">Home</span>
+              </div>
+            </div>
+          </div>
+          <div class="demo-item">
+            <span class="demo-label">Inactive</span>
+            <div class="tab-bar" style="width:120px;padding:var(--spacing-xs,4px) var(--spacing-md,8px)">
+              <div class="tab-bar-item">
+                <div class="tab-bar-icon"><span class="tf" aria-label="Calendar icon">&#x1F4C5;</span></div>
+                <span class="tab-bar-label">Calendar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="token-table">
+      <thead><tr><th>State</th><th>Background</th><th>Shadow</th><th>Icon treatment</th></tr></thead>
+      <tbody>
+        <tr><td>Active</td><td><code>var(--bg-grass-tertiary)</code> #e6f4d7</td><td><code>shadow-sm</code></td><td>Full color</td></tr>
+        <tr><td>Inactive</td><td>Transparent</td><td>None</td><td>Full color</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Token reference ── -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+    <p>All tokens used by the tab bar, mapped from the Figma variables.</p>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Bar background</td><td><code>--bg-grass-secondary</code></td><td>#ceeab0</td></tr>
+        <tr><td>Active tab pill</td><td><code>--bg-grass-tertiary</code></td><td>#e6f4d7</td></tr>
+        <tr><td>Active tab shadow</td><td><code>shadow-sm</code></td><td>0 1px 3px rgba(10,13,18,0.1), 0 1px 2px rgba(10,13,18,0.1)</td></tr>
+        <tr><td>Label color</td><td><code>--text-primary</code></td><td>#181d27</td></tr>
+        <tr><td>Label size</td><td><code>--font-size-text-xs</code></td><td>12px</td></tr>
+        <tr><td>Label line-height</td><td><code>--line-height-text-xs</code></td><td>16px</td></tr>
+        <tr><td>Tab gap</td><td><code>--spacing-xs</code></td><td>4px</td></tr>
+        <tr><td>Tab padding</td><td><code>--spacing-xs</code> / <code>--spacing-md</code></td><td>4px / 8px</td></tr>
+        <tr><td>Bar padding (horizontal)</td><td><code>--spacing-xl</code></td><td>16px</td></tr>
+        <tr><td>Bar padding (top)</td><td><code>--spacing-xl</code></td><td>16px</td></tr>
+        <tr><td>Bar padding (bottom)</td><td><code>--spacing-4xl</code></td><td>32px</td></tr>
+        <tr><td>Top corner radius</td><td><code>--radius-4xl</code></td><td>24px</td></tr>
+        <tr><td>Tab pill radius</td><td><code>--radius-xl</code></td><td>12px</td></tr>
+        <tr><td>Icon size</td><td>Fixed</td><td>28&times;28px</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Placement ── -->
+  <div class="doc-section">
+    <h2>Placement</h2>
+    <p>The tab bar is always anchored to the bottom of the screen. The 32 px bottom padding accounts for the iOS home indicator safe area.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Position.</strong> Fixed to the bottom edge of the viewport. Content scrolls behind it.</li>
+        <li><strong>Pairing.</strong> Always appears with a <a href="/components/toolbar.html" style="color:var(--brand-500)">Toolbar</a> at the top. Together they form the persistent app chrome.</li>
+        <li><strong>Hiding.</strong> The tab bar hides during immersive flows like quests and exercises where the child should be focused on the task.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Content guidelines ── -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <p>Tab labels and icons should be immediately recognizable to children.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Labels.</strong> Single word, title case. Maximum 8 characters to prevent truncation on small screens.</li>
+        <li><strong>Icons.</strong> TossFace emoji only (never system emoji). Each icon should be visually distinct and semantically connected to the section.</li>
+        <li><strong>Order.</strong> Home &rarr; Calendar &rarr; Projects &rarr; Wishlist &rarr; Profile. This order is fixed.</li>
+      </ul>
+    </div>
+
+    <table class="token-table" style="margin-top:var(--spacing-xl, 16px)">
+      <thead><tr><th>Tab</th><th>Icon</th><th>Section</th></tr></thead>
+      <tbody>
+        <tr><td>Home</td><td>&#127968; House</td><td>Main dashboard and daily view</td></tr>
+        <tr><td>Calendar</td><td>&#128197; Calendar</td><td>Schedule and habit tracking</td></tr>
+        <tr><td>Projects</td><td>&#129520; Toolbox</td><td>Active projects and tasks</td></tr>
+        <tr><td>Wishlist</td><td>&#128150; Sparkling heart</td><td>Rewards and goals</td></tr>
+        <tr><td>Profile</td><td>&#128512; Grinning face</td><td>User settings and avatar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Accessibility ── -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <p>The tab bar must be fully navigable by keyboard and assistive technology.</p>
+    <div class="prose">
+      <ul>
+        <li>Wrap the tab bar in a <code>&lt;nav&gt;</code> element with <code>aria-label="Main navigation"</code>.</li>
+        <li>Each tab uses <code>role="tab"</code>. The active tab gets <code>aria-current="page"</code>.</li>
+        <li>Support <kbd>Tab</kbd> to enter the bar, then <kbd>ArrowLeft</kbd> / <kbd>ArrowRight</kbd> to move between tabs.</li>
+        <li>Each tab item meets the 44&times;44px minimum touch target.</li>
+        <li>Icon images use descriptive <code>alt</code> text (e.g., "Home icon").</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: April 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+<script src="/spec-renderer.js"></script>
+</body>
+</html>
