@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<title>Parent Chat v2 — Component Reference</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+/* ── Reference page layout ── */
+.ref-page{padding:40px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:48px}
+.ref-section{display:flex;flex-direction:column;gap:16px}
+.ref-section-title{font-family:var(--font-family-body,'Inter',sans-serif);font-size:var(--font-size-display-xs,24px);font-weight:var(--font-weight-bold,700);color:var(--text-primary,#181d27);line-height:var(--line-height-display-xs,32px)}
+.ref-label{font-family:var(--font-family-body,'Inter',sans-serif);font-size:var(--font-size-text-sm,14px);font-weight:var(--font-weight-medium,500);color:var(--text-tertiary,#535862);margin-bottom:4px}
+.ref-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.ref-col{display:flex;flex-direction:column;gap:8px}
+.ref-card{background:var(--bg-secondary,#fafafa);border:1px solid var(--border-secondary,#e9eaeb);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.ref-divider{height:1px;background:var(--border-secondary,#e9eaeb)}
+
+/* ── Inline component styles (copied from parent-chat-2) ── */
+
+/* Messages */
+.msg-row{display:flex;align-items:flex-end;gap:8px;max-width:320px;position:relative}
+.msg-row.msg-outgoing{align-self:flex-end}
+.msg-row.msg-incoming{align-self:flex-start}
+.msg-avatar{width:32px;height:32px;border-radius:9999px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;align-self:flex-end}
+.msg-avatar-sprout{background:#e0f2fe;overflow:hidden}
+.msg-avatar-user{display:none}
+.msg-col{display:flex;flex-direction:column;gap:2px;min-width:0}
+.msg-sender{font-family:var(--font-family-body,'Inter',sans-serif);font-size:10px;font-weight:400;color:#6b7280;letter-spacing:0;padding-left:0;margin-bottom:0}
+.msg-bubble{font-family:var(--font-family-body,'Inter',sans-serif);font-size:17px;line-height:22px;padding:12px 16px;word-break:break-word;white-space:pre-wrap;border-radius:20px;min-width:90px}
+.msg-bubble-out{background:#f4f4f4;color:#181d27}
+.msg-bubble-in{background:#f3f4f6;color:#181d27}
+.msg-bubble-coparent{background:#f3f4f6;color:#181d27}
+
+/* Quoted reply */
+.msg-quoted{border-left:none;padding:0;margin-bottom:4px;border-radius:0;background:none;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body,'Inter',sans-serif);font-size:13px;color:#9ca3af}
+.msg-quoted-sender{font-size:13px;font-weight:500;color:#9ca3af}
+.msg-quoted-text{font-size:13px;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+
+/* System message */
+.msg-system{align-self:center;font-family:var(--font-family-body,'Inter',sans-serif);font-size:13px;color:#9ca3af;padding:12px 0;margin:4px 0;text-align:center}
+
+/* Typing indicator */
+.typing-indicator{display:inline-flex;align-items:center;gap:4px;padding:8px 0;background:transparent}
+.typing-dot{width:6px;height:6px;border-radius:9999px;background:#a4a7ae;opacity:.4;animation:typing-bounce .6s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:.15s}
+.typing-dot:nth-child(3){animation-delay:.3s}
+@keyframes typing-bounce{0%,100%{opacity:.4;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
+
+/* Option chips */
+.option-chips{display:flex;gap:8px;overflow-x:auto;padding:16px 16px 16px;max-width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.option-chips::-webkit-scrollbar{display:none}
+.option-chip{flex-shrink:0;padding:10px 16px;border-radius:16px;border:none;background:#f7f7f8;font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;font-weight:400;color:#414651;cursor:pointer;transition:all .2s;white-space:nowrap}
+.option-chip:hover{background:#ededef}
+.option-chip.selected{background:#e9eaeb;border:none;color:#181d27}
+.option-chip.faded{opacity:.4;pointer-events:none}
+
+/* Suggestion chips */
+.suggestion-chips{display:flex;gap:8px;padding:16px 16px 16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.suggestion-chips::-webkit-scrollbar{display:none}
+.suggestion-chips .option-chip{white-space:normal;max-width:200px;text-align:left;padding:12px 16px}
+.suggestion-chip-title{font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;font-weight:600;color:#111827;line-height:1.3}
+.suggestion-chip-sub{font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;font-weight:400;color:#9ca3af;line-height:1.3;margin-top:2px}
+
+/* Action buttons */
+.action-btns{display:flex;gap:8px}
+.action-btn{padding:12px 24px;border-radius:11px;font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:flex;align-items:center;gap:6px}
+.action-btn-primary{background:#16a34a;color:#fff}
+.action-btn-primary:hover{background:#15803d}
+.action-btn-secondary{background:#fff;border:1px solid #d5d7da;color:#6b7280}
+.action-btn-secondary:hover{background:#f9fafb}
+.action-btn.done{background:#ecfdf3;border:1px solid #16a34a;color:#16a34a;pointer-events:none}
+.action-btn.faded{opacity:.5;pointer-events:none}
+.action-btn .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rspin .6s linear infinite}
+.action-btn-secondary .spinner{border-color:rgba(107,114,128,.3);border-top-color:#6b7280}
+@keyframes rspin{to{transform:rotate(360deg)}}
+
+/* Confirmation card */
+.confirm-card{background:#fff;border:1px solid #e9eaeb;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:16px;max-width:320px}
+.confirm-card-title{font-family:var(--font-family-body,'Inter',sans-serif);font-size:15px;font-weight:700;color:#181d27;margin-bottom:12px}
+.confirm-card-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f3f4f6}
+.confirm-card-label{font-family:var(--font-family-body,'Inter',sans-serif);font-size:13px;color:#717680}
+.confirm-card-value{font-family:var(--font-family-body,'Inter',sans-serif);font-size:13px;font-weight:600;color:#181d27}
+.confirm-card-desc{font-family:var(--font-family-body,'Inter',sans-serif);font-size:13px;color:#717680;margin-top:8px;line-height:18px}
+.confirm-card-btns{display:flex;gap:8px;margin-top:12px}
+.confirm-card-btn{flex:1;padding:10px;border-radius:11px;font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
+.confirm-card-btn-cancel{background:#fff;border:1px solid #d5d7da;color:#6b7280}
+.confirm-card-btn-confirm{background:#16a34a;color:#fff}
+.confirm-card-btn.done{background:#ecfdf3;border:1px solid #16a34a;color:#16a34a;pointer-events:none}
+.confirm-card-btn.dismissed{background:#fef2f2;border:1px solid #ef4444;color:#ef4444;pointer-events:none}
+
+/* Artifact card */
+.artifact-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:12px;display:flex;align-items:center;gap:10px;max-width:320px;cursor:pointer;transition:background .15s}
+.artifact-card:hover{background:#f9fafb}
+.artifact-icon{font-size:24px;line-height:1;flex-shrink:0}
+.artifact-body{flex:1;min-width:0}
+.artifact-name{font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:600;color:#181d27;display:flex;align-items:center;gap:6px}
+.artifact-version{font-family:var(--font-family-body,'Inter',sans-serif);font-size:10px;font-weight:600;color:#717680;background:#f3f4f6;padding:2px 6px;border-radius:9999px}
+.artifact-sub{font-family:var(--font-family-body,'Inter',sans-serif);font-size:12px;color:#6b7280;margin-top:2px}
+.artifact-link{font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:600;color:#3b82f6;flex-shrink:0;white-space:nowrap}
+
+/* Tool usage */
+.tool-usage{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 0}
+.tool-usage-chevron{width:14px;height:14px;color:#9ca3af;transition:transform .2s;flex-shrink:0}
+.tool-usage-chevron.open{transform:rotate(180deg)}
+.tool-usage-label{font-family:var(--font-family-body,'Inter',sans-serif);font-size:13px;color:#9ca3af}
+.tool-usage-details{display:none;padding:4px 0;font-family:var(--font-family-body,'Inter',sans-serif);font-size:13px;color:#9ca3af;line-height:20px}
+.tool-usage-details.open{display:block}
+
+/* Avatars */
+.avatar-circle{width:32px;height:32px;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-family:var(--font-family-body,'Inter',sans-serif);font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.avatar-user{background:#f59e0b}
+.avatar-coparent{background:#7C3AED}
+.avatar-sprout{background:#a3d977;overflow:hidden;position:relative}
+.chat-header-avatars{display:flex;align-items:center;flex-shrink:0}
+.chat-header-avatars .avatar-circle+.avatar-circle{margin-left:-8px}
+
+/* Composer */
+.composer-pill-demo{display:flex;flex-direction:column;padding:20px 14px 8px;background:#f7f7f8;border:none;border-radius:24px;overflow:hidden;max-width:380px;width:100%}
+.composer-input-demo{font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;line-height:24px;color:#9ca3af;background:transparent;border:none;outline:none;padding:0}
+.composer-toolbar{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.composer-toolbar-left{display:flex;align-items:center;gap:4px}
+.composer-toolbar-right{display:flex;align-items:center;gap:4px}
+.composer-icon-btn{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:none;border:none;border-radius:9999px;cursor:pointer;padding:0;color:#9ca3af;transition:color .15s}
+.composer-icon-btn:hover{color:#111827}
+.composer-icon-btn svg{width:20px;height:20px}
+.btn-mic{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:none;border:none;border-radius:9999px;cursor:pointer;padding:0;color:#6b7280;transition:color .15s}
+.btn-mic svg{width:22px;height:22px}
+.btn-mic-send{color:#fff;background:#181d27;border-radius:9999px;width:36px;height:36px}
+.btn-mic-send svg{width:22px;height:22px}
+
+/* Reply pill */
+.reply-pill-demo{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border-radius:20px;margin-bottom:8px;min-width:0;max-width:380px}
+.reply-pill-icon{flex-shrink:0;width:20px;height:20px;color:var(--brand-500,#0ba5ec)}
+.reply-pill-icon svg{width:20px;height:20px}
+.reply-pill-text{flex:1;min-width:0;font-family:var(--font-family-body,'Inter',sans-serif);font-size:15px;font-weight:500;color:var(--brand-500,#0ba5ec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:22px}
+.reply-pill-close{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--brand-500,#0ba5ec);background:none;border:none;padding:0}
+.reply-pill-close svg{width:20px;height:20px}
+
+/* Reconnection banner */
+.reconnect-banner-demo{background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:8px 16px;display:flex;align-items:center;gap:8px;max-width:380px}
+.reconnect-spinner{width:16px;height:16px;border:2px solid #fde68a;border-top-color:#a16207;border-radius:50%;animation:rspin .8s linear infinite;flex-shrink:0}
+.reconnect-text{font-family:var(--font-family-body,'Inter',sans-serif);font-size:13px;color:#a16207;font-weight:500}
+
+/* Toast */
+.toast-demo{display:inline-block;background:#181d27;color:#fff;font-family:var(--font-family-body,'Inter',sans-serif);font-size:13px;font-weight:600;padding:8px 20px;border-radius:9999px}
+
+/* Sheet action tiles */
+.action-tile{width:120px;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--spacing-xs,4px);background:var(--bg-primary,#fff);border:2px solid var(--border-secondary,#e9eaeb);border-radius:var(--radius-2xl,16px);box-shadow:0 3px 0 0 var(--gray-200,#e9eaeb);cursor:pointer;transition:background .15s,box-shadow .15s,transform .15s}
+.action-tile:hover{background:var(--bg-secondary,#fafafa)}
+.action-tile:active{box-shadow:none;transform:translateY(2px)}
+.action-tile-icon{font-family:'TossFace',sans-serif;font-size:24px;line-height:1}
+.action-tile-label{font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-bold,700);color:var(--text-secondary,#414651);line-height:var(--line-height-text-md,24px)}
+
+/* Context menu */
+.ctx-menu-list-demo{background:#fff;border:1px solid #e9eaeb;border-radius:16px;overflow:hidden;max-width:320px}
+.ctx-menu-item{display:flex;align-items:center;gap:12px;padding:8px 16px;border-radius:0;cursor:pointer;transition:background .1s;border:none;background:none;width:100%;text-align:left}
+.ctx-menu-item:hover{background:#f3f4f6}
+.ctx-menu-item svg{width:24px;height:24px;flex-shrink:0;color:#000}
+.ctx-menu-item span{font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:500;color:#000}
+.ctx-menu-item.destructive svg{color:#f04438}
+.ctx-menu-item.destructive span{color:#f04438}
+
+/* Confirm dialog */
+.confirm-dialog-demo{background:#fff;border-radius:16px;padding:24px;width:280px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.15)}
+.confirm-dialog-demo h3{font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;font-weight:700;color:#181d27;margin:0 0 8px}
+.confirm-dialog-demo p{font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;color:#717680;margin:0 0 20px}
+.confirm-dialog-btns{display:flex;gap:8px}
+.confirm-dialog-btn{flex:1;padding:10px;border-radius:11px;font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:600;cursor:pointer;border:none}
+.confirm-dialog-cancel{background:#f3f4f6;color:#414651}
+.confirm-dialog-delete{background:#ef4444;color:#fff}
+
+/* Mention popup */
+.mention-popup-demo{background:#fff;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #e5e7eb;display:flex;flex-direction:column;overflow:hidden;padding:5px 1px;max-width:320px}
+.mention-item{display:flex;align-items:center;gap:12px;padding:8px 12px;cursor:pointer;transition:background .1s}
+.mention-item:hover{background:#f3f4f6}
+.mention-item-avatar{width:24px;height:24px;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden}
+.mention-item-info{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px}
+.mention-item-name{font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:500;color:#000}
+.mention-item-sub{font-family:var(--font-family-body,'Inter',sans-serif);font-size:12px;color:#414651;font-weight:400}
+
+/* Attachment thumbs */
+.attach-strip-demo{display:flex;gap:8px}
+.attach-thumb{position:relative;width:56px;height:56px;border-radius:12px;overflow:hidden;flex-shrink:0;border:1px solid #e5e7eb}
+.attach-thumb-file{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f9fafb;gap:2px}
+.attach-thumb-file-icon{font-size:18px}
+.attach-thumb-file-name{font-size:8px;color:#717680;max-width:48px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-family:var(--font-family-body,'Inter',sans-serif)}
+.attach-thumb-x{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:9999px;background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;border:none;padding:0;line-height:1}
+
+/* Inline image bubble */
+.msg-bubble-img{width:100%;max-width:180px;border-radius:12px;margin-bottom:6px}
+
+/* Chat header badge */
+.chat-header-badge-demo{width:18px;height:18px;border-radius:9999px;background:#EF4444;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-family-body,'Inter',sans-serif);font-size:10px;font-weight:700;color:#fff}
+
+/* Status bar */
+.status-bar-demo{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:44px;background:#fff;border-radius:12px;border:1px solid #e9eaeb;max-width:380px}
+.status-bar-time{font-size:17px;font-weight:600;color:#181d27;letter-spacing:-.01em}
+.status-bar-icons{display:flex;align-items:center;gap:6px}
+.status-bar-icons svg{display:block}
+
+/* Mention tag */
+.mention-tag{color:var(--brand-500,#0ba5ec);font-weight:var(--font-weight-semibold,600)}
+
+/* Feature list */
+.pc-features-demo{max-width:280px}
+.pc-features-title{font-size:13px;font-weight:700;color:var(--text-primary,#181d27);margin-bottom:8px}
+.pc-feature-item{display:flex;align-items:center;gap:8px;padding:7px 12px;font-size:13px;color:var(--text-secondary,#535862);cursor:pointer;border-left:2px solid transparent;border-radius:0 6px 6px 0;transition:all .1s}
+.pc-feature-item:hover{background:#f5f5f5;color:var(--text-primary,#181d27)}
+.pc-feature-item.active{background:var(--brand-50,#eff8ff);color:var(--brand-600,#0068b5);border-left-color:var(--brand-500,#0088ff);font-weight:600}
+</style>
+</head>
+<body style="overflow:auto;display:block">
+
+<div class="ref-page">
+  <div>
+    <h1 style="font-family:var(--font-family-body,'Inter',sans-serif);font-size:36px;font-weight:700;color:var(--text-primary);line-height:44px;margin-bottom:4px">Parent Chat v2</h1>
+    <p style="font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;color:var(--text-tertiary);line-height:24px">Component and variant reference</p>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       1. MESSAGES
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Messages</div>
+
+    <!-- Outgoing -->
+    <div class="ref-label">Outgoing</div>
+    <div class="ref-row">
+      <div class="msg-row msg-outgoing">
+        <div class="msg-col">
+          <div class="msg-bubble msg-bubble-out">Hey, can you help with bedtime?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Incoming (Sprout) -->
+    <div class="ref-label">Incoming (Sprout)</div>
+    <div class="ref-row">
+      <div class="msg-row msg-incoming">
+        <div class="msg-avatar msg-avatar-sprout">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#a3d977"/><circle cx="9" cy="10" r="1.5" fill="#fff"/><circle cx="15" cy="10" r="1.5" fill="#fff"/></svg>
+        </div>
+        <div class="msg-col">
+          <div class="msg-bubble msg-bubble-in">Of course! I'd recommend starting with a calming routine about 30 minutes before bed.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Incoming (Co-parent) -->
+    <div class="ref-label">Incoming (Co-parent)</div>
+    <div class="ref-row">
+      <div class="msg-row msg-incoming">
+        <div class="msg-avatar" style="background:#7C3AED">ZR</div>
+        <div class="msg-col">
+          <div class="msg-sender">Zach</div>
+          <div class="msg-bubble msg-bubble-coparent">Sounds good, we can try that tonight.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- With quoted reply -->
+    <div class="ref-label">With quoted reply</div>
+    <div class="ref-row">
+      <div class="msg-row msg-incoming">
+        <div class="msg-avatar msg-avatar-sprout">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#a3d977"/><circle cx="9" cy="10" r="1.5" fill="#fff"/><circle cx="15" cy="10" r="1.5" fill="#fff"/></svg>
+        </div>
+        <div class="msg-col">
+          <div class="msg-quoted">
+            <span class="msg-quoted-sender">You</span>
+            <span class="msg-quoted-text">Hey, can you help with bedtime?</span>
+          </div>
+          <div class="msg-bubble msg-bubble-in">Absolutely! Here are a few ideas.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- With @mention -->
+    <div class="ref-label">With @mention</div>
+    <div class="ref-row">
+      <div class="msg-row msg-outgoing">
+        <div class="msg-col">
+          <div class="msg-bubble msg-bubble-out"><span class="mention-tag">@Sprout</span> what do you think?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System message -->
+    <div class="ref-label">System message</div>
+    <div class="ref-row" style="justify-content:center;width:100%">
+      <div class="msg-system">Sprout added a new quest for Emma</div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       2. TYPING INDICATOR
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Typing Indicator</div>
+    <div class="ref-row">
+      <div class="typing-indicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       3. OPTION CHIPS
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Option Chips</div>
+
+    <div class="ref-label">Default</div>
+    <div class="option-chips" style="padding-left:0">
+      <div class="option-chip">Morning</div>
+      <div class="option-chip">Afternoon</div>
+      <div class="option-chip">Evening</div>
+    </div>
+
+    <div class="ref-label">Selected + faded</div>
+    <div class="option-chips" style="padding-left:0">
+      <div class="option-chip selected">Morning</div>
+      <div class="option-chip faded">Afternoon</div>
+      <div class="option-chip faded">Evening</div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       4. SUGGESTION CHIPS
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Suggestion Chips</div>
+
+    <div class="suggestion-chips" style="padding-left:0">
+      <button class="option-chip">
+        <div class="suggestion-chip-title">Development tips</div>
+        <div class="suggestion-chip-sub">for my child's age</div>
+      </button>
+      <button class="option-chip">
+        <div class="suggestion-chip-title">Screen time</div>
+        <div class="suggestion-chip-sub">set healthy limits</div>
+      </button>
+      <button class="option-chip">
+        <div class="suggestion-chip-title">Bedtime routine</div>
+        <div class="suggestion-chip-sub">build better habits</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       5. ACTION BUTTONS
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Action Buttons</div>
+
+    <div class="ref-label">Default</div>
+    <div class="action-btns">
+      <button class="action-btn action-btn-primary">Approve</button>
+      <button class="action-btn action-btn-secondary">Dismiss</button>
+    </div>
+
+    <div class="ref-label">Loading</div>
+    <div class="action-btns">
+      <button class="action-btn action-btn-primary loading"><div class="spinner"></div> Approving...</button>
+      <button class="action-btn action-btn-secondary faded">Dismiss</button>
+    </div>
+
+    <div class="ref-label">Done</div>
+    <div class="action-btns">
+      <button class="action-btn done">&#10003; Approved</button>
+      <button class="action-btn action-btn-secondary faded">Dismiss</button>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       6. CONFIRMATION CARD
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Confirmation Card</div>
+
+    <div class="ref-label">Default</div>
+    <div class="confirm-card">
+      <div class="confirm-card-title">Assign Quest</div>
+      <div class="confirm-card-row"><span class="confirm-card-label">Quest</span><span class="confirm-card-value">Brush Teeth Champion</span></div>
+      <div class="confirm-card-row"><span class="confirm-card-label">Assignee</span><span class="confirm-card-value">Emma</span></div>
+      <div class="confirm-card-row" style="border:none"><span class="confirm-card-label">Reward</span><span class="confirm-card-value">5 gems</span></div>
+      <div class="confirm-card-desc">Emma will see this quest in her daily goals.</div>
+      <div class="confirm-card-btns">
+        <button class="confirm-card-btn confirm-card-btn-cancel">Cancel</button>
+        <button class="confirm-card-btn confirm-card-btn-confirm">Confirm</button>
+      </div>
+    </div>
+
+    <div class="ref-label">Confirmed</div>
+    <div class="confirm-card">
+      <div class="confirm-card-title">Assign Quest</div>
+      <div class="confirm-card-row"><span class="confirm-card-label">Quest</span><span class="confirm-card-value">Brush Teeth Champion</span></div>
+      <div class="confirm-card-row" style="border:none"><span class="confirm-card-label">Assignee</span><span class="confirm-card-value">Emma</span></div>
+      <div class="confirm-card-btns">
+        <button class="confirm-card-btn dismissed">Cancelled</button>
+        <button class="confirm-card-btn done">&#10003; Confirmed</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       7. ARTIFACT CARD
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Artifact Card</div>
+    <div class="ref-row">
+      <div class="artifact-card">
+        <div class="artifact-icon">&#x1F9F7;</div>
+        <div class="artifact-body">
+          <div class="artifact-name">Brush Teeth Champion <span class="artifact-version">v2</span></div>
+          <div class="artifact-sub">Quest for Emma</div>
+        </div>
+        <div class="artifact-link">Open</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       8. TOOL USAGE (Collapsible)
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Tool Usage</div>
+
+    <div class="ref-label">Collapsed</div>
+    <div class="ref-row">
+      <div class="tool-usage">
+        <svg class="tool-usage-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <span class="tool-usage-label">Searched for bedtime routines</span>
+      </div>
+    </div>
+
+    <div class="ref-label">Expanded</div>
+    <div class="ref-col">
+      <div class="tool-usage">
+        <svg class="tool-usage-chevron open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <span class="tool-usage-label">Searched for bedtime routines</span>
+      </div>
+      <div class="tool-usage-details open">Found 3 relevant articles about age-appropriate bedtime routines for toddlers.</div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       9. AVATARS
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Avatars</div>
+
+    <div class="ref-label">Individual</div>
+    <div class="ref-row" style="gap:16px">
+      <div class="ref-col" style="align-items:center;gap:4px">
+        <div class="avatar-circle avatar-sprout">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#a3d977"/><circle cx="9" cy="10" r="1.5" fill="#fff"/><circle cx="15" cy="10" r="1.5" fill="#fff"/></svg>
+        </div>
+        <span style="font-size:11px;color:#717680">Sprout</span>
+      </div>
+      <div class="ref-col" style="align-items:center;gap:4px">
+        <div class="avatar-circle avatar-user">LE</div>
+        <span style="font-size:11px;color:#717680">User</span>
+      </div>
+      <div class="ref-col" style="align-items:center;gap:4px">
+        <div class="avatar-circle avatar-coparent">ZR</div>
+        <span style="font-size:11px;color:#717680">Co-parent</span>
+      </div>
+    </div>
+
+    <div class="ref-label">Stacked (header)</div>
+    <div class="ref-row">
+      <div class="chat-header-avatars">
+        <div class="avatar-circle avatar-sprout" style="border:2px solid #fff;z-index:1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#a3d977"/><circle cx="9" cy="10" r="1.5" fill="#fff"/><circle cx="15" cy="10" r="1.5" fill="#fff"/></svg>
+        </div>
+        <div class="avatar-circle avatar-user" style="border:2px solid #fff;z-index:2">LE</div>
+        <div class="avatar-circle avatar-coparent" style="border:2px solid #fff;z-index:3">ZR</div>
+      </div>
+    </div>
+
+    <div class="ref-label">Notification badge</div>
+    <div class="ref-row" style="gap:16px">
+      <span class="chat-header-badge-demo">1</span>
+      <span class="chat-header-badge-demo">9+</span>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       10. COMPOSER
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Composer</div>
+
+    <div class="ref-label">Empty (mic mode)</div>
+    <div class="composer-pill-demo">
+      <div class="composer-input-demo">Ask anything</div>
+      <div class="composer-toolbar">
+        <div class="composer-toolbar-left">
+          <button class="composer-icon-btn" aria-label="Add attachment">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="composer-icon-btn" aria-label="Mention">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0V12a10 10 0 1 0-4 8"/></svg>
+          </button>
+        </div>
+        <div class="composer-toolbar-right">
+          <button class="btn-mic" aria-label="Voice input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="2" width="6" height="11" rx="3"/>
+              <path d="M5 10a7 7 0 0 0 14 0"/>
+              <line x1="12" y1="21" x2="12" y2="17"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-label">With text (send mode)</div>
+    <div class="composer-pill-demo">
+      <div style="font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;line-height:24px;color:#111827;padding:0">How do I set screen time limits?</div>
+      <div class="composer-toolbar">
+        <div class="composer-toolbar-left">
+          <button class="composer-icon-btn" aria-label="Add attachment">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="composer-icon-btn" aria-label="Mention">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0V12a10 10 0 1 0-4 8"/></svg>
+          </button>
+        </div>
+        <div class="composer-toolbar-right">
+          <button class="btn-mic btn-mic-send" aria-label="Send" style="display:flex;align-items:center;justify-content:center;color:#fff;background:#181d27">
+            <svg viewBox="0 0 24 24" fill="none" style="width:22px;height:22px"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       11. REPLY PILL
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Reply Pill</div>
+    <div class="reply-pill-demo">
+      <div class="reply-pill-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>
+      </div>
+      <div class="reply-pill-text">Hey, can you help with bedtime?</div>
+      <button class="reply-pill-close" aria-label="Cancel reply">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       12. MENTION POPUP
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Mention Popup</div>
+    <div class="mention-popup-demo">
+      <div class="mention-item">
+        <div class="mention-item-avatar" style="background:#a3d977">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#a3d977"/><circle cx="9" cy="10" r="1.5" fill="#fff"/><circle cx="15" cy="10" r="1.5" fill="#fff"/></svg>
+        </div>
+        <div class="mention-item-info">
+          <span class="mention-item-name">Sprout</span>
+          <span class="mention-item-sub">AI Assistant</span>
+        </div>
+      </div>
+      <div class="mention-item">
+        <div class="mention-item-avatar" style="background:#7C3AED">ZR</div>
+        <div class="mention-item-info">
+          <span class="mention-item-name">Zach</span>
+          <span class="mention-item-sub">Co-parent</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       13. ATTACHMENT THUMBNAILS
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Attachment Thumbnails</div>
+    <div class="attach-strip-demo">
+      <div class="attach-thumb">
+        <div class="attach-thumb-file">
+          <span class="attach-thumb-file-icon">&#x1F4C4;</span>
+          <span class="attach-thumb-file-name">schedule.pdf</span>
+        </div>
+        <button class="attach-thumb-x">&times;</button>
+      </div>
+      <div class="attach-thumb" style="background:#e0f2fe">
+        <div class="attach-thumb-file">
+          <span class="attach-thumb-file-icon">&#x1F5BC;</span>
+          <span class="attach-thumb-file-name">photo.jpg</span>
+        </div>
+        <button class="attach-thumb-x">&times;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       14. SHEET ACTION TILES
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Sheet Action Tiles</div>
+    <div class="ref-row">
+      <div class="action-tile">
+        <span class="action-tile-icon">&#x1F4F7;</span>
+        <span class="action-tile-label">Camera</span>
+      </div>
+      <div class="action-tile">
+        <span class="action-tile-icon">&#x1F3DE;</span>
+        <span class="action-tile-label">Photos</span>
+      </div>
+      <div class="action-tile">
+        <span class="action-tile-icon">&#x1F4C1;</span>
+        <span class="action-tile-label">Files</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       15. CONTEXT MENU
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Context Menu</div>
+    <div class="ctx-menu-list-demo">
+      <button class="ctx-menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.06812 15 3.60218 15 3.23463 14.8478C2.74458 14.6448 2.35523 14.2554 2.15224 13.7654C2 13.3978 2 12.9319 2 12V5.2C2 4.0799 2 3.51984 2.21799 3.09202C2.40974 2.7157 2.7157 2.40974 3.09202 2.21799C3.51984 2 4.0799 2 5.2 2H12C12.9319 2 13.3978 2 13.7654 2.15224C14.2554 2.35523 14.6448 2.74458 14.8478 3.23463C15 3.60218 15 4.06812 15 5M12.2 22H18.8C19.9201 22 20.4802 22 20.908 21.782C21.2843 21.5903 21.5903 21.2843 21.782 20.908C22 20.4802 22 19.9201 22 18.8V12.2C22 11.0799 22 10.5198 21.782 10.092C21.5903 9.7157 21.2843 9.40974 20.908 9.21799C20.4802 9 19.9201 9 18.8 9H12.2C11.0799 9 10.5198 9 10.092 9.21799C9.7157 9.40974 9.40974 9.7157 9.21799 10.092C9 10.5198 9 11.0799 9 12.2V18.8C9 19.9201 9 20.4802 9.21799 20.908C9.40974 21.2843 9.7157 21.5903 10.092 21.782C10.5198 22 11.0799 22 12.2 22Z"/></svg>
+        <span>Copy</span>
+      </button>
+      <button class="ctx-menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4V5.4C4 8.76031 4 10.4405 4.65396 11.7239C5.2292 12.8529 6.14708 13.7708 7.27606 14.346C8.55953 15 10.2397 15 13.6 15H20M20 15L15 10M20 15L15 20"/></svg>
+        <span>Reply</span>
+      </button>
+      <button class="ctx-menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V18.6C4 15.2397 4 13.5595 4.65396 12.2761C5.2292 11.1471 6.14708 10.2292 7.27606 9.65396C8.55953 9 10.2397 9 13.6 9H20M20 9L15 14M20 9L15 4"/></svg>
+        <span>Forward</span>
+      </button>
+      <button class="ctx-menu-item destructive">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.0799 16 3.51984 15.782 3.09202C15.5903 2.7157 15.2843 2.40974 14.908 2.21799C14.4802 2 13.9201 2 12.8 2H11.2C10.0799 2 9.51984 2 9.09202 2.21799C8.71569 2.40974 8.40973 2.7157 8.21799 3.09202C8 3.51984 8 4.0799 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.8802 19 19.7202 18.673 20.362C18.3854 20.9265 17.9265 21.3854 17.362 21.673C16.7202 22 15.8802 22 14.2 22H9.8C8.11984 22 7.27976 22 6.63803 21.673C6.07354 21.3854 5.6146 20.9265 5.32698 20.362C5 19.7202 5 18.8802 5 17.2V6"/></svg>
+        <span>Delete for me</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       16. CONFIRM DIALOG
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Confirm Dialog</div>
+    <div class="confirm-dialog-demo">
+      <h3>Delete message?</h3>
+      <p>This message will be removed from your view.</p>
+      <div class="confirm-dialog-btns">
+        <button class="confirm-dialog-btn confirm-dialog-cancel">Cancel</button>
+        <button class="confirm-dialog-btn confirm-dialog-delete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       17. TOAST
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Toast</div>
+    <div class="ref-row">
+      <div class="toast-demo">Copied!</div>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       18. RECONNECTION BANNER
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Reconnection Banner</div>
+    <div class="reconnect-banner-demo">
+      <div class="reconnect-spinner"></div>
+      <span class="reconnect-text">Reconnecting...</span>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       19. STATUS BAR
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Status Bar</div>
+    <div class="status-bar-demo">
+      <span class="status-bar-time">9:41</span>
+      <span class="status-bar-icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+        <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <div class="ref-divider"></div>
+
+  <!-- ════════════════════════════════════════════
+       20. FEATURE LIST
+       ════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <div class="ref-section-title">Feature List (metadata sidebar)</div>
+    <div class="pc-features-demo">
+      <div class="pc-features-title">Features</div>
+      <div class="pc-feature-item active">Multi-party chat</div>
+      <div class="pc-feature-item">Tool usage</div>
+      <div class="pc-feature-item">Quest artifacts</div>
+      <div class="pc-feature-item">Attachments</div>
+    </div>
+  </div>
+
+</div><!-- /ref-page -->
+
+</body>
+</html>

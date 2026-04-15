@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attachment Component Export</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Inter',system-ui,-apple-system,sans-serif}
+
+.device-frame{width:402px;background:#fff;border-radius:0 0 24px 24px;overflow:hidden;border:1px solid rgba(0,0,0,.08);border-top:none}
+
+/* Composer area */
+.composer-area{display:flex;flex-direction:column;position:relative;padding-bottom:8px;background:#fff}
+
+.composer-row{display:flex;align-items:center;gap:10px;padding:4px 20px}
+
+.btn-attach{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);border:none;cursor:pointer;padding:0;color:#a4a7ae;border-radius:9999px;transform:rotate(45deg)}
+.btn-attach svg{width:24px;height:24px}
+
+.composer-pill{flex:1;min-width:0;height:48px;display:flex;align-items:center;gap:8px;padding:0 4px 0 12px;background:rgba(255,255,255,.7);border:none;border-radius:24px}
+.composer-input{flex:1;min-width:0;height:100%;font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:17px;line-height:48px;color:#111827;background:transparent;border:none;outline:none;padding:0}
+.composer-input::placeholder{color:#d9d9d9}
+
+.btn-mic{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:none;border:none;border-radius:9999px;cursor:pointer;padding:0;color:#6b7280}
+.btn-mic svg{width:24px;height:24px}
+
+/* Attachment picker */
+.attach-picker{display:flex;flex-direction:column;align-items:center;padding:24px 12px 16px;background:rgba(255,255,255,.5)}
+.attach-picker-tiles{display:flex;gap:16px;justify-content:center}
+.attach-picker-tile{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.attach-picker-tile-icon{width:60px;height:60px;border-radius:9999px;background:#fff;border:1.5px solid #e5e7eb;display:flex;align-items:center;justify-content:center;color:#0ba5ec}
+.attach-picker-tile-icon svg{width:26px;height:26px}
+.attach-picker-tile-label{font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:13px;font-weight:500;color:#414651}
+
+/* Home indicator */
+.home-indicator{display:flex;justify-content:center;padding:8px 0 8px;background:#fff}
+.home-indicator-bar{width:134px;height:5px;border-radius:100px;background:#181d27}
+</style>
+</head>
+<body>
+
+<div class="device-frame">
+  <div class="composer-area">
+    <div class="composer-row">
+      <button class="btn-attach" aria-label="Close attachment picker">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <div class="composer-pill">
+        <input class="composer-input" type="text" placeholder="Type @ to mention..." readonly>
+      </div>
+      <button class="btn-mic" aria-label="Voice input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="2" width="6" height="11" rx="3"/>
+          <path d="M5 10a7 7 0 0 0 14 0"/>
+          <line x1="12" y1="21" x2="12" y2="17"/>
+        </svg>
+      </button>
+    </div>
+    <div class="attach-picker">
+      <div class="attach-picker-tiles">
+        <div class="attach-picker-tile">
+          <div class="attach-picker-tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          <span class="attach-picker-tile-label">Camera</span>
+        </div>
+        <div class="attach-picker-tile">
+          <div class="attach-picker-tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+          <span class="attach-picker-tile-label">Photos</span>
+        </div>
+        <div class="attach-picker-tile">
+          <div class="attach-picker-tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <span class="attach-picker-tile-label">Files</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="home-indicator"><div class="home-indicator-bar"></div></div>
+</div>
+
+</body>
+</html>

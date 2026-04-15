@@ -58,6 +58,7 @@
     /* Section link (clickable label in collapsible header) */
     '.nav-section-link{flex:1;color:#414651;text-decoration:none;font-size:14px;font-weight:500;line-height:20px;}',
     '.nav-section-link:hover{text-decoration:none;}',
+    '.nav-section-label{flex:1;}',
     /* Children container */
     '.nav-children{display:flex;flex-direction:column;gap:4px;}',
     '.nav-children.collapsed{display:none;}',

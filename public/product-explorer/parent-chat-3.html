@@ -1,0 +1,2748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<title>Sprout Product Explorer — Parent Chat v3</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/design-system/components/avatar.css">
+<style>
+/* ── Device ── */
+.device-wrapper{background:var(--bg-primary);border:1px solid rgba(0,0,0,.08);border-radius:var(--spacing-4xl);padding:var(--spacing-xs);box-shadow:0 12px 16px -4px rgba(10,13,18,.08),0 4px 6px -2px rgba(10,13,18,.03),0 2px 2px -1px rgba(10,13,18,.04)}
+.device-inner-shadow{background:var(--bg-primary);border-radius:28px;padding:var(--spacing-xs);overflow:hidden;position:relative}
+.device-inner-shadow::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 6px 2px rgba(10,13,18,.08),inset 0 0 4px 2px rgba(10,13,18,.03);z-index:6}
+.device-mockup{background:var(--bg-secondary);border:2px solid var(--border-secondary);border-radius:var(--spacing-3xl);clip-path:inset(0 round 24px);position:relative}
+.device-screen{width:402px;height:874px;position:relative;overflow:hidden;background:var(--brand-25);user-select:none;-webkit-user-select:none}
+
+/* ── iPad overrides ── */
+.device-wrapper.ipad .device-screen{width:640px;height:854px}
+
+/* ── Header frost overlay ── */
+.header-frost{position:absolute;top:0;left:0;right:0;height:128px;z-index:9;pointer-events:none;background:linear-gradient(to bottom,var(--brand-25) 35%,rgba(245,251,255,0) 100%)}
+
+/* ── Status bar ── */
+.status-bar{position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 var(--spacing-3xl) var(--spacing-md);z-index:10;pointer-events:none}
+.status-bar-time{font-size:17px;font-weight:var(--font-weight-semibold);color:var(--text-primary);letter-spacing:-.01em}
+.status-bar-icons{display:flex;align-items:center;gap:var(--spacing-sm)}
+.status-bar-icons svg{display:block}
+
+/* ── Toolbar ── */
+.chat-header{position:absolute;top:62px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 var(--spacing-xl) 10px;z-index:10;background:transparent}
+.chat-header-left{display:flex;align-items:center;flex:1}
+.chat-header-right{display:flex;align-items:center;justify-content:flex-end;flex:1}
+.toolbar-pill{display:flex;align-items:center;gap:var(--spacing-2xl);height:44px;padding:0 var(--spacing-xs);background:var(--bg-primary);border-radius:296px;box-shadow:0 0 8px 0 rgba(0,0,0,.04)}
+.toolbar-pill .chat-header-avatars{padding-right:var(--spacing-md)}
+.toolbar-icon-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:100px;flex-shrink:0;background:transparent;border:none;padding:0;color:var(--text-primary)}
+.toolbar-icon-btn svg{width:24px;height:24px}
+
+/* ── Stacked avatars ── */
+.chat-header-avatars{display:flex;align-items:center;flex-shrink:0}
+.chat-header-avatars .avatar{flex-shrink:0}
+.chat-header-avatars .avatar+.avatar{margin-left:calc(var(--spacing-md) * -1)}
+.chat-header-avatars .avatar:last-child{z-index:3}
+.chat-header-avatars .avatar:nth-child(2){z-index:2}
+.chat-header-avatars .avatar:first-child{z-index:1}
+
+/* ── Banner (shared base) ── */
+.banner{position:absolute;left:var(--spacing-xl);right:var(--spacing-xl);z-index:30;display:flex;align-items:center;gap:10px;padding:var(--spacing-lg) var(--spacing-xl);border-radius:var(--radius-2xl);background:var(--bg-primary);border:none;box-shadow:0 1px 8px 0 rgba(0,0,0,.06);font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-semibold);color:var(--text-secondary);opacity:0;pointer-events:none;transition:opacity .3s,transform .3s}
+.banner.show{opacity:1;pointer-events:auto}
+.banner.hiding{opacity:0;transform:translateY(-20px)}
+.banner-icon{width:20px;height:20px;flex-shrink:0;color:var(--fg-tertiary)}
+.banner-icon svg{width:100%;height:100%}
+.banner-text{flex:1;min-width:0}
+
+/* ── Reconnection variant ── */
+.banner-reconnect{top:122px;opacity:1;pointer-events:auto}
+.reconnect-spinner{width:20px;height:20px;border:2px solid var(--brand-200);border-top-color:var(--brand-500);border-radius:50%;animation:rspin .8s linear infinite;flex-shrink:0}
+@keyframes rspin{to{transform:rotate(360deg)}}
+
+/* ── Undo link in banner ── */
+.banner-undo{flex-shrink:0;font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-semibold);color:var(--brand-500);background:none;border:none;padding:0;cursor:pointer;white-space:nowrap}
+
+/* ── Delete banner variant ── */
+.banner-delete{top:140px}
+
+/* ── Toast variant (copied, etc.) ── */
+.banner-toast{top:140px}
+
+/* ── Chat thread ── */
+.chat-thread{position:absolute;top:0;left:0;right:0;bottom:160px;overflow-y:auto;overflow-x:hidden;padding:128px var(--spacing-xl) 0;display:flex;flex-direction:column;gap:0;z-index:5;-webkit-overflow-scrolling:touch;scrollbar-width:none;transition:bottom .35s cubic-bezier(.2,.9,.3,1)}
+.chat-thread::-webkit-scrollbar{display:none}
+
+/* ── Messages ── */
+.msg-group{display:flex;flex-direction:column;gap:var(--spacing-xxs);padding:var(--spacing-md) 0}
+.msg-group.msg-outgoing{align-items:flex-end}
+.msg-group.msg-incoming{align-items:flex-start}
+
+.msg-row{display:flex;align-items:flex-end;gap:var(--spacing-md);max-width:80%;position:relative;touch-action:pan-y}
+.msg-row.msg-outgoing{align-self:flex-end}
+.msg-row.msg-incoming{align-self:flex-start}
+
+.msg-avatar{flex-shrink:0;align-self:flex-end;padding:var(--spacing-sm) 0}
+.msg-avatar-user{display:none}
+
+.msg-col{display:flex;flex-direction:column;gap:var(--spacing-xxs);min-width:0}
+.msg-sender{font-family:var(--font-family-body);font-size:var(--font-size-text-xs);font-weight:var(--font-weight-semibold);color:var(--text-tertiary);letter-spacing:0;padding-left:56px;margin-bottom:0}
+.msg-thought{display:flex;align-items:center;gap:2px;padding-left:56px;cursor:pointer}
+.msg-thought-label{font-family:var(--font-family-body);font-size:var(--font-size-text-xs);line-height:var(--line-height-text-xs);font-weight:var(--font-weight-regular);font-style:italic;color:var(--text-tertiary)}
+.msg-thought-chevron{width:12px;height:12px;flex-shrink:0;color:var(--text-tertiary);transition:transform .3s cubic-bezier(.25,.1,.25,1)}
+.msg-thought-chevron.open{transform:rotate(90deg)}
+
+/* ── Thought process sheet ── */
+.thought-sheet-scrim{position:absolute;inset:0;background:var(--bg-overlay,rgba(10,13,18,.2));z-index:19;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.thought-sheet-scrim.open{opacity:1;pointer-events:auto}
+.thought-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--bg-primary);border-radius:var(--radius-4xl) var(--radius-4xl) 0 0;z-index:20;transform:translateY(100%);transition:transform .35s cubic-bezier(.2,.9,.3,1);padding-bottom:var(--spacing-4xl);display:flex;flex-direction:column;max-height:75%}
+.thought-sheet.open{transform:translateY(0)}
+.thought-sheet-header{display:flex;align-items:start;gap:var(--spacing-md);padding:0 var(--spacing-xl) var(--spacing-md)}
+.thought-sheet-header-label{flex:1;min-width:0;font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-medium);color:var(--text-primary)}
+.thought-sheet-header-time{flex-shrink:0;font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-regular);color:var(--text-quaternary);text-align:right}
+.thought-sheet-body{flex:1;overflow-y:auto;padding:0 var(--spacing-xl) var(--spacing-xl)}
+.thought-step{display:flex;gap:var(--spacing-md);align-items:start;padding:var(--spacing-md) 0 0}
+.thought-step-timeline{display:flex;flex-direction:column;align-items:center;gap:var(--spacing-xs);flex-shrink:0;width:8px;align-self:stretch}
+.thought-step-dot{width:8px;height:8px;border-radius:var(--radius-full);background:var(--gray-500);flex-shrink:0;margin-top:6px}
+.thought-step-line{flex:1;width:1px;border-left:1px solid var(--gray-300);min-height:8px}
+.thought-step-content{flex:1;min-width:0;padding-bottom:var(--spacing-md)}
+.thought-step-title{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-medium);color:var(--text-primary);margin:0}
+.thought-step-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-xs);line-height:var(--line-height-text-xs);font-weight:var(--font-weight-regular);color:var(--text-tertiary);margin:0}
+.thought-step-time{flex-shrink:0;width:34px;font-family:var(--font-family-body);font-size:var(--font-size-text-xs);line-height:20px;font-weight:var(--font-weight-regular);color:var(--text-quaternary);text-align:right;padding-top:2px}
+
+.msg-bubble{font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);padding:var(--spacing-lg) var(--spacing-xl);word-break:break-word;white-space:pre-wrap;border-radius:20px;min-width:90px;transition:transform .2s ease}
+.msg-bubble-out{background:var(--brand-200);color:var(--text-primary)}
+.msg-bubble-in{background:var(--bg-primary);color:var(--text-primary);border-radius:20px;min-width:90px}
+.msg-bubble-coparent{background:var(--bg-sky);color:var(--text-primary);border-radius:20px;min-width:90px}
+.msg-time-inline{display:none}
+
+/* ── Message actions (copy, thumbs) ── */
+.msg-actions{display:flex;align-items:center;gap:var(--spacing-md);padding-left:56px;padding-top:var(--spacing-xs)}
+.msg-actions-btn{width:16px;height:16px;display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:pointer;color:var(--fg-quaternary);transition:color .15s}
+.msg-actions-btn:hover{color:var(--fg-secondary)}
+.msg-actions-btn svg{width:16px;height:16px}
+
+/* ── Quoted reply (compact format) ── */
+.msg-quoted{border-left:none;padding:0;border-radius:0;background:none;display:flex;align-items:center;gap:var(--spacing-md);font-family:var(--font-family-body);font-size:var(--font-size-text-md);color:var(--text-quaternary);max-width:294px;width:100%}
+.msg-group.msg-incoming .msg-quoted{padding-left:56px}
+.msg-quoted-icon{width:20px;height:20px;flex-shrink:0;color:var(--text-quaternary)}
+.msg-quoted-icon svg{width:100%;height:100%}
+.msg-quoted-sender{font-size:var(--font-size-text-md);font-weight:var(--font-weight-medium);color:var(--text-quaternary)}
+.msg-quoted-text{font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);color:var(--text-quaternary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+
+/* ── Swipe reply arrow ── */
+.swipe-reply-icon{position:absolute;left:-36px;top:50%;transform:translateY(-50%);width:28px;height:28px;opacity:0;color:var(--brand-400);transition:opacity .15s;pointer-events:none}
+
+/* ── System message ── */
+.msg-system{align-self:center;font-family:var(--font-family-body);font-size:var(--font-size-text-xs);line-height:var(--line-height-text-xs);color:var(--text-tertiary);padding:var(--spacing-lg) 0;text-align:center}
+.msg-system strong{font-weight:var(--font-weight-semibold)}
+
+/* ── Tool usage (collapsible) ── */
+.tool-usage{display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer;padding:var(--spacing-xs) 0;align-self:flex-start}
+.tool-usage-avatar{display:none}
+.tool-usage-chevron{width:14px;height:14px;color:var(--gray-400);transition:transform .2s;flex-shrink:0}
+.tool-usage-chevron.open{transform:rotate(180deg)}
+.tool-usage-label{font-family:var(--font-family-body);font-size:13px;color:var(--gray-400);transition:opacity .3s cubic-bezier(.25,.1,.25,1),transform .3s cubic-bezier(.25,.1,.25,1)}
+.tool-usage-label.fade-out{opacity:0;transform:translateY(-6px)}
+.tool-usage-details{display:none;padding:var(--spacing-xs) 0 var(--spacing-xs) 0;font-family:var(--font-family-body);font-size:13px;color:var(--gray-400);line-height:var(--line-height-text-sm)}
+.tool-usage-details.open{display:block}
+
+/* ── Option chips ── */
+.option-chips{display:flex;gap:var(--spacing-md);overflow-x:auto;padding:var(--spacing-xl);max-width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.option-chips::-webkit-scrollbar{display:none}
+.option-chip{flex-shrink:0;padding:var(--spacing-lg) var(--spacing-xl);border-radius:var(--radius-4xl);border:none;background:var(--brand-100);font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);font-weight:var(--font-weight-regular);color:var(--text-primary);cursor:pointer;transition:all .2s;white-space:nowrap}
+.option-chip:hover{background:var(--brand-200)}
+.option-chip.selected{background:var(--brand-200);color:var(--text-primary)}
+.option-chip.faded{opacity:.4;pointer-events:none}
+
+/* ── Action buttons ── */
+.action-btns{display:flex;gap:var(--spacing-md);padding:var(--spacing-md) 0;align-self:flex-start}
+.action-btn{padding:var(--spacing-lg) var(--spacing-3xl);border-radius:11px;font-family:var(--font-family-body);font-size:var(--font-size-text-sm);font-weight:var(--font-weight-semibold);cursor:pointer;border:none;transition:all .2s;display:flex;align-items:center;gap:var(--spacing-sm)}
+.action-btn-primary{background:var(--green-500);color:var(--text-white)}
+.action-btn-primary:hover{background:var(--green-700)}
+.action-btn-secondary{background:var(--bg-primary);border:1px solid var(--border-primary);color:var(--text-quaternary)}
+.action-btn-secondary:hover{background:var(--bg-secondary)}
+.action-btn.loading{pointer-events:none}
+.action-btn.done{background:var(--bg-success-primary);border:1px solid var(--green-500);color:var(--green-500);pointer-events:none}
+.action-btn.faded{opacity:.5;pointer-events:none}
+.action-btn .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:var(--white);border-radius:50%;animation:rspin .6s linear infinite}
+.action-btn-secondary .spinner{border-color:rgba(107,114,128,.3);border-top-color:var(--gray-500)}
+
+/* ── Confirmation card ── */
+.confirm-card{background:var(--bg-primary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl);padding:var(--spacing-xl);width:100%;align-self:stretch;margin-top:var(--spacing-xs)}
+.confirm-card-title{font-family:var(--font-family-body);font-size:15px;font-weight:var(--font-weight-bold);color:var(--text-primary);margin-bottom:var(--spacing-lg)}
+.confirm-card-row{display:flex;justify-content:space-between;padding:var(--spacing-sm) 0;border-bottom:1px solid var(--gray-100)}
+.confirm-card-label{font-family:var(--font-family-body);font-size:13px;color:var(--text-quaternary)}
+.confirm-card-value{font-family:var(--font-family-body);font-size:13px;font-weight:var(--font-weight-semibold);color:var(--text-primary)}
+.confirm-card-desc{font-family:var(--font-family-body);font-size:13px;color:var(--text-quaternary);margin-top:var(--spacing-md);line-height:18px}
+.confirm-card-btns{display:flex;gap:var(--spacing-md);margin-top:var(--spacing-lg)}
+.confirm-card-btn{flex:1;padding:10px;border-radius:11px;font-family:var(--font-family-body);font-size:var(--font-size-text-sm);font-weight:var(--font-weight-semibold);cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:var(--spacing-sm);transition:all .2s}
+.confirm-card-btn-cancel{background:var(--bg-primary);border:1px solid var(--border-primary);color:var(--text-quaternary)}
+.confirm-card-btn-confirm{background:var(--green-500);color:var(--text-white)}
+.confirm-card-btn.done{background:var(--bg-success-primary);border:1px solid var(--green-500);color:var(--green-500);pointer-events:none}
+.confirm-card-btn.dismissed{background:var(--bg-error-primary);border:1px solid var(--red-500);color:var(--red-500);pointer-events:none}
+.confirm-card-btn .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:var(--white);border-radius:50%;animation:rspin .6s linear infinite}
+.confirm-card-btn-cancel .spinner{border-color:rgba(107,114,128,.3);border-top-color:var(--gray-500)}
+
+/* ── Artifact block ── */
+.artifact-card{background:var(--bg-primary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl);padding:var(--spacing-lg);display:flex;align-items:center;gap:10px;width:100%;align-self:stretch;margin-top:var(--spacing-xs);cursor:pointer;transition:background .15s}
+.artifact-card:hover{background:var(--bg-tertiary)}
+.artifact-icon{font-size:var(--font-size-display-xs);line-height:1;flex-shrink:0}
+.artifact-body{flex:1;min-width:0}
+.artifact-name{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);font-weight:var(--font-weight-semibold);color:var(--text-primary);display:flex;align-items:center;gap:var(--spacing-sm)}
+.artifact-version{font-family:var(--font-family-body);font-size:10px;font-weight:var(--font-weight-semibold);color:var(--text-quaternary);background:var(--gray-100);padding:var(--spacing-xxs) var(--spacing-sm);border-radius:var(--radius-full)}
+.artifact-sub{font-family:var(--font-family-body);font-size:var(--font-size-text-xs);color:var(--text-quaternary);margin-top:var(--spacing-xxs)}
+.artifact-link{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);font-weight:var(--font-weight-semibold);color:var(--brand-400);flex-shrink:0;white-space:nowrap}
+
+/* ── Artifact modal ── */
+/* ── Artifact sheet ── */
+.artifact-sheet-scrim{position:absolute;inset:0;background:var(--bg-overlay,rgba(10,13,18,.2));z-index:17;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.artifact-sheet-scrim.open{opacity:1;pointer-events:auto}
+.artifact-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--bg-primary);border-radius:var(--radius-4xl) var(--radius-4xl) 0 0;z-index:18;transform:translateY(100%);transition:transform .35s cubic-bezier(.2,.9,.3,1);padding-bottom:var(--spacing-4xl);display:flex;flex-direction:column;max-height:80%}
+.artifact-sheet.open{transform:translateY(0)}
+.artifact-sheet .sheet-top{padding:var(--spacing-xl);flex-shrink:0;display:flex;flex-direction:column;align-items:center}
+.artifact-sheet-header{display:flex;align-items:center;gap:var(--spacing-md);width:100%;padding:0 var(--spacing-xl)}
+.artifact-sheet-title{flex:1;font-family:var(--font-family-body);font-size:var(--font-size-text-md);font-weight:var(--font-weight-bold);color:var(--text-primary)}
+.artifact-sheet-close{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-400);background:none;border:none;border-radius:var(--radius-full)}
+.artifact-sheet-close:hover{background:var(--bg-tertiary)}
+.artifact-sheet-close svg{width:24px;height:24px}
+.artifact-sheet-body{flex:1;overflow-y:auto;padding:var(--spacing-xl);font-family:var(--font-family-body);font-size:var(--font-size-text-sm);color:var(--text-secondary);line-height:22px}
+.artifact-sheet-body h3{font-size:15px;font-weight:var(--font-weight-bold);color:var(--text-primary);margin:0 0 var(--spacing-md)}
+.artifact-sheet-body p{margin:0 0 var(--spacing-lg)}
+.artifact-sheet-body ul{margin:0 0 var(--spacing-lg);padding-left:var(--spacing-2xl)}
+.artifact-sheet-body li{margin-bottom:var(--spacing-xs)}
+.artifact-sheet-footer{padding:var(--spacing-lg) var(--spacing-xl)}
+.artifact-sheet-assign{width:100%;padding:var(--spacing-lg);border-radius:var(--radius-xl);background:var(--green-500);color:var(--text-white);font-family:var(--font-family-body);font-size:var(--font-size-text-sm);font-weight:var(--font-weight-semibold);border:none;cursor:pointer}
+.artifact-sheet-assign:hover{background:var(--green-700)}
+
+
+/* ── Home indicator ── */
+.home-indicator{position:absolute;bottom:var(--spacing-md);left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:var(--text-primary);z-index:20}
+
+/* ── Composer bar ── */
+.composer-area{position:absolute;bottom:var(--spacing-2xl);left:0;right:0;z-index:10;display:flex;flex-direction:column}
+
+/* ── Suggestion chips ── */
+.suggestion-chips{display:flex;gap:var(--spacing-md);padding:var(--spacing-xl);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;transition:opacity .2s}
+.suggestion-chips.faded{opacity:0;pointer-events:none}
+.suggestion-chips::-webkit-scrollbar{display:none}
+.suggestion-chips .option-chip{white-space:normal;max-width:200px;text-align:left;display:flex;flex-direction:column;gap:var(--spacing-xxs)}
+.suggestion-chip-title{font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);font-weight:var(--font-weight-semibold);color:var(--text-primary)}
+.suggestion-chip-sub{font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);font-weight:var(--font-weight-regular);color:var(--text-secondary)}
+
+/* ── Attachment preview strip ── */
+.attach-strip{display:none;flex-direction:row;gap:var(--spacing-sm);margin:calc(-1*var(--spacing-xl)) calc(-1*var(--spacing-xl)) 0;padding:var(--spacing-xl) var(--spacing-xl) 0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.attach-strip::-webkit-scrollbar{display:none}
+.attach-strip.visible{display:flex}
+.attach-thumb{position:relative;width:120px;height:120px;border-radius:20px;flex-shrink:0}
+.attach-thumb--image{overflow:hidden}
+.attach-thumb--file{background:var(--bg-primary);border:1px solid var(--border-secondary)}
+.attach-thumb-img{width:100%;height:100%;object-fit:cover}
+.attach-thumb-file{width:100%;height:100%;display:flex;flex-direction:column;padding:var(--spacing-md);gap:var(--spacing-xs);box-sizing:border-box}
+.attach-thumb-file-top{display:flex;align-items:center;gap:var(--spacing-md);height:36px}
+.attach-thumb-file-label{flex:1;font-family:var(--font-family-body);font-size:var(--font-size-text-md);font-weight:var(--font-weight-regular);color:var(--text-tertiary);line-height:var(--line-height-text-md)}
+.attach-thumb-file-name{flex:1;min-height:0;font-family:var(--font-family-body);font-size:var(--font-size-text-md);font-weight:var(--font-weight-regular);color:var(--text-primary);line-height:var(--line-height-text-md);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;align-content:flex-end}
+.attach-thumb-x{position:absolute;top:var(--spacing-md);right:var(--spacing-md);width:36px;height:36px;border-radius:var(--radius-full);background:var(--bg-tertiary);color:var(--text-tertiary);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;padding:0;line-height:1;z-index:1}
+.attach-thumb-x svg{width:20px;height:20px}
+
+/* ── Reply preview pill (inside composer) ── */
+.reply-pill{display:none;align-items:center;gap:10px;padding:var(--spacing-md) var(--spacing-lg);border-radius:var(--radius-3xl);min-width:0}
+.reply-pill.visible{display:flex}
+.reply-pill-icon{flex-shrink:0;width:20px;height:20px}
+.reply-pill-icon svg{width:20px;height:20px}
+.reply-pill-text{flex:1;min-width:0;font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);font-weight:var(--font-weight-medium);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reply-pill-close{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border:none;padding:0}
+.reply-pill-close svg{width:20px;height:20px}
+/* Role-tinted reply pill variants */
+.reply-pill--sprout{background:var(--bg-sky);color:var(--brand-700)}
+.reply-pill--sprout .reply-pill-icon,.reply-pill--sprout .reply-pill-text,.reply-pill--sprout .reply-pill-close{color:var(--brand-700)}
+.reply-pill--sprout .reply-pill-close:hover{color:var(--brand-800)}
+.reply-pill--user{background:var(--brand-200);color:var(--brand-700)}
+.reply-pill--user .reply-pill-icon,.reply-pill--user .reply-pill-text,.reply-pill--user .reply-pill-close{color:var(--brand-700)}
+.reply-pill--user .reply-pill-close:hover{color:var(--brand-800)}
+.reply-pill--coparent{background:var(--bg-sky);color:var(--brand-700)}
+.reply-pill--coparent .reply-pill-icon,.reply-pill--coparent .reply-pill-text,.reply-pill--coparent .reply-pill-close{color:var(--brand-700)}
+.reply-pill--coparent .reply-pill-close:hover{color:var(--brand-800)}
+
+.composer-row{display:flex;flex-direction:column;padding:var(--spacing-xs) var(--spacing-xl);position:relative}
+
+.composer-pill{flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--spacing-xl);padding:var(--spacing-xl);background:var(--bg-primary);border:none;border-radius:var(--radius-4xl);overflow:hidden;box-shadow:0 0 24px 0 rgba(0,0,0,.06)}
+.composer-input{flex:1;min-width:0;min-height:24px;font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);color:var(--text-primary);background:transparent;border:none;outline:none;padding:0;white-space:pre-wrap;word-break:break-word;overflow-y:auto;max-height:120px;caret-color:var(--brand-500);cursor:text}
+.composer-input:empty::before{content:attr(data-placeholder);color:var(--text-placeholder,#717680);pointer-events:none}
+.mention-tag{color:var(--brand-700);font-weight:var(--font-weight-semibold)}
+
+.composer-toolbar{display:flex;align-items:center;justify-content:space-between}
+.composer-toolbar-left{display:flex;align-items:center;gap:var(--spacing-xl)}
+.composer-toolbar-right{display:flex;align-items:center}
+
+.composer-icon-btn{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;padding:0;color:var(--fg-tertiary);transition:color .15s}
+.composer-icon-btn:hover{color:var(--text-primary)}
+.composer-icon-btn svg{width:24px;height:24px}
+
+.btn-mic{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;padding:0;color:var(--fg-tertiary);transition:color .15s}
+.btn-mic:hover{color:var(--text-primary)}
+.btn-mic svg{width:24px;height:24px}
+.btn-mic .icon-mic,.btn-mic .icon-send,.btn-mic .icon-stop{display:none}
+.btn-mic[data-mode="mic"] .icon-mic{display:block}
+.btn-mic[data-mode="mic"]{color:var(--fg-tertiary)}
+.btn-mic[data-mode="send"] .icon-send{display:block}
+.btn-mic[data-mode="send"]{color:var(--text-white);background:var(--brand-500);border-radius:var(--radius-full);width:32px;height:32px;padding:4px}
+.btn-mic[data-mode="recording"] .icon-stop{display:block}
+.btn-mic[data-mode="recording"]{color:var(--red-500);animation:mic-pulse .6s ease-in-out infinite alternate}
+@keyframes mic-pulse{0%{transform:scale(1)}100%{transform:scale(1.15)}}
+
+/* ── Voice dictation states ── */
+/* Recording toolbar: replaces normal toolbar */
+.voice-recording-toolbar{display:none;align-items:center;gap:var(--spacing-xl)}
+.voice-recording-toolbar.active{display:flex}
+.composer-pill.voice-recording .composer-toolbar{display:none!important}
+
+.voice-btn-stop{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--bg-sky,#e0f2fe);border:none;border-radius:var(--radius-full);cursor:pointer;padding:0}
+.voice-btn-stop svg{width:24px;height:24px;color:var(--text-primary)}
+
+.voice-waveform{flex:1;min-width:0;height:32px;display:flex;align-items:center;gap:2px;overflow:hidden}
+.voice-waveform-bar{width:2px;flex-shrink:0;background:var(--gray-700);border-radius:1px;transition:height .1s ease}
+
+.voice-btn-done{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--brand-500);border:none;border-radius:var(--radius-full);cursor:pointer;color:var(--text-white);transition:opacity .15s}
+.voice-btn-done:hover{opacity:.85}
+.voice-btn-done svg{width:24px;height:24px}
+
+/* Transcribing state: replaces input + toolbar */
+.composer-pill.voice-transcribing .composer-input{display:none!important}
+.composer-pill.voice-transcribing .composer-toolbar{display:none!important}
+.voice-transcribing-row{display:none;align-items:center;gap:var(--spacing-md)}
+.voice-transcribing-row.active{display:flex}
+.voice-transcribing-spinner{width:20px;height:20px;flex-shrink:0;border:2px solid var(--gray-200);border-top-color:var(--fg-quaternary);border-radius:50%;animation:voice-spin .6s linear infinite}
+@keyframes voice-spin{to{transform:rotate(360deg)}}
+.voice-transcribing-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);color:var(--text-placeholder,#717680)}
+
+.voice-transcribing-toolbar{display:none;align-items:center;justify-content:space-between}
+.voice-transcribing-toolbar.active{display:flex}
+.voice-btn-send-disabled{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--fg-disabled,#a4a7ae);border:none;border-radius:var(--radius-full);cursor:default;padding:0}
+.voice-btn-send-disabled svg{width:24px;height:24px;color:var(--text-white)}
+
+/* ── @Mention popup ── */
+.mention-popup{position:absolute;bottom:100%;left:var(--spacing-xl);right:var(--spacing-xl);background:var(--bg-primary);border-radius:var(--radius-3xl);box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid var(--border-secondary);display:none;flex-direction:column;overflow:hidden;margin-bottom:var(--spacing-md);padding:var(--spacing-xs) 0;z-index:20}
+.mention-popup.open{display:flex}
+.mention-item{display:flex;align-items:center;gap:var(--spacing-lg);padding:var(--spacing-md) var(--spacing-lg);cursor:pointer;transition:background .1s}
+.mention-item:hover{background:var(--bg-secondary)}
+.mention-item-avatar-wrap{flex-shrink:0}
+.mention-item-info{flex:1;min-width:0;display:flex;align-items:baseline;gap:var(--spacing-md)}
+.mention-item-info.stacked{flex-direction:column;gap:0;align-items:flex-start}
+.mention-item-name{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);font-weight:var(--font-weight-medium);color:var(--text-primary)}
+.mention-item-sub{font-family:var(--font-family-body);font-size:var(--font-size-text-xs);color:var(--text-secondary);font-weight:var(--font-weight-regular)}
+.mention-item-icon{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)}
+
+/* ── Sheet ── */
+.sheet-scrim{position:absolute;inset:0;background:var(--bg-overlay,rgba(10,13,18,.2));z-index:15;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.sheet-scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:absolute;bottom:0;left:0;right:0;background:var(--bg-primary);border-radius:var(--radius-4xl) var(--radius-4xl) 0 0;z-index:16;transform:translateY(100%);transition:transform .35s cubic-bezier(.2,.9,.3,1);padding-bottom:var(--spacing-4xl);display:flex;flex-direction:column}
+.sheet.open{transform:translateY(0)}
+.sheet-top{padding:var(--spacing-xl);flex-shrink:0;display:flex;flex-direction:column;gap:var(--spacing-xl);align-items:center}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--gray-300)}
+.sheet-header{display:flex;align-items:center;gap:var(--spacing-md);width:100%}
+.sheet-header-content{flex:1;min-width:0}
+.sheet-title{font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);font-weight:var(--font-weight-bold);color:var(--text-primary);margin:0}
+.sheet-close{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-400);background:none;border:none;border-radius:var(--radius-full)}
+.sheet-close:hover{background:var(--bg-tertiary)}
+.sheet-close svg{width:24px;height:24px}
+/* ── Sheet list items ── */
+.sheet-list{display:flex;flex-direction:column}
+.sheet-list-item{display:flex;align-items:center;gap:var(--spacing-lg);padding:var(--spacing-md) var(--spacing-xl);cursor:pointer;transition:background .1s;border:none;background:none;width:100%;text-align:left}
+.sheet-list-item:hover{background:var(--bg-secondary)}
+.sheet-list-icon{width:24px;height:24px;flex-shrink:0;color:var(--text-primary)}
+.sheet-list-label{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-medium);color:var(--black)}
+
+/* ── Context menu sheet ── */
+.ctx-menu-list{padding:0 0 var(--spacing-2xl)}
+.ctx-menu-item{display:flex;align-items:center;gap:var(--spacing-lg);padding:var(--spacing-md) var(--spacing-xl);border-radius:0;cursor:pointer;transition:background .1s;border:none;background:none;width:100%;text-align:left}
+.ctx-menu-item:hover{background:var(--bg-secondary)}
+.ctx-menu-item svg{width:24px;height:24px;flex-shrink:0;color:var(--black)}
+.ctx-menu-item span{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);font-weight:var(--font-weight-medium);color:var(--black)}
+.ctx-menu-item.destructive svg{color:var(--red-500)}
+.ctx-menu-item.destructive span{color:var(--red-500)}
+
+/* (delete confirm dialog removed — replaced by undo banner) */
+
+/* (toast styles merged into .banner above) */
+
+/* ── Typing indicator / Agent Activity Feed ── */
+.typing-indicator{display:flex;align-items:center;gap:var(--spacing-md);padding:var(--spacing-xl);align-self:stretch}
+.typing-indicator .msg-avatar{padding:0}
+.typing-indicator-label{font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);font-weight:var(--font-weight-regular);color:var(--text-secondary);flex:1;min-width:0;transition:opacity .3s cubic-bezier(.25,.1,.25,1),transform .3s cubic-bezier(.25,.1,.25,1)}
+.typing-indicator-label strong{font-weight:var(--font-weight-semibold);color:var(--text-secondary)}
+.typing-indicator-label.fade-out{opacity:0;transform:translateY(-6px)}
+.typing-indicator-stop{width:16px;height:16px;flex-shrink:0;color:var(--fg-quaternary);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.typing-indicator-stop svg{width:16px;height:16px}
+
+/* ── Sent-message attachment grid (Figma spec) ── */
+.msg-attachments{display:flex;flex-wrap:wrap;gap:var(--spacing-xs);justify-content:flex-end;width:100%}
+.msg-attachments-img{width:108px;height:108px;border-radius:20px;flex-shrink:0;overflow:hidden}
+.msg-attachments-file{display:flex;align-items:center;gap:var(--spacing-md);width:100%;padding:var(--spacing-lg) var(--spacing-xl);background:var(--bg-primary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl);overflow:hidden}
+.msg-attachments-file-icon{width:36px;height:36px;border-radius:var(--radius-xs);background:var(--brand-500);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.msg-attachments-file-icon svg{width:24px;height:24px}
+.msg-attachments-file-info{flex:1;min-width:0;display:flex;flex-direction:column}
+.msg-attachments-file-name{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-semibold);color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msg-attachments-file-meta{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);font-weight:var(--font-weight-regular);color:var(--text-tertiary)}
+.msg-group.msg-incoming .msg-attachments{padding-left:36px;justify-content:flex-start}
+
+/* ── Legacy inline image in outgoing bubble ── */
+.msg-bubble-img{width:100%;max-width:180px;border-radius:var(--radius-xl);margin-bottom:var(--spacing-sm)}
+
+@media(prefers-reduced-motion:reduce){.typing-dot{animation:none !important}.sheet{transition:opacity 0.1s !important}}
+
+/* ── iOS keyboard (decorative, matches Figma 20955:56266) ── */
+.ios-keyboard{display:flex;flex-direction:column;box-sizing:border-box;margin-top:0;margin-bottom:0;background:rgba(209,213,219,.92);border-radius:27px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro',system-ui,sans-serif;overflow:hidden;max-height:0;opacity:0;transition:max-height .35s cubic-bezier(.2,.9,.3,1),opacity .25s ease,margin-top .35s cubic-bezier(.2,.9,.3,1),margin-bottom .35s cubic-bezier(.2,.9,.3,1)}
+.ios-keyboard.open{max-height:276px;opacity:1;margin-top:16px;margin-bottom:calc(-1 * var(--spacing-2xl))}
+.ios-kb-keys{display:flex;flex-direction:column;gap:13px;padding:11px 6.5px 2px}
+.ios-kb-row{display:flex;gap:6.5px;justify-content:center}
+.ios-kb-row--r2{padding:0 20px}
+.ios-kb-row--r3{gap:14.25px}
+.ios-kb-row--r3-inner{display:flex;flex:1;gap:6.5px;min-width:0}
+.ios-kb-row--r4{gap:6px}
+.ios-kb-key{flex:1 1 0;min-width:0;height:42px;border-radius:8.5px;background:white;display:flex;align-items:center;justify-content:center;font-size:25px;color:#595959;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.ios-kb-key--fn{flex:0 0 45px;background:rgba(172,180,190,.38);color:#595959;font-size:23px}
+.ios-kb-key--abc{flex:0 0 92.25px;background:rgba(172,180,190,.38);color:#595959;font-size:18px;font-weight:400;letter-spacing:.2px}
+.ios-kb-key--space{flex:1;min-width:0}
+.ios-kb-key--return{flex:0 0 92.25px;background:#08f;color:white;font-size:19px;font-weight:400}
+.ios-kb-bottom{display:flex;align-items:flex-start;justify-content:space-between;padding:12px 39px 0 36px;height:56px;box-sizing:border-box}
+.ios-kb-bottom-icon{display:flex;align-items:center;justify-content:center}
+.ios-kb-bottom-icon img{display:block}
+
+/* ── Attachment panel (Alt B, matches Figma 20955:57101) ── */
+.attach-panel{padding:0 16px 0;display:flex;flex-direction:column;gap:16px;box-sizing:border-box;justify-content:center;margin-top:0;margin-bottom:0;overflow:hidden;max-height:0;min-height:0;opacity:0;transition:max-height .4s cubic-bezier(.2,.9,.3,1),min-height .4s cubic-bezier(.2,.9,.3,1),opacity .3s ease,margin-top .4s cubic-bezier(.2,.9,.3,1),margin-bottom .4s cubic-bezier(.2,.9,.3,1),padding .4s cubic-bezier(.2,.9,.3,1)}
+.attach-panel.open{max-height:276px;min-height:276px;opacity:1;padding:0 16px 34px;margin-top:16px;margin-bottom:calc(-1 * var(--spacing-2xl))}
+.attach-panel-row{flex:1 0 0;min-height:56px;display:flex;align-items:center;gap:8px;padding:16px;background:white;border-radius:16px;box-shadow:0 1px 6px 0 rgba(0,0,0,.04);cursor:pointer;overflow:hidden;transition:background .15s,transform .4s cubic-bezier(.2,.9,.3,1),opacity .3s ease;transform:translateY(20px);opacity:0}
+.attach-panel.open .attach-panel-row{transform:translateY(0);opacity:1}
+.attach-panel.open .attach-panel-row:nth-child(1){transition-delay:0s}
+.attach-panel.open .attach-panel-row:nth-child(2){transition-delay:.05s}
+.attach-panel.open .attach-panel-row:nth-child(3){transition-delay:.1s}
+.attach-panel-row:hover{background:var(--bg-secondary)}
+.attach-panel-row:active{transform:scale(.97);transition-duration:.1s}
+.attach-panel-icon{width:40px;height:40px;padding:8px;border-radius:100px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box}
+.attach-panel-icon svg{width:24px;height:24px}
+.attach-panel-icon--photos{background:#d1e0ff;color:#2d5fbe}
+.attach-panel-icon--camera{background:#f5f5f5;color:var(--text-primary)}
+.attach-panel-icon--document{background:#e0f2fe;color:#0ba5ec}
+.attach-panel-label{font-family:var(--font-family-body);font-size:var(--font-size-text-md);line-height:var(--line-height-text-md);font-weight:var(--font-weight-regular);color:var(--text-primary)}
+
+/* ── Inline attachment pill (expands from + button) ── */
+.plus-pill{display:flex;align-items:center;height:36px;padding:0 6px;background:var(--bg-tertiary,#f5f5f5);border-radius:999px;flex-shrink:0;overflow:hidden;cursor:pointer;border:none;gap:0;transition:gap .35s cubic-bezier(.2,.9,.3,1)}
+.plus-pill .plus-pill-icon{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--fg-tertiary);cursor:pointer;background:none;border:none;padding:0}
+.plus-pill .plus-pill-icon:hover{color:var(--text-primary)}
+.plus-pill .plus-pill-icon svg{width:24px;height:24px}
+/* + icon rotates 45deg to become X */
+.plus-pill .plus-pill-plus svg{transition:transform .35s cubic-bezier(.2,.9,.3,1)}
+.plus-pill.expanded .plus-pill-plus svg{transform:rotate(45deg)}
+/* Extra icons: hidden by width, animate in */
+.plus-pill .plus-pill-extra{display:flex;align-items:center;gap:16px;overflow:hidden;max-width:0;opacity:0;transition:max-width .35s cubic-bezier(.2,.9,.3,1),opacity .25s ease .05s}
+.plus-pill.expanded{gap:16px}
+.plus-pill.expanded .plus-pill-extra{max-width:200px;opacity:1}
+/* Hide the separate X button when collapsed (the + becomes X) */
+.plus-pill #inlineCloseBtn{display:none}
+/* Plain mode: strip pill styling so + looks like a bare icon (used by Panel flow) */
+.plus-pill.plain{background:none;padding:0;height:auto;border-radius:0}
+/* Icon swap bounce for panel mode */
+@keyframes icon-swap{0%{transform:scale(.7);opacity:0}50%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.plus-pill.plain .plus-pill-plus{transition:transform .3s cubic-bezier(.2,.9,.3,1)}
+.plus-pill.plain.swapping .plus-pill-plus{animation:icon-swap .3s cubic-bezier(.2,.9,.3,1) forwards}
+
+/* ── Feature list in metadata ── */
+.pc-features{margin-top:var(--spacing-md)}
+.pc-features-title{font-size:13px;font-weight:var(--font-weight-bold);color:var(--text-primary);margin-bottom:var(--spacing-md)}
+.pc-feature-item{display:flex;align-items:center;gap:var(--spacing-md);padding:7px var(--spacing-lg);font-size:13px;color:var(--text-tertiary);cursor:pointer;border-left:2px solid transparent;border-radius:0 var(--radius-sm) var(--radius-sm) 0;transition:all .1s;user-select:none}
+.pc-feature-item:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+.pc-feature-item.active{background:var(--brand-50);color:var(--brand-600);border-left-color:var(--brand-500);font-weight:var(--font-weight-semibold)}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="two-col">
+        <div class="col-left">
+        <div class="device-wrapper" id="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen">
+
+<!-- Header frost overlay -->
+<div class="header-frost"></div>
+
+<!-- Status bar -->
+<div class="status-bar">
+  <span class="status-bar-time">9:41</span>
+  <span class="status-bar-icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+  </span>
+</div>
+
+<!-- Toolbar -->
+<div class="chat-header">
+  <div class="chat-header-left">
+    <div class="toolbar-pill">
+      <button class="toolbar-icon-btn" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="chat-header-right">
+    <div class="toolbar-pill">
+      <button class="toolbar-icon-btn" aria-label="New chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <div class="chat-header-avatars">
+        <div class="avatar avatar-sm avatar-bordered" id="headerAvatarUser"><canvas class="rive-user" width="46" height="66"></canvas></div>
+        <div class="avatar avatar-sm avatar-bg-violet avatar-bordered" id="headerAvatarCoparent"><canvas class="rive-user" width="46" height="66"></canvas></div>
+        <div class="avatar avatar-sm avatar-bordered" id="sproutAvatar"><canvas class="rive-sprout" width="86" height="124"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reconnection banner -->
+<div class="banner banner-reconnect" id="reconnectBanner">
+  <div class="reconnect-spinner"></div>
+  <span class="banner-text">Reconnecting...</span>
+</div>
+
+<!-- Chat thread -->
+<div class="chat-thread" id="chatThread"></div>
+
+<!-- Composer area -->
+<div class="composer-area" id="composerArea">
+  <!-- Suggestion chips -->
+  <div class="suggestion-chips" id="suggestionChips">
+    <button class="option-chip" data-text="What activities help my child's development?">
+      <div class="suggestion-chip-title">Development tips</div>
+      <div class="suggestion-chip-sub">for my child's age</div>
+    </button>
+    <button class="option-chip" data-text="How do I set healthy screen time limits?">
+      <div class="suggestion-chip-title">Screen time</div>
+      <div class="suggestion-chip-sub">set healthy limits</div>
+    </button>
+    <button class="option-chip" data-text="Suggest a bedtime routine for my child">
+      <div class="suggestion-chip-title">Bedtime routine</div>
+      <div class="suggestion-chip-sub">build better habits</div>
+    </button>
+  </div>
+  <!-- Composer row -->
+  <div class="composer-row" style="position:relative">
+    <!-- Mention popup -->
+    <div class="mention-popup" id="mentionPopup"></div>
+    <div class="composer-pill">
+      <!-- Attachment preview strip (inside composer card) -->
+      <div class="attach-strip" id="attachStrip"></div>
+      <!-- Reply pill -->
+      <div class="reply-pill" id="replyBar">
+        <div class="reply-pill-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>
+        </div>
+        <div class="reply-pill-text" id="replyBarText"></div>
+        <button class="reply-pill-close" id="replyBarClose" aria-label="Cancel reply">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="composer-input" id="composerInput" contenteditable="true" role="textbox" data-placeholder="Ask anything"></div>
+      <div class="composer-toolbar">
+        <div class="composer-toolbar-left">
+          <div class="plus-pill" id="plusPill">
+            <button class="plus-pill-icon plus-pill-plus" id="btnPlus" aria-label="Add attachment">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <div class="plus-pill-extra">
+              <button class="plus-pill-icon" id="inlineCameraBtn" aria-label="Camera">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </button>
+              <button class="plus-pill-icon" id="inlinePhotosBtn" aria-label="Photos">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+              <button class="plus-pill-icon" id="inlineFileBtn" aria-label="File">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </button>
+              <button class="plus-pill-icon" id="inlineCloseBtn" aria-label="Close attachments">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+          <button class="composer-icon-btn" id="btnMention" aria-label="Mention">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0V12a10 10 0 1 0-4 8"/></svg>
+          </button>
+        </div>
+        <div class="composer-toolbar-right">
+          <button class="btn-mic" id="btnMic" data-mode="mic" aria-label="Voice input">
+            <svg class="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="2" width="6" height="11" rx="3"/>
+              <path d="M5 10a7 7 0 0 0 14 0"/>
+              <line x1="12" y1="21" x2="12" y2="17"/>
+            </svg>
+            <svg class="icon-send" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="icon-stop" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+      <!-- Voice: recording toolbar (replaces normal toolbar) -->
+      <div class="voice-recording-toolbar" id="voiceRecordingToolbar">
+        <button class="voice-btn-stop" id="voiceBtnStop" aria-label="Stop recording">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+        </button>
+        <div class="voice-waveform" id="voiceWaveform"></div>
+        <button class="voice-btn-done" id="voiceBtnDone" aria-label="Done recording">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </div>
+      <!-- Voice: transcribing input replacement -->
+      <div class="voice-transcribing-row" id="voiceTranscribingRow">
+        <div class="voice-transcribing-spinner"></div>
+        <span class="voice-transcribing-text">Transcribing...</span>
+      </div>
+      <!-- Voice: transcribing toolbar -->
+      <div class="voice-transcribing-toolbar" id="voiceTranscribingToolbar">
+        <button class="voice-btn-stop" id="voiceBtnStopTranscribing" aria-label="Cancel">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+        </button>
+        <div class="voice-btn-send-disabled" aria-label="Send disabled">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- iOS keyboard (decorative, matches Figma 20955:56266) -->
+  <div class="ios-keyboard" id="iosKeyboard">
+    <div class="ios-kb-keys">
+      <div class="ios-kb-row">
+        <div class="ios-kb-key">q</div><div class="ios-kb-key">w</div><div class="ios-kb-key">e</div><div class="ios-kb-key">r</div><div class="ios-kb-key">t</div><div class="ios-kb-key">y</div><div class="ios-kb-key">u</div><div class="ios-kb-key">i</div><div class="ios-kb-key">o</div><div class="ios-kb-key">p</div>
+      </div>
+      <div class="ios-kb-row ios-kb-row--r2">
+        <div class="ios-kb-key">a</div><div class="ios-kb-key">s</div><div class="ios-kb-key">d</div><div class="ios-kb-key">f</div><div class="ios-kb-key">g</div><div class="ios-kb-key">h</div><div class="ios-kb-key">j</div><div class="ios-kb-key">k</div><div class="ios-kb-key">l</div>
+      </div>
+      <div class="ios-kb-row ios-kb-row--r3">
+        <div class="ios-kb-key ios-kb-key--fn">&#x21E7;</div>
+        <div class="ios-kb-row--r3-inner">
+          <div class="ios-kb-key">z</div><div class="ios-kb-key">x</div><div class="ios-kb-key">c</div><div class="ios-kb-key">v</div><div class="ios-kb-key">b</div><div class="ios-kb-key">n</div><div class="ios-kb-key">m</div>
+        </div>
+        <div class="ios-kb-key ios-kb-key--fn">&#x232B;</div>
+      </div>
+      <div class="ios-kb-row ios-kb-row--r4">
+        <div class="ios-kb-key ios-kb-key--abc">ABC</div>
+        <div class="ios-kb-key ios-kb-key--space"></div>
+        <div class="ios-kb-key ios-kb-key--return">&#x21B5;</div>
+      </div>
+    </div>
+    <div class="ios-kb-bottom">
+      <div class="ios-kb-bottom-icon"><img src="/product-explorer/assets/ios-kb-emoji.svg" width="27" height="27" alt=""></div>
+      <div class="ios-kb-bottom-icon"><img src="/product-explorer/assets/ios-kb-mic.svg" width="19" height="28" alt=""></div>
+    </div>
+  </div>
+  <!-- Attachment panel (inline below composer) -->
+  <div class="attach-panel" id="attachPanel">
+    <div class="attach-panel-row" id="attachPanelPhotos">
+      <div class="attach-panel-icon attach-panel-icon--photos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </div>
+      <span class="attach-panel-label">Photos</span>
+    </div>
+    <div class="attach-panel-row" id="attachPanelCamera">
+      <div class="attach-panel-icon attach-panel-icon--camera">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <span class="attach-panel-label">Camera</span>
+    </div>
+    <div class="attach-panel-row" id="attachPanelDocument">
+      <div class="attach-panel-icon attach-panel-icon--document">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <span class="attach-panel-label">Document</span>
+    </div>
+  </div>
+</div>
+
+<!-- Sheet scrim -->
+<div class="sheet-scrim" id="scrim"></div>
+
+<!-- Attachment sheet -->
+<div class="sheet" id="sheet">
+  <div class="sheet-top">
+    <div class="sheet-handle"></div>
+  </div>
+  <div class="sheet-list">
+    <button class="sheet-list-item" id="tileCamera">
+      <svg class="sheet-list-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <span class="sheet-list-label">Camera</span>
+    </button>
+    <button class="sheet-list-item" id="tilePhotos">
+      <svg class="sheet-list-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span class="sheet-list-label">Photos</span>
+    </button>
+    <button class="sheet-list-item" id="tileFiles">
+      <svg class="sheet-list-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="sheet-list-label">Files</span>
+    </button>
+  </div>
+</div>
+
+<!-- Context menu sheet -->
+<div class="sheet-scrim" id="ctxScrim"></div>
+<div class="sheet ctx-sheet" id="ctxSheet">
+  <div class="sheet-top">
+    <div class="sheet-handle"></div>
+  </div>
+  <div class="ctx-menu-list">
+    <button class="ctx-menu-item" id="ctxCopy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.06812 15 3.60218 15 3.23463 14.8478C2.74458 14.6448 2.35523 14.2554 2.15224 13.7654C2 13.3978 2 12.9319 2 12V5.2C2 4.0799 2 3.51984 2.21799 3.09202C2.40974 2.7157 2.7157 2.40974 3.09202 2.21799C3.51984 2 4.0799 2 5.2 2H12C12.9319 2 13.3978 2 13.7654 2.15224C14.2554 2.35523 14.6448 2.74458 14.8478 3.23463C15 3.60218 15 4.06812 15 5M12.2 22H18.8C19.9201 22 20.4802 22 20.908 21.782C21.2843 21.5903 21.5903 21.2843 21.782 20.908C22 20.4802 22 19.9201 22 18.8V12.2C22 11.0799 22 10.5198 21.782 10.092C21.5903 9.7157 21.2843 9.40974 20.908 9.21799C20.4802 9 19.9201 9 18.8 9H12.2C11.0799 9 10.5198 9 10.092 9.21799C9.7157 9.40974 9.40974 9.7157 9.21799 10.092C9 10.5198 9 11.0799 9 12.2V18.8C9 19.9201 9 20.4802 9.21799 20.908C9.40974 21.2843 9.7157 21.5903 10.092 21.782C10.5198 22 11.0799 22 12.2 22Z"/></svg>
+      <span>Copy</span>
+    </button>
+    <button class="ctx-menu-item" id="ctxReply">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4V5.4C4 8.76031 4 10.4405 4.65396 11.7239C5.2292 12.8529 6.14708 13.7708 7.27606 14.346C8.55953 15 10.2397 15 13.6 15H20M20 15L15 10M20 15L15 20"/></svg>
+      <span>Reply</span>
+    </button>
+    <button class="ctx-menu-item" id="ctxForward">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V18.6C4 15.2397 4 13.5595 4.65396 12.2761C5.2292 11.1471 6.14708 10.2292 7.27606 9.65396C8.55953 9 10.2397 9 13.6 9H20M20 9L15 14M20 9L15 4"/></svg>
+      <span>Forward</span>
+    </button>
+    <button class="ctx-menu-item destructive" id="ctxDelete">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.0799 16 3.51984 15.782 3.09202C15.5903 2.7157 15.2843 2.40974 14.908 2.21799C14.4802 2 13.9201 2 12.8 2H11.2C10.0799 2 9.51984 2 9.09202 2.21799C8.71569 2.40974 8.40973 2.7157 8.21799 3.09202C8 3.51984 8 4.0799 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.8802 19 19.7202 18.673 20.362C18.3854 20.9265 17.9265 21.3854 17.362 21.673C16.7202 22 15.8802 22 14.2 22H9.8C8.11984 22 7.27976 22 6.63803 21.673C6.07354 21.3854 5.6146 20.9265 5.32698 20.362C5 19.7202 5 18.8802 5 17.2V6"/></svg>
+      <span>Delete for me</span>
+    </button>
+  </div>
+</div>
+
+<!-- Delete undo banner -->
+<div class="banner banner-delete" id="deleteBanner">
+  <div class="banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.0799 16 3.51984 15.782 3.09202C15.5903 2.7157 15.2843 2.40974 14.908 2.21799C14.4802 2 13.9201 2 12.8 2H11.2C10.0799 2 9.51984 2 9.09202 2.21799C8.71569 2.40974 8.40973 2.7157 8.21799 3.09202C8 3.51984 8 4.0799 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.8802 19 19.7202 18.673 20.362C18.3854 20.9265 17.9265 21.3854 17.362 21.673C16.7202 22 15.8802 22 14.2 22H9.8C8.11984 22 7.27976 22 6.63803 21.673C6.07354 21.3854 5.6146 20.9265 5.32698 20.362C5 19.7202 5 18.8802 5 17.2V6"/></svg></div>
+  <span class="banner-text">Message deleted</span>
+  <button class="banner-undo" id="deleteUndoBtn">Undo</button>
+</div>
+
+<!-- Toast banner -->
+<div class="banner banner-toast" id="toast">
+  <div class="banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div>
+  <span class="banner-text">Message copied</span>
+</div>
+
+<!-- Artifact sheet -->
+<div class="artifact-sheet-scrim" id="artifactSheetScrim"></div>
+<div class="artifact-sheet" id="artifactSheet">
+  <div class="sheet-top">
+    <div class="sheet-handle"></div>
+  </div>
+  <div class="artifact-sheet-header">
+    <div class="artifact-sheet-title">Brush Teeth Champion</div>
+    <button class="artifact-sheet-close" id="artifactSheetClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="artifact-sheet-body">
+    <h3>Quest Details</h3>
+    <p>Help Emma build a consistent tooth-brushing habit with this fun quest. She earns gems for each successful brush.</p>
+    <h3>Requirements</h3>
+    <ul>
+      <li>Brush teeth for 2 minutes</li>
+      <li>Use the timer in the app</li>
+      <li>Morning and evening sessions</li>
+    </ul>
+    <h3>Rewards</h3>
+    <p>5 gems per completion, 20 gem bonus for a full week streak.</p>
+  </div>
+  <div class="artifact-sheet-footer">
+    <button class="artifact-sheet-assign" id="artifactAssignBtn">Assign to Emma</button>
+  </div>
+</div>
+
+<!-- Thought process sheet -->
+<div class="thought-sheet-scrim" id="thoughtSheetScrim"></div>
+<div class="thought-sheet" id="thoughtSheet">
+  <div class="sheet-top">
+    <div class="sheet-handle"></div>
+  </div>
+  <div class="thought-sheet-header">
+    <span class="thought-sheet-header-label" id="thoughtSheetLabel">Thinking...</span>
+    <span class="thought-sheet-header-time" id="thoughtSheetTime">6s</span>
+  </div>
+  <div class="thought-sheet-body" id="thoughtSheetBody"></div>
+</div>
+
+
+<!-- Home indicator -->
+<div class="home-indicator"></div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /col-left -->
+        <div class="col-right"></div><!-- /col-right -->
+      </div><!-- /two-col -->
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var chatThread = document.getElementById('chatThread');
+  var composerInput = document.getElementById('composerInput');
+  var btnMic = document.getElementById('btnMic');
+  var btnPlus = document.getElementById('btnPlus');
+  var plusPill = document.getElementById('plusPill');
+  var scrim = document.getElementById('scrim');
+  var sheet = document.getElementById('sheet');
+  var mentionPopup = document.getElementById('mentionPopup');
+  var suggestionChips = document.getElementById('suggestionChips');
+  var composerArea = document.getElementById('composerArea');
+  var replyBar = document.getElementById('replyBar');
+  var replyBarText = document.getElementById('replyBarText');
+  var replyBarClose = document.getElementById('replyBarClose');
+  var attachStrip = document.getElementById('attachStrip');
+  var ctxScrim = document.getElementById('ctxScrim');
+  var ctxSheet = document.getElementById('ctxSheet');
+  var toast = document.getElementById('toast');
+  var artifactSheetScrim = document.getElementById('artifactSheetScrim');
+  var artifactSheet = document.getElementById('artifactSheet');
+  var reconnectBanner = document.getElementById('reconnectBanner');
+  var attachPanel = document.getElementById('attachPanel');
+  var iosKeyboard = document.getElementById('iosKeyboard');
+
+  // ── Rive config ──
+  var RIVE_SPROUT_SRC = '/design-system/sprot2.97_.riv';
+  var RIVE_USER_SRC = '/design-system/character2.91.riv';
+  var SM_NAME = 'State Machine 1';
+  var ARTBOARD = 'Village-character';
+
+  // Customization states
+  var SPROUT_STATE = { hairID: 1 };
+  var USER_STATE = { skinID: 3, hairID: 2, hairshadeID: 4, clothingID: 1, clothingcolourID: 2, eyeshadeID: 1 };
+  var COPARENT_STATE = { skinID: 5, hairID: 4, hairshadeID: 8, beardID: 2, beardshadeID: 8, clothingID: 3, clothingcolourID: 5, eyeshadeID: 3 };
+
+  function initRiveAvatar(canvas, opts) {
+    var w = parseInt(canvas.getAttribute('width'), 10) || 86;
+    var h = parseInt(canvas.getAttribute('height'), 10) || 124;
+    canvas.width = w;
+    canvas.height = h;
+    var config = {
+      src: opts.src,
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: SM_NAME,
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.Center,
+      onLoad: function() {
+        if (!r) return;
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM_NAME);
+          if (inputs && opts.state) {
+            inputs.forEach(function(inp) {
+              if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+            });
+          }
+        } catch(e) {}
+      }
+    };
+    if (opts.artboard) config.artboard = opts.artboard;
+    var r;
+    try { r = new rive.Rive(config); } catch(e) { console.warn('Rive init failed', e); }
+    return r;
+  }
+
+  // Create a Sprout avatar element (returns a .msg-avatar div with Rive canvas)
+  function createSproutAvatar() {
+    var wrap = document.createElement('div');
+    wrap.className = 'msg-avatar';
+    var av = document.createElement('div');
+    av.className = 'avatar avatar-sm';
+    var canvas = document.createElement('canvas');
+    canvas.className = 'rive-sprout';
+    canvas.setAttribute('width', '86');
+    canvas.setAttribute('height', '124');
+    av.appendChild(canvas);
+    wrap.appendChild(av);
+    // Init Rive after appended to DOM
+    setTimeout(function() { initRiveAvatar(canvas, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE }); }, 0);
+    return wrap;
+  }
+
+  // Create a village character avatar element
+  function createUserAvatar(bgClass, state) {
+    var wrap = document.createElement('div');
+    wrap.className = 'msg-avatar';
+    var av = document.createElement('div');
+    av.className = 'avatar avatar-sm ' + (bgClass || '');
+    var canvas = document.createElement('canvas');
+    canvas.className = 'rive-user';
+    canvas.setAttribute('width', '46');
+    canvas.setAttribute('height', '66');
+    av.appendChild(canvas);
+    wrap.appendChild(av);
+    setTimeout(function() { initRiveAvatar(canvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: state || USER_STATE }); }, 0);
+    return wrap;
+  }
+
+  // Simple Sprout SVG for small inline contexts (mention popup, tool usage)
+  var SPROUT_FACE_MINI_MINI = '<svg viewBox="0 0 32 32" width="100%" height="100%"><circle cx="16" cy="16" r="16" fill="#a3d977"/><circle cx="11" cy="14" r="2.4" fill="#4a6741"/><circle cx="21" cy="14" r="2.4" fill="#4a6741"/><ellipse cx="16" cy="21" rx="4" ry="2.4" fill="#4a6741" opacity=".6"/></svg>';
+
+  // Action icon SVGs
+  var ICON_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.06812 15 3.60218 15 3.23463 14.8478C2.74458 14.6448 2.35523 14.2554 2.15224 13.7654C2 13.3978 2 12.9319 2 12V5.2C2 4.0799 2 3.51984 2.21799 3.09202C2.40974 2.7157 2.7157 2.40974 3.09202 2.21799C3.51984 2 4.0799 2 5.2 2H12C12.9319 2 13.3978 2 13.7654 2.15224C14.2554 2.35523 14.6448 2.74458 14.8478 3.23463C15 3.60218 15 4.06812 15 5M12.2 22H18.8C19.9201 22 20.4802 22 20.908 21.782C21.2843 21.5903 21.5903 21.2843 21.782 20.908C22 20.4802 22 19.9201 22 18.8V12.2C22 11.0799 22 10.5198 21.782 10.092C21.5903 9.7157 21.2843 9.40974 20.908 9.21799C20.4802 9 19.9201 9 18.8 9H12.2C11.0799 9 10.5198 9 10.092 9.21799C9.7157 9.40974 9.40974 9.7157 9.21799 10.092C9 10.5198 9 11.0799 9 12.2V18.8C9 19.9201 9 20.4802 9.21799 20.908C9.40974 21.2843 9.7157 21.5903 10.092 21.782C10.5198 22 11.0799 22 12.2 22Z"/></svg>';
+  var ICON_THUMBS_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 22V11M2 13V20C2 21.1046 2.89543 22 4 22H17.4262C18.907 22 20.1662 20.9197 20.3914 19.4562L21.4683 12.4562C21.7479 10.6389 20.3418 9 18.5032 9H15C14.4477 9 14 8.55228 14 8V4.46584C14 3.10399 12.896 2 11.5342 2C11.2093 2 10.915 2.1913 10.7831 2.48812L7.26394 10.4061C7.10344 10.7673 6.74532 11 6.35013 11H4C2.89543 11 2 11.8954 2 13Z"/></svg>';
+  var ICON_THUMBS_DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2V13M22 11V4C22 2.89543 21.1046 2 20 2H6.57383C5.09301 2 3.83382 3.08034 3.60862 4.54379L2.53168 11.5438C2.25212 13.3611 3.65822 15 5.49688 15H9C9.55228 15 10 15.4477 10 16V19.5342C10 20.896 11.104 22 12.4658 22C12.7907 22 13.085 21.8087 13.2169 21.5119L16.7361 13.5939C16.8966 13.2327 17.2547 13 17.6499 13H20C21.1046 13 22 12.1046 22 11Z"/></svg>';
+  var ICON_REPLY_ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>';
+
+  function createMsgActions(groupEl) {
+    var actionsEl = document.createElement('div');
+    actionsEl.className = 'msg-actions';
+    var copyBtn = document.createElement('button');
+    copyBtn.className = 'msg-actions-btn';
+    copyBtn.innerHTML = ICON_COPY;
+    copyBtn.addEventListener('click', function() {
+      var text = getTextContent(groupEl);
+      if (navigator.clipboard) navigator.clipboard.writeText(text);
+      showToast('Copied!');
+    });
+    var thumbUpBtn = document.createElement('button');
+    thumbUpBtn.className = 'msg-actions-btn';
+    thumbUpBtn.innerHTML = ICON_THUMBS_UP;
+    var thumbDownBtn = document.createElement('button');
+    thumbDownBtn.className = 'msg-actions-btn';
+    thumbDownBtn.innerHTML = ICON_THUMBS_DOWN;
+    actionsEl.appendChild(copyBtn);
+    actionsEl.appendChild(thumbUpBtn);
+    actionsEl.appendChild(thumbDownBtn);
+    return actionsEl;
+  }
+
+  // Init header avatars with Rive
+  setTimeout(function() {
+    var sproutCanvas = document.querySelector('#sproutAvatar canvas.rive-sprout');
+    if (sproutCanvas) initRiveAvatar(sproutCanvas, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+    var userCanvas = document.querySelector('#headerAvatarUser canvas.rive-user');
+    if (userCanvas) initRiveAvatar(userCanvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: USER_STATE });
+    var coparentCanvas = document.querySelector('#headerAvatarCoparent canvas.rive-user');
+    if (coparentCanvas) initRiveAvatar(coparentCanvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: COPARENT_STATE });
+  }, 100);
+
+  // ── Reply state ──
+  var activeReply = null; // { sender, text, groupEl }
+  var ctxTargetGroup = null;
+
+  // ── Attachment state ──
+  var attachments = []; // { type:'photo'|'file', color, name }
+
+  // ── AI conversation data ──
+  var replyIdx = 0;
+  var isProcessing = false;
+  var convoStarted = false; // once true, suggestion chips never reappear
+
+  var aiReplies = [
+    { text: "Hey! How can I help with the kids' habits today?", type: 'greeting' },
+    { text: "Here are some popular habit categories parents find helpful. Which one interests you?", type: 'chips', chips: ['Morning routine', 'Bedtime habits', 'Reading time', 'Exercise'] },
+    { text: "I've drafted a 'Brush Teeth Champion' quest for Emma. Take a look:", type: 'artifact' },
+    { text: "You have 2 pending habit completions from Noah. Would you like to approve them?", type: 'action_btns' },
+    { text: "Here's the schedule update for Emma's morning routine. Please confirm:", type: 'confirm_card' },
+    { text: "Got it! I'll keep tracking Emma's progress and let you know how she does this week." },
+    { text: "Noah completed 3 out of 5 habits yesterday. He's on a 4-day streak for reading!" },
+    { text: "I'd suggest adding a small reward for consistency. Kids respond well to visual progress." }
+  ];
+
+  var toolActivities = [
+    [],
+    ['family preferences', 'habit catalog'],
+    ['quest builder', 'rewards engine'],
+    ['habit tracker', 'completion data'],
+    ['scheduler', 'notification service'],
+    ['memory read', 'family data'],
+    ['habit tracker'],
+    ['behavioral insights']
+  ];
+
+  // ── Mention members & projects ──
+  var FOLDER_SVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H12L10 5H5C3.89543 5 3 5.89543 3 7Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var members = [
+    { type: 'person', name: "Ze'ev Rosenstein", sub: 'thafman', avatarBg: 'avatar-bg-blue', avatarState: COPARENT_STATE },
+    { type: 'person', name: 'Sprout', sub: 'family AI', isSprout: true },
+    { type: 'project', name: 'Morning Routine Quest', sub: 'Project' },
+    { type: 'project', name: 'Reading Challenge', sub: 'Project' }
+  ];
+
+  /* ════════════════════════════════
+     HELPERS
+     ════════════════════════════════ */
+  function fitThreadToComposer() {
+    var h = composerArea.offsetHeight + 20; /* 20 = composer bottom offset */
+    chatThread.style.bottom = h + 'px';
+  }
+  if (window.ResizeObserver) {
+    new ResizeObserver(fitThreadToComposer).observe(composerArea);
+  }
+  fitThreadToComposer();
+
+  function scrollThread() {
+    setTimeout(function() { chatThread.scrollTop = chatThread.scrollHeight; }, 50);
+  }
+
+  function addSystemMessage(text) {
+    var el = document.createElement('div');
+    el.className = 'msg-system';
+    // Bold the day part (first word or "Today")
+    var parts = text.match(/^(\S+)(\s.+)$/);
+    if (parts) {
+      el.innerHTML = '<strong>' + parts[1] + '</strong>' + parts[2];
+    } else {
+      el.textContent = text;
+    }
+    chatThread.appendChild(el);
+    scrollThread();
+  }
+
+  function fmtTime() {
+    var now = new Date();
+    var h = now.getHours();
+    var m = now.getMinutes();
+    var ampm = h >= 12 ? 'pm' : 'am';
+    h = h % 12 || 12;
+    return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
+  }
+
+  function getTextContent(el) {
+    // Get just the message text, not timestamps
+    var firstDiv = el.querySelector('.msg-bubble > div:first-child');
+    return firstDiv ? firstDiv.textContent : el.querySelector('.msg-bubble').textContent;
+  }
+
+  function getSender(groupEl) {
+    return groupEl.classList.contains('msg-outgoing') ? 'You' : 'Sprout';
+  }
+
+  /* ════════════════════════════════
+     RECONNECTION BANNER (#9)
+     ════════════════════════════════ */
+  setTimeout(function() {
+    reconnectBanner.classList.add('hiding');
+    setTimeout(function() { reconnectBanner.style.display = 'none'; }, 400);
+  }, 3000);
+
+  /* ════════════════════════════════
+     SWIPE-TO-REPLY (#4)
+     ════════════════════════════════ */
+  function setupSwipe(row, groupEl) {
+    var startX = 0, currentX = 0, isDragging = false;
+    var bubble = row.querySelector('.msg-bubble');
+
+    // Create swipe reply icon
+    var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('class', 'swipe-reply-icon');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.innerHTML = '<polyline points="9 17 4 12 9 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 18v-2a4 4 0 0 0-4-4H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    row.appendChild(icon);
+
+    function onStart(e) {
+      var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      startX = clientX;
+      currentX = 0;
+      isDragging = true;
+      bubble.style.transition = 'none';
+    }
+    function onMove(e) {
+      if (!isDragging) return;
+      var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      var dx = clientX - startX;
+      if (dx < 0) dx = 0;
+      if (dx > 100) dx = 100;
+      currentX = dx;
+      // Cancel long-press when swiping horizontally
+      if (dx > 5 && longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+      bubble.style.transform = 'translateX(' + dx + 'px)';
+      icon.style.opacity = Math.min(dx / 60, 1);
+      icon.style.left = (dx - 36) + 'px';
+    }
+    function onEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      bubble.style.transition = 'transform .2s ease';
+      bubble.style.transform = '';
+      icon.style.opacity = '0';
+      if (currentX >= 60) {
+        triggerReplyTo(groupEl);
+      }
+    }
+
+    row.addEventListener('touchstart', onStart, { passive: true });
+    row.addEventListener('touchmove', onMove, { passive: true });
+    row.addEventListener('touchend', onEnd);
+    row.addEventListener('mousedown', onStart);
+    row.addEventListener('mousemove', onMove);
+    row.addEventListener('mouseup', onEnd);
+    row.addEventListener('mouseleave', onEnd);
+  }
+
+  /* ════════════════════════════════
+     LONG-PRESS CONTEXT MENU (#2)
+     ════════════════════════════════ */
+  var longPressTimer = null;
+
+  function setupLongPress(row, groupEl) {
+    function onDown(e) {
+      longPressTimer = setTimeout(function() {
+        openContextMenu(groupEl);
+      }, 400);
+    }
+    function onUp() { clearTimeout(longPressTimer); }
+    function onCancel() { clearTimeout(longPressTimer); }
+
+    row.addEventListener('touchstart', onDown, { passive: true });
+    row.addEventListener('touchend', onUp);
+    row.addEventListener('touchmove', onCancel);
+    row.addEventListener('mousedown', onDown);
+    row.addEventListener('mouseup', onUp);
+    row.addEventListener('mousemove', onCancel);
+    row.addEventListener('mouseleave', onCancel);
+  }
+
+  function openContextMenu(groupEl) {
+    ctxTargetGroup = groupEl;
+    ctxScrim.classList.add('open');
+    ctxSheet.classList.add('open');
+  }
+
+  function closeContextMenu() {
+    ctxScrim.classList.remove('open');
+    ctxSheet.classList.remove('open');
+  }
+
+  ctxScrim.addEventListener('click', closeContextMenu);
+
+  // Context menu actions
+  document.getElementById('ctxReply').addEventListener('click', function() {
+    closeContextMenu();
+    if (ctxTargetGroup) triggerReplyTo(ctxTargetGroup);
+  });
+  document.getElementById('ctxForward').addEventListener('click', function() {
+    closeContextMenu();
+  });
+  document.getElementById('ctxCopy').addEventListener('click', function() {
+    closeContextMenu();
+    if (ctxTargetGroup) {
+      var text = getTextContent(ctxTargetGroup);
+      if (navigator.clipboard) navigator.clipboard.writeText(text);
+      showToast('Copied!');
+    }
+  });
+  var deleteBanner = document.getElementById('deleteBanner');
+  var deleteUndoBtn = document.getElementById('deleteUndoBtn');
+  var deletedEl = null;
+  var deletedNextSibling = null;
+  var deleteTimer = null;
+
+  document.getElementById('ctxDelete').addEventListener('click', function() {
+    closeContextMenu();
+    if (!ctxTargetGroup) return;
+
+    // Hide the message (keep reference for undo)
+    deletedEl = ctxTargetGroup;
+    deletedNextSibling = deletedEl.nextSibling;
+    deletedEl.style.display = 'none';
+
+    // Show undo banner
+    deleteBanner.classList.add('show');
+    clearTimeout(deleteTimer);
+    deleteTimer = setTimeout(function() {
+      // Permanently remove after timeout
+      deleteBanner.classList.remove('show');
+      if (deletedEl) { deletedEl.remove(); deletedEl = null; }
+    }, 4000);
+  });
+
+  deleteUndoBtn.addEventListener('click', function() {
+    clearTimeout(deleteTimer);
+    deleteBanner.classList.remove('show');
+    if (deletedEl) {
+      deletedEl.style.display = '';
+      // Re-insert at original position
+      if (deletedNextSibling) {
+        chatThread.insertBefore(deletedEl, deletedNextSibling);
+      } else {
+        chatThread.appendChild(deletedEl);
+      }
+      deletedEl = null;
+      scrollThread();
+    }
+  });
+
+  function showToast(msg) {
+    var textEl = toast.querySelector('.banner-text');
+    if (textEl) textEl.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 1500);
+  }
+
+  /* ════════════════════════════════
+     REPLY SYSTEM (#3)
+     ════════════════════════════════ */
+  function getReplyRole(groupEl) {
+    if (groupEl.classList.contains('msg-outgoing')) return 'user';
+    if (groupEl.querySelector('.msg-bubble-coparent')) return 'coparent';
+    return 'sprout';
+  }
+
+  function triggerReplyTo(groupEl) {
+    activeReply = {
+      sender: getSender(groupEl),
+      text: getTextContent(groupEl),
+      groupEl: groupEl
+    };
+    var previewText = activeReply.text.length > 35 ? activeReply.text.substring(0, 35) + '...' : activeReply.text;
+    replyBarText.textContent = previewText;
+    replyBar.classList.remove('reply-pill--sprout', 'reply-pill--user', 'reply-pill--coparent');
+    replyBar.classList.add('reply-pill--' + getReplyRole(groupEl));
+    replyBar.classList.add('visible');
+    if (suggestionChips) suggestionChips.classList.add('faded');
+    composerInput.focus();
+  }
+
+  replyBarClose.addEventListener('click', function() {
+    activeReply = null;
+    replyBar.classList.remove('visible');
+    if (suggestionChips && !convoStarted) suggestionChips.classList.remove('faded');
+  });
+
+  /* ════════════════════════════════
+     @MENTION AUTOCOMPLETE (#1)
+     ════════════════════════════════ */
+  var mentionActive = false;
+  var mentionStart = -1;
+
+  function renderMentions(filter) {
+    mentionPopup.innerHTML = '';
+    var filtered = members.filter(function(m) {
+      var f = filter.toLowerCase();
+      return m.name.toLowerCase().indexOf(f) >= 0 || (m.sub && m.sub.toLowerCase().indexOf(f) >= 0);
+    });
+    if (filtered.length === 0) { mentionPopup.classList.remove('open'); return; }
+
+    filtered.forEach(function(m) {
+      var item = document.createElement('div');
+      item.className = 'mention-item';
+
+      if (m.type === 'project') {
+        // Folder icon for projects
+        var icon = document.createElement('div');
+        icon.className = 'mention-item-icon';
+        icon.innerHTML = FOLDER_SVG;
+        item.appendChild(icon);
+      } else {
+        // Avatar for people (avatar-xs, 24px with Rive)
+        var avWrap = document.createElement('div');
+        avWrap.className = 'mention-item-avatar-wrap';
+        if (m.isSprout) {
+          var av = document.createElement('div');
+          av.className = 'avatar avatar-xs';
+          var canvas = document.createElement('canvas');
+          canvas.className = 'rive-sprout';
+          canvas.setAttribute('width', '64');
+          canvas.setAttribute('height', '92');
+          av.appendChild(canvas);
+          avWrap.appendChild(av);
+          setTimeout(function() { initRiveAvatar(canvas, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE }); }, 0);
+        } else {
+          var av = document.createElement('div');
+          av.className = 'avatar avatar-xs ' + (m.avatarBg || '');
+          var canvas = document.createElement('canvas');
+          canvas.className = 'rive-user';
+          canvas.setAttribute('width', '35');
+          canvas.setAttribute('height', '50');
+          av.appendChild(canvas);
+          avWrap.appendChild(av);
+          var state = m.avatarState || COPARENT_STATE;
+          setTimeout(function() { initRiveAvatar(canvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: state }); }, 0);
+        }
+        item.appendChild(avWrap);
+      }
+
+      var info = document.createElement('div');
+      info.className = 'mention-item-info' + (m.type === 'project' ? ' stacked' : '');
+      var nameEl = document.createElement('div');
+      nameEl.className = 'mention-item-name';
+      nameEl.textContent = m.name;
+      info.appendChild(nameEl);
+      if (m.sub) {
+        var sub = document.createElement('div');
+        sub.className = 'mention-item-sub';
+        sub.textContent = m.sub;
+        info.appendChild(sub);
+      }
+
+      item.appendChild(info);
+
+      item.addEventListener('click', function() {
+        var sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        var fullText = getInputText();
+        var info = getCaretInfo();
+        var before = fullText.substring(0, mentionStart);
+        var after = fullText.substring(info.pos);
+        composerInput.innerHTML = '';
+        if (before) composerInput.appendChild(document.createTextNode(before));
+        var mentionSpan = document.createElement('span');
+        mentionSpan.className = 'mention-tag';
+        mentionSpan.contentEditable = 'false';
+        mentionSpan.textContent = '@' + m.name;
+        composerInput.appendChild(mentionSpan);
+        composerInput.appendChild(document.createTextNode('\u00A0' + after));
+        var range = document.createRange();
+        range.selectNodeContents(composerInput);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        closeMention();
+        composerInput.focus();
+        btnMic.setAttribute('data-mode', 'send');
+      });
+
+      mentionPopup.appendChild(item);
+    });
+    mentionPopup.classList.add('open');
+    if (suggestionChips) suggestionChips.classList.add('faded');
+  }
+
+  function closeMention() {
+    mentionActive = false;
+    mentionStart = -1;
+    mentionPopup.classList.remove('open');
+    if (suggestionChips && !convoStarted) suggestionChips.classList.remove('faded');
+  }
+
+  function getInputText() {
+    var text = '';
+    composerInput.childNodes.forEach(function(node) {
+      if (node.nodeType === 3) text += node.textContent;
+      else if (node.classList && node.classList.contains('mention-tag')) text += node.textContent;
+      else text += node.textContent;
+    });
+    return text;
+  }
+
+  function getInputHTML() {
+    var html = '';
+    composerInput.childNodes.forEach(function(node) {
+      if (node.nodeType === 3) {
+        html += node.textContent.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      } else if (node.classList && node.classList.contains('mention-tag')) {
+        html += '<span class="mention-tag">' + node.textContent.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</span>';
+      } else {
+        html += node.textContent.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      }
+    });
+    return html;
+  }
+
+  function getCaretInfo() {
+    var sel = window.getSelection();
+    if (!sel.rangeCount) return { pos: 0 };
+    var range = sel.getRangeAt(0).cloneRange();
+    range.selectNodeContents(composerInput);
+    range.setEnd(sel.getRangeAt(0).endContainer, sel.getRangeAt(0).endOffset);
+    return { pos: range.toString().length };
+  }
+
+  composerInput.addEventListener('input', function() {
+    var val = getInputText();
+    var info = getCaretInfo();
+    var pos = info.pos;
+
+    // Check for @ trigger
+    if (!mentionActive) {
+      if (pos > 0 && val[pos - 1] === '@' && (pos === 1 || val[pos - 2] === ' ')) {
+        mentionActive = true;
+        mentionStart = pos - 1;
+        renderMentions('');
+      }
+    } else {
+      // Filter by text after @
+      var query = val.substring(mentionStart + 1, pos);
+      if (query.indexOf(' ') >= 0 || pos <= mentionStart) {
+        closeMention();
+      } else {
+        renderMentions(query);
+      }
+    }
+
+    // Fade out suggestion chips once user starts typing
+    if (val.trim() && suggestionChips && !suggestionChips.classList.contains('faded')) {
+      suggestionChips.classList.add('faded');
+    }
+
+    if (!listening) {
+      btnMic.setAttribute('data-mode', val.trim() ? 'send' : 'mic');
+    }
+  });
+
+  composerInput.addEventListener('blur', function() {
+    setTimeout(closeMention, 150);
+  });
+
+  /* ════════════════════════════════
+     OUTGOING MESSAGE
+     ════════════════════════════════ */
+  function addOutgoingMessage(text, richHTML) {
+    var group = document.createElement('div');
+    group.className = 'msg-group msg-outgoing';
+
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-outgoing';
+
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble msg-bubble-out';
+
+    // If replying, show quoted reply (above the bubble, not inside it)
+    if (activeReply) {
+      var quotedRow = document.createElement('div');
+      quotedRow.className = 'msg-quoted';
+      quotedRow.innerHTML = '<div class="msg-quoted-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg></div><div class="msg-quoted-text">' + (activeReply.text.length > 40 ? activeReply.text.substring(0, 40) + '...' : activeReply.text) + '</div>';
+      group.appendChild(quotedRow);
+    }
+
+    // If attachments, render grid above bubble (Figma spec)
+    if (attachments.length > 0) {
+      var grid = document.createElement('div');
+      grid.className = 'msg-attachments';
+      var sorted = attachments.slice().sort(function(a, b) {
+        var order = { photo: 0, file: 1 };
+        return (order[a.type] || 0) - (order[b.type] || 0);
+      });
+      sorted.forEach(function(a) {
+        if (a.type === 'photo') {
+          var tile = document.createElement('div');
+          tile.className = 'msg-attachments-img';
+          tile.style.background = a.color;
+          grid.appendChild(tile);
+        } else if (a.type === 'file') {
+          var pill = document.createElement('div');
+          pill.className = 'msg-attachments-file';
+          pill.innerHTML = '<div class="msg-attachments-file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>'
+            + '<div class="msg-attachments-file-info"><div class="msg-attachments-file-name">' + (a.name || 'Document') + '</div><div class="msg-attachments-file-meta">' + (a.ext || 'PDF') + '</div></div>';
+          grid.appendChild(pill);
+        }
+      });
+      group.appendChild(grid);
+      clearAttachments();
+    }
+
+    if (text) {
+      var textDiv = document.createElement('div');
+      textDiv.innerHTML = richHTML ? richHTML.replace(/\n/g, '<br>') : text.replace(/\n/g, '<br>');
+      bubble.appendChild(textDiv);
+
+      var ts = document.createElement('div');
+      ts.className = 'msg-time-inline';
+      ts.textContent = fmtTime();
+      bubble.appendChild(ts);
+
+      row.appendChild(bubble);
+
+      var avatar = document.createElement('div');
+      avatar.className = 'msg-avatar msg-avatar-user';
+      avatar.textContent = 'LE';
+      row.appendChild(avatar);
+
+      group.appendChild(row);
+    }
+    chatThread.appendChild(group);
+
+    setupSwipe(row, group);
+    setupLongPress(row, group);
+
+    // Clear reply
+    activeReply = null;
+    replyBar.classList.remove('visible');
+
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     CO-PARENT MESSAGE
+     ════════════════════════════════ */
+  function addCoparentMessage(text, name, initials, color) {
+    name = name || 'Ze\'ev Rosenstein';
+    initials = initials || 'ZR';
+    color = color || '#7C3AED';
+    isProcessing = true;
+    showTypingIndicator({ name: name, verb: 'is typing', avatarType: 'coparent', avatarBg: 'avatar-bg-violet', avatarState: COPARENT_STATE });
+
+    setTimeout(function() {
+      removeTypingIndicator();
+      var group = document.createElement('div');
+      group.className = 'msg-group msg-incoming';
+      var sender = document.createElement('div');
+      sender.className = 'msg-sender';
+      sender.textContent = name;
+      group.appendChild(sender);
+      var row = document.createElement('div');
+      row.className = 'msg-row msg-incoming';
+      var avatarEl = createUserAvatar('avatar-bg-violet', COPARENT_STATE);
+      row.appendChild(avatarEl);
+      var bubble = document.createElement('div');
+      bubble.className = 'msg-bubble msg-bubble-coparent';
+      var textDiv = document.createElement('div');
+      textDiv.innerHTML = text.replace(/\n/g, '<br>').replace(/@(\w+)/g, '<span class="mention-tag">@$1</span>');
+      bubble.appendChild(textDiv);
+      var ts = document.createElement('div');
+      ts.className = 'msg-time-inline';
+      ts.textContent = fmtTime();
+      bubble.appendChild(ts);
+      row.appendChild(bubble);
+      group.appendChild(row);
+      chatThread.appendChild(group);
+      if (typeof setupSwipe === 'function') setupSwipe(row, group);
+      if (typeof setupLongPress === 'function') setupLongPress(row, group);
+      scrollThread();
+      isProcessing = false;
+    }, 1200);
+    return null;
+  }
+
+  /* ════════════════════════════════
+     TOOL USAGE
+     ════════════════════════════════ */
+  function addToolUsage(tools) {
+    if (!tools || tools.length === 0) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'tool-usage';
+
+    var av = document.createElement('div');
+    av.className = 'tool-usage-avatar';
+    av.innerHTML = SPROUT_FACE_MINI;
+
+    var chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chevron.setAttribute('viewBox', '0 0 16 16');
+    chevron.setAttribute('class', 'tool-usage-chevron');
+    chevron.innerHTML = '<path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
+
+    var label = document.createElement('span');
+    label.className = 'tool-usage-label';
+    // Start by showing the first tool name
+    label.textContent = tools[0];
+
+    wrap.appendChild(av);
+    wrap.appendChild(chevron);
+    wrap.appendChild(label);
+
+    var details = document.createElement('div');
+    details.className = 'tool-usage-details';
+    details.textContent = tools.join(', ');
+
+    chatThread.appendChild(wrap);
+    chatThread.appendChild(details);
+    scrollThread();
+
+    // Cycle through each tool name, then collapse to summary
+    var step = 1;
+    var toolRotate = setInterval(function() {
+      if (step < tools.length) {
+        label.classList.add('fade-out');
+        setTimeout(function() {
+          label.textContent = tools[step];
+          label.classList.remove('fade-out');
+          step++;
+        }, 300);
+      } else {
+        clearInterval(toolRotate);
+        // Transition to final collapsed summary
+        label.classList.add('fade-out');
+        setTimeout(function() {
+          label.textContent = tools.length + ' items';
+          label.classList.remove('fade-out');
+          // Now enable click to expand
+          wrap.addEventListener('click', function() {
+            chevron.classList.toggle('open');
+            details.classList.toggle('open');
+          });
+        }, 300);
+      }
+      scrollThread();
+    }, 800);
+  }
+
+  /* ════════════════════════════════
+     OPTION CHIPS (#6)
+     ════════════════════════════════ */
+  function addOptionChips(chips) {
+    // Remove any existing option chips from composer area
+    var existing = composerArea.querySelector('.option-chips');
+    if (existing) existing.remove();
+
+    var row = document.createElement('div');
+    row.className = 'option-chips';
+
+    chips.forEach(function(chipText) {
+      var chip = document.createElement('div');
+      chip.className = 'option-chip';
+      chip.textContent = chipText;
+      chip.addEventListener('click', function() {
+        if (chip.classList.contains('selected') || chip.classList.contains('faded')) return;
+        chip.classList.add('selected');
+        row.querySelectorAll('.option-chip').forEach(function(c) {
+          if (c !== chip) c.classList.add('faded');
+        });
+        // Send as user message after brief delay
+        setTimeout(function() {
+          row.remove();
+          addOutgoingMessage(chipText);
+          triggerAIReply();
+        }, 300);
+      });
+      row.appendChild(chip);
+    });
+
+    // Place in composer area where suggestion chips live
+    if (suggestionChips) {
+      suggestionChips.style.display = 'none';
+    }
+    var composerRow = composerArea.querySelector('.composer-row');
+    composerArea.insertBefore(row, composerRow);
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     ACTION BUTTONS (#5)
+     ════════════════════════════════ */
+  function addActionButtons() {
+    var row = document.createElement('div');
+    row.className = 'action-btns';
+
+    var approveBtn = document.createElement('button');
+    approveBtn.className = 'action-btn action-btn-primary';
+    approveBtn.textContent = 'Approve';
+
+    var rejectBtn = document.createElement('button');
+    rejectBtn.className = 'action-btn action-btn-secondary';
+    rejectBtn.textContent = 'Reject';
+
+    function handleAction(btn, otherBtn) {
+      btn.classList.add('loading');
+      btn.innerHTML = '<span class="spinner"></span>';
+      otherBtn.classList.add('faded');
+      setTimeout(function() {
+        btn.classList.remove('loading');
+        btn.classList.add('done');
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Done';
+        otherBtn.classList.add('faded');
+      }, 1000);
+    }
+
+    approveBtn.addEventListener('click', function() { handleAction(approveBtn, rejectBtn); });
+    rejectBtn.addEventListener('click', function() { handleAction(rejectBtn, approveBtn); });
+
+    row.appendChild(approveBtn);
+    row.appendChild(rejectBtn);
+    chatThread.appendChild(row);
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     CONFIRMATION CARD (#7)
+     ════════════════════════════════ */
+  function addConfirmationCard() {
+    var card = document.createElement('div');
+    card.className = 'confirm-card';
+
+    card.innerHTML =
+      '<div class="confirm-card-title">Schedule Update</div>' +
+      '<div class="confirm-card-row"><span class="confirm-card-label">Time</span><span class="confirm-card-value">7:30 AM</span></div>' +
+      '<div class="confirm-card-row"><span class="confirm-card-label">Days</span><span class="confirm-card-value">Weekdays</span></div>' +
+      '<div class="confirm-card-row"><span class="confirm-card-label">Child</span><span class="confirm-card-value">Emma</span></div>' +
+      '<div class="confirm-card-desc">This will update Emma\'s morning routine reminder schedule.</div>' +
+      '<div class="confirm-card-btns">' +
+        '<button class="confirm-card-btn confirm-card-btn-cancel" id="confirmCancel">Cancel</button>' +
+        '<button class="confirm-card-btn confirm-card-btn-confirm" id="confirmOk">Confirm</button>' +
+      '</div>';
+
+    chatThread.appendChild(card);
+
+    var cancelBtn = card.querySelector('#confirmCancel');
+    var okBtn = card.querySelector('#confirmOk');
+
+    function doConfirm(btn, otherBtn, isDismiss) {
+      btn.innerHTML = '<span class="spinner"></span>';
+      otherBtn.style.pointerEvents = 'none';
+      otherBtn.style.opacity = '.5';
+      setTimeout(function() {
+        if (isDismiss) {
+          btn.classList.add('dismissed');
+          btn.innerHTML = 'Dismissed';
+        } else {
+          btn.classList.add('done');
+          btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Confirmed';
+        }
+        otherBtn.style.display = 'none';
+      }, 1000);
+    }
+
+    cancelBtn.addEventListener('click', function() { doConfirm(cancelBtn, okBtn, true); });
+    okBtn.addEventListener('click', function() { doConfirm(okBtn, cancelBtn, false); });
+
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     ARTIFACT BLOCK (#8)
+     ════════════════════════════════ */
+  function addArtifactBlock() {
+    var card = document.createElement('div');
+    card.className = 'artifact-card';
+    card.innerHTML =
+      '<div class="artifact-icon">&#x1F4C4;</div>' +
+      '<div class="artifact-body">' +
+        '<div class="artifact-name">Brush Teeth Champion <span class="artifact-version">v1</span></div>' +
+        '<div class="artifact-sub">Quest template</div>' +
+      '</div>' +
+      '<div class="artifact-link">View</div>';
+
+    card.addEventListener('click', function() {
+      artifactSheetScrim.classList.add('open'); artifactSheet.classList.add('open');
+    });
+
+    chatThread.appendChild(card);
+    scrollThread();
+  }
+
+  // Artifact modal
+  document.getElementById('artifactSheetClose').addEventListener('click', function() {
+    artifactSheetScrim.classList.remove('open'); artifactSheet.classList.remove('open');
+  });
+  artifactSheetScrim.addEventListener('click', function() {
+    artifactSheetScrim.classList.remove('open'); artifactSheet.classList.remove('open');
+  });
+  document.getElementById('artifactAssignBtn').addEventListener('click', function() {
+    this.textContent = 'Assigned!';
+    this.style.background = 'var(--bg-success-primary)';
+    this.style.color = 'var(--green-500)';
+    this.style.pointerEvents = 'none';
+    setTimeout(function() { artifactSheetScrim.classList.remove('open'); artifactSheet.classList.remove('open'); }, 800);
+  });
+
+  /* ════════════════════════════════
+     TYPING + INCOMING MESSAGE
+     ════════════════════════════════ */
+  function showTypingIndicator(opts) {
+    opts = opts || {};
+    var senderName = opts.name || 'Sprout';
+    var verb = opts.verb || 'is thinking';
+    var el = document.createElement('div');
+    el.className = 'typing-indicator';
+    el.id = 'typingIndicator';
+
+    // Avatar
+    var avatarEl;
+    if (opts.avatarType === 'coparent') {
+      avatarEl = createUserAvatar(opts.avatarBg || 'avatar-bg-violet', opts.avatarState || COPARENT_STATE);
+    } else {
+      avatarEl = createSproutAvatar();
+    }
+    el.appendChild(avatarEl);
+
+    // Label: "Name is thinking/typing..."
+    var label = document.createElement('span');
+    label.className = 'typing-indicator-label';
+    label.innerHTML = '<strong>' + senderName + '</strong> ' + verb + '...';
+    el.appendChild(label);
+
+    // Stop circle icon (Sprout only)
+    if (opts.avatarType !== 'coparent') {
+      var stopBtn = document.createElement('span');
+      stopBtn.className = 'typing-indicator-stop';
+      stopBtn.innerHTML = '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><rect x="5.75" y="5.75" width="4.5" height="4.5" rx="0.75" fill="currentColor"/></svg>';
+      stopBtn.addEventListener('click', function() { stopGeneration(); });
+      el.appendChild(stopBtn);
+    }
+
+    chatThread.appendChild(el);
+    scrollThread();
+  }
+
+  /**
+   * Rotate the typing indicator verb with a crossfade.
+   * @param {string} newVerb - e.g. 'is checking schedule'
+   */
+  function updateTypingVerb(newVerb) {
+    var el = document.getElementById('typingIndicator');
+    if (!el) return;
+    var label = el.querySelector('.typing-indicator-label');
+    if (!label) return;
+    var name = label.querySelector('strong');
+    var senderName = name ? name.textContent : 'Sprout';
+    label.classList.add('fade-out');
+    setTimeout(function() {
+      label.innerHTML = '<strong>' + senderName + '</strong> ' + newVerb + '...';
+      label.classList.remove('fade-out');
+    }, 300);
+  }
+
+  function removeTypingIndicator() {
+    var el = document.getElementById('typingIndicator');
+    if (el) el.remove();
+  }
+
+  // Activity feed verbs that rotate before the message appears
+  var activityVerbs = ['is thinking', 'is loading family overview', 'is checking schedule', 'is typing'];
+  var _activeRotateInterval = null;
+  var _activeDeliverTimeout = null;
+
+  function stopGeneration() {
+    if (_activeRotateInterval) { clearInterval(_activeRotateInterval); _activeRotateInterval = null; }
+    if (_activeDeliverTimeout) { clearTimeout(_activeDeliverTimeout); _activeDeliverTimeout = null; }
+    removeTypingIndicator();
+    isProcessing = false;
+    scrollThread();
+  }
+
+  function addIncomingMessage(replyData, callback) {
+    var text = typeof replyData === 'string' ? replyData : replyData.text;
+    isProcessing = true;
+    var thinkStart = Date.now();
+    showTypingIndicator({ name: 'Sprout', verb: activityVerbs[0], avatarType: 'sprout' });
+
+    // Rotate through activity verbs then deliver message
+    var step = 1;
+    _activeRotateInterval = setInterval(function() {
+      if (step < activityVerbs.length) {
+        updateTypingVerb(activityVerbs[step]);
+        step++;
+      } else {
+        clearInterval(_activeRotateInterval);
+        _activeRotateInterval = null;
+        // Short pause on final "is typing..." then show message
+        _activeDeliverTimeout = setTimeout(function() {
+          _activeDeliverTimeout = null;
+          var thinkSecs = Math.round((Date.now() - thinkStart) / 1000);
+          removeTypingIndicator();
+
+          var group = document.createElement('div');
+          group.className = 'msg-group msg-incoming';
+
+          var sender = document.createElement('div');
+          sender.className = 'msg-sender';
+          sender.textContent = 'Sprout';
+
+          // "Thought for Xs" collapsible row
+          var thoughtRow = createThoughtRow(thinkSecs, activityVerbs);
+
+          var row = document.createElement('div');
+          row.className = 'msg-row msg-incoming';
+          var avatarEl = createSproutAvatar();
+          var bubble = document.createElement('div');
+          bubble.className = 'msg-bubble msg-bubble-in';
+          var textDiv = document.createElement('div');
+          textDiv.textContent = text;
+          bubble.appendChild(textDiv);
+          var ts = document.createElement('div');
+          ts.className = 'msg-time-inline';
+          ts.textContent = fmtTime();
+          bubble.appendChild(ts);
+
+          row.appendChild(avatarEl);
+          row.appendChild(bubble);
+
+          group.appendChild(sender);
+          group.appendChild(thoughtRow.toggle);
+          group.appendChild(row);
+          chatThread.appendChild(group);
+
+          setupSwipe(row, group);
+          setupLongPress(row, group);
+          group.appendChild(createMsgActions(group));
+
+          isProcessing = false;
+          scrollThread();
+          if (callback) callback();
+        }, 800);
+      }
+    }, 1200);
+  }
+
+  /**
+   * Create the "Thought for Xs" toggle + expandable detail.
+   */
+  // Step definitions for the thought process sheet
+  var thoughtStepDefs = [
+    { title: 'Analyzing request', desc: 'Parsed user message and identified intent' },
+    { title: 'Loading family overview', desc: 'Retrieved family members, roles, and preferences' },
+    { title: 'Checking schedule', desc: 'Queried tasks, routines, and completion data' },
+    { title: 'Composing response', desc: 'Generated personalized reply based on context' }
+  ];
+
+  // Thought process sheet elements
+  var thoughtSheetScrim = document.getElementById('thoughtSheetScrim');
+  var thoughtSheet = document.getElementById('thoughtSheet');
+  var thoughtSheetBody = document.getElementById('thoughtSheetBody');
+  var thoughtSheetLabel = document.getElementById('thoughtSheetLabel');
+  var thoughtSheetTime = document.getElementById('thoughtSheetTime');
+
+  function formatStepTime(totalSecs, stepIndex, totalSteps) {
+    // Distribute time across steps, accumulating
+    var elapsed = Math.round(totalSecs * stepIndex / totalSteps);
+    var mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    var s = String(elapsed % 60).padStart(2, '0');
+    return mins + ':' + s;
+  }
+
+  function openThoughtSheet(secs, steps) {
+    thoughtSheetLabel.textContent = 'Thinking...';
+    thoughtSheetTime.textContent = secs + 's';
+    thoughtSheetBody.innerHTML = '';
+
+    for (var i = 0; i < steps.length; i++) {
+      var s = steps[i];
+      var stepEl = document.createElement('div');
+      stepEl.className = 'thought-step';
+
+      // Timeline: dot + dashed line (no line on last step)
+      var timeline = document.createElement('div');
+      timeline.className = 'thought-step-timeline';
+      var dot = document.createElement('div');
+      dot.className = 'thought-step-dot';
+      timeline.appendChild(dot);
+      if (i < steps.length - 1) {
+        var line = document.createElement('div');
+        line.className = 'thought-step-line';
+        timeline.appendChild(line);
+      }
+
+      var content = document.createElement('div');
+      content.className = 'thought-step-content';
+      var title = document.createElement('div');
+      title.className = 'thought-step-title';
+      title.textContent = s.title;
+      var desc = document.createElement('div');
+      desc.className = 'thought-step-desc';
+      desc.textContent = s.desc;
+      content.appendChild(title);
+      content.appendChild(desc);
+
+      // Per-step timestamp
+      var time = document.createElement('div');
+      time.className = 'thought-step-time';
+      time.textContent = formatStepTime(secs, i, steps.length);
+
+      stepEl.appendChild(timeline);
+      stepEl.appendChild(content);
+      stepEl.appendChild(time);
+      thoughtSheetBody.appendChild(stepEl);
+    }
+
+    thoughtSheetScrim.classList.add('open');
+    thoughtSheet.classList.add('open');
+  }
+
+  function closeThoughtSheet() {
+    thoughtSheetScrim.classList.remove('open');
+    thoughtSheet.classList.remove('open');
+  }
+
+  thoughtSheetScrim.addEventListener('click', closeThoughtSheet);
+
+  function createThoughtRow(secs, verbs) {
+    var toggle = document.createElement('div');
+    toggle.className = 'msg-thought';
+
+    var label = document.createElement('span');
+    label.className = 'msg-thought-label';
+    label.textContent = 'Thought for ' + secs + 's';
+
+    var chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chevron.setAttribute('viewBox', '0 0 12 12');
+    chevron.setAttribute('class', 'msg-thought-chevron');
+    chevron.innerHTML = '<path d="M4.5 3 7.5 6 4.5 9" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>';
+
+    toggle.appendChild(label);
+    toggle.appendChild(chevron);
+
+    var capturedSecs = secs;
+    toggle.addEventListener('click', function() {
+      openThoughtSheet(capturedSecs, thoughtStepDefs);
+    });
+
+    return { toggle: toggle };
+  }
+
+  /* ════════════════════════════════
+     AI REPLY ORCHESTRATION
+     ════════════════════════════════ */
+  function triggerAIReply() {
+    replyIdx++;
+    var idx = replyIdx;
+    if (idx >= aiReplies.length) idx = 5 + ((replyIdx - 5) % (aiReplies.length - 5));
+    var data = aiReplies[idx] || aiReplies[aiReplies.length - 1];
+    var tools = toolActivities[idx] || toolActivities[toolActivities.length - 1];
+
+    addIncomingMessage(data, function() {
+      if (tools && tools.length > 0) addToolUsage(tools);
+      if (data.type === 'chips') addOptionChips(data.chips);
+      if (data.type === 'artifact') addArtifactBlock();
+      if (data.type === 'action_btns') addActionButtons();
+      if (data.type === 'confirm_card') addConfirmationCard();
+    });
+  }
+
+  /* ════════════════════════════════
+     MIC / SEND TOGGLE (Speech-to-Text)
+     ════════════════════════════════ */
+  var listening = false;
+  var dictationTimer = null;
+  var voiceWaveInterval = null;
+
+  var voiceRecordingToolbar = document.getElementById('voiceRecordingToolbar');
+  var voiceTranscribingRow = document.getElementById('voiceTranscribingRow');
+  var voiceTranscribingToolbar = document.getElementById('voiceTranscribingToolbar');
+  var voiceWaveform = document.getElementById('voiceWaveform');
+  var voiceBtnStop = document.getElementById('voiceBtnStop');
+  var voiceBtnStopTranscribing = document.getElementById('voiceBtnStopTranscribing');
+  var voiceBtnDone = document.getElementById('voiceBtnDone');
+  var composerPill = document.querySelector('.composer-pill');
+
+  var dictationPhrases = [
+    "How is Emma doing with her morning routine this week",
+    "Can you create a new quest for brushing teeth",
+    "What habits should we focus on next",
+    "Show me Noah's progress for today",
+    "Can you remind Emma about her bedtime routine"
+  ];
+  var dictationIdx = 0;
+
+  // Generate waveform bars
+  var barCount = 58;
+  for (var b = 0; b < barCount; b++) {
+    var bar = document.createElement('div');
+    bar.className = 'voice-waveform-bar';
+    bar.style.height = '4px';
+    voiceWaveform.appendChild(bar);
+  }
+  var waveformBars = voiceWaveform.querySelectorAll('.voice-waveform-bar');
+
+  function animateWaveform() {
+    for (var i = 0; i < waveformBars.length; i++) {
+      var h = Math.random() * 28 + 4;
+      waveformBars[i].style.height = h + 'px';
+    }
+  }
+
+  function enterRecordingState() {
+    composerPill.classList.add('voice-recording');
+    composerPill.classList.remove('voice-transcribing');
+    voiceRecordingToolbar.classList.add('active');
+    voiceTranscribingRow.classList.remove('active');
+    voiceTranscribingToolbar.classList.remove('active');
+  }
+
+  function exitVoiceStates() {
+    composerPill.classList.remove('voice-recording', 'voice-transcribing');
+    voiceRecordingToolbar.classList.remove('active');
+    voiceTranscribingRow.classList.remove('active');
+    voiceTranscribingToolbar.classList.remove('active');
+  }
+
+  // 1. Recording: waveform animates, input stays empty with placeholder
+  function startListening() {
+    listening = true;
+    composerInput.innerHTML = '';
+    enterRecordingState();
+
+    animateWaveform();
+    voiceWaveInterval = setInterval(animateWaveform, 150);
+  }
+
+  // 2. Processing: spinner + "Transcribing..."
+  function enterProcessingState() {
+    listening = false;
+    clearInterval(voiceWaveInterval);
+
+    var phrase = dictationPhrases[dictationIdx % dictationPhrases.length];
+    dictationIdx++;
+
+    composerPill.classList.remove('voice-recording');
+    composerPill.classList.add('voice-transcribing');
+    voiceRecordingToolbar.classList.remove('active');
+    voiceTranscribingRow.classList.add('active');
+    voiceTranscribingToolbar.classList.add('active');
+
+    // 3. After processing delay -> type text word-by-word
+    setTimeout(function() {
+      exitVoiceStates();
+      composerInput.innerHTML = '';
+      composerInput.focus();
+
+      var words = phrase.split(' ');
+      var i = 0;
+      dictationTimer = setInterval(function() {
+        if (i < words.length) {
+          composerInput.textContent += (i > 0 ? ' ' : '') + words[i];
+          i++;
+          btnMic.setAttribute('data-mode', 'send');
+        } else {
+          clearInterval(dictationTimer);
+          dictationTimer = null;
+        }
+      }, 120);
+    }, 1500);
+  }
+
+  function cancelVoice() {
+    listening = false;
+    clearInterval(voiceWaveInterval);
+    clearInterval(dictationTimer);
+    dictationTimer = null;
+    composerInput.innerHTML = '';
+    exitVoiceStates();
+    btnMic.setAttribute('data-mode', 'mic');
+  }
+
+  voiceBtnStop.addEventListener('click', cancelVoice);
+  voiceBtnStopTranscribing.addEventListener('click', cancelVoice);
+
+  voiceBtnDone.addEventListener('click', function() {
+    enterProcessingState();
+  });
+
+  /* ════════════════════════════════
+     SEND MESSAGE
+     ════════════════════════════════ */
+  function sendMessage() {
+    var text = getInputText().trim();
+    if ((!text && attachments.length === 0) || isProcessing) return;
+    var richHTML = getInputHTML().trim();
+    composerInput.innerHTML = '';
+    closeMention();
+    btnMic.setAttribute('data-mode', 'mic');
+    convoStarted = true;
+    addOutgoingMessage(text, richHTML);
+    triggerAIReply();
+    if (suggestionChips) {
+      suggestionChips.style.display = 'none';
+    }
+  }
+
+  // Suggestion chip clicks
+  if (suggestionChips) {
+    suggestionChips.addEventListener('click', function(e) {
+      var chip = e.target.closest('.option-chip');
+      if (!chip) return;
+      var text = chip.getAttribute('data-text');
+      if (text) {
+        composerInput.textContent = text;
+        composerInput.focus();
+        btnMic.setAttribute('data-mode', 'send');
+        sendMessage();
+      }
+    });
+  }
+
+  btnMic.addEventListener('click', function() {
+    var mode = btnMic.getAttribute('data-mode');
+    if (mode === 'mic') { if (!isProcessing) startListening(); }
+    else if (mode === 'send') { sendMessage(); }
+  });
+  composerInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    // Prevent rich text formatting
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'i' || e.key === 'u')) { e.preventDefault(); }
+  });
+
+  /* ════════════════════════════════
+     ATTACHMENT SHEET + PREVIEW (#10)
+     ════════════════════════════════ */
+  function openSheet() { scrim.classList.add('open'); sheet.classList.add('open'); }
+  function closeSheet() { scrim.classList.remove('open'); sheet.classList.remove('open'); }
+  var keyboardIconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>';
+  var plusIconSvg = btnPlus.innerHTML;
+
+  // Tracks which attach flow is active: 'inline' (default) or 'panel'
+  var attachMode = 'inline';
+
+  // Instantly hide an element (skip transition), then restore transition next frame
+  function hideInstant(el) {
+    el.style.transition = 'none';
+    el.classList.remove('open');
+    void el.offsetWidth; // force reflow
+    el.style.transition = '';
+  }
+
+  function showKeyboard() { iosKeyboard.classList.add('open'); }
+  function hideKeyboard() { iosKeyboard.classList.remove('open'); }
+
+  function swapPlusIcon(svg, label) {
+    plusPill.classList.remove('swapping');
+    void plusPill.offsetWidth;
+    btnPlus.innerHTML = svg;
+    btnPlus.setAttribute('aria-label', label);
+    plusPill.classList.add('swapping');
+  }
+  function openAttachPanel() {
+    hideInstant(iosKeyboard); // instantly kill keyboard, no animation
+    attachPanel.classList.add('open');
+    swapPlusIcon(keyboardIconSvg, 'Show keyboard');
+  }
+  function closeAttachPanel() {
+    hideInstant(attachPanel); // instantly kill panel, no animation
+    attachPanel.querySelectorAll('.attach-panel-row').forEach(function(r) {
+      r.style.transition = 'none';
+      void r.offsetWidth;
+      r.style.transition = '';
+    });
+    swapPlusIcon(plusIconSvg, 'Add attachment');
+  }
+
+  // ── Inline plus-pill expand/collapse ──
+  function expandPlusPill() {
+    plusPill.classList.add('expanded');
+  }
+  function collapsePlusPill() {
+    plusPill.classList.remove('expanded');
+  }
+
+  // Composer focus -> show keyboard (Active state)
+  composerInput.addEventListener('focus', function() {
+    if (!attachPanel.classList.contains('open')) {
+      showKeyboard();
+    }
+  });
+
+  // + button: behavior depends on active attach mode
+  btnPlus.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (attachMode === 'panel') {
+      // Panel mode: toggle between keyboard and panel
+      if (attachPanel.classList.contains('open')) {
+        // Swap panel → keyboard instantly (no animation on either)
+        hideInstant(attachPanel);
+        attachPanel.querySelectorAll('.attach-panel-row').forEach(function(r) {
+          r.style.transition = 'none'; void r.offsetWidth; r.style.transition = '';
+        });
+        iosKeyboard.style.transition = 'none';
+        iosKeyboard.classList.add('open');
+        void iosKeyboard.offsetWidth;
+        iosKeyboard.style.transition = '';
+        swapPlusIcon(plusIconSvg, 'Add attachment');
+        composerInput.focus();
+      } else {
+        openAttachPanel();
+      }
+    } else {
+      // Inline mode: toggle the pill (+ rotates to X)
+      if (plusPill.classList.contains('expanded')) {
+        collapsePlusPill();
+      } else {
+        expandPlusPill();
+      }
+    }
+  });
+
+  // X button inside expanded pill: collapse back
+  document.getElementById('inlineCloseBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    collapsePlusPill();
+  });
+
+  // Inline pill attachment buttons
+  document.getElementById('inlineCameraBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    collapsePlusPill();
+    addAttachment('photo', photoColors[photoIdx % photoColors.length]);
+    photoIdx++;
+    showKeyboard();
+    composerInput.focus();
+  });
+  document.getElementById('inlinePhotosBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    collapsePlusPill();
+    addAttachment('photo', photoColors[photoIdx % photoColors.length]);
+    photoIdx++;
+    showKeyboard();
+    composerInput.focus();
+  });
+  document.getElementById('inlineFileBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    collapsePlusPill();
+    addAttachment('file', null, 'document.pdf');
+    showKeyboard();
+    composerInput.focus();
+  });
+
+  scrim.addEventListener('click', closeSheet);
+
+  // Tap outside composer area -> Default: hide everything, blur
+  document.getElementById('device-wrapper').addEventListener('click', function(e) {
+    if (!composerArea.contains(e.target)) {
+      closeAttachPanel();
+      collapsePlusPill();
+      hideKeyboard();
+      composerInput.blur();
+    }
+  });
+
+  // @ mention button
+  var btnMention = document.getElementById('btnMention');
+  if (btnMention) {
+    btnMention.addEventListener('click', function(e) {
+      e.preventDefault();
+      composerInput.focus();
+      // Place caret at end
+      var sel = window.getSelection();
+      var range = document.createRange();
+      range.selectNodeContents(composerInput);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      // Insert @ and trigger mention
+      document.execCommand('insertText', false, '@');
+    });
+  }
+
+  var photoColors = ['#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa'];
+  var photoIdx = 0;
+
+  document.getElementById('tileCamera').addEventListener('click', function() {
+    closeSheet();
+    addAttachment('photo', photoColors[photoIdx % photoColors.length]);
+    photoIdx++;
+  });
+  document.getElementById('tilePhotos').addEventListener('click', function() {
+    closeSheet();
+    addAttachment('photo', photoColors[photoIdx % photoColors.length]);
+    photoIdx++;
+  });
+  document.getElementById('tileFiles').addEventListener('click', function() {
+    closeSheet();
+    addAttachment('file', null, 'document.pdf');
+  });
+
+  // Attach panel row handlers (Attachments B) — stay on panel
+  document.getElementById('attachPanelPhotos').addEventListener('click', function() {
+    addAttachment('photo', photoColors[photoIdx % photoColors.length]);
+    photoIdx++;
+  });
+  document.getElementById('attachPanelCamera').addEventListener('click', function() {
+    addAttachment('photo', photoColors[photoIdx % photoColors.length]);
+    photoIdx++;
+  });
+  document.getElementById('attachPanelDocument').addEventListener('click', function() {
+    addAttachment('file', null, 'document.pdf');
+  });
+
+  function addAttachment(type, color, name) {
+    var att = { type: type, color: color || '#ddd', name: name || '' };
+    attachments.unshift(att);
+    renderAttachStrip();
+    btnMic.setAttribute('data-mode', getInputText().trim() || attachments.length ? 'send' : 'mic');
+  }
+
+  function renderAttachStrip() {
+    attachStrip.innerHTML = '';
+    if (attachments.length === 0) {
+      attachStrip.classList.remove('visible');
+      return;
+    }
+    attachStrip.classList.add('visible');
+    attachments.forEach(function(a, idx) {
+      var thumb = document.createElement('div');
+      thumb.className = 'attach-thumb' + (a.type === 'photo' ? ' attach-thumb--image' : ' attach-thumb--file');
+
+      if (a.type === 'photo') {
+        var img = document.createElement('div');
+        img.className = 'attach-thumb-img';
+        img.style.background = a.color;
+        thumb.appendChild(img);
+      } else {
+        var fileDiv = document.createElement('div');
+        fileDiv.className = 'attach-thumb-file';
+        var topRow = document.createElement('div');
+        topRow.className = 'attach-thumb-file-top';
+        var label = document.createElement('span');
+        label.className = 'attach-thumb-file-label';
+        label.textContent = 'PDF';
+        topRow.appendChild(label);
+        fileDiv.appendChild(topRow);
+        var nameEl = document.createElement('div');
+        nameEl.className = 'attach-thumb-file-name';
+        nameEl.textContent = a.name;
+        fileDiv.appendChild(nameEl);
+        thumb.appendChild(fileDiv);
+      }
+
+      var xBtn = document.createElement('button');
+      xBtn.className = 'attach-thumb-x';
+      xBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+      xBtn.addEventListener('click', function() {
+        attachments.splice(idx, 1);
+        renderAttachStrip();
+        if (attachments.length === 0 && !getInputText().trim()) {
+          btnMic.setAttribute('data-mode', 'mic');
+        }
+      });
+      thumb.appendChild(xBtn);
+      attachStrip.appendChild(thumb);
+    });
+  }
+
+  function clearAttachments() {
+    attachments = [];
+    renderAttachStrip();
+  }
+
+  /* ════════════════════════════════
+     INSTANT MESSAGE HELPER (no typing animation)
+     ════════════════════════════════ */
+  function addIncomingInstant(text) {
+    var group = document.createElement('div');
+    group.className = 'msg-group msg-incoming';
+    var sender = document.createElement('div');
+    sender.className = 'msg-sender';
+    sender.textContent = 'Sprout';
+    var fakeSecs = Math.floor(Math.random() * 5) + 3;
+    var thoughtRow = createThoughtRow(fakeSecs, activityVerbs);
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-incoming';
+    var avatarEl = createSproutAvatar();
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble msg-bubble-in';
+    var textSpan = document.createElement('div');
+    textSpan.textContent = text;
+    bubble.appendChild(textSpan);
+    var ts = document.createElement('div');
+    ts.className = 'msg-time-inline';
+    ts.textContent = fmtTime();
+    bubble.appendChild(ts);
+    row.appendChild(avatarEl);
+    row.appendChild(bubble);
+    group.appendChild(sender);
+    group.appendChild(thoughtRow.toggle);
+    group.appendChild(row);
+    group.appendChild(createMsgActions(group));
+    chatThread.appendChild(group);
+    setupSwipe(row, group);
+    setupLongPress(row, group);
+    scrollThread();
+    return group;
+  }
+
+  /* ════════════════════════════════
+     RESET + DEMO FUNCTIONS
+     ════════════════════════════════ */
+  function resetChat() {
+    // Stop any in-progress state
+    isProcessing = false;
+    if (listening) cancelVoice();
+    activeReply = null;
+    replyBar.classList.remove('visible');
+    clearAttachments();
+    closeMention();
+    closeContextMenu();
+    closeSheet();
+    closeAttachPanel();
+    collapsePlusPill();
+    plusPill.classList.remove('plain');
+    attachMode = 'inline';
+    hideKeyboard();
+    deleteBanner.classList.remove('show');
+    artifactSheetScrim.classList.remove('open'); artifactSheet.classList.remove('open');
+    composerInput.innerHTML = '';
+    btnMic.setAttribute('data-mode', 'mic');
+    replyIdx = 0;
+    convoStarted = false;
+
+    // Clear thread
+    chatThread.innerHTML = '';
+    // Hide suggestion chips when a demo flow runs
+    if (suggestionChips) suggestionChips.style.display = 'none';
+  }
+
+  function runDefaultFlow() {
+    // Pre-populate a longer conversation history for scroll testing
+    addSystemMessage('Mon 9:02 am');
+
+    addIncomingInstant("Good morning! Emma completed her morning routine streak: 5 days running. Noah brushed his teeth but skipped making his bed.");
+
+    addOutgoingInstant("Nice job Emma! Can we add a reminder for Noah about the bed?");
+
+    addIncomingInstant("Done! I've scheduled a gentle nudge for Noah at 7:15 am each morning. He'll get a fun notification with his character cheering him on.");
+
+    addCoparentInstant("I told Noah he can earn extra stars if he does the full routine. That ok?", "Ze'ev Rosenstein", "ZR", "#7C3AED");
+
+    addOutgoingInstant("Love that idea. @Sprout can you set up bonus stars for completing all 3 morning tasks?");
+
+    addIncomingInstant("Bonus stars are live! Noah will earn 2 extra stars whenever he completes all 3 morning tasks (brush teeth, make bed, get dressed) before 7:45 am.");
+
+    addOutgoingInstant("Perfect, thanks!");
+
+    addSystemMessage('Tue 8:30 am');
+
+    addIncomingInstant("Update: Noah made his bed today! First time this week. He's 1 day into a new streak.");
+
+    addCoparentInstant("The bonus stars are working!", "Ze'ev Rosenstein", "ZR", "#7C3AED");
+
+    addOutgoingInstant("Amazing! Let's keep it going");
+
+    addIncomingInstant("Emma asked if she can add 'practice piano' to her habits. Want me to create a new quest for that?");
+
+    addOutgoingInstant("Yes please! Maybe 15 minutes a day to start?");
+
+    addIncomingInstant("Created! 'Piano Practice' quest: 15 min/day, 5 days a week. Emma will see it in her habit list now.");
+
+    addSystemMessage('Today at ' + fmtTime());
+
+    // Then continue with the live animated part
+    setTimeout(function() {
+      addCoparentMessage("Did you see Emma's reading streak? 5 days in a row!", "Ze'ev Rosenstein", "ZR", "#7C3AED");
+      setTimeout(function() {
+        addOutgoingMessage("Yes!! She's so proud of herself");
+        setTimeout(function() {
+          addIncomingMessage(aiReplies[0]);
+        }, 600);
+      }, 1600);
+    }, 800);
+  }
+
+  // Instant helpers (no animation) for pre-populated history
+  function addOutgoingInstant(text) {
+    var group = document.createElement('div');
+    group.className = 'msg-group msg-outgoing';
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-outgoing';
+    var col = document.createElement('div');
+    col.className = 'msg-col';
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble msg-bubble-out';
+    bubble.textContent = text;
+    col.appendChild(bubble);
+    row.appendChild(col);
+    group.appendChild(row);
+    chatThread.appendChild(group);
+    setupSwipe(row, group);
+    setupLongPress(row, group);
+    return group;
+  }
+
+  function addCoparentInstant(text, name, initials, color) {
+    name = name || "Ze'ev Rosenstein";
+    initials = initials || 'ZR';
+    color = color || '#7C3AED';
+    var group = document.createElement('div');
+    group.className = 'msg-group msg-incoming';
+    var sender = document.createElement('div');
+    sender.className = 'msg-sender';
+    sender.textContent = name;
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-incoming';
+    var avatarEl = createUserAvatar('avatar-bg-violet', COPARENT_STATE);
+    var col = document.createElement('div');
+    col.className = 'msg-col';
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble msg-bubble-coparent';
+    bubble.textContent = text;
+    col.appendChild(bubble);
+    row.appendChild(avatarEl);
+    row.appendChild(col);
+    group.appendChild(sender);
+    group.appendChild(row);
+    chatThread.appendChild(group);
+    setupSwipe(row, group);
+    setupLongPress(row, group);
+    return group;
+  }
+
+  function demoMentions() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      composerInput.textContent = '@';
+      composerInput.focus();
+      // Position caret after the @
+      var range = document.createRange();
+      var sel = window.getSelection();
+      range.selectNodeContents(composerInput);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      // Trigger mention detection
+      mentionActive = true;
+      mentionStart = 0;
+      renderMentions('');
+    }, 400);
+  }
+
+  function demoDictation() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      startListening();
+    }, 400);
+  }
+
+  function demoReplyThreading() {
+    addSystemMessage('Today at ' + fmtTime());
+    var group = addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      triggerReplyTo(group);
+    }, 400);
+  }
+
+  function demoOptionChips() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[1].text);
+    addOptionChips(aiReplies[1].chips);
+  }
+
+  function demoActionButtons() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[3].text);
+    addActionButtons();
+  }
+
+  function demoConfirmationCard() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[4].text);
+    addConfirmationCard();
+  }
+
+  function demoArtifact() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[2].text);
+    addArtifactBlock();
+  }
+
+  function demoAttachments() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      openSheet();
+    }, 400);
+  }
+
+  function demoAttachmentsSheet() {
+    attachMode = 'inline';
+    plusPill.classList.remove('plain');
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      showKeyboard();
+      composerInput.focus();
+      setTimeout(function() {
+        expandPlusPill();
+      }, 300);
+    }, 400);
+  }
+
+  function demoAttachmentsPanel() {
+    attachMode = 'panel';
+    plusPill.classList.add('plain');
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      openAttachPanel();
+    }, 400);
+  }
+
+  function demoToolUsage() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[5].text);
+    addToolUsage(toolActivities[1]);
+  }
+
+  function demoCopy() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      showToast('Copied!');
+    }, 400);
+  }
+
+  function demoContextMenu() {
+    addSystemMessage('Today at ' + fmtTime());
+    var group = addIncomingInstant(aiReplies[0].text);
+    addOutgoingMessage('How is Emma doing today?');
+    setTimeout(function() {
+      openContextMenu(group);
+    }, 400);
+  }
+
+  function demoReconnection() {
+    addSystemMessage('Today at ' + fmtTime());
+    reconnectBanner.style.display = '';
+    reconnectBanner.classList.remove('hiding');
+    setTimeout(function() {
+      reconnectBanner.classList.add('hiding');
+      setTimeout(function() { reconnectBanner.style.display = 'none'; }, 400);
+    }, 3000);
+  }
+
+  function demoSuggestionChips() {
+    convoStarted = false;
+    if (suggestionChips) {
+      suggestionChips.style.display = '';
+      suggestionChips.classList.remove('faded');
+    }
+  }
+
+  /* ════════════════════════════════
+     SCREEN CHANGE HANDLER
+     ════════════════════════════════ */
+  window.onScreenChange = function(index) {
+    resetChat();
+    switch(index) {
+      case 0: runDefaultFlow(); break;
+      case 1: demoDictation(); break;
+      case 2: demoMentions(); break;
+      case 3: demoSuggestionChips(); break;
+      case 4: demoOptionChips(); break;
+      case 5: demoReplyThreading(); break;
+      case 6: demoCopy(); break;
+      case 7: demoContextMenu(); break;
+      case 8: demoReconnection(); break;
+      case 9: demoAttachmentsSheet(); break;
+      case 10: demoAttachmentsPanel(); break;
+      case 11: demoToolUsage(); break;
+    }
+  };
+
+  /* ════════════════════════════════
+     DEVICE CHANGE HANDLER
+     ════════════════════════════════ */
+  window.onDeviceChange = function(device) {
+    var wrapper = document.getElementById('device-wrapper');
+    wrapper.classList.toggle('ipad', device === 'tablet');
+  };
+
+  /* ════════════════════════════════
+     PRE-SEEDED CONVERSATION
+     ════════════════════════════════ */
+  runDefaultFlow();
+})();
+</script>
+
+<script>window.DS_META={title:'Parent Chat v3',desc:'Text-first AI chat for parents with Sprout. Uses DS tokens for colors and spacing.',owner:'Leti Schimmel',status:'Draft',device:['Phone','Tablet'],notes:'<div class="pc-features"><div class="pc-features-title">Features</div><div class="pc-feature-item active" data-feature="0">Default Flow</div><div class="pc-feature-item" data-feature="1">Voice Dictation</div><div class="pc-feature-item" data-feature="2">@Mentions</div><div class="pc-feature-item" data-feature="3">Suggestion Chips</div><div class="pc-feature-item" data-feature="4">Option Chips</div><div class="pc-feature-item" data-feature="5">Reply Threading</div><div class="pc-feature-item" data-feature="6">Copy</div><div class="pc-feature-item" data-feature="7">Context Menu</div><div class="pc-feature-item" data-feature="8">Reconnection Banner</div><div class="pc-feature-item" data-feature="9">Attachment A</div><div class="pc-feature-item" data-feature="10">Attachment B</div><div class="pc-feature-item" data-feature="11">Tool Usage</div></div>'};</script>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+<script>
+// Wire up feature list clicks after shell.js renders the notes HTML
+function initFeatureList() {
+  var items = document.querySelectorAll('.pc-feature-item');
+  if (!items.length) return;
+  items.forEach(function(item) {
+    item.addEventListener('click', function() {
+      items.forEach(function(i) { i.classList.remove('active'); });
+      item.classList.add('active');
+      var idx = parseInt(item.getAttribute('data-feature'), 10);
+      if (window.onScreenChange) window.onScreenChange(idx);
+    });
+  });
+}
+// shell.js may defer buildMetadata to DOMContentLoaded, so we must also wait
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initFeatureList);
+} else {
+  // If DOM already ready but shell.js deferred, use a microtask to run after current event
+  setTimeout(initFeatureList, 0);
+}
+</script>
+</body>
+</html>

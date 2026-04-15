@@ -14,6 +14,7 @@ window.DS_NAV = [
       { label: 'Chat', icon: 'message-chat', badge: 'Tier 3', href: '/product-explorer/task/chat-tier-3.html' },
       { label: 'Chat Tiles', icon: 'message-chat', badge: 'Tier 2', href: '/product-explorer/task/chat-tier-2-tiles.html' },
       { label: 'Chat Tiles', icon: 'message-chat', badge: 'Tier 3', href: '/product-explorer/task/chat-tier-3-tiles.html' },
+      { label: 'Parent Chat', icon: 'message-chat', badge: 'Parent', href: '/product-explorer/parent-chat-3.html' },
       { label: 'Customize sprout', icon: 'stars-01', href: '/product-explorer/customize-sprout.html' },
       { label: 'Customize avatar', icon: 'stars-02', href: '/product-explorer/customize-avatar.html' },
       { label: 'Video verification', icon: 'video-recorder', href: '/product-explorer/video-verification-explorer.html' },
