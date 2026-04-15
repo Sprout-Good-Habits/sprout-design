@@ -66,6 +66,14 @@
     '.nav-child{display:flex;align-items:center;gap:8px;height:28px;padding:4px 8px 4px 16px;border-radius:2px;font-size:14px;font-weight:500;color:#414651;text-decoration:none;transition:background .1s;line-height:20px;flex-shrink:0;}',
     '.nav-child:hover{background:#f0f0f0;text-decoration:none;}',
     '.nav-child.active{background:#f0f0f0;font-weight:600;text-decoration:none;}',
+    /* Nested sub-section (level 2) */
+    '.nav-sub-section{display:flex;align-items:center;gap:8px;height:28px;padding:4px 8px 4px 16px;border-radius:2px;font-size:14px;font-weight:500;color:#414651;text-decoration:none;cursor:pointer;transition:background .1s;line-height:20px;flex-shrink:0;}',
+    '.nav-sub-section:hover{background:#f0f0f0;text-decoration:none;}',
+    '.nav-sub-section .nav-section-label{flex:1;}',
+    '.nav-sub-section .nav-chevron{margin-left:0;}',
+    '.nav-sub-children{display:flex;flex-direction:column;gap:4px;}',
+    '.nav-sub-children.collapsed{display:none;}',
+    '.nav-sub-children .nav-child{padding-left:28px;}',
     /* Breadcrumb hamburger */
     '.breadcrumb-menu-btn{width:20px;height:20px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:#535862;padding:0;flex-shrink:0;}',
     '.breadcrumb-menu-btn:hover{color:#181d27;}',
@@ -90,12 +98,12 @@
     return currentPath() === hrefToPath(href);
   }
 
-  // Check if a section contains the active page
+  // Check if a section (or any descendant) contains the active page
   function isSectionActive(item) {
     if (item.href && isActive(item.href)) return true;
     if (item.children) {
       for (var i = 0; i < item.children.length; i++) {
-        if (item.children[i].href && isActive(item.children[i].href)) return true;
+        if (isSectionActive(item.children[i])) return true;
       }
     }
     return false;
@@ -110,8 +118,17 @@
       }
       if (item.children) {
         for (var j = 0; j < item.children.length; j++) {
-          if (item.children[j].href && isActive(item.children[j].href)) {
-            return { section: item.label, label: item.children[j].label, sectionHref: item.href || null };
+          var child = item.children[j];
+          if (child.href && isActive(child.href)) {
+            return { section: item.label, label: child.label, sectionHref: item.href || null };
+          }
+          // Check grandchildren (level 2 nesting)
+          if (child.children) {
+            for (var k = 0; k < child.children.length; k++) {
+              if (child.children[k].href && isActive(child.children[k].href)) {
+                return { section: item.label, label: child.children[k].label, sectionHref: item.href || null };
+              }
+            }
           }
         }
       }
@@ -145,14 +162,40 @@
         html += '<div class="nav-children' + (expanded ? '' : ' collapsed') + '">';
         for (var j = 0; j < item.children.length; j++) {
           var child = item.children[j];
-          var childActive = child.href && isActive(child.href) ? ' active' : '';
           var childIcon = child.icon && ICONS[child.icon] ? ICONS[child.icon] : '';
 
-          html += '<a class="nav-child' + childActive + '" href="' + (child.href || '#') + '">';
-          if (childIcon) html += '<span class="nav-icon">' + childIcon + '</span>';
-          html += '<span class="nav-child-label">' + child.label + '</span>';
-          if (child.badge) html += '<span class="nav-badge">' + child.badge + '</span>';
-          html += '</a>';
+          if (child.collapsible && child.children) {
+            // Nested collapsible sub-section
+            var subActive = isSectionActive(child);
+            var subExpanded = child.defaultOpen || subActive;
+            html += '<div class="nav-sub-section" data-collapsible="true">';
+            if (childIcon) html += '<span class="nav-icon">' + childIcon + '</span>';
+            if (child.href) {
+              html += '<a class="nav-section-link" href="' + child.href + '">' + child.label + '</a>';
+            } else {
+              html += '<span class="nav-section-label">' + child.label + '</span>';
+            }
+            html += '<span class="nav-chevron">' + (subExpanded ? CHEVRON_UP : CHEVRON_DOWN) + '</span>';
+            html += '</div>';
+            html += '<div class="nav-sub-children' + (subExpanded ? '' : ' collapsed') + '">';
+            for (var k = 0; k < child.children.length; k++) {
+              var grandchild = child.children[k];
+              var gcActive = grandchild.href && isActive(grandchild.href) ? ' active' : '';
+              html += '<a class="nav-child' + gcActive + '" href="' + (grandchild.href || '#') + '">';
+              html += '<span class="nav-child-label">' + grandchild.label + '</span>';
+              if (grandchild.badge) html += '<span class="nav-badge">' + grandchild.badge + '</span>';
+              html += '</a>';
+            }
+            html += '</div>';
+          } else {
+            // Regular leaf child
+            var childActive = child.href && isActive(child.href) ? ' active' : '';
+            html += '<a class="nav-child' + childActive + '" href="' + (child.href || '#') + '">';
+            if (childIcon) html += '<span class="nav-icon">' + childIcon + '</span>';
+            html += '<span class="nav-child-label">' + child.label + '</span>';
+            if (child.badge) html += '<span class="nav-badge">' + child.badge + '</span>';
+            html += '</a>';
+          }
         }
         html += '</div>';
       } else if (item.children) {
@@ -195,30 +238,32 @@
   }
 
   // ── Attach section toggle handlers to a nav container ──
+  function attachToggle(el, childrenClass) {
+    el.addEventListener('click', function (e) {
+      if (e.target.closest('.nav-section-link')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var children = el.nextElementSibling;
+      if (!children || !children.classList.contains(childrenClass)) return;
+      var chevron = el.querySelector('.nav-chevron');
+      var isCollapsed = children.classList.contains('collapsed');
+      if (isCollapsed) {
+        children.classList.remove('collapsed');
+        if (chevron) chevron.innerHTML = CHEVRON_UP;
+      } else {
+        children.classList.add('collapsed');
+        if (chevron) chevron.innerHTML = CHEVRON_DOWN;
+      }
+    });
+  }
+
   function attachSectionToggles(container) {
+    // Level 1 sections
     var sections = container.querySelectorAll('.nav-section');
-    for (var i = 0; i < sections.length; i++) {
-      (function (sectionEl) {
-        sectionEl.addEventListener('click', function (e) {
-          // If clicking a link inside the section, let it navigate
-          if (e.target.closest('.nav-section-link')) return;
-          e.preventDefault();
-
-          var children = sectionEl.nextElementSibling;
-          if (!children || !children.classList.contains('nav-children')) return;
-          var chevron = sectionEl.querySelector('.nav-chevron');
-          var isCollapsed = children.classList.contains('collapsed');
-
-          if (isCollapsed) {
-            children.classList.remove('collapsed');
-            if (chevron) chevron.innerHTML = CHEVRON_UP;
-          } else {
-            children.classList.add('collapsed');
-            if (chevron) chevron.innerHTML = CHEVRON_DOWN;
-          }
-        });
-      })(sections[i]);
-    }
+    for (var i = 0; i < sections.length; i++) { attachToggle(sections[i], 'nav-children'); }
+    // Level 2 sub-sections
+    var subSections = container.querySelectorAll('.nav-sub-section');
+    for (var i = 0; i < subSections.length; i++) { attachToggle(subSections[i], 'nav-sub-children'); }
   }
 
   // ── Sidebar ──
@@ -228,7 +273,7 @@
 
     sidebar.innerHTML =
       '<div class="sidebar-header">' +
-        '<img src="/design-system/brand/assets/icon-primary.svg" alt="Sprout" />' +
+        '<img src="/kid-design-system/brand/assets/icon-primary.svg" alt="Sprout" />' +
         '<span>Sprout design</span>' +
       '</div>' +
       '<div class="nav-list">' + buildNavHTML() + '</div>';
@@ -476,7 +521,7 @@
       html += '<div class="meta-label">Rive file</div>';
       html += '<div class="meta-value">';
       html += '<span class="badge badge-gray">' + meta.rive + '</span>';
-      html += '<a class="btn-download" href="/design-system/' + meta.rive + '" download>' + META_ICONS.download + '</a>';
+      html += '<a class="btn-download" href="/kid-design-system/' + meta.rive + '" download>' + META_ICONS.download + '</a>';
       html += '</div></div>';
     }
 
@@ -487,7 +532,7 @@
       html += '<div class="meta-label">Skill</div>';
       html += '<div class="meta-value">';
       html += '<span class="badge badge-gray">' + meta.skill + '</span>';
-      html += '<a class="btn-download" href="/design-system/resources/' + meta.skill + '" download>' + META_ICONS.download + '</a>';
+      html += '<a class="btn-download" href="/kid-design-system/resources/' + meta.skill + '" download>' + META_ICONS.download + '</a>';
       html += '</div></div>';
     }
 

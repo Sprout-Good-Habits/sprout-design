@@ -7,15 +7,15 @@ const PUBLIC = path.join(__dirname, 'public');
 
 // Rewrites from vercel.json
 const rewrites = [
-  ['/tokens.css', '/design-system/tokens.css'],
-  ['/styles.css', '/design-system/styles.css'],
-  ['/shell.js', '/design-system/shell.js'],
-  ['/spec-renderer.js', '/design-system/spec-renderer.js'],
-  ['/nav.js', '/design-system/nav.js'],
-  ['/component-specs.json', '/design-system/component-specs.json'],
-  ['/tokens.json', '/design-system/tokens.json'],
-  ['/sprot2.97_.riv', '/design-system/sprot2.97_.riv'],
-  ['/character2.91.riv', '/design-system/character2.91.riv'],
+  ['/tokens.css', '/kid-design-system/tokens.css'],
+  ['/styles.css', '/kid-design-system/styles.css'],
+  ['/shell.js', '/kid-design-system/shell.js'],
+  ['/spec-renderer.js', '/kid-design-system/spec-renderer.js'],
+  ['/nav.js', '/kid-design-system/nav.js'],
+  ['/component-specs.json', '/kid-design-system/component-specs.json'],
+  ['/tokens.json', '/kid-design-system/tokens.json'],
+  ['/sprot2.97_.riv', '/kid-design-system/sprot2.97_.riv'],
+  ['/character2.91.riv', '/kid-design-system/character2.91.riv'],
 ];
 
 const prefixRewrites = [
@@ -40,10 +40,10 @@ function resolve(urlPath) {
   for (const [from, to] of rewrites) {
     if (urlPath === from) return path.join(PUBLIC, to);
   }
-  // Prefix rewrites → design-system
+  // Prefix rewrites → kid-design-system
   for (const prefix of prefixRewrites) {
     if (urlPath.startsWith(prefix)) {
-      let filePath = path.join(PUBLIC, 'design-system', urlPath);
+      let filePath = path.join(PUBLIC, 'kid-design-system', urlPath);
       if (!fs.existsSync(filePath) && !path.extname(filePath)) {
         filePath += '.html';
       }
@@ -52,7 +52,7 @@ function resolve(urlPath) {
   }
   // Page rewrites
   for (const page of pageRewrites) {
-    if (urlPath === page) return path.join(PUBLIC, 'design-system', page);
+    if (urlPath === page) return path.join(PUBLIC, 'kid-design-system', page);
   }
   // Default: serve from public
   let filePath = path.join(PUBLIC, urlPath);

@@ -6,15 +6,15 @@
 <title>Sprout Product Explorer — Tier 2 &amp; Tier 3</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
-<link rel="stylesheet" href="/design-system/components/button-utility.css">
-<link rel="stylesheet" href="/design-system/components/buttons.css">
-<link rel="stylesheet" href="/design-system/components/segmented-control.css">
-<link rel="stylesheet" href="/design-system/components/toolbar.css">
-<link rel="stylesheet" href="/design-system/components/progress-bar.css">
-<link rel="stylesheet" href="/design-system/components/subtitles.css">
-<link rel="stylesheet" href="/design-system/components/card-avatar.css">
-<link rel="stylesheet" href="/design-system/components/screen-time-card.css">
-<script src="/design-system/components/card-avatar.js" defer></script>
+<link rel="stylesheet" href="/kid-design-system/components/button-utility.css">
+<link rel="stylesheet" href="/kid-design-system/components/buttons.css">
+<link rel="stylesheet" href="/kid-design-system/components/segmented-control.css">
+<link rel="stylesheet" href="/kid-design-system/components/toolbar.css">
+<link rel="stylesheet" href="/kid-design-system/components/progress-bar.css">
+<link rel="stylesheet" href="/kid-design-system/components/subtitles.css">
+<link rel="stylesheet" href="/kid-design-system/components/card-avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/screen-time-card.css">
+<script src="/kid-design-system/components/card-avatar.js" defer></script>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 /* ── Device frame ── */
@@ -214,8 +214,8 @@
   color: #ffffff;
 }
 /* ── Task List Card (Tier 2 & 3) ──
-   Mirrors the spec from /design-system/components/quest-card.html.
-   CardAvatar styles come from /design-system/components/card-avatar.css. */
+   Mirrors the spec from /kid-design-system/components/quest-card.html.
+   CardAvatar styles come from /kid-design-system/components/card-avatar.css. */
 .task-inbox {
   display: flex;
   flex-direction: column;
@@ -327,7 +327,7 @@
   text-align: center;
 }
 /* Action CTA uses the shared .btn-sprout.btn-secondary.btn-md from
-   /design-system/components/buttons.css. Override width to fill the
+   /kid-design-system/components/buttons.css. Override width to fill the
    action area; the base .btn-sprout has a fixed 320 px width. */
 .task-list-card-action .btn-sprout {
   width: 100%;
@@ -855,7 +855,7 @@
   var canvas = document.getElementById('rive-character');
   if (canvas && window.rive) {
     var r = new rive.Rive({
-      src: '/design-system/sprot2.97_.riv',
+      src: '/kid-design-system/sprot2.97_.riv',
       canvas: canvas,
       autoplay: true,
       stateMachines: 'State Machine 1',

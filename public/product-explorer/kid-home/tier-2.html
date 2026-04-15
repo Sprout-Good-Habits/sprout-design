@@ -6,13 +6,13 @@
 <title>Sprout Product Explorer — Tier 1</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
-<link rel="stylesheet" href="/design-system/components/button-utility.css">
-<link rel="stylesheet" href="/design-system/components/toolbar.css">
-<link rel="stylesheet" href="/design-system/components/progress-bar.css">
-<link rel="stylesheet" href="/design-system/components/subtitles.css">
-<link rel="stylesheet" href="/design-system/components/card-avatar.css">
-<link rel="stylesheet" href="/design-system/components/screen-time-card.css">
-<script src="/design-system/components/card-avatar.js" defer></script>
+<link rel="stylesheet" href="/kid-design-system/components/button-utility.css">
+<link rel="stylesheet" href="/kid-design-system/components/toolbar.css">
+<link rel="stylesheet" href="/kid-design-system/components/progress-bar.css">
+<link rel="stylesheet" href="/kid-design-system/components/subtitles.css">
+<link rel="stylesheet" href="/kid-design-system/components/card-avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/screen-time-card.css">
+<script src="/kid-design-system/components/card-avatar.js" defer></script>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 /* ── Device frame ── */
@@ -465,9 +465,9 @@
                     </div>
 
                     <!-- Task card carousel — 5 states, different tasks.
-                         Avatars use shared /design-system/components/card-avatar.css
+                         Avatars use shared /kid-design-system/components/card-avatar.css
                          (.card-avatar.card-avatar--big). Village variant pulls
-                         character2.91.riv via /design-system/components/card-avatar.js
+                         character2.91.riv via /kid-design-system/components/card-avatar.js
                          auto-init. -->
                     <div class="carousel-container" id="carousel">
 
@@ -671,7 +671,7 @@
   var canvas = document.getElementById('rive-character');
   if (canvas && window.rive) {
     var r = new rive.Rive({
-      src: '/design-system/sprot2.97_.riv',
+      src: '/kid-design-system/sprot2.97_.riv',
       canvas: canvas,
       autoplay: true,
       stateMachines: 'State Machine 1',

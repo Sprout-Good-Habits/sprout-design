@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Bar — Figma Capture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    :root {
+      --bg-secondary: #fafafa;
+      --fg-brand-primary-500: #0ba5ec;
+      --alpha-white-50: rgba(255,255,255,0.5);
+      --radius-full: 9999px;
+      --spacing-xs: 4px;
+      --spacing-md: 8px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      padding: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+    }
+    .size-section { display:flex; flex-direction:column; gap:64px; }
+    .size-title { font-size:24px; font-weight:700; color:#181d27; }
+    .variant-section { display:flex; flex-direction:column; gap:24px; }
+    .variant-title { font-size:18px; font-weight:700; color:#181d27; }
+    .states-col { display:flex; flex-direction:column; gap:20px; }
+    .state-row { display:flex; align-items:center; gap:16px; }
+    .state-label { width:80px; flex-shrink:0; font-size:12px; font-weight:600; color:#717680; text-align:right; }
+    .bar-wrap { position:relative; height:16px; }
+    .track { position:absolute; left:0; top:0; height:16px; background:var(--bg-secondary); border-radius:var(--radius-full); }
+    .fill { position:absolute; left:0; top:0; height:16px; background:var(--fg-brand-primary-500); border-radius:var(--radius-full); display:flex; flex-direction:column; align-items:flex-start; padding:var(--spacing-xs) var(--spacing-md); box-sizing:border-box; }
+    .fill-highlight { width:100%; height:var(--spacing-xs); background:var(--alpha-white-50); border-radius:var(--radius-full); flex-shrink:0; }
+    .checkpoints { position:absolute; left:0; top:0; height:16px; }
+    .cp { position:absolute; top:-4px; width:24px; height:24px; border-radius:var(--radius-full); background:var(--bg-secondary); display:flex; align-items:center; justify-content:center; padding:var(--spacing-xs); box-sizing:border-box; }
+    .cp-reached { background:var(--fg-brand-primary-500); }
+    .cp-num { font-family:'Inter',sans-serif; font-size:14px; font-weight:600; line-height:20px; text-align:center; color:#717680; white-space:nowrap; }
+    .cp-reached .cp-num { color:#ffffff; }
+    .cp-check { width:20px; height:20px; display:none; }
+    .cp-reached .cp-check { display:block; }
+  </style>
+</head>
+<body>
+<script>
+var SIZES = [314, 323, 208];
+var TOTAL = 15;
+var CPS = [5, 10, 15];
+var CONTINUOUS_PCTS = [0, 10, 25, 50, 75, 100];
+var STEPPER_STEPS = [
+  { label:'0 / 15', step:0 },
+  { label:'3 / 15', step:3 },
+  { label:'7 / 15', step:7 },
+  { label:'12 / 15', step:12 },
+  { label:'15 / 15', step:15 }
+];
+
+var checkSvg = '<svg class="cp-check" viewBox="0 0 20 20" fill="none"><path d="M4.5 10.5l4 4 7-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function fillHtml(w) {
+  return '<div class="fill" style="width:'+w+'px;"><div class="fill-highlight"></div></div>';
+}
+
+function cpPos(cpVal, W) {
+  // Last checkpoint flush right
+  if (cpVal === TOTAL) return W - 24;
+  return (cpVal / TOTAL) * W - 12;
+}
+
+function cpNumHtml(cpVal, reached, W) {
+  var cls = 'cp' + (reached ? ' cp-reached' : '');
+  var left = cpPos(cpVal, W);
+  return '<div class="'+cls+'" style="left:'+left.toFixed(2)+'px;"><span class="cp-num">'+cpVal+'</span></div>';
+}
+
+function cpIconHtml(cpVal, reached, W) {
+  var cls = 'cp' + (reached ? ' cp-reached' : '');
+  var left = cpPos(cpVal, W);
+  var inner = reached ? checkSvg : '';
+  return '<div class="'+cls+'" style="left:'+left.toFixed(2)+'px;">'+inner+'</div>';
+}
+
+SIZES.forEach(function(W) {
+  var sizeDiv = document.createElement('div');
+  sizeDiv.className = 'size-section';
+
+  var html = '<div class="size-title">Width: '+W+'px</div>';
+
+  // VARIANT 1: CONTINUOUS
+  html += '<div class="variant-section"><div class="variant-title">Continuous</div><div class="states-col">';
+  CONTINUOUS_PCTS.forEach(function(pct) {
+    var fw = Math.round(W * pct / 100);
+    if (pct === 10) fw = Math.max(32, fw); // min-width
+    html += '<div class="state-row"><span class="state-label">'+pct+'%</span>';
+    html += '<div class="bar-wrap" style="width:'+W+'px;">';
+    html += '<div class="track" style="width:'+W+'px;"></div>';
+    if (pct > 0) html += fillHtml(fw);
+    html += '</div></div>';
+  });
+  html += '</div></div>';
+
+  // VARIANT 2: STEPPER NUMBER
+  html += '<div class="variant-section"><div class="variant-title">Stepper Number</div><div class="states-col">';
+  STEPPER_STEPS.forEach(function(s) {
+    var fw = Math.round(W * s.step / TOTAL);
+    html += '<div class="state-row"><span class="state-label">'+s.label+'</span>';
+    html += '<div class="bar-wrap" style="width:'+W+'px;">';
+    html += '<div class="track" style="width:'+W+'px;"></div>';
+    if (s.step > 0) html += fillHtml(fw);
+    html += '<div class="checkpoints" style="width:'+W+'px;">';
+    CPS.forEach(function(cp) {
+      html += cpNumHtml(cp, s.step >= cp, W);
+    });
+    html += '</div></div></div>';
+  });
+  html += '</div></div>';
+
+  // VARIANT 3: STEPPER ICON
+  html += '<div class="variant-section"><div class="variant-title">Stepper Icon</div><div class="states-col">';
+  STEPPER_STEPS.forEach(function(s) {
+    var fw = Math.round(W * s.step / TOTAL);
+    html += '<div class="state-row"><span class="state-label">'+s.label+'</span>';
+    html += '<div class="bar-wrap" style="width:'+W+'px;">';
+    html += '<div class="track" style="width:'+W+'px;"></div>';
+    if (s.step > 0) html += fillHtml(fw);
+    html += '<div class="checkpoints" style="width:'+W+'px;">';
+    CPS.forEach(function(cp) {
+      html += cpIconHtml(cp, s.step >= cp, W);
+    });
+    html += '</div></div></div>';
+  });
+  html += '</div></div>';
+
+  sizeDiv.innerHTML = html;
+  document.body.appendChild(sizeDiv);
+});
+</script>
+</body>
+</html>

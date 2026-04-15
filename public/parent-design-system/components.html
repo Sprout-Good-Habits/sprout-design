@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System — Components</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+@font-face{font-family:'TossFace';src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype')}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;max-width:720px}
+@media(max-width:800px){.gallery-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.gallery-grid{grid-template-columns:1fr}}
+.gallery-card{display:block;background:var(--bg-primary);border-radius:var(--radius-xl,12px);text-decoration:none;color:inherit;overflow:hidden;transition:box-shadow .15s,border-color .15s;border:1px solid var(--border-secondary)}
+.gallery-card:hover{border-color:var(--gray-300);box-shadow:0 4px 16px rgba(0,0,0,.06);text-decoration:none}
+.gallery-thumb{height:120px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;overflow:hidden;font-family:'TossFace','Apple Color Emoji','Segoe UI Emoji',sans-serif;font-size:40px}
+.gallery-body{padding:12px 16px}
+.gallery-title{font-size:12px;font-weight:var(--font-weight-semibold,600);color:var(--text-primary);line-height:18px}
+.gallery-desc{font-size:12px;color:var(--text-tertiary);line-height:18px;margin-top:2px}
+.page-hero{max-width:720px;padding:96px 0 0}
+.page-hero-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.page-hero-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="page-hero">
+        <h1 class="page-hero-title">Components</h1>
+        <p class="page-hero-desc">Reusable CSS components for the parent chat experience. Each component is a standalone CSS file that can be imported individually.</p>
+      </div>
+      <div class="gallery-grid">
+        <a class="gallery-card" href="/parent-design-system/components/device-frame.html"><div class="gallery-thumb">📱</div><div class="gallery-body"><div class="gallery-title">Device Frame</div><div class="gallery-desc">iPhone/iPad mockup wrapper</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/status-bar.html"><div class="gallery-thumb">🔋</div><div class="gallery-body"><div class="gallery-title">Status Bar</div><div class="gallery-desc">iOS status bar with time and icons</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/chat-toolbar.html"><div class="gallery-thumb">🧭</div><div class="gallery-body"><div class="gallery-title">Chat Toolbar</div><div class="gallery-desc">Header frost, pills, stacked avatars</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/chat-messages.html"><div class="gallery-thumb">💬</div><div class="gallery-body"><div class="gallery-title">Chat Messages</div><div class="gallery-desc">Bubbles, actions, quotes, typing</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/chat-composer.html"><div class="gallery-thumb">✏️</div><div class="gallery-body"><div class="gallery-title">Chat Composer</div><div class="gallery-desc">Input, toolbar, voice, mentions</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/chat-banner.html"><div class="gallery-thumb">🔔</div><div class="gallery-body"><div class="gallery-title">Chat Banner</div><div class="gallery-desc">Reconnect, delete undo, toast</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/chat-chips.html"><div class="gallery-thumb">🏷️</div><div class="gallery-body"><div class="gallery-title">Chat Chips</div><div class="gallery-desc">Option and suggestion chips</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/chat-action-buttons.html"><div class="gallery-thumb">👆</div><div class="gallery-body"><div class="gallery-title">Chat Action Buttons</div><div class="gallery-desc">Primary/secondary with states</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/confirm-card.html"><div class="gallery-thumb">✅</div><div class="gallery-body"><div class="gallery-title">Confirm Card</div><div class="gallery-desc">Key-value card with confirm/cancel</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/artifact.html"><div class="gallery-thumb">📄</div><div class="gallery-body"><div class="gallery-title">Artifact</div><div class="gallery-desc">Inline card and detail sheet</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/thought-sheet.html"><div class="gallery-thumb">🧠</div><div class="gallery-body"><div class="gallery-title">Thought Sheet</div><div class="gallery-desc">AI thought process with timeline</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/tool-usage.html"><div class="gallery-thumb">🔧</div><div class="gallery-body"><div class="gallery-title">Tool Usage</div><div class="gallery-desc">Collapsible activity feed</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/chat-context-menu.html"><div class="gallery-thumb">📋</div><div class="gallery-body"><div class="gallery-title">Chat Context Menu</div><div class="gallery-desc">Sheet base, scrim, menu items</div></div></a>
+        <a class="gallery-card" href="/parent-design-system/components/attach-panel.html"><div class="gallery-thumb">📎</div><div class="gallery-body"><div class="gallery-title">Attach Panel</div><div class="gallery-desc">Panel, plus pill, iOS keyboard</div></div></a>
+      </div>
+      <div style="max-width:720px;margin:48px auto 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

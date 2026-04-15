@@ -6,22 +6,22 @@
 <title>Sprout Product Explorer — Video Verification</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
-<link rel="stylesheet" href="/design-system/components/buttons.css">
-<link rel="stylesheet" href="/design-system/components/button-utility.css">
-<link rel="stylesheet" href="/design-system/components/alert.css">
-<link rel="stylesheet" href="/design-system/components/toolbar.css">
-<link rel="stylesheet" href="/design-system/components/avatar.css">
-<link rel="stylesheet" href="/design-system/components/message-bubble.css">
-<link rel="stylesheet" href="/design-system/components/progress-bar.css">
-<link rel="stylesheet" href="/design-system/components/toast.css">
-<link rel="stylesheet" href="/design-system/components/loading.css">
-<link rel="stylesheet" href="/design-system/components/stat-card.css">
-<link rel="stylesheet" href="/design-system/components/subtitles.css">
-<link rel="stylesheet" href="/design-system/components/conversational-feedback.css">
-<link rel="stylesheet" href="/design-system/components/button-recording.css">
-<link rel="stylesheet" href="/design-system/patterns/success-screen.css">
+<link rel="stylesheet" href="/kid-design-system/components/buttons.css">
+<link rel="stylesheet" href="/kid-design-system/components/button-utility.css">
+<link rel="stylesheet" href="/kid-design-system/components/alert.css">
+<link rel="stylesheet" href="/kid-design-system/components/toolbar.css">
+<link rel="stylesheet" href="/kid-design-system/components/avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/message-bubble.css">
+<link rel="stylesheet" href="/kid-design-system/components/progress-bar.css">
+<link rel="stylesheet" href="/kid-design-system/components/toast.css">
+<link rel="stylesheet" href="/kid-design-system/components/loading.css">
+<link rel="stylesheet" href="/kid-design-system/components/stat-card.css">
+<link rel="stylesheet" href="/kid-design-system/components/subtitles.css">
+<link rel="stylesheet" href="/kid-design-system/components/conversational-feedback.css">
+<link rel="stylesheet" href="/kid-design-system/components/button-recording.css">
+<link rel="stylesheet" href="/kid-design-system/patterns/success-screen.css">
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
-<script src="/design-system/components/stat-card.js"></script>
+<script src="/kid-design-system/components/stat-card.js"></script>
 <style>
 /* Page-specific styles only — shared styles come from tokens.css + styles.css */
 
@@ -142,11 +142,11 @@
 /* Conversational feedback slot — positions the Video pattern's
    .conversational-feedback + .subtitles.subtitles-overlay over the
    camera viewfinder. The component styling itself comes from
-   /design-system/components/conversational-feedback.css + subtitles.css. */
+   /kid-design-system/components/conversational-feedback.css + subtitles.css. */
 .vv-feedback-slot{position:absolute;top:128px;left:0;right:0;padding:0 16px;z-index:10;box-sizing:border-box}
 
 /* Avatar portrait — explorer-specific canvas scaling for Sprout.
-   The design-system avatar-portrait.css is NOT imported because this
+   The kid-design-system avatar-portrait.css is NOT imported because this
    prototype uses .rive-avatar (not .rive-user/.rive-sprout) and needs
    its own 2.64x transform to render the Sprout plant character. */
 .avatar-portrait{width:120px;height:176px;border-radius:24px;background:#b9e6fe;overflow:hidden;flex-shrink:0;position:relative}
@@ -180,8 +180,8 @@
 
 /* Bottom bar slot — positions the Video pattern's Button Recording +
    two Button Utility icons over the camera viewfinder. The button
-   styling itself comes from /design-system/components/button-recording.css
-   and /design-system/components/button-utility.css. */
+   styling itself comes from /kid-design-system/components/button-recording.css
+   and /kid-design-system/components/button-utility.css. */
 .vv-bottom-bar{position:absolute;bottom:45px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:10}
 .vv-btn-hidden{opacity:0;pointer-events:none}
 

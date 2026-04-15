@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System — Chat Chips</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-chips.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px}
+.doc-download{display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);text-decoration:none;transition:color .15s}
+.doc-download:hover{color:var(--text-primary)}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Chat Chips</h1>
+        <p class="doc-desc">Horizontally scrollable chip strips. Option chips are single-line choices from the AI (e.g., "Every night", "Weekdays only"). Suggestion chips are two-line pre-conversation prompts with title and subtitle.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>CSS file</div>
+          <div class="doc-meta-value"><span class="doc-badge">chat-chips.css</span><a class="doc-download" href="/kid-design-system/components/chat-chips.css" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Tue Apr 15, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+      <div class="doc-section">
+        <h2>Overview</h2>
+        <p>Chips provide quick-tap responses. Option chips appear after an AI message with choices. Suggestion chips appear before any conversation starts, offering conversation starters. Both scroll horizontally and hide scrollbars.</p>
+      </div>
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <ul>
+          <li><strong>.option-chips</strong> - Scroll container</li>
+          <li><strong>.option-chip</strong> - Individual chip with hover/selected/faded states</li>
+          <li><strong>.suggestion-chips</strong> - Pre-convo container</li>
+          <li><strong>.suggestion-chip-title</strong> - Bold first line</li>
+          <li><strong>.suggestion-chip-sub</strong> - Tertiary second line</li>
+        </ul>
+      </div>
+      <div class="doc-section">
+        <h2>Usage</h2>
+        <p>Place .option-chips or .suggestion-chips inside the chat thread or composer area. Chips can be dynamically generated. Selected chips get the .selected class; unselected ones get .faded.</p>
+        <div class="doc-demo"><div style="display:flex;flex-direction:column;gap:24px;width:100%">
+  <div>
+    <div style="font-size:12px;font-weight:600;color:var(--text-quaternary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Option Chips</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="option-chip">Every night</span>
+      <span class="option-chip selected">Weekdays only</span>
+      <span class="option-chip">3 times a week</span>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:12px;font-weight:600;color:var(--text-quaternary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Suggestion Chips</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="option-chip" style="white-space:normal;max-width:200px;display:flex;flex-direction:column;gap:2px">
+        <div class="suggestion-chip-title">Development tips</div>
+        <div class="suggestion-chip-sub">for my child's age</div>
+      </div>
+      <div class="option-chip" style="white-space:normal;max-width:200px;display:flex;flex-direction:column;gap:2px">
+        <div class="suggestion-chip-title">Screen time</div>
+        <div class="suggestion-chip-sub">set healthy limits</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+      </div>
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

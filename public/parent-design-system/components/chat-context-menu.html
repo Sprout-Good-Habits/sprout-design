@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System — Chat Context Menu</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-context-menu.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px}
+.doc-download{display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);text-decoration:none;transition:color .15s}
+.doc-download:hover{color:var(--text-primary)}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Chat Context Menu</h1>
+        <p class="doc-desc">Bottom sheet system with scrim overlay, handle, and list items. Includes the generic sheet base (scrim, handle, header, close button) and the context menu variant (Copy, Reply, Forward, Delete).</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>CSS file</div>
+          <div class="doc-meta-value"><span class="doc-badge">chat-context-menu.css</span><a class="doc-download" href="/kid-design-system/components/chat-context-menu.css" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Tue Apr 15, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+      <div class="doc-section">
+        <h2>Overview</h2>
+        <p>The sheet is the base overlay component used by multiple features. It slides up from the bottom with a spring curve animation. The context menu variant appears on long-press of a message and offers Copy, Reply, Forward, and Delete actions. Delete uses the destructive red styling.</p>
+      </div>
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <ul>
+          <li><strong>.sheet-scrim</strong> - Semi-transparent overlay behind the sheet</li>
+          <li><strong>.sheet</strong> - Slide-up container</li>
+          <li><strong>.sheet-top</strong> - Handle area at the top of the sheet</li>
+          <li><strong>.sheet-handle</strong> - Drag indicator bar</li>
+          <li><strong>.sheet-header</strong> - Header row with title and close button</li>
+          <li><strong>.sheet-title</strong> - Title text in the header</li>
+          <li><strong>.sheet-close</strong> - Close button in the header</li>
+          <li><strong>.sheet-list</strong> - Generic list container</li>
+          <li><strong>.sheet-list-item</strong> - Generic list item</li>
+          <li><strong>.ctx-menu-list</strong> - Context menu list container</li>
+          <li><strong>.ctx-menu-item</strong> - Context menu item (Copy, Reply, Forward)</li>
+          <li><strong>.ctx-menu-item.destructive</strong> - Red delete variant</li>
+        </ul>
+      </div>
+      <div class="doc-section">
+        <h2>Usage</h2>
+        <p>Place .sheet-scrim and .sheet as siblings inside .device-screen. Toggle .open on both. The context menu reuses the sheet base with .ctx-menu-list content.</p>
+        <div class="doc-demo"><div style="width:300px;background:var(--bg-primary);border-radius:24px 24px 0 0;padding:16px 0 24px;box-shadow:0 -2px 12px rgba(0,0,0,.08)">
+  <div style="display:flex;flex-direction:column;align-items:center;padding:0 0 12px"><div class="sheet-handle"></div></div>
+  <div class="ctx-menu-list" style="padding:0">
+    <button class="ctx-menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.07 15 3.6 15 3.23 14.85C2.74 14.64 2.36 14.26 2.15 13.77C2 13.4 2 12.93 2 12V5.2C2 4.08 2 3.52 2.22 3.09C2.41 2.72 2.72 2.41 3.09 2.22C3.52 2 4.08 2 5.2 2H12C12.93 2 13.4 2 13.77 2.15C14.26 2.36 14.64 2.74 14.85 3.23C15 3.6 15 4.07 15 5M12.2 22H18.8C19.92 22 20.48 22 20.91 21.78C21.28 21.59 21.59 21.28 21.78 20.91C22 20.48 22 19.92 22 18.8V12.2C22 11.08 22 10.52 21.78 10.09C21.59 9.72 21.28 9.41 20.91 9.22C20.48 9 19.92 9 18.8 9H12.2C11.08 9 10.52 9 10.09 9.22C9.72 9.41 9.41 9.72 9.22 10.09C9 10.52 9 11.08 9 12.2V18.8C9 19.92 9 20.48 9.22 20.91C9.41 21.28 9.72 21.59 10.09 21.78C10.52 22 11.08 22 12.2 22Z"/></svg><span>Copy</span></button>
+    <button class="ctx-menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4V5.4C4 8.76 4 10.44 4.65 11.72C5.23 12.85 6.15 13.77 7.28 14.35C8.56 15 10.24 15 13.6 15H20M20 15L15 10M20 15L15 20"/></svg><span>Reply</span></button>
+    <button class="ctx-menu-item destructive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.08 16 3.52 15.78 3.09C15.59 2.72 15.28 2.41 14.91 2.22C14.48 2 13.92 2 12.8 2H11.2C10.08 2 9.52 2 9.09 2.22C8.72 2.41 8.41 2.72 8.22 3.09C8 3.52 8 4.08 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.88 19 19.72 18.67 20.36C18.39 20.93 17.93 21.39 17.36 21.67C16.72 22 15.88 22 14.2 22H9.8C8.12 22 7.28 22 6.64 21.67C6.07 21.39 5.61 20.93 5.33 20.36C5 19.72 5 18.88 5 17.2V6"/></svg><span>Delete for me</span></button>
+  </div>
+</div></div>
+      </div>
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

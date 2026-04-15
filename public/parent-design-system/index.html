@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+.hero{max-width:720px;margin:0 auto;padding:96px 0 64px}
+.hero-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.hero-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 32px}
+.section-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:720px;margin:0 auto}
+@media(max-width:600px){.section-grid{grid-template-columns:1fr}}
+.section-card{display:flex;flex-direction:column;gap:12px;padding:24px;border:1px solid var(--border-secondary);border-radius:var(--radius-xl,12px);text-decoration:none;color:inherit;transition:box-shadow .15s,border-color .15s}
+.section-card:hover{border-color:var(--gray-300);box-shadow:0 4px 16px rgba(0,0,0,.06);text-decoration:none}
+.section-card-icon{width:44px;height:44px;border-radius:var(--radius-md,8px);display:flex;align-items:center;justify-content:center}
+.section-card-icon svg{width:24px;height:24px}
+.section-card h2{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0}
+.section-card p{font-family:var(--font-family-body);font-size:var(--font-size-text-sm,14px);color:var(--text-tertiary);margin:0;line-height:20px}
+.section-card-count{font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);color:var(--text-quaternary)}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="hero">
+        <h1 class="hero-title">Parent Design System</h1>
+        <p class="hero-desc">Design system for the Sprout parent chat experience. Components, patterns, and guidelines for building the text-first AI chat interface used by parents.</p>
+      </div>
+      <div class="section-grid">
+        <a class="section-card" href="/parent-design-system/components.html">
+          <div class="section-card-icon" style="background:var(--brand-50);color:var(--brand-600)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <h2>Components</h2>
+          <p>Chat UI building blocks: composer, messages, sheets, banners, and more.</p>
+          <span class="section-card-count">14 components</span>
+        </a>
+      </div>
+      <div class="last-updated" style="max-width:720px;margin:48px auto 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

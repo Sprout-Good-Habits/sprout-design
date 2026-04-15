@@ -54,6 +54,12 @@ code {
   gap: var(--spacing-xl, 16px);
 }
 
+/* ── Doc content centering (component pages) ── */
+.doc-hero,
+.doc-divider,
+.doc-section,
+.doc-demo { margin-left: auto; margin-right: auto; }
+
 /* ── Breadcrumb ── */
 .breadcrumb {
   display: flex;
