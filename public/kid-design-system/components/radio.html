@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Radio</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Radio",
+  "slug": "radio",
+  "intent": {
+    "purpose": "Let users choose exactly one option from a set of mutually exclusive choices",
+    "taskContext": ["single-select", "settings", "onboarding"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["radio-indicator", "label"],
+    "allows": ["description"],
+    "forbids": ["icon", "image", "nested-radio"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Standard radio with label", "pairWith": [] },
+    { "name": "With description", "useWhen": "Additional context needed below label", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 24px indicator" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline"]
+  },
+  "relationships": {
+    "related": ["Checkbox", "Tile"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Button", "Input"]
+  },
+  "states": ["unchecked", "checked", "hover", "disabled"],
+  "accessibility": {
+    "role": "radio",
+    "keyboard": ["ArrowUp", "ArrowDown", "Space"],
+    "ariaAttributes": ["aria-checked", "aria-labelledby"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/radio.css">
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Radio</div>
+    <div class="sec-desc">Radio buttons let users choose exactly one option from a set of mutually exclusive choices. Only one radio in a group can be selected at a time.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For mutually exclusive choices where all options should be visible at once.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When the user needs to compare options before choosing (e.g. notification frequency).</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use radio buttons when the user can select multiple options &mdash; use checkboxes instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use radio buttons for on/off toggles &mdash; use a switch instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use radio buttons for more than 5 options &mdash; consider a dropdown or list item instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="radio-row">
+          <div class="radio">
+            <div class="radio-dot"></div>
+          </div>
+          <div class="radio-content">
+            <span class="radio-label">Daily digest</span>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">With description</span>
+        <div class="radio-row">
+          <div class="radio checked">
+            <div class="radio-dot"></div>
+          </div>
+          <div class="radio-content">
+            <span class="radio-label">Strict mode</span>
+            <span class="radio-desc">Blocks all unrecognised apps and websites by default</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- States -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>The radio base component has three states &mdash; <strong>default</strong> (unselected), <strong>checked</strong>, and <strong>hover</strong>.</p>
+
+    <div class="state-grid" style="grid-template-columns:1fr 1fr 1fr;">
+      <div class="state-cell">
+        <span class="state-cell-label">Default</span>
+        <div class="radio-row">
+          <div class="radio" onclick="this.classList.toggle('checked')">
+            <div class="radio-dot"></div>
+          </div>
+          <div class="radio-content">
+            <span class="radio-label">Daily digest</span>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Checked</span>
+        <div class="radio-row">
+          <div class="radio checked" onclick="this.classList.toggle('checked')">
+            <div class="radio-dot"></div>
+          </div>
+          <div class="radio-content">
+            <span class="radio-label">Daily digest</span>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Hover</span>
+        <div class="radio-row">
+          <div class="radio state-hover">
+            <div class="radio-dot"></div>
+          </div>
+          <div class="radio-content">
+            <span class="radio-label">Daily digest</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Radio group -->
+  <div class="doc-section">
+    <h2>Radio group</h2>
+    <p>Radio buttons are always used in groups. Selecting one option automatically deselects the others.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Notification frequency</span>
+        <div class="radio-group" data-radio-group>
+          <div class="radio-row">
+            <div class="radio checked" onclick="selectRadio(this)">
+              <div class="radio-dot"></div>
+            </div>
+            <div class="radio-content">
+              <span class="radio-label">Immediately</span>
+            </div>
+          </div>
+          <div class="radio-row">
+            <div class="radio" onclick="selectRadio(this)">
+              <div class="radio-dot"></div>
+            </div>
+            <div class="radio-content">
+              <span class="radio-label">Daily digest</span>
+            </div>
+          </div>
+          <div class="radio-row">
+            <div class="radio" onclick="selectRadio(this)">
+              <div class="radio-dot"></div>
+            </div>
+            <div class="radio-content">
+              <span class="radio-label">Weekly summary</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- With description -->
+  <div class="doc-section">
+    <h2>With description</h2>
+    <p>An optional description can appear below the label for additional context.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">With description</span>
+        <div class="radio-row">
+          <div class="radio checked" onclick="this.classList.toggle('checked')">
+            <div class="radio-dot"></div>
+          </div>
+          <div class="radio-content">
+            <span class="radio-label">Strict mode</span>
+            <span class="radio-desc">Blocks all unrecognised apps and websites by default</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anatomy -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Circle</strong> (required) &mdash; 24px with full radius. Unselected: white with <code>--border-secondary</code>. Selected: <code>--brand-500</code> fill.</li>
+        <li><strong>Dot</strong> (selected only) &mdash; 8px white circle centered in the outer circle.</li>
+        <li><strong>Label</strong> (required) &mdash; Regular text-md in <code>--text-primary</code>. Placed to the right of the circle.</li>
+        <li><strong>Description</strong> (optional) &mdash; Regular text-sm in <code>--text-secondary</code>. Below the label.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content guidelines -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Each option label should be short and distinct from the others</li>
+        <li>Use parallel phrasing across all options in a group</li>
+        <li>Always pre-select a default option unless there is a strong reason not to</li>
+        <li>The group should have a visible question or title above it</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Token Reference -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Circle size</td><td>24px</td></tr>
+        <tr><td>Circle radius</td><td><code>--radius-full</code> (9999px)</td></tr>
+        <tr><td>Border (unselected)</td><td>2px solid <code>--border-secondary</code></td></tr>
+        <tr><td>Border (checked)</td><td>1.6px solid <code>--brand-500</code></td></tr>
+        <tr><td>Fill (default)</td><td><code>--bg-primary</code> (#ffffff)</td></tr>
+        <tr><td>Fill (checked)</td><td><code>--brand-500</code> (#0ba5ec)</td></tr>
+        <tr><td>Fill (hover)</td><td><code>--fg-brand-primary-hover</code> (#36bffa)</td></tr>
+        <tr><td>Dot size</td><td>8px white circle</td></tr>
+        <tr><td>Row gap</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Demo width</td><td>370px (production: fluid / parent width)</td></tr>
+        <tr><td>Group gap</td><td>12px between rows</td></tr>
+        <tr><td>Label</td><td>text-md regular (16px/24px), <code>--text-primary</code></td></tr>
+        <tr><td>Description</td><td>text-sm regular (14px/20px), <code>--text-secondary</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Use native <code>&lt;input type="radio"&gt;</code> with a shared <code>name</code> attribute, or <code>role="radio"</code> with <code>aria-checked</code> inside a <code>role="radiogroup"</code>.</li>
+        <li><strong>Labels:</strong> Associate a visible label via <code>&lt;label for&gt;</code> or <code>aria-labelledby</code>.</li>
+        <li><strong>Keyboard:</strong> Navigate between options with <kbd>Arrow Up</kbd> / <kbd>Arrow Down</kbd>. Selection follows focus. <kbd>Tab</kbd> moves to the next focusable element outside the group.</li>
+        <li><strong>Groups:</strong> Wrap in a <code>fieldset</code> with a <code>legend</code>, or use <code>role="radiogroup"</code> with <code>aria-labelledby</code>.</li>
+        <li><strong>Contrast:</strong> The brand-500 selected fill and white dot meet WCAG AA. The unselected border (<code>--border-secondary</code>) on white meets 3:1 for UI elements.</li>
+        <li><strong>Touch targets:</strong> The 24px circle is below the 44px minimum &mdash; ensure the tap area extends to include the label row (full 370px width).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script>
+function selectRadio(el) {
+  var group = el.closest('[data-radio-group]');
+  if (!group) return;
+  group.querySelectorAll('.radio').forEach(function(r) { r.classList.remove('checked'); });
+  el.classList.add('checked');
+}
+</script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

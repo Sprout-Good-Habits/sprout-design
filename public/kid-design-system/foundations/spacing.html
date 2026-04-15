@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Spacing</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+/* ── Bar chart ── */
+.bar-chart { display: flex; flex-direction: column; gap: var(--spacing-sm); margin: var(--spacing-xl) 0 var(--spacing-3xl); }
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+.bar-label {
+  width: 56px;
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-align: right;
+  flex-shrink: 0;
+}
+.bar-track {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+.bar-fill {
+  height: var(--spacing-lg);
+  border-radius: var(--radius-sm);
+  background: var(--brand-400);
+  transition: width 0.3s ease;
+}
+.bar-value {
+  font-size: var(--font-size-text-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  min-width: 48px;
+}
+
+/* ── Padding demos ── */
+.padding-demos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3xl);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.padding-demo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+.padding-demo-label {
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+.padding-box-outer {
+  background: var(--brand-100);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.padding-box-inner {
+  background: var(--brand-400);
+  border-radius: var(--radius-xs);
+  width: 40px;
+  height: 40px;
+}
+.padding-demo-token {
+  font-size: var(--font-size-text-xs);
+  color: var(--text-tertiary);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+/* ── Usage table ── */
+.usage-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-text-sm);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.usage-table th {
+  text-align: left;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 2px solid var(--border-primary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+.usage-table td {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-secondary);
+  color: var(--text-secondary);
+}
+.usage-table code {
+  font-size: 12px;
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+<div class="breadcrumb" id="breadcrumb"></div>
+
+  <div class="page-header">
+    <div class="sec-title">Spacing</div>
+    <div class="sec-desc">Sprout uses a 13-step spacing scale based on design tokens. Use these values for all padding, margin, and gap properties to keep layouts consistent and predictable.</div>
+  </div>
+
+  <!-- ── Spacing Scale ── -->
+  <div class="doc-section">
+    <h2>Spacing Scale</h2>
+    <p>Every value in the scale maps to a CSS custom property. The bars below show relative size at a glance.</p>
+    <div class="bar-chart">
+      <div class="bar-row"><span class="bar-label">xxs</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-xxs) * 3)"></div><span class="bar-value">2 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">xs</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-xs) * 3)"></div><span class="bar-value">4 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">sm</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-sm) * 3)"></div><span class="bar-value">6 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">md</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-md) * 3)"></div><span class="bar-value">8 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">lg</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-lg) * 3)"></div><span class="bar-value">12 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">xl</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-xl) * 3)"></div><span class="bar-value">16 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">2xl</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-2xl) * 3)"></div><span class="bar-value">20 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">3xl</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-3xl) * 3)"></div><span class="bar-value">24 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">4xl</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-4xl) * 3)"></div><span class="bar-value">32 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">5xl</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-5xl) * 3)"></div><span class="bar-value">40 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">6xl</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-6xl) * 3)"></div><span class="bar-value">48 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">7xl</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-7xl) * 3)"></div><span class="bar-value">64 px</span></div></div>
+      <div class="bar-row"><span class="bar-label">8xl</span><div class="bar-track"><div class="bar-fill" style="width:calc(var(--spacing-8xl) * 3)"></div><span class="bar-value">80 px</span></div></div>
+    </div>
+  </div>
+
+  <!-- ── Token Reference ── -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All spacing tokens available in <code>tokens.css</code>.</p>
+    <table class="token-table">
+      <thead>
+        <tr><th>Token</th><th>Value</th><th>CSS Variable</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>xxs</td><td>2 px</td><td><code>var(--spacing-xxs)</code></td></tr>
+        <tr><td>xs</td><td>4 px</td><td><code>var(--spacing-xs)</code></td></tr>
+        <tr><td>sm</td><td>6 px</td><td><code>var(--spacing-sm)</code></td></tr>
+        <tr><td>md</td><td>8 px</td><td><code>var(--spacing-md)</code></td></tr>
+        <tr><td>lg</td><td>12 px</td><td><code>var(--spacing-lg)</code></td></tr>
+        <tr><td>xl</td><td>16 px</td><td><code>var(--spacing-xl)</code></td></tr>
+        <tr><td>2xl</td><td>20 px</td><td><code>var(--spacing-2xl)</code></td></tr>
+        <tr><td>3xl</td><td>24 px</td><td><code>var(--spacing-3xl)</code></td></tr>
+        <tr><td>4xl</td><td>32 px</td><td><code>var(--spacing-4xl)</code></td></tr>
+        <tr><td>5xl</td><td>40 px</td><td><code>var(--spacing-5xl)</code></td></tr>
+        <tr><td>6xl</td><td>48 px</td><td><code>var(--spacing-6xl)</code></td></tr>
+        <tr><td>7xl</td><td>64 px</td><td><code>var(--spacing-7xl)</code></td></tr>
+        <tr><td>8xl</td><td>80 px</td><td><code>var(--spacing-8xl)</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Padding Demos ── -->
+  <div class="doc-section">
+    <h2>Padding Demos</h2>
+    <p>Visual examples of padding applied around a fixed-size inner element. The blue area represents the padding space.</p>
+    <div class="padding-demos">
+      <div class="padding-demo-item">
+        <span class="padding-demo-label">md (8)</span>
+        <div class="padding-box-outer" style="padding:var(--spacing-md)"><div class="padding-box-inner"></div></div>
+        <span class="padding-demo-token">--spacing-md</span>
+      </div>
+      <div class="padding-demo-item">
+        <span class="padding-demo-label">lg (12)</span>
+        <div class="padding-box-outer" style="padding:var(--spacing-lg)"><div class="padding-box-inner"></div></div>
+        <span class="padding-demo-token">--spacing-lg</span>
+      </div>
+      <div class="padding-demo-item">
+        <span class="padding-demo-label">xl (16)</span>
+        <div class="padding-box-outer" style="padding:var(--spacing-xl)"><div class="padding-box-inner"></div></div>
+        <span class="padding-demo-token">--spacing-xl</span>
+      </div>
+      <div class="padding-demo-item">
+        <span class="padding-demo-label">2xl (20)</span>
+        <div class="padding-box-outer" style="padding:var(--spacing-2xl)"><div class="padding-box-inner"></div></div>
+        <span class="padding-demo-token">--spacing-2xl</span>
+      </div>
+      <div class="padding-demo-item">
+        <span class="padding-demo-label">3xl (24)</span>
+        <div class="padding-box-outer" style="padding:var(--spacing-3xl)"><div class="padding-box-inner"></div></div>
+        <span class="padding-demo-token">--spacing-3xl</span>
+      </div>
+      <div class="padding-demo-item">
+        <span class="padding-demo-label">4xl (32)</span>
+        <div class="padding-box-outer" style="padding:var(--spacing-4xl)"><div class="padding-box-inner"></div></div>
+        <span class="padding-demo-token">--spacing-4xl</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Usage Guidelines ── -->
+  <div class="doc-section">
+    <h2>Usage Guidelines</h2>
+    <p>Recommended spacing tokens for common UI patterns. These keep the interface consistent without guesswork.</p>
+    <table class="usage-table">
+      <thead>
+        <tr><th>Context</th><th>Token</th><th>Value</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Icon gaps</td>
+          <td><code>var(--spacing-md)</code></td>
+          <td>8 px</td>
+          <td>Gap between icon and adjacent text or elements</td>
+        </tr>
+        <tr>
+          <td>Button padding</td>
+          <td><code>var(--spacing-lg)</code></td>
+          <td>12 px</td>
+          <td>Internal horizontal and vertical padding</td>
+        </tr>
+        <tr>
+          <td>Card padding</td>
+          <td><code>var(--spacing-xl)</code> &ndash; <code>var(--spacing-3xl)</code></td>
+          <td>16 &ndash; 24 px</td>
+          <td>Scales with card size; compact cards use xl, standard use 2xl&ndash;3xl</td>
+        </tr>
+        <tr>
+          <td>Section gaps</td>
+          <td><code>var(--spacing-4xl)</code></td>
+          <td>32 px</td>
+          <td>Vertical space between major content sections</td>
+        </tr>
+        <tr>
+          <td>Page padding</td>
+          <td><code>var(--spacing-6xl)</code></td>
+          <td>48 px</td>
+          <td>Outer padding of the main content area</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

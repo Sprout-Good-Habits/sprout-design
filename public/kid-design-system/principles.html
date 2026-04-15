@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Principles</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/progress-bar.css">
+<style>
+/* Rule cards */
+.rule-card {
+  display: flex;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--spacing-lg);
+}
+.rule-num {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--red-50); color: var(--red-700);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-text-sm);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.rule-text h4 {
+  font-size: var(--font-size-text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+.rule-text p {
+  font-size: var(--font-size-text-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm);
+}
+
+/* Do / Don't pairs */
+.do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-xl); margin: var(--spacing-xl) 0 var(--spacing-3xl); }
+.do-box, .dont-box {
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 22px;
+  overflow-x: auto;
+}
+.do-box {
+  background: var(--green-50);
+  border: 1px solid var(--green-200);
+}
+.dont-box {
+  background: var(--red-50);
+  border: 1px solid var(--red-200);
+}
+.do-label, .dont-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-md);
+  display: block;
+}
+.do-label { color: var(--green-700); }
+.dont-label { color: var(--red-700); }
+.do-box code, .dont-box code {
+  display: block;
+  white-space: pre;
+  font-size: 13px;
+  line-height: 22px;
+  color: var(--text-primary);
+}
+
+/* Code block */
+.code-block {
+  background: var(--gray-900);
+  color: var(--gray-100);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 22px;
+  overflow-x: auto;
+  margin: var(--spacing-lg) 0 var(--spacing-3xl);
+}
+.code-block .comment { color: var(--gray-500); }
+.code-block .tag { color: var(--brand-300); }
+.code-block .attr { color: var(--orange-300); }
+.code-block .string { color: var(--green-300); }
+.code-block .keyword { color: var(--violet-300); }
+
+/* Methodology cards */
+.method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.method-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+}
+.method-card h4 {
+  font-size: var(--font-size-text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--line-height-text-md);
+}
+.method-card p {
+  font-size: var(--font-size-text-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm);
+}
+.method-card code {
+  font-size: 12px;
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+}
+
+/* Info note */
+.info-note {
+  background: var(--brand-50);
+  border: 1px solid var(--brand-200);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  font-size: 13px;
+  color: var(--gray-700);
+  line-height: var(--line-height-text-sm);
+  margin: var(--spacing-xl) 0;
+}
+.info-note strong { color: var(--brand-700); }
+
+/* Guideline list */
+.guideline-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.guideline-list li {
+  padding: var(--spacing-md) 0;
+  font-size: var(--font-size-text-md);
+  line-height: var(--line-height-text-md);
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-secondary);
+  display: flex;
+  gap: var(--spacing-md);
+}
+.guideline-list li:last-child { border-bottom: none; }
+.guideline-bullet {
+  color: var(--red-500);
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+}
+
+@media(max-width:768px) {
+  .do-dont, .method-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Principles</div>
+    <div class="sec-desc">Six non-negotiable rules that keep every implementation faithful to the Sprout design system. Break one and the system drifts.</div>
+  </div>
+
+  <!-- ── The 6 Rules ── -->
+  <div class="doc-section">
+    <h2>The Rules</h2>
+    <p>Every page, component, and prototype must follow these six principles without exception.</p>
+
+    <div class="rule-card"><div class="rule-num">1</div><div class="rule-text"><h4>Never hardcode colors</h4><p>Use <code>var(--token-name)</code>, not <code>#hex</code>. If you catch yourself writing a hex value, find the matching token in <code>tokens.css</code>.</p></div></div>
+    <div class="rule-card"><div class="rule-num">2</div><div class="rule-text"><h4>Never redeclare tokens</h4><p>Link to <code>tokens.css</code> via <code>&lt;link&gt;</code> &mdash; do NOT copy token definitions into <code>:root</code> or <code>&lt;style&gt;</code> blocks. Redeclaring creates drift.</p></div></div>
+    <div class="rule-card"><div class="rule-num">3</div><div class="rule-text"><h4>Never inline shared assets</h4><p>If an SVG exists in <code>/brand/assets/</code>, reference it with <code>&lt;img src="..."&gt;</code>. Never paste its raw markup into the HTML.</p></div></div>
+    <div class="rule-card"><div class="rule-num">4</div><div class="rule-text"><h4>Never invent components</h4><p>Check the component library first. If it exists, use the documented pattern exactly. If it doesn't, propose it before building.</p></div></div>
+    <div class="rule-card"><div class="rule-num">5</div><div class="rule-text"><h4>Always pair font-size with line-height</h4><p><code>--font-size-text-md</code> goes with <code>--line-height-text-md</code>. Using one without the other breaks vertical rhythm.</p></div></div>
+    <div class="rule-card"><div class="rule-num">6</div><div class="rule-text"><h4>Always use the spacing scale</h4><p>No magic numbers like <code>padding: 15px</code>. Use <code>var(--spacing-xl)</code> (16px) or the nearest scale step.</p></div></div>
+  </div>
+
+  <!-- ── Do / Don't: Rule 1 ── -->
+  <div class="doc-section">
+    <h2>Rule 1: Never Hardcode Colors</h2>
+    <p>Every color in the system has a semantic token. Use the token so the palette can evolve without touching every file.</p>
+    <div class="do-dont">
+      <div class="do-box">
+        <span class="do-label">Do</span>
+        <code>color: var(--text-primary);
+background: var(--bg-secondary);
+border: 1px solid var(--border-primary);</code>
+      </div>
+      <div class="dont-box">
+        <span class="dont-label">Don't</span>
+        <code>color: #181d27;
+background: #fafafa;
+border: 1px solid #d5d7da;</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Do / Don't: Rule 2 ── -->
+  <div class="doc-section">
+    <h2>Rule 2: Never Redeclare Tokens</h2>
+    <p>Link the token stylesheet once. Never copy variable definitions into your own <code>:root</code> or <code>&lt;style&gt;</code> block.</p>
+    <div class="do-dont">
+      <div class="do-box">
+        <span class="do-label">Do</span>
+        <code>&lt;link rel="stylesheet" href="/tokens.css"&gt;
+
+/* Then use tokens freely */
+.card { background: var(--bg-secondary); }</code>
+      </div>
+      <div class="dont-box">
+        <span class="dont-label">Don't</span>
+        <code>:root {
+  --bg-secondary: #fafafa;
+  --text-primary: #181d27;
+}
+.card { background: var(--bg-secondary); }</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Do / Don't: Rule 3 ── -->
+  <div class="doc-section">
+    <h2>Rule 3: Never Inline Shared Assets</h2>
+    <p>SVGs and images in <code>/brand/assets/</code> must be referenced by path. Inlining bloats the page and breaks sync.</p>
+    <div class="do-dont">
+      <div class="do-box">
+        <span class="do-label">Do</span>
+        <code>&lt;img src="/brand/assets/grass.svg" alt=""&gt;
+&lt;img src="/brand/assets/character-sprout-avatar.svg"
+     alt="Sprout"&gt;</code>
+      </div>
+      <div class="dont-box">
+        <span class="dont-label">Don't</span>
+        <code>&lt;svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 400 80"&gt;
+  &lt;path d="M0,40 C50,0 100,80..."
+        fill="#86cb3c"/&gt;
+&lt;/svg&gt;</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Do / Don't: Rule 5 ── -->
+  <div class="doc-section">
+    <h2>Rule 5: Always Pair Font-Size with Line-Height</h2>
+    <p>Every <code>font-size</code> token has a matching <code>line-height</code> token. Using one without the other breaks vertical rhythm and readability.</p>
+    <div class="do-dont">
+      <div class="do-box">
+        <span class="do-label">Do</span>
+        <code>font-size: var(--font-size-text-md);
+line-height: var(--line-height-text-md);
+
+font-size: var(--font-size-display-sm);
+line-height: var(--line-height-display-sm);</code>
+      </div>
+      <div class="dont-box">
+        <span class="dont-label">Don't</span>
+        <code>font-size: var(--font-size-text-md);
+/* no line-height */
+
+font-size: 16px;
+line-height: 1.5;</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Do / Don't: Rule 6 ── -->
+  <div class="doc-section">
+    <h2>Rule 6: Always Use the Spacing Scale</h2>
+    <p>The spacing scale covers every value you need. No magic numbers, no pixel guessing.</p>
+    <div class="do-dont">
+      <div class="do-box">
+        <span class="do-label">Do</span>
+        <code>padding: var(--spacing-xl);       /* 16px */
+gap: var(--spacing-lg);            /* 12px */
+margin-bottom: var(--spacing-4xl); /* 32px */</code>
+      </div>
+      <div class="dont-box">
+        <span class="dont-label">Don't</span>
+        <code>padding: 15px;
+gap: 11px;
+margin-bottom: 30px;</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CSS Methodology ── -->
+  <div class="doc-section">
+    <h2>CSS Methodology</h2>
+    <p>How we write and organize CSS across the design system.</p>
+
+    <div class="method-grid">
+      <div class="method-card">
+        <h4>Inline Style Blocks</h4>
+        <p>Each page uses a <code>&lt;style&gt;</code> block in the <code>&lt;head&gt;</code> for page-specific CSS. No external component stylesheets &mdash; everything is scoped and self-contained.</p>
+      </div>
+      <div class="method-card">
+        <h4>Shared CSS Conflicts</h4>
+        <p>Global files like <code>shared.css</code> define rules for common class names (e.g., <code>.progress-bar</code>). Always check for conflicts and override explicitly in your page styles.</p>
+      </div>
+      <div class="method-card">
+        <h4>Inter Font Family</h4>
+        <p>All text uses Inter via <code>var(--font-family-body)</code> or <code>var(--font-family-display)</code>. Load from Google Fonts or the system font stack fallback.</p>
+      </div>
+      <div class="method-card">
+        <h4>TossFace Icons</h4>
+        <p>All emoji icons use the TossFace webfont &mdash; never system emoji. Load via <code>@font-face</code> from <code>static.toss.im</code> and set <code>font-family: 'TossFace'</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Additional Guidelines ── -->
+  <div class="doc-section">
+    <h2>Additional Guidelines</h2>
+    <p>Beyond the six rules, keep these principles in mind for every implementation.</p>
+
+    <ul class="guideline-list">
+      <li><span class="guideline-bullet">&bull;</span> <span><strong>Semantic tokens first.</strong> Use <code>--text-primary</code>, <code>--bg-secondary</code>, <code>--border-primary</code> before reaching for raw scale values like <code>--gray-700</code>.</span></li>
+      <li><span class="guideline-bullet">&bull;</span> <span><strong>Raw scales only when needed.</strong> Use <code>--brand-300</code> or <code>--sprout-50</code> only when no semantic token covers the use case (e.g., decorative accents, custom illustrations).</span></li>
+      <li><span class="guideline-bullet">&bull;</span> <span><strong>Verify tokens with Figma.</strong> Run <code>get_variable_defs</code> against the Figma file to confirm exact token names &mdash; never guess from screenshots.</span></li>
+      <li><span class="guideline-bullet">&bull;</span> <span><strong>Accessibility by default.</strong> Semantic HTML, proper heading hierarchy, keyboard access, WCAG AA contrast (4.5:1 text, 3:1 UI).</span></li>
+      <li><span class="guideline-bullet">&bull;</span> <span><strong>Reference assets by path.</strong> All SVGs and images in <code>/brand/assets/</code> must be loaded via <code>&lt;img src&gt;</code>, never inlined or duplicated.</span></li>
+      <li><span class="guideline-bullet">&bull;</span> <span><strong>Animation timing from the scale.</strong> Fast feedback at <code>0.15s</code>, transitions at <code>0.2s</code>, enters at <code>300ms ease-out</code>, exits at <code>250ms ease-in</code>.</span></li>
+    </ul>
+
+    <div class="info-note">
+      <strong>Tip:</strong> When in doubt, check the existing component pages in the UX library. They demonstrate every pattern and token pairing in context.
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

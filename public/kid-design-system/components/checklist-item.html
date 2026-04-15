@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System: Checklist Item</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "ChecklistItem",
+  "slug": "checklist-item",
+  "intent": {
+    "purpose": "Represent a single step in a parent-assigned checklist quest, showing task identity, proof requirement, and completion state",
+    "taskContext": ["checklist-quest", "morning-routine", "daily-habits", "quest-lobby"],
+    "sentiment": ["playful", "encouraging"]
+  },
+  "composition": {
+    "requires": ["task-emoji", "task-name", "proof-type", "status"],
+    "allows": ["status-flag", "action-button", "retry-message", "status-emoji"],
+    "forbids": ["nested-interactive", "multiple-actions"]
+  },
+  "variants": [
+    { "name": "Card (Tier 2)", "useWhen": "Tier 2 (ages 7-9) checklist quest lobby, displayed in a horizontal carousel" },
+    { "name": "Row (Tier 3)", "useWhen": "Tier 3 (ages 10-13) checklist quest lobby, displayed in a vertical list" }
+  ],
+  "sizes": [
+    { "name": "Card", "useWhen": "370px wide, auto height. 88px emoji avatar, 18px semibold title, 42px action button" },
+    { "name": "Row", "useWhen": "370px wide, 48px tall. 24px emoji, 16px regular title" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile"],
+    "placement": ["carousel", "list"]
+  },
+  "relationships": {
+    "related": ["Task Card", "Progress Bar", "Buttons"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["ChecklistLobby"]
+  },
+  "states": ["to-do", "done", "warning"],
+  "proofTypes": ["photo", "video", "chat"],
+  "accessibility": {
+    "role": "article",
+    "keyboard": ["Tab", "Enter"],
+    "ariaAttributes": ["aria-label", "aria-disabled"],
+    "minTouchTarget": "44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/kid-design-system/tokens.css">
+<link rel="stylesheet" href="/kid-design-system/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/buttons.css">
+<link rel="stylesheet" href="/kid-design-system/components/card-avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/checklist-item.css">
+<style>
+/* ── Sentiment tags ── */
+.sentiment-tag {
+  display:inline-block;
+  font-size:var(--font-size-text-xs, 12px);
+  font-weight:var(--font-weight-medium, 500);
+  line-height:var(--line-height-text-xs, 18px);
+  padding:var(--spacing-xxs, 2px) var(--spacing-md, 8px);
+  border-radius:var(--radius-full, 9999px);
+  vertical-align:middle;
+  margin-left:var(--spacing-md, 8px);
+}
+.sentiment-neutral { background:var(--gray-50, #fafafa); color:var(--text-secondary, #414651); border:1px solid var(--border-secondary, #e9eaeb); }
+.sentiment-positive { background:var(--green-50, #ecfdf3); color:var(--green-700, #067647); }
+.sentiment-warning { background:var(--yellow-50, #fefbe8); color:var(--yellow-700, #a15c07); }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+
+  <div class="page-header">
+    <div class="sec-title">Checklist Item</div>
+    <div class="sec-desc">Represents a single step in a parent-assigned checklist quest (e.g. morning routine). Each item shows a task, what proof is required, and the current completion state. Appears as a card in a Tier 2 carousel or a compact row in a Tier 3 list.</div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use inside a checklist quest lobby to show each step the kid needs to complete.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when a parent has configured required proof (photo, video, or chat) for each step.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for generic tasks on the home screen. Use <a href="/kid-design-system/components/task-card.html" style="color:var(--brand-600)">Task Card</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for non-quest items or items without a proof requirement.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);padding:var(--spacing-3xl, 24px);">
+      <div style="display:flex;gap:var(--spacing-4xl,32px);flex-wrap:wrap;align-items:flex-start;justify-content:center;">
+
+        <!-- Tier 2 Card -->
+        <div class="cl-demo-stack">
+          <div class="cl-card">
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-secondary btn-sm">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F7;&#xFE0F;</span></div>
+              TAKE PHOTO
+            </button>
+          </div>
+          <span class="demo-label">Card (Tier 2)</span>
+        </div>
+
+        <!-- Tier 3 Row -->
+        <div class="cl-demo-stack">
+          <div class="cl-row">
+            <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+            <div class="cl-row-name">Get dressed</div>
+            <div class="cl-row-proof"><span class="cl-emoji-xs">&#x1F4F7;&#xFE0F;</span></div>
+          </div>
+          <span class="demo-label">Row (Tier 3)</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>Each checklist item moves through three states driven by the proof lifecycle. State affects the visual treatment differently across the two formats.</p>
+
+    <h3>To do <span class="sentiment-tag sentiment-neutral">Default</span></h3>
+    <p>The task has not been started. The kid can tap the action button to submit proof.</p>
+
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="cl-demo-grid">
+        <!-- Tier 2 Card: To do -->
+        <div class="cl-demo-stack">
+          <div class="cl-card">
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-secondary btn-sm">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F7;&#xFE0F;</span></div>
+              TAKE PHOTO
+            </button>
+          </div>
+          <span class="demo-label">Card &middot; Photo</span>
+        </div>
+        <div class="cl-demo-stack">
+          <div class="cl-card">
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-secondary btn-sm">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F9;&#xFE0F;</span></div>
+              TAKE PHOTO
+            </button>
+          </div>
+          <span class="demo-label">Card &middot; Video</span>
+        </div>
+        <div class="cl-demo-stack">
+          <div class="cl-card">
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-secondary btn-sm">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4AC;</span></div>
+              TAKE PHOTO
+            </button>
+          </div>
+          <span class="demo-label">Card &middot; Chat</span>
+        </div>
+      </div>
+      <div style="margin-top:var(--spacing-3xl,24px);">
+        <div class="cl-demo-grid">
+          <!-- Tier 3 Row: To do -->
+          <div class="cl-demo-stack">
+            <div class="cl-row">
+              <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+              <div class="cl-row-name">Get dressed</div>
+              <div class="cl-row-proof"><span class="cl-emoji-xs">&#x1F4F7;&#xFE0F;</span></div>
+            </div>
+            <span class="demo-label">Row &middot; Photo</span>
+          </div>
+          <div class="cl-demo-stack">
+            <div class="cl-row">
+              <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+              <div class="cl-row-name">Get dressed</div>
+              <div class="cl-row-proof"><span class="cl-emoji-xs">&#x1F4F9;&#xFE0F;</span></div>
+            </div>
+            <span class="demo-label">Row &middot; Video</span>
+          </div>
+          <div class="cl-demo-stack">
+            <div class="cl-row">
+              <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+              <div class="cl-row-name">Get dressed</div>
+              <div class="cl-row-proof"><span class="cl-emoji-xs">&#x1F4AC;</span></div>
+            </div>
+            <span class="demo-label">Row &middot; Chat</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Warning <span class="sentiment-tag sentiment-warning">Needs retry</span></h3>
+    <p>The parent has rejected the submitted proof. In Tier 2, a yellow flag ribbon appears on the top-right corner and the button label changes to "TRY AGAIN". In Tier 3, the row expands to reveal a retry message and action button below.</p>
+
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="cl-demo-grid">
+        <!-- Tier 2 Card: Warning -->
+        <div class="cl-demo-stack">
+          <div class="cl-card cl-card--warning">
+            <div class="cl-flag cl-flag--warning">
+              <div class="cl-flag-body"><span class="cl-flag-icon">&#x26A0;&#xFE0F;</span></div>
+              <svg class="cl-flag-tail" viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="0.01"/>
+                <path d="M40 0H0L37.6 7.5C38.4 7.75 40 7 40 5.5V0Z"/>
+              </svg>
+            </div>
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-secondary btn-sm">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F7;&#xFE0F;</span></div>
+              TRY AGAIN
+            </button>
+          </div>
+          <span class="demo-label">Card &middot; Photo</span>
+        </div>
+        <div class="cl-demo-stack">
+          <div class="cl-card cl-card--warning">
+            <div class="cl-flag cl-flag--warning">
+              <div class="cl-flag-body"><span class="cl-flag-icon">&#x26A0;&#xFE0F;</span></div>
+              <svg class="cl-flag-tail" viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="0.01"/>
+                <path d="M40 0H0L37.6 7.5C38.4 7.75 40 7 40 5.5V0Z"/>
+              </svg>
+            </div>
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-secondary btn-sm">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F9;&#xFE0F;</span></div>
+              TRY AGAIN
+            </button>
+          </div>
+          <span class="demo-label">Card &middot; Video</span>
+        </div>
+        <div class="cl-demo-stack">
+          <div class="cl-card cl-card--warning">
+            <div class="cl-flag cl-flag--warning">
+              <div class="cl-flag-body"><span class="cl-flag-icon">&#x26A0;&#xFE0F;</span></div>
+              <svg class="cl-flag-tail" viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="0.01"/>
+                <path d="M40 0H0L37.6 7.5C38.4 7.75 40 7 40 5.5V0Z"/>
+              </svg>
+            </div>
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-secondary btn-sm">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4AC;</span></div>
+              TRY AGAIN
+            </button>
+          </div>
+          <span class="demo-label">Card &middot; Chat</span>
+        </div>
+      </div>
+      <div style="margin-top:var(--spacing-3xl,24px);">
+        <div class="cl-demo-grid">
+          <!-- Tier 3 Row: Warning expanded -->
+          <div class="cl-demo-stack">
+            <div class="cl-row cl-row--warning-expanded">
+              <div class="cl-row-inner">
+                <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+                <div class="cl-row-name">Get dressed</div>
+                <div class="cl-row-proof"><span class="cl-emoji-xs">&#x26A0;&#xFE0F;</span></div>
+              </div>
+              <div class="cl-row-action">
+                <div class="cl-row-action-desc">Take a new photo to complete this</div>
+                <button class="btn-sprout btn-secondary btn-md">TRY AGAIN</button>
+              </div>
+            </div>
+            <span class="demo-label">Row &middot; Photo</span>
+          </div>
+          <div class="cl-demo-stack">
+            <div class="cl-row cl-row--warning-expanded">
+              <div class="cl-row-inner">
+                <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+                <div class="cl-row-name">Get dressed</div>
+                <div class="cl-row-proof"><span class="cl-emoji-xs">&#x26A0;&#xFE0F;</span></div>
+              </div>
+              <div class="cl-row-action">
+                <div class="cl-row-action-desc">Take a new video to complete this</div>
+                <button class="btn-sprout btn-secondary btn-md">TRY AGAIN</button>
+              </div>
+            </div>
+            <span class="demo-label">Row &middot; Video</span>
+          </div>
+          <div class="cl-demo-stack">
+            <div class="cl-row cl-row--warning-expanded">
+              <div class="cl-row-inner">
+                <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+                <div class="cl-row-name">Get dressed</div>
+                <div class="cl-row-proof"><span class="cl-emoji-xs">&#x26A0;&#xFE0F;</span></div>
+              </div>
+              <div class="cl-row-action">
+                <div class="cl-row-action-desc">Let's talk again to complete this</div>
+                <button class="btn-sprout btn-secondary btn-md">TRY AGAIN</button>
+              </div>
+            </div>
+            <span class="demo-label">Row &middot; Chat</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Done <span class="sentiment-tag sentiment-positive">Completed</span></h3>
+    <p>The parent has approved the submitted proof. In Tier 2, a green flag ribbon with a checkmark appears and the action button fills solid gray (<code>fg-disabled</code>). In Tier 3, the text gets a strikethrough and a &#x2705;&#xFE0F; emoji replaces the proof icon.</p>
+
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="cl-demo-grid">
+        <!-- Tier 2 Card: Done -->
+        <div class="cl-demo-stack">
+          <div class="cl-card cl-card--done">
+            <div class="cl-flag cl-flag--done">
+              <div class="cl-flag-body"><span class="cl-flag-icon">&#x2705;&#xFE0F;</span></div>
+              <svg class="cl-flag-tail" viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="0.01"/>
+                <path d="M40 0H0L37.6 7.5C38.4 7.75 40 7 40 5.5V0Z"/>
+              </svg>
+            </div>
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-sm cl-card-btn--done">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F7;&#xFE0F;</span></div>
+              TAKE PHOTO
+            </button>
+          </div>
+          <span class="demo-label">Card &middot; Photo</span>
+        </div>
+        <div class="cl-demo-stack">
+          <div class="cl-card cl-card--done">
+            <div class="cl-flag cl-flag--done">
+              <div class="cl-flag-body"><span class="cl-flag-icon">&#x2705;&#xFE0F;</span></div>
+              <svg class="cl-flag-tail" viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="0.01"/>
+                <path d="M40 0H0L37.6 7.5C38.4 7.75 40 7 40 5.5V0Z"/>
+              </svg>
+            </div>
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-sm cl-card-btn--done">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4F9;&#xFE0F;</span></div>
+              TAKE PHOTO
+            </button>
+          </div>
+          <span class="demo-label">Card &middot; Video</span>
+        </div>
+        <div class="cl-demo-stack">
+          <div class="cl-card cl-card--done">
+            <div class="cl-flag cl-flag--done">
+              <div class="cl-flag-body"><span class="cl-flag-icon">&#x2705;&#xFE0F;</span></div>
+              <svg class="cl-flag-tail" viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="0.01"/>
+                <path d="M40 0H0L37.6 7.5C38.4 7.75 40 7 40 5.5V0Z"/>
+              </svg>
+            </div>
+            <div class="card-avatar"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F455;</span></div></div>
+            <div class="cl-card-name">Get dressed</div>
+            <button class="btn-sprout btn-sm cl-card-btn--done">
+              <div class="cl-card-btn-icon"><span class="cl-emoji-sm">&#x1F4AC;</span></div>
+              TAKE PHOTO
+            </button>
+          </div>
+          <span class="demo-label">Card &middot; Chat</span>
+        </div>
+      </div>
+      <div style="margin-top:var(--spacing-3xl,24px);">
+        <div class="cl-demo-grid">
+          <!-- Tier 3 Row: Done -->
+          <div class="cl-demo-stack">
+            <div class="cl-row cl-row--done">
+              <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+              <div class="cl-row-name">Get dressed</div>
+              <div class="cl-row-proof"><span class="cl-emoji-xs">&#x2705;&#xFE0F;</span></div>
+            </div>
+            <span class="demo-label">Row &middot; Photo</span>
+          </div>
+          <div class="cl-demo-stack">
+            <div class="cl-row cl-row--done">
+              <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+              <div class="cl-row-name">Get dressed</div>
+              <div class="cl-row-proof"><span class="cl-emoji-xs">&#x2705;&#xFE0F;</span></div>
+            </div>
+            <span class="demo-label">Row &middot; Video</span>
+          </div>
+          <div class="cl-demo-stack">
+            <div class="cl-row cl-row--done">
+              <div class="cl-row-emoji"><span class="cl-emoji-xs">&#x1F455;</span></div>
+              <div class="cl-row-name">Get dressed</div>
+              <div class="cl-row-proof"><span class="cl-emoji-xs">&#x2705;&#xFE0F;</span></div>
+            </div>
+            <span class="demo-label">Row &middot; Chat</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+
+    <h3>Card (Tier 2)</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Emoji avatar</strong> (required): uses the shared <a href="/kid-design-system/components/card-avatar.html" style="color:var(--brand-600)">CardAvatar</a> component sized down to 88px (40px emoji) via a scoped override on <code>.cl-card .card-avatar</code>.</li>
+        <li><strong>Task name</strong> (required): text-lg (18px) semibold. The name of the checklist step assigned by the parent.</li>
+        <li><strong>Action button</strong> (required): 42px tall, full width, 12px border-radius, with a 20px proof icon and an uppercase label. Label is always "TAKE PHOTO" regardless of proof type. Changes to "TRY AGAIN" in warning state. In done state, the button fills solid <code>fg-disabled</code> (#a4a7ae) with <code>text-disabled</code> (#717680) text and no border/shadow.</li>
+        <li><strong>Status flag</strong> (conditional): a 40px bookmark ribbon anchored top-right, shown only in warning (yellow with &#x26A0;&#xFE0F;) and done (green with &#x2705;&#xFE0F;) states. Uses the same StatusFlag pattern as <a href="/kid-design-system/components/task-card.html" style="color:var(--brand-600)">Task Card</a>.</li>
+      </ul>
+    </div>
+
+    <h3>Row (Tier 3)</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Task emoji</strong> (required): 24px TossFace emoji on the left.</li>
+        <li><strong>Task name</strong> (required): text-md (16px) regular, flex-fills the row. Strikethrough when done.</li>
+        <li><strong>Proof icon</strong> (to-do only): 24px TossFace emoji on the right showing the required proof type (&#x1F4F7;&#xFE0F; camera, &#x1F4F9;&#xFE0F; video, &#x1F4AC; chat).</li>
+        <li><strong>Status emoji</strong> (done/warning): 24px TossFace emoji replacing the proof icon. &#x2705;&#xFE0F; for done, &#x26A0;&#xFE0F; for warning.</li>
+        <li><strong>Expanded action area</strong> (warning only): the row wraps in a <code>bg-secondary</code> container and reveals a retry message + full-width <a href="/kid-design-system/components/buttons.html" style="color:var(--brand-600)">btn-secondary btn-md</a> "TRY AGAIN" button below.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Proof types ════ -->
+  <div class="doc-section">
+    <h2>Proof Types</h2>
+    <p>Each checklist item requires one type of proof, configured by the parent when creating the quest. The proof type determines the icon and button label.</p>
+    <table class="token-table">
+      <thead><tr><th>Proof</th><th>Icon</th><th>Card button label</th><th>Row retry message</th></tr></thead>
+      <tbody>
+        <tr><td>Photo</td><td>&#x1F4F7;&#xFE0F; Camera</td><td>TAKE PHOTO / TRY AGAIN</td><td>Take a new photo to complete this</td></tr>
+        <tr><td>Video</td><td>&#x1F4F9;&#xFE0F; Video Camera</td><td>TAKE PHOTO / TRY AGAIN</td><td>Take a new video to complete this</td></tr>
+        <tr><td>Chat</td><td>&#x1F4AC; Speech Bubble</td><td>TAKE PHOTO / TRY AGAIN</td><td>Let's talk again to complete this</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Placement ════ -->
+  <div class="doc-section">
+    <h2>Placement</h2>
+    <p>Checklist items live inside the quest lobby screen, below the Sprout character and progress bar.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> <strong>Tier 2 (ages 7-9):</strong> Display cards in a horizontal carousel with 12px gaps. Cards snap to center. The next card peeks from the right edge to suggest scrollability.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> <strong>Tier 3 (ages 10-13):</strong> Stack rows vertically with 16px gaps inside the lobby container. The list scrolls vertically within the content area.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't mix card and row formats in the same lobby. Tier determines the format.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't show more than one expanded warning row at a time in the Tier 3 list.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ State transitions ════ -->
+  <div class="doc-section">
+    <h2>State Transitions</h2>
+    <p>The checklist item lifecycle follows the proof submission and parent review flow:</p>
+    <div class="prose">
+      <ol>
+        <li><strong>To do:</strong> Kid has not yet submitted proof. Tapping the action button opens the camera, video recorder, or chat depending on proof type.</li>
+        <li><strong>Pending review:</strong> Proof has been submitted but not yet reviewed by the parent. (Visually identical to "to do" for the kid; the progress bar tracks this.)</li>
+        <li><strong>Done:</strong> Parent has approved the proof. The item is marked complete.</li>
+        <li><strong>Warning:</strong> Parent has rejected the proof. The item shows a retry state with a "TRY AGAIN" action.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ════ Content guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content</h2>
+    <div class="prose">
+      <ul>
+        <li>Task names are parent-authored and should be short (under 30 characters). The component truncates with ellipsis if needed.</li>
+        <li>Button labels are fixed system copy: "TAKE PHOTO" (all proof types) or "TRY AGAIN" (warning state). The proof icon differentiates the proof type, not the label.</li>
+        <li>Retry messages follow the pattern: "Take a new [proof type] to complete this" or "Let's talk again to complete this".</li>
+        <li>The task emoji is set by the parent or auto-assigned from a predefined set matching common routine tasks.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token Reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+
+    <h3>Card (Tier 2)</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Width</td><td>370px</td></tr>
+        <tr><td>Background</td><td><code>--bg-primary</code></td></tr>
+        <tr><td>Border</td><td>2px solid <code>--border-secondary</code></td></tr>
+        <tr><td>Border radius</td><td><code>--radius-2xl</code> (16px)</td></tr>
+        <tr><td>Padding</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Gap</td><td><code>--spacing-2xl</code> (20px)</td></tr>
+        <tr><td>Avatar</td><td><code>card-avatar--big</code> sized to 88px via <code>.cl-card</code> override, <code>--brand-200</code> background, 40px TossFace emoji</td></tr>
+        <tr><td>Task name</td><td><code>--font-size-text-lg</code> (18px) / semibold</td></tr>
+        <tr><td>Action button</td><td>42px tall, 12px radius, <code>--border-secondary</code> border, <code>shadow-secondary</code> (width: 100%)</td></tr>
+        <tr><td>Done button</td><td>Solid <code>--fg-disabled</code> (#a4a7ae) fill, <code>--text-disabled</code> (#717680) text, no border/shadow</td></tr>
+        <tr><td>Flag width</td><td>40px</td></tr>
+        <tr><td>Flag warning fill</td><td><code>--yellow-400</code></td></tr>
+        <tr><td>Flag done fill</td><td><code>--green-400</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Row (Tier 3)</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Width</td><td>370px</td></tr>
+        <tr><td>Background</td><td><code>--bg-primary</code></td></tr>
+        <tr><td>Border</td><td>2px solid <code>--border-secondary</code></td></tr>
+        <tr><td>Border radius</td><td><code>--radius-2xl</code> (16px)</td></tr>
+        <tr><td>Padding</td><td><code>--spacing-lg</code> (12px) <code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Gap</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Task name</td><td><code>--font-size-text-md</code> (16px) / regular</td></tr>
+        <tr><td>Done text</td><td>line-through, <code>--text-quaternary</code></td></tr>
+        <tr><td>Done indicator</td><td>24px &#x2705;&#xFE0F; TossFace emoji</td></tr>
+        <tr><td>Warning indicator</td><td>24px &#x26A0;&#xFE0F; TossFace emoji</td></tr>
+        <tr><td>Expanded bg</td><td><code>--bg-secondary</code></td></tr>
+        <tr><td>Retry button</td><td><code>btn-sprout btn-secondary btn-md</code> (width: 100%)</td></tr>
+        <tr><td>Shadow</td><td>0px 4px 0px 0px <code>--gray-200</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Each item uses <code>role="article"</code> with an <code>aria-label</code> describing the task name and current state (e.g. "Get dressed, to do, take photo").</li>
+        <li><strong>Keyboard:</strong> <kbd>Tab</kbd> moves focus between checklist items. <kbd>Enter</kbd> activates the proof action or retry button.</li>
+        <li><strong>Done state:</strong> The action button has <code>aria-disabled="true"</code> to indicate it cannot be activated.</li>
+        <li><strong>Warning state:</strong> Use <code>aria-live="polite"</code> on the retry message so screen readers announce when an item transitions to warning.</li>
+        <li><strong>Touch targets:</strong> The Tier 2 card button and Tier 3 expanded retry button both exceed the 44px minimum. The entire Tier 3 row is tappable.</li>
+        <li><strong>Status flag:</strong> Flag icons are decorative (<code>aria-hidden="true"</code>). State is conveyed via the <code>aria-label</code> on the parent element.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: April 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/kid-design-system/nav.js"></script>
+<script src="/kid-design-system/spec-renderer.js"></script>
+<script src="/kid-design-system/shell.js"></script>
+</body>
+</html>

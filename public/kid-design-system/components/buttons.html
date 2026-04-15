@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Buttons</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Button",
+  "slug": "buttons",
+  "intent": {
+    "purpose": "Trigger a single user action with tactile press feedback",
+    "taskContext": ["form-submission", "destructive-action", "navigation", "confirmation"],
+    "sentiment": ["positive", "neutral", "destructive", "warning", "success"]
+  },
+  "composition": {
+    "requires": ["label"],
+    "allows": ["icon-left", "spinner"],
+    "forbids": ["image", "badge", "nested-button"]
+  },
+  "variants": [
+    { "name": "Primary", "useWhen": "The most important action per screen", "pairWith": ["Secondary"], "sentiment": "positive", "limit": "One per view" },
+    { "name": "Secondary", "useWhen": "Dismissal or alternative actions", "pairWith": ["Primary"], "sentiment": "neutral" },
+    { "name": "Destructive", "useWhen": "Irreversible or high-risk actions", "pairWith": ["Secondary"], "sentiment": "destructive", "escalatesTo": "ConfirmationDialog" },
+    { "name": "Warning", "useWhen": "Cautionary actions requiring acknowledgement", "pairWith": ["Secondary"], "sentiment": "warning" },
+    { "name": "Success", "useWhen": "Positive confirmations like correct answers or completed tasks", "pairWith": ["Secondary"], "sentiment": "success" },
+    { "name": "Social", "useWhen": "Third-party sign-in flows — see Social Buttons page", "pairWith": [], "sentiment": "neutral" }
+  ],
+  "sizes": [
+    { "name": "Large", "useWhen": "Bottom-of-page CTAs, full-width mobile" },
+    { "name": "Medium", "useWhen": "Inline content, paired buttons" },
+    { "name": "Small", "useWhen": "Card actions, compact forms, tighter layouts" },
+    { "name": "Extra Small", "useWhen": "Compact inline actions in list items and dense contexts" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline", "pinned-bottom"]
+  },
+  "relationships": {
+    "related": ["ButtonUtility"],
+    "escalatesTo": ["Sheet", "ActionPrompt"],
+    "degradesTo": [],
+    "groupsWith": []
+  },
+  "states": ["default", "hover", "active", "loading", "disabled"],
+  "accessibility": {
+    "role": "button",
+    "keyboard": ["Enter", "Space"],
+    "ariaAttributes": ["aria-disabled", "aria-busy"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/buttons.css">
+<style>
+/* ── Sentiment tags ── */
+.sentiment-tag {
+  display:inline-block;
+  font-size:var(--font-size-text-xs, 12px);
+  font-weight:var(--font-weight-medium, 500);
+  line-height:var(--line-height-text-xs, 18px);
+  padding:var(--spacing-xxs, 2px) var(--spacing-md, 8px);
+  border-radius:var(--radius-full, 9999px);
+  vertical-align:middle;
+  margin-left:var(--spacing-md, 8px);
+}
+.sentiment-positive { background:var(--green-50, #ecfdf3); color:var(--green-700, #067647); }
+.sentiment-neutral { background:var(--gray-50, #fafafa); color:var(--text-secondary, #414651); border:1px solid var(--border-secondary, #e9eaeb); }
+.sentiment-destructive { background:var(--red-50, #fef3f2); color:var(--red-700, #b42318); }
+.sentiment-warning { background:var(--yellow-50, #fefbe8); color:var(--yellow-700, #a15c07); }
+.sentiment-success { background:var(--green-50, #ecfdf3); color:var(--green-700, #067647); }
+
+.state-cell .btn-sprout { width:100%; }
+
+/* ── Phone frame for placement demos ── */
+.phone-frame {
+  width:366px; height:680px;
+  border-radius:var(--radius-4xl, 24px); overflow:hidden;
+  position:relative;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  display:flex; flex-direction:column;
+  background:var(--bg-primary, #ffffff);
+}
+.phone-frame-branded {
+  background:var(--bg-sky, #e0f2fe);
+}
+.phone-screen-content {
+  flex:1; overflow:hidden;
+  display:flex; flex-direction:column;
+  gap:var(--spacing-lg, 12px);
+  padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);
+}
+.phone-placeholder {
+  background:var(--gray-100, #f5f5f5);
+  border:1px dashed var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-md, 8px);
+  height:var(--spacing-6xl, 48px);
+  display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-quaternary, #717680);
+}
+.phone-placeholder-lg { height:120px; }
+.phone-placeholder-xl { flex:1; }
+.phone-pinned-footer {
+  padding:var(--spacing-xl, 16px);
+  border-top:1px solid var(--border-secondary, #e9eaeb);
+  background:var(--bg-primary, #ffffff);
+}
+.phone-pinned-footer .btn-sprout { width:100%; }
+
+@media(max-width:768px) {
+  .btn-sprout { width:100%; }
+  .phone-frame { width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Buttons</div>
+    <div class="sec-desc">Primary, secondary, destructive, warning, and success action buttons with Sprout's signature raised shadow and press animation.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a button when the user needs to perform an action, like initiating a new flow or confirming something.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use a button to link to other pages or external resources, or for hierarchical navigation where the user navigates deeper into the product.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Primary</span>
+        <button class="btn-sprout btn-primary btn-lg">Continue</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Secondary</span>
+        <button class="btn-sprout btn-secondary btn-lg">Go back</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Destructive</span>
+        <button class="btn-sprout btn-destructive btn-lg">Delete account</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Warning</span>
+        <button class="btn-sprout btn-warning btn-lg">Got it</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Success</span>
+        <button class="btn-sprout btn-success btn-lg">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Hierarchy ════ -->
+  <div class="doc-section">
+    <h2>Hierarchy</h2>
+    <p>Hierarchy sets a visual ranking amongst the buttons displayed on the screen to help more important buttons take precedence over others. For third-party sign-in flows, see <a href="/components/social-buttons.html">Social Buttons</a>.</p>
+
+    <h3>Primary <span class="sentiment-tag sentiment-positive">Positive</span></h3>
+    <p>The most important action to move forward in a flow, acknowledge and dismiss, or finish a task. You should always have one primary button per page where relevant.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use one primary button per page to indicate the most important action.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use multiple primary buttons on a page.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Large</span>
+        <button class="btn-sprout btn-primary btn-lg">Continue</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Medium</span>
+        <button class="btn-sprout btn-primary btn-md">Continue</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-primary btn-sm">Continue</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-primary btn-xs">Add</button>
+      </div>
+    </div>
+
+    <h3>Secondary <span class="sentiment-tag sentiment-neutral">Neutral</span></h3>
+    <p>Use secondary for providing alternatives to the primary action, or when none of your actions are more important than the others.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use secondary buttons when you need to display multiple key actions at the same level of hierarchy.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t pair a secondary with a negative action &mdash; use secondary neutral or tertiary instead.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Large</span>
+        <button class="btn-sprout btn-secondary btn-lg">Go back</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Medium</span>
+        <button class="btn-sprout btn-secondary btn-md">Go back</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-secondary btn-sm">Go back</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-secondary btn-xs">Edit</button>
+      </div>
+    </div>
+
+    <h3>Destructive <span class="sentiment-tag sentiment-destructive">Destructive</span></h3>
+    <p>Use destructive for irreversible or high-risk actions like deleting an account, removing a child profile, or revoking consent.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a destructive button for actions that cannot be undone, such as deleting data or removing access.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use destructive for cancelable or low-risk actions &mdash; use secondary instead.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Large</span>
+        <button class="btn-sprout btn-destructive btn-lg">Delete account</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Medium</span>
+        <button class="btn-sprout btn-destructive btn-md">Delete account</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-destructive btn-sm">Delete</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-destructive btn-xs">Remove</button>
+      </div>
+    </div>
+
+    <h3>Warning <span class="sentiment-tag sentiment-warning">Warning</span></h3>
+    <p>Use warning for cautionary actions that require the user&rsquo;s attention or acknowledgement before proceeding. Common in time-sensitive scenarios, consent flows, or when the user is about to make a significant change.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a warning button when the action is not destructive but needs careful consideration, like skipping a step or accepting a time limit.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use warning for irreversible actions &mdash; use destructive instead.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Large</span>
+        <button class="btn-sprout btn-warning btn-lg">Got it</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Medium</span>
+        <button class="btn-sprout btn-warning btn-md">Got it</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-warning btn-sm">Got it</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-warning btn-xs">Skip</button>
+      </div>
+    </div>
+
+    <h3>Success <span class="sentiment-tag sentiment-success">Positive</span></h3>
+    <p>Use success for positive confirmations like correct answers, completed tasks, or earned rewards. Reinforces achievement and forward momentum in the experience.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a success button to confirm a positive outcome and move the user forward, such as &ldquo;Continue&rdquo; after a correct answer.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use success as a general-purpose green button &mdash; it should always be tied to a positive outcome context.</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Large</span>
+        <button class="btn-sprout btn-success btn-lg">Continue</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Medium</span>
+        <button class="btn-sprout btn-success btn-md">Continue</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Small</span>
+        <button class="btn-sprout btn-success btn-sm">Continue</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small</span>
+        <button class="btn-sprout btn-success btn-xs">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Sizes ════ -->
+  <div class="doc-section">
+    <h2>Sizes</h2>
+    <p>There are four button sizes &mdash; <strong>large</strong>, <strong>medium</strong>, <strong>small</strong>, and <strong>extra small</strong> &mdash; each used for different purposes.</p>
+
+    <h3>Large</h3>
+    <p>The large button is used to move users forward in a flow. It&rsquo;s used at full width on mobile. Large supports Toss Face icon left.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Large &middot; 48px &middot; 18px</span>
+        <button class="btn-sprout btn-primary btn-lg">Save changes</button>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use large button at the bottom of the page or content to aid the user to the next step.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use large buttons inside cards or list items.</li>
+      </ul>
+    </div>
+
+    <h3>Medium</h3>
+    <p>The medium button is used for inline content. Medium supports Toss Face icon left. Use inline with other buttons at the same size.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Medium &middot; 44px &middot; 16px</span>
+        <button class="btn-sprout btn-primary btn-md">Save changes</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Medium &middot; 44px &middot; 16px</span>
+        <button class="btn-sprout btn-secondary btn-md">Cancel</button>
+      </div>
+    </div>
+
+    <h3>Small</h3>
+    <p>The small button is used for card actions, compact forms, and tighter layouts. It uses a 12px border radius and 14px font to stay proportional. Small supports Toss Face icon left.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Small &middot; 36px &middot; 14px</span>
+        <button class="btn-sprout btn-primary btn-sm">Save changes</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Small &middot; 36px &middot; 14px</span>
+        <button class="btn-sprout btn-secondary btn-sm">Cancel</button>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use small buttons in cards, compact forms, or secondary actions in tighter layouts.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use small buttons as the main page-level CTA &mdash; use large or medium instead.</li>
+      </ul>
+    </div>
+
+    <h3>Extra Small</h3>
+    <p>The extra small button is a compact, content-width button for inline actions inside list items and dense layouts. It uses an 8px border radius and content-fit width, signaling a different context from the full-width sizes.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Extra Small &middot; 28px &middot; 14px</span>
+        <button class="btn-sprout btn-primary btn-xs">Add</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small &middot; 28px &middot; 14px</span>
+        <button class="btn-sprout btn-secondary btn-xs">Edit</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Extra Small &middot; 28px &middot; 14px</span>
+        <button class="btn-sprout btn-success btn-xs">Done</button>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use extra small buttons for inline actions in list items or compact layouts where a full-width button would be too heavy.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use extra small buttons as standalone CTAs &mdash; they are designed for inline contexts only.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Icons ════ -->
+  <div class="doc-section">
+    <h2>Icons</h2>
+    <p>Use icon left to support the message with a Toss Face icon. Use icons that best match the written content.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use an icon that reinforces the button&rsquo;s label and helps convey its meaning at a glance.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use icons for the sake of it &mdash; only add one when it genuinely aids comprehension.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Interaction ════ -->
+  <div class="doc-section">
+    <h2>Interaction</h2>
+    <p>Unless the button is disabled, the user can tap or click on it to perform the action assigned to it.</p>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>Every button has five states. The 3D shadow lifts the button off the surface by default and compresses on press, giving tactile feedback that works especially well for kids.</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(5, 1fr);">
+      <div class="state-cell"><span class="state-cell-label">Default</span></div>
+      <div class="state-cell"><span class="state-cell-label">Hover</span></div>
+      <div class="state-cell"><span class="state-cell-label">Active</span></div>
+      <div class="state-cell"><span class="state-cell-label">Loading</span></div>
+      <div class="state-cell"><span class="state-cell-label">Disabled</span></div>
+
+      <div class="state-cell">
+        <button class="btn-sprout btn-primary btn-md">Primary</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-primary btn-md" style="background:var(--brand-400, #36bffa)">Primary</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-primary btn-md state-active">Primary</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-primary btn-md state-loading"><span class="spinner"></span></button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-primary btn-md state-disabled">Primary</button>
+      </div>
+
+      <div class="state-cell">
+        <button class="btn-sprout btn-secondary btn-md">Secondary</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-secondary btn-md" style="background:var(--bg-secondary, #fafafa)">Secondary</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-secondary btn-md state-active">Secondary</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-secondary btn-md state-loading"><span class="spinner"></span></button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-secondary btn-md state-disabled">Secondary</button>
+      </div>
+
+      <div class="state-cell">
+        <button class="btn-sprout btn-destructive btn-md">Destructive</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-destructive btn-md" style="background:var(--red-400, #f97066)">Destructive</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-destructive btn-md state-active">Destructive</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-destructive btn-md state-loading"><span class="spinner"></span></button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-destructive btn-md state-disabled">Destructive</button>
+      </div>
+
+      <div class="state-cell">
+        <button class="btn-sprout btn-warning btn-md">Warning</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-warning btn-md" style="background:var(--yellow-400, #fac515)">Warning</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-warning btn-md state-active">Warning</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-warning btn-md state-loading"><span class="spinner"></span></button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-warning btn-md state-disabled">Warning</button>
+      </div>
+
+      <div class="state-cell">
+        <button class="btn-sprout btn-success btn-md">Success</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-success btn-md" style="background:var(--green-400, #47cd89)">Success</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-success btn-md state-active">Success</button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-success btn-md state-loading"><span class="spinner"></span></button>
+      </div>
+      <div class="state-cell">
+        <button class="btn-sprout btn-success btn-md state-disabled">Success</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Placement ════ -->
+  <div class="doc-section">
+    <h2>Placement</h2>
+    <p>The button should always be contextual, which is why it should be used inline with the content. This gives a stronger cohesion between the context and the action that it performs.</p>
+    <p>On mobile, if an action must be taken by the user &mdash; for example, to finalise something or proceed in the current process &mdash; it is best to keep the button visible all the time. You can do this by pinning it to the bottom of the screen, outside of the scrolling area. Please pin only one primary action per screen.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Inline</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen" style="height:580px;display:flex;flex-direction:column;">
+                <div style="flex:1;display:flex;flex-direction:column;gap:var(--spacing-lg, 12px);padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);">
+                  <div class="phone-placeholder">Header</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Content block</div>
+                  <button class="btn-sprout btn-primary btn-lg" style="width:100%">Save changes</button>
+                  <div class="phone-placeholder phone-placeholder-lg">More content</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Pinned to bottom</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen" style="height:580px;display:flex;flex-direction:column;">
+                <div style="flex:1;display:flex;flex-direction:column;gap:var(--spacing-lg, 12px);padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);padding-bottom:0;">
+                  <div class="phone-placeholder">Header</div>
+                  <div class="phone-placeholder phone-placeholder-lg">Content block</div>
+                  <div class="phone-placeholder phone-placeholder-lg">More content</div>
+                  <div class="phone-placeholder" style="flex:1">Scrollable area</div>
+                </div>
+                <div class="phone-pinned-footer">
+                  <button class="btn-sprout btn-primary btn-lg">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Content ════ -->
+  <div class="doc-section">
+    <h2>Content</h2>
+    <p>Button copy should:</p>
+    <div class="prose">
+      <ul>
+        <li>Start with a verb, like &ldquo;Play&rdquo; or &ldquo;Send&rdquo;</li>
+        <li>Be just a few words (ideally 1 or 2)</li>
+        <li>Describe the action &mdash; if someone only reads the button, they should know what will happen next</li>
+        <li>Connect to the content around it (for example, it might use the same word as the title)</li>
+        <li>Avoid using first person like &ldquo;me&rdquo;, &ldquo;my&rdquo;, and &ldquo;I&rdquo;</li>
+        <li>Be in sentence case (only capitalise the first letter of the first word)</li>
+        <li>Have no full stop</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All button styles map to Sprout design tokens. This table shows the exact token or value used for each property.</p>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Primary</th><th>Secondary</th><th>Destructive</th><th>Warning</th><th>Success</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>--brand-500</code></td><td><code>--bg-primary</code></td><td><code>--red-500</code></td><td><code>--yellow-500</code></td><td><code>--green-500</code></td></tr>
+        <tr><td>Hover bg</td><td><code>--brand-400</code></td><td><code>--bg-secondary</code></td><td><code>--red-400</code></td><td><code>--yellow-400</code></td><td><code>--green-400</code></td></tr>
+        <tr><td>Active bg</td><td><code>--brand-500</code></td><td><code>--bg-primary</code></td><td><code>--red-500</code></td><td><code>--yellow-500</code></td><td><code>--green-500</code></td></tr>
+        <tr><td>Disabled bg</td><td colspan="5"><code>--gray-300</code></td></tr>
+        <tr><td>Text color</td><td><code>--text-white</code></td><td><code>--text-secondary</code></td><td><code>--text-white</code></td><td><code>--text-white</code></td><td><code>--text-white</code></td></tr>
+        <tr><td>Disabled text</td><td colspan="5"><code>--text-disabled</code></td></tr>
+        <tr><td>Border</td><td>none</td><td><code>2px --border-secondary</code></td><td>none</td><td>none</td><td>none</td></tr>
+        <tr><td>Shadow</td><td><code>--brand-600</code></td><td><code>--gray-200</code></td><td><code>--red-600</code></td><td><code>--yellow-600</code></td><td><code>--green-600</code></td></tr>
+        <tr><td>Shadow offset</td><td>4px</td><td>4px</td><td>4px</td><td>4px</td><td>4px</td></tr>
+        <tr><td>Shadow (active)</td><td colspan="5">none</td></tr>
+        <tr><td>Border radius (lg, md)</td><td colspan="5"><code>--radius-2xl</code> (16px)</td></tr>
+        <tr><td>Border radius (sm)</td><td colspan="5"><code>--radius-xl</code> (12px)</td></tr>
+        <tr><td>Border radius (xs)</td><td colspan="5"><code>--radius-md</code> (8px)</td></tr>
+        <tr><td>Padding (lg)</td><td colspan="5"><code>--spacing-lg</code> (12px)</td></tr>
+        <tr><td>Padding (md)</td><td colspan="5"><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Padding (sm)</td><td colspan="5"><code>--spacing-sm</code> (6px)</td></tr>
+        <tr><td>Padding (xs)</td><td colspan="5"><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Font weight</td><td><code>--font-weight-bold</code> (700)</td><td><code>--font-weight-semibold</code> (600)</td><td><code>--font-weight-bold</code> (700)</td><td><code>--font-weight-bold</code> (700)</td><td><code>--font-weight-bold</code> (700)</td></tr>
+        <tr><td>Font size (lg)</td><td colspan="5"><code>--font-size-text-lg</code> (18px)</td></tr>
+        <tr><td>Font size (md)</td><td colspan="5"><code>--font-size-text-md</code> (16px)</td></tr>
+        <tr><td>Font size (sm, xs)</td><td colspan="5"><code>--font-size-text-sm</code> (14px)</td></tr>
+        <tr><td>Height (lg)</td><td>50px</td><td>54px</td><td>50px</td><td>50px</td><td>50px</td></tr>
+        <tr><td>Height (md)</td><td>46px</td><td>50px</td><td>46px</td><td>46px</td><td>46px</td></tr>
+        <tr><td>Height (sm)</td><td>38px</td><td>42px</td><td>38px</td><td>38px</td><td>38px</td></tr>
+        <tr><td>Height (xs)</td><td>30px</td><td>34px</td><td>30px</td><td>30px</td><td>30px</td></tr>
+        <tr><td>Width (xs)</td><td colspan="5">Content-fit (auto)</td></tr>
+        <tr><td>Hover/focus transition</td><td colspan="5">0.1s <code>cubic-bezier(0.25, 0.1, 0.25, 1)</code> &mdash; background, box-shadow</td></tr>
+        <tr><td>Active state</td><td colspan="5"><code>box-shadow: none; transform: translateY(Npx)</code> &mdash; matches shadow offset</td></tr>
+        <tr><td>Spinner</td><td colspan="5">1.0s linear infinite (rotate 360deg)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Disabled states ════ -->
+  <div class="doc-section">
+    <h2>Disabled states</h2>
+    <p>Consider providing alternative cues explaining why a button is disabled, ensuring screen readers can convey this information, or rethink the design so that buttons are always enabled but provide feedback on required steps before proceeding (e.g. form validation).</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Primary</span>
+        <button class="btn-sprout btn-primary btn-lg state-disabled">Primary</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Secondary</span>
+        <button class="btn-sprout btn-secondary btn-lg state-disabled">Secondary</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Destructive</span>
+        <button class="btn-sprout btn-destructive btn-lg state-disabled">Destructive</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Warning</span>
+        <button class="btn-sprout btn-warning btn-lg state-disabled">Warning</button>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Success</span>
+        <button class="btn-sprout btn-success btn-lg state-disabled">Success</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <p>Sprout is a kids app, but parents and educators use it too. All buttons must meet WCAG AA standards.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Keyboard:</strong> All buttons are focusable and activated with <kbd>Enter</kbd> or <kbd>Space</kbd>. Use native <code>&lt;button&gt;</code> elements &mdash; never <code>&lt;div&gt;</code> with click handlers.</li>
+        <li><strong>Focus ring:</strong> Buttons show a visible <code>2px</code> focus ring on keyboard navigation. Do not remove <code>:focus-visible</code> outlines.</li>
+        <li><strong>ARIA:</strong> Use <code>aria-disabled="true"</code> instead of the <code>disabled</code> attribute when the button should still be discoverable by screen readers. Add <code>aria-busy="true"</code> during loading states.</li>
+        <li><strong>Contrast:</strong> Primary buttons (white on <code>--brand-500</code>) pass AA for large text. Secondary buttons (<code>--brand-500</code> on white) pass AA at all sizes. Disabled buttons are exempt from contrast requirements.</li>
+        <li><strong>Touch targets:</strong> Large and medium sizes (44px, 48px) meet the 44&times;44px minimum touch target guideline. Small (36px) is close and should be used with sufficient surrounding spacing. Extra small (28px) relies on surrounding padding in its list-item context to meet the 44&times;44px tap area &mdash; ensure at least 8px padding around extra small buttons.</li>
+        <li><strong>Motion:</strong> The press animation (<code>translateY</code>) respects <code>prefers-reduced-motion</code> &mdash; wrap transitions in a media query.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

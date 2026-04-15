@@ -1,0 +1,70 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Chat Toolbar Component CSS
+   Header frost, toolbar pills, back/edit buttons, stacked avatars.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Header frost overlay ── */
+.header-frost {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 128px;
+  z-index: 9;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--brand-25, #f5fbff) 35%, rgba(245,251,255,0) 100%);
+}
+
+/* ── Chat header ── */
+.chat-header {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl, 16px) 10px;
+  z-index: 10;
+  background: transparent;
+}
+
+.chat-header-left  { display: flex; align-items: center; flex: 1; }
+.chat-header-right { display: flex; align-items: center; justify-content: flex-end; flex: 1; }
+
+/* ── Toolbar pill ── */
+.toolbar-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xl, 20px);
+  height: 44px;
+  padding: 0 var(--spacing-xs, 4px);
+  background: var(--bg-primary, #fff);
+  border-radius: 296px;
+  box-shadow: 0 0 8px 0 rgba(0,0,0,.04);
+}
+
+.toolbar-pill .chat-header-avatars { padding-right: var(--spacing-md, 8px); }
+
+.toolbar-icon-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  border-radius: 100px;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--text-primary, #181d27);
+}
+
+.toolbar-icon-btn svg { width: 24px; height: 24px; }
+
+/* ── Stacked avatars ── */
+.chat-header-avatars {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.chat-header-avatars .avatar { flex-shrink: 0; }
+.chat-header-avatars .avatar + .avatar { margin-left: calc(var(--spacing-md, 8px) * -1); }
+.chat-header-avatars .avatar:last-child   { z-index: 3; }
+.chat-header-avatars .avatar:nth-child(2) { z-index: 2; }
+.chat-header-avatars .avatar:first-child  { z-index: 1; }

@@ -1,0 +1,206 @@
+/* ═══════════════════════════════════════════════════════════
+   Habitat Expand pattern
+
+   A single card that morphs between a small "conversational
+   feedback" tile and a full-screen habitat view (sky + grass +
+   Sprout). Direction is driven by a single class toggle on
+   .habitat-stage:
+
+     <div class="habitat-stage">          → expanded (default)
+     <div class="habitat-stage is-tile">   → collapsed tile
+
+   Same CSS drives both directions:
+     - remove .is-tile → CARD EXPANDS (tile → full screen)
+     - add .is-tile    → CARD SHRINKS (full screen → tile)
+
+   Everything (card shape, canvas transform, grass opacity,
+   title fade) transitions symmetrically off this one class.
+
+   Pairs with /patterns/success-screen.css — the expanded end
+   state is effectively a Result Screen.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Stage wrapper ── */
+.habitat-stage {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* ── Gray camera viewfinder (z:1) ──
+   Inherited from /patterns/video.html (the .vid-viewfinder-bg
+   placeholder). Visible wherever the card hasn't grown yet.
+   Not part of this pattern's own anatomy — documented there.
+   No opacity transition, the growing card handles the coverage. */
+.habitat-bg {
+  position: absolute;
+  inset: 0;
+  background: #d9d9d9;
+  z-index: 1;
+}
+
+/* ── Habit UI overlay layer (z:2) ──
+   Holds the camera toolbar, conversational feedback, and
+   bottom recording bar. Fades fast (100ms) when the card
+   begins expanding. Reverses cleanly for shrink. */
+.habitat-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  transition: opacity .1s ease-out;
+}
+.habitat-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Habitat card (z:3) ── THE morphing element
+   Default = full-screen expanded (402×874 sky-blue, no radius).
+   .is-tile = conversational feedback tile (120×176 at 16,128,
+   24px radius, #b9e6fe bg).
+   All six transitions use the same 500ms spring-ish curve so
+   the shape change feels like a single coherent motion and
+   lands closer to iOS sheet / matched-geometry timing. */
+.habitat-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 402px;
+  height: 874px;
+  background: var(--bg-sky, #e0f2fe);
+  border-radius: 0;
+  overflow: hidden;
+  z-index: 3;
+  transition:
+    top .5s cubic-bezier(.32, .72, 0, 1),
+    left .5s cubic-bezier(.32, .72, 0, 1),
+    width .5s cubic-bezier(.32, .72, 0, 1),
+    height .5s cubic-bezier(.32, .72, 0, 1),
+    border-radius .5s cubic-bezier(.32, .72, 0, 1),
+    background-color .5s cubic-bezier(.32, .72, 0, 1);
+}
+.habitat-stage.is-tile .habitat-card {
+  top: 128px;
+  left: 16px;
+  width: 120px;
+  height: 176px;
+  background: #b9e6fe;
+  border-radius: 24px;
+}
+
+/* ── Grass ── Inside the card, anchored to its bottom edge.
+   Hidden in tile state (no grass in the conversational feedback
+   look). Fades in across the full 500ms card expand. */
+.habitat-card-grass {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 113px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity .5s cubic-bezier(.32, .72, 0, 1);
+}
+.habitat-stage.is-tile .habitat-card-grass {
+  opacity: 0;
+}
+.habitat-card-grass > .grass-edge {
+  width: 100%;
+  height: 24px;
+  border-radius: 24px 24px 0 0;
+  background: var(--bg-grass, #86cb3c);
+}
+.habitat-card-grass > .grass-fill {
+  width: 100%;
+  height: 89px;
+  background: var(--bg-grass, #86cb3c);
+}
+
+/* ── Sprout canvas ── Directly inside .habitat-card.
+   Expanded state: 690×690 square at (left:-144, top:380) —
+     matches the canonical grounded-Sprout position (same as
+     screen-approved-full and the Result Screen pattern).
+   Tile state: transform translate+scale shifts the face into
+     view inside the 120×176 tile. The layout box never moves.
+   Buffer attribute should be width="2400" height="2400" for
+     retina-crisp rendering at 690 CSS px.
+   z-index: 2 puts the character above the grass (grass sits at
+     the default auto level) so Sprout's body is never clipped by
+     the grass strip. Matches /foundations/character.html layering. */
+.habitat-card canvas {
+  position: absolute;
+  display: block;
+  left: -144px;
+  top: 380px;
+  width: 690px;
+  height: 690px;
+  z-index: 2;
+  transform: none;
+  transform-origin: 345px 304px;
+  pointer-events: none;
+  transition: transform .5s cubic-bezier(.32, .72, 0, 1);
+}
+.habitat-stage.is-tile .habitat-card canvas {
+  transform: translate(-141px, -596px) scale(.515);
+}
+
+/* ── Title group ── Inside the card.
+   Visible in expanded state with a 500ms delay on fade-in
+   (so the copy lands right as the 500ms card morph settles).
+   Hidden fast (100ms) when the card starts shrinking. */
+.habitat-card-title {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 16px 0;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity .3s ease-out .5s,
+    transform .3s ease-out .5s;
+}
+.habitat-stage.is-tile .habitat-card-title {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition:
+    opacity .1s ease-out,
+    transform .1s ease-out;
+}
+.habitat-card-title h2 {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  margin-bottom: 4px;
+}
+.habitat-card-title p {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-tertiary, #535862);
+  max-width: 370px;
+}
+
+/* Home indicator is NOT part of this pattern — it belongs to the
+   host screen chrome. See /foundations/background.html / the
+   prototype frame for how to render it. */
+
+/* ── Reduced motion ── Collapse all the morph transitions.
+   The class toggle still switches state, but without animation. */
+@media (prefers-reduced-motion: reduce) {
+  .habitat-card,
+  .habitat-card canvas,
+  .habitat-card-grass,
+  .habitat-card-title,
+  .habitat-overlay {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Match Pairs</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/tile.css">
+<link rel="stylesheet" href="/components/buttons.css">
+<link rel="stylesheet" href="/components/segmented-control.css">
+<style>
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Device frame ── */
+.device-wrapper{background:var(--bg-primary);border:1px solid rgba(0,0,0,0.08);border-radius:32px;padding:4px;box-shadow:0 12px 16px -4px rgba(10,13,18,0.08),0 4px 6px -2px rgba(10,13,18,0.03),0 2px 2px -1px rgba(10,13,18,0.04);}
+.device-inner-shadow{background:var(--bg-primary);border-radius:28px;padding:4px;overflow:hidden;position:relative;}
+.device-inner-shadow::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 6px 2px rgba(10,13,18,0.08),inset 0 0 4px 2px rgba(10,13,18,0.03);z-index:6;}
+.device-mockup{background:var(--bg-tertiary);border:2px solid var(--border-secondary);border-radius:24px;clip-path:inset(0 round 24px);position:relative;}
+.device-screen{width:402px;height:874px;position:relative;overflow:hidden;background:var(--bg-sky);user-select:none;}
+.viewer{display:flex;justify-content:center;margin-top:var(--spacing-xl);}
+.dev-status-bar{position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;z-index:10;pointer-events:none;}
+.dev-status-bar-time{font-size:17px;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em;}
+.dev-status-bar-icons{display:flex;align-items:center;gap:6px;}
+.dev-toolbar{position:absolute;top:62px;left:0;right:0;height:56px;display:flex;align-items:flex-start;justify-content:space-between;padding:0 16px 8px;z-index:10;background:var(--bg-sky);box-shadow:0 3px 0 0 var(--gray-200);}
+.dev-toolbar-btn{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--bg-primary);border:2px solid var(--border-secondary);border-radius:9999px;box-shadow:0 3px 0 0 var(--gray-200);}
+.dev-toolbar-btn svg{width:24px;height:24px;color:var(--text-primary);}
+.dev-toolbar-title{position:absolute;left:50%;top:13px;transform:translateX(-50%);font-size:18px;font-weight:600;color:var(--text-primary);}
+.dev-thread{position:absolute;top:118px;left:0;right:0;bottom:113px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;z-index:5;scrollbar-width:none;}
+.dev-thread::-webkit-scrollbar{display:none;}
+.dev-msg-in,.dev-msg-out{border-radius:24px;padding:12px 16px;max-width:256px;font-size:14px;line-height:20px;color:var(--text-primary);}
+.dev-msg-in{background:var(--bg-primary);align-self:flex-start;}
+.dev-msg-out{background:var(--brand-200);align-self:flex-end;}
+.dev-grass-edge{position:absolute;bottom:89px;left:0;right:0;height:24px;border-radius:24px 24px 0 0;background:var(--bg-grass, #86cb3c);z-index:1;}
+.dev-grass-fill{position:absolute;bottom:0;left:0;right:0;height:89px;background:var(--bg-grass, #86cb3c);z-index:1;}
+.dev-home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:var(--text-primary);z-index:20;}
+.dev-confirm-bar{position:absolute;bottom:34px;left:0;right:0;z-index:10;padding:0 16px;display:flex;align-items:center;justify-content:center;height:48px;}
+
+/* ── Matching pairs (inline demo) ── */
+.demo-chat {
+  background:var(--bg-sky, #e0f2fe);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-4xl, 24px);
+  padding:var(--spacing-xl, 16px);
+  max-width:402px;
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-md, 8px);
+}
+.demo-msg {
+  border-radius:var(--radius-4xl, 24px);
+  padding:var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  max-width:280px;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  color:var(--text-primary, #181d27);
+}
+.demo-msg-in { background:var(--bg-primary, #ffffff); align-self:flex-start; }
+
+.match-group {
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-md, 8px);
+  width:100%;
+}
+.match-columns {
+  display:flex;
+  gap:var(--spacing-md, 8px);
+  width:100%;
+}
+.match-col {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-md, 8px);
+}
+.match-tile {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  width:100%;
+  min-height:56px;
+  padding:var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-xl, 12px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor:pointer;
+  transition:background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+  text-align:center;
+  gap:var(--spacing-md, 8px);
+}
+.match-tile:hover { background:var(--bg-secondary, #fafafa); }
+.match-tile:active { box-shadow:none; transform:translateY(2px); }
+.match-tile .match-emoji {
+  font-family:'TossFace', sans-serif;
+  font-size:24px;
+  line-height:1;
+}
+.match-tile.selected {
+  background:var(--bg-brand-secondary, #e0f2fe);
+  border-color:var(--brand-300, #7cd4fd);
+  box-shadow:0 3px 0 0 var(--brand-300, #7cd4fd);
+}
+.match-tile.success {
+  background:var(--green-100, #dcfae6);
+  border-color:var(--green-300, #75e0a7);
+  box-shadow:0 4px 0 0 var(--green-300, #75e0a7);
+  pointer-events:none;
+}
+.match-tile.disabled {
+  background:var(--bg-primary, #ffffff);
+  border-color:var(--border-secondary, #e9eaeb);
+  box-shadow:none;
+  pointer-events:none;
+  color:var(--gray-400, #a4a7ae);
+}
+.match-tile.disabled .match-emoji {
+  filter:grayscale(1);
+  mix-blend-mode:luminosity;
+}
+.match-tile.warning {
+  background:var(--yellow-100, #fef7c3);
+  border-color:var(--yellow-300, #fde272);
+  box-shadow:0 4px 0 0 var(--yellow-300, #fde272);
+  pointer-events:none;
+  cursor:default;
+}
+
+/* Confirm button */
+.tile-group-confirm {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:48px;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  border-radius:var(--radius-2xl, 16px);
+  cursor:pointer;
+  padding:var(--spacing-lg, 12px);
+  transition:background 0.15s, box-shadow 0.15s, transform 0.15s;
+  background:var(--fg-brand-primary, #0ba5ec);
+  color:#fff;
+  border:none;
+  border-bottom:2px solid var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+}
+.tile-group-confirm:active {
+  box-shadow:none;
+  transform:translateY(4px);
+}
+.tile-group-confirm.state-disabled {
+  background:var(--gray-300, #d5d7da);
+  color:var(--text-disabled, #717680);
+  border-bottom:2px solid var(--gray-400, #a4a7ae);
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);
+  cursor:default;
+  pointer-events:none;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Match Pairs</div>
+    <div class="sec-desc">An exercise pattern where the kid matches items from two columns by tapping one on each side. Uses tile-style cards with validation states for feedback. The composer is hidden and a disabled "Check" button takes its place, enabling once all pairs are matched.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for vocabulary, associations, cause-and-effect, or any pairing exercise.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when you want the kid to learn through trial and error (wrong answers are safe).</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for more than 5 pairs &mdash; the columns become too long.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use when there's only one correct answer &mdash; use single-select tiles instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Device Preview ════ -->
+  <div class="doc-section">
+    <h2>Device preview</h2>
+    <p>Tap a tile on the left, then one on the right. Correct pairs flash green then disable. Wrong pairs flash yellow then return to default. "Check" enables when all pairs are matched.</p>
+    <div class="viewer">
+      <div class="device-wrapper">
+        <div class="device-inner-shadow">
+          <div class="device-mockup">
+            <div class="device-screen" id="devScreen">
+              <div class="dev-status-bar">
+                <span class="dev-status-bar-time">9:41</span>
+                <span class="dev-status-bar-icons">
+                  <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+                  <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+                </span>
+              </div>
+              <div class="dev-toolbar">
+                <div class="dev-toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg></div>
+                <span class="dev-toolbar-title">Sprout</span>
+                <div style="width:48px"></div>
+              </div>
+              <div class="dev-thread" id="devThread">
+                <div class="dev-msg-in">Match each animal to its sound!</div>
+                <div class="match-group" id="devMatchGroup">
+                  <div class="match-columns">
+                    <div class="match-col" id="devLeftCol"></div>
+                    <div class="match-col" id="devRightCol"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="dev-grass-edge"></div>
+              <div class="dev-grass-fill"></div>
+              <div class="dev-confirm-bar" id="devConfirmBar">
+                <button class="tile-group-confirm state-disabled" id="devCheckBtn" style="width:100%;">Check</button>
+              </div>
+              <div class="dev-home-indicator"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Behavior ════ -->
+  <div class="doc-section">
+    <h2>Behavior</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Select:</strong> Tap a tile on either side to select it (blue highlight). Tap another on the same side to switch. Tap the same tile again to deselect.</li>
+        <li><strong>Auto-check:</strong> When one tile from each column is selected, the pair is checked automatically after 300ms.</li>
+        <li><strong>Correct pair:</strong> Both tiles flash green (success) for 800ms, then become disabled (flat, muted text, leading in luminosity).</li>
+        <li><strong>Wrong pair:</strong> Both tiles flash yellow (warning) for 300ms, then transition back to default. The kid can try again.</li>
+        <li><strong>Check button:</strong> Stays disabled (gray) until all pairs are matched. Kid taps "Check" to finish the exercise.</li>
+        <li><strong>Composer:</strong> Hidden during the exercise. Returns after the kid taps "Check".</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>Tile states</h2>
+    <div class="state-grid" style="grid-template-columns:repeat(5, 1fr);">
+      <div class="state-cell"><span class="state-cell-label">Default</span></div>
+      <div class="state-cell"><span class="state-cell-label">Selected</span></div>
+      <div class="state-cell"><span class="state-cell-label">Success</span></div>
+      <div class="state-cell"><span class="state-cell-label">Warning</span></div>
+      <div class="state-cell"><span class="state-cell-label">Disabled</span></div>
+
+      <div class="state-cell">
+        <div class="match-tile"><span class="match-emoji">&#128054;</span><span>Dog</span></div>
+      </div>
+      <div class="state-cell">
+        <div class="match-tile selected"><span class="match-emoji">&#128054;</span><span>Dog</span></div>
+      </div>
+      <div class="state-cell">
+        <div class="match-tile success"><span class="match-emoji">&#128054;</span><span>Dog</span></div>
+      </div>
+      <div class="state-cell">
+        <div class="match-tile warning"><span class="match-emoji">&#128054;</span><span>Dog</span></div>
+      </div>
+      <div class="state-cell">
+        <div class="match-tile disabled"><span class="match-emoji">&#128054;</span><span>Dog</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Scenarios ════ -->
+  <div class="doc-section">
+    <h2>Scenarios</h2>
+    <div class="demo" style="gap:var(--spacing-3xl, 24px); flex-wrap:wrap;">
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Animal sounds</span>
+        <div class="demo-chat" style="width:340px;">
+          <div class="demo-msg demo-msg-in">Match each animal to its sound!</div>
+          <div class="match-group">
+            <div class="match-columns">
+              <div class="match-col">
+                <div class="match-tile"><span class="match-emoji">&#128054;</span><span>Dog</span></div>
+                <div class="match-tile"><span class="match-emoji">&#128049;</span><span>Cat</span></div>
+                <div class="match-tile"><span class="match-emoji">&#128046;</span><span>Cow</span></div>
+              </div>
+              <div class="match-col">
+                <div class="match-tile"><span>Meow!</span></div>
+                <div class="match-tile"><span>Woof!</span></div>
+                <div class="match-tile"><span>Moo!</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Vocabulary</span>
+        <div class="demo-chat" style="width:340px;">
+          <div class="demo-msg demo-msg-in">Match the Spanish word to its meaning!</div>
+          <div class="match-group">
+            <div class="match-columns">
+              <div class="match-col">
+                <div class="match-tile"><span>Hola</span></div>
+                <div class="match-tile"><span>Gato</span></div>
+                <div class="match-tile"><span>Sol</span></div>
+              </div>
+              <div class="match-col">
+                <div class="match-tile"><span>Sun</span></div>
+                <div class="match-tile"><span>Hello</span></div>
+                <div class="match-tile"><span>Cat</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Mid-exercise</span>
+        <div class="demo-chat" style="width:340px;">
+          <div class="demo-msg demo-msg-in">Match the emoji to the word!</div>
+          <div class="match-group">
+            <div class="match-columns">
+              <div class="match-col">
+                <div class="match-tile disabled"><span class="match-emoji">&#127822;</span><span>Apple</span></div>
+                <div class="match-tile selected"><span class="match-emoji">&#127803;</span><span>Flower</span></div>
+                <div class="match-tile"><span class="match-emoji">&#9728;&#65039;</span><span>Sun</span></div>
+              </div>
+              <div class="match-col">
+                <div class="match-tile"><span>Sunshine</span></div>
+                <div class="match-tile disabled"><span>Fruit</span></div>
+                <div class="match-tile"><span>Blossom</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ Edge Cases ════ -->
+  <div class="doc-section">
+    <h2>Edge cases</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Composer hidden:</strong> The composer is replaced by the "Check" button during the exercise. The kid cannot type, send images, or record audio.</li>
+        <li><strong>Same-side taps:</strong> Tapping two tiles on the same side just switches the selection. Only cross-column pairs trigger a check.</li>
+        <li><strong>Rapid tapping:</strong> While a pair is being validated (success or warning animation), all tiles are locked (<code>processing</code> flag) to prevent double-checks.</li>
+        <li><strong>Retry:</strong> Wrong pairs return to default &mdash; the kid can try as many times as needed. There is no penalty.</li>
+        <li><strong>Max pairs:</strong> Keep to 3&ndash;5 pairs. More than 5 makes the columns too long for the chat thread.</li>
+        <li><strong>Content types:</strong> Each tile can contain emoji + text, text only, or emoji only. Left and right columns don't need to match format.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Composition ════ -->
+  <div class="doc-section">
+    <h2>Composition</h2>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Component</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Container</td><td><code>.match-group</code></td><td>Wraps columns + sits in the chat thread</td></tr>
+        <tr><td>Columns</td><td><code>.match-columns</code></td><td>Two equal <code>.match-col</code> columns, 8px gap</td></tr>
+        <tr><td>Each option</td><td><code>.match-tile</code></td><td>Tile-style card with centered content, 56px min height</td></tr>
+        <tr><td>Emoji</td><td><code>.match-emoji</code></td><td>TossFace font, 24px</td></tr>
+        <tr><td>Check button</td><td>Primary button (disabled initially)</td><td>Replaces composer. Enables when all pairs matched.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>Each tile is focusable and activatable with keyboard.</li>
+        <li>Wrong answers use a non-punitive yellow flash &mdash; no error sounds or negative language.</li>
+        <li>Disabled tiles remove <code>pointer-events</code> and mute visually with luminosity blend on emojis.</li>
+        <li>The "Check" button has <code>aria-disabled</code> when not all pairs are matched.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="doc-section">
+    <h2>Prototypes</h2>
+    <div class="prose">
+      <ul>
+        <li><a href="/product-explorer/task/chat-tier-3-tiles.html">Chat Tier 3 + Tiles</a> &mdash; Text-first chat for older kids</li>
+        <li><a href="/product-explorer/task/chat-tier-2-tiles.html">Chat Tier 2 + Tiles</a> &mdash; Audio-first chat for younger kids (large mic, Sprout visible, compressed thread)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+
+<script>
+// ── Device preview interactivity ──
+(function() {
+  var devScreen = document.getElementById('devScreen');
+  var devThread = document.getElementById('devThread');
+  var leftCol = document.getElementById('devLeftCol');
+  var rightCol = document.getElementById('devRightCol');
+  var checkBtn = document.getElementById('devCheckBtn');
+  var confirmBar = document.getElementById('devConfirmBar');
+
+  var pairs = [
+    { left: { emoji: '&#128054;', content: 'Dog' }, right: { content: 'Woof!' } },
+    { left: { emoji: '&#128049;', content: 'Cat' }, right: { content: 'Meow!' } },
+    { left: { emoji: '&#128046;', content: 'Cow' }, right: { content: 'Moo!' } },
+    { left: { emoji: '&#128056;', content: 'Frog' }, right: { content: 'Ribbit!' } }
+  ];
+
+  // Shuffle right side
+  var rightItems = pairs.map(function(p, i) { return { idx: i, content: p.right.content, emoji: p.right.emoji }; });
+  for (var i = rightItems.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = rightItems[i]; rightItems[i] = rightItems[j]; rightItems[j] = tmp;
+  }
+
+  var selectedLeft = null, selectedRight = null, matchedCount = 0, processing = false;
+
+  function makeTile(item, side) {
+    var tile = document.createElement('div');
+    tile.className = 'match-tile';
+    tile.dataset.idx = item.idx;
+    tile.dataset.side = side;
+    var html = '';
+    if (item.emoji) html += '<span class="match-emoji">' + item.emoji + '</span>';
+    html += '<span>' + item.content + '</span>';
+    tile.innerHTML = html;
+    return tile;
+  }
+
+  pairs.forEach(function(p, i) {
+    leftCol.appendChild(makeTile({ idx: i, content: p.left.content, emoji: p.left.emoji }, 'left'));
+  });
+  rightItems.forEach(function(item) {
+    rightCol.appendChild(makeTile(item, 'right'));
+  });
+
+  function checkPair() {
+    if (!selectedLeft || !selectedRight) return;
+    processing = true;
+    var leftIdx = parseInt(selectedLeft.dataset.idx);
+    var rightIdx = parseInt(selectedRight.dataset.idx);
+    var tileL = selectedLeft, tileR = selectedRight;
+
+    if (leftIdx === rightIdx) {
+      tileL.classList.remove('selected'); tileR.classList.remove('selected');
+      tileL.classList.add('success'); tileR.classList.add('success');
+      matchedCount++;
+      setTimeout(function() {
+        tileL.classList.remove('success'); tileR.classList.remove('success');
+        tileL.classList.add('disabled'); tileR.classList.add('disabled');
+        selectedLeft = null; selectedRight = null; processing = false;
+        if (matchedCount === pairs.length) checkBtn.classList.remove('state-disabled');
+      }, 800);
+    } else {
+      tileL.classList.remove('selected'); tileR.classList.remove('selected');
+      tileL.classList.add('warning'); tileR.classList.add('warning');
+      setTimeout(function() {
+        tileL.classList.remove('warning'); tileR.classList.remove('warning');
+        selectedLeft = null; selectedRight = null;
+        setTimeout(function() { processing = false; }, 200);
+      }, 300);
+    }
+  }
+
+  document.getElementById('devMatchGroup').addEventListener('click', function(e) {
+    var tile = e.target.closest('.match-tile');
+    if (!tile || processing || tile.classList.contains('disabled') || tile.classList.contains('success') || tile.classList.contains('warning')) return;
+    var side = tile.dataset.side;
+    if (side === 'left') {
+      if (selectedLeft === tile) { tile.classList.remove('selected'); selectedLeft = null; return; }
+      if (selectedLeft) selectedLeft.classList.remove('selected');
+      selectedLeft = tile; tile.classList.add('selected');
+    } else {
+      if (selectedRight === tile) { tile.classList.remove('selected'); selectedRight = null; return; }
+      if (selectedRight) selectedRight.classList.remove('selected');
+      selectedRight = tile; tile.classList.add('selected');
+    }
+    if (selectedLeft && selectedRight) setTimeout(checkPair, 300);
+  });
+
+  checkBtn.addEventListener('click', function() {
+    if (checkBtn.classList.contains('state-disabled')) return;
+    // Reset demo after 2s
+    var msg = document.createElement('div');
+    msg.className = 'dev-msg-out';
+    msg.textContent = 'I matched them all!';
+    devThread.appendChild(msg);
+    setTimeout(function() {
+      msg.remove();
+      leftCol.innerHTML = ''; rightCol.innerHTML = '';
+      matchedCount = 0; selectedLeft = null; selectedRight = null; processing = false;
+      checkBtn.classList.add('state-disabled');
+      // Re-shuffle and rebuild
+      for (var i = rightItems.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = rightItems[i]; rightItems[i] = rightItems[j]; rightItems[j] = tmp;
+      }
+      pairs.forEach(function(p, i) {
+        leftCol.appendChild(makeTile({ idx: i, content: p.left.content, emoji: p.left.emoji }, 'left'));
+      });
+      rightItems.forEach(function(item) {
+        rightCol.appendChild(makeTile(item, 'right'));
+      });
+    }, 2000);
+  });
+})();
+</script>
+
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

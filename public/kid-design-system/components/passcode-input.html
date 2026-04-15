@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Input Passcode</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "PasscodeInput",
+  "slug": "passcode-input",
+  "intent": {
+    "purpose": "Let users enter a 4-digit PIN using individual digit cells with auto-advance",
+    "taskContext": ["child-auth", "parent-access", "verification"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["digit-cells"],
+    "allows": ["label", "error-message"],
+    "forbids": ["icon", "description", "button"]
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Standard 4-digit PIN entry", "pairWith": [] },
+    { "name": "With label", "useWhen": "When context needs a heading above cells", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 56px tall, 48px wide cells" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline"]
+  },
+  "relationships": {
+    "related": ["Input"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Button"]
+  },
+  "states": ["empty", "focused", "filling", "filled", "error", "disabled"],
+  "accessibility": {
+    "role": "group",
+    "keyboard": ["Tab", "Backspace", "ArrowLeft", "ArrowRight"],
+    "ariaAttributes": ["aria-label", "aria-invalid", "aria-describedby"],
+    "minTouchTarget": "56x48px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+/* ── Passcode Input ── */
+.passcode {
+  display:flex; flex-direction:column; align-items:center; gap:var(--spacing-md, 8px);
+  max-width:378px; width:100%;
+}
+.passcode-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+  text-align:center; width:100%;
+}
+.passcode-row {
+  display:flex; gap:var(--spacing-xl, 16px); justify-content:center;
+}
+.passcode-cell {
+  width:48px; height:56px;
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-2xl, 16px);
+  background:var(--bg-primary, #ffffff);
+  display:flex; align-items:center; justify-content:center;
+  box-sizing:border-box;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-primary, #181d27);
+  text-align:center;
+  transition:border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Focus state — blue border on the active cell */
+.passcode-cell.focus {
+  border-color:var(--border-brand, #0ba5ec);
+}
+
+/* Filled but not focused — back to default border */
+.passcode-cell.filled {
+  border-color:var(--border-secondary, #e9eaeb);
+}
+
+/* Filled AND focused — blue border */
+.passcode-cell.filled.focus {
+  border-color:var(--border-brand, #0ba5ec);
+}
+
+/* Error state */
+.passcode.error .passcode-cell {
+  border-color:var(--border-error, #f04438);
+}
+.passcode-error {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-error-primary, #d92d20);
+  text-align:center; width:100%;
+}
+
+/* Disabled state */
+.passcode.disabled .passcode-cell {
+  background:var(--bg-disabled, #f5f5f5);
+  border-color:var(--border-secondary, #e9eaeb);
+  cursor:not-allowed;
+}
+
+/* Interactive input cells */
+input.passcode-cell {
+  outline:none;
+  caret-color:var(--text-primary, #181d27);
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+}
+input.passcode-cell:focus {
+  border-color:var(--border-brand, #0ba5ec);
+}
+input.passcode-cell.filled:not(:focus) {
+  border-color:var(--border-secondary, #e9eaeb);
+}
+input.passcode-cell.filled {
+  caret-color:transparent;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Input Passcode</div>
+    <div class="sec-desc">Passcode inputs let users enter a 4-digit PIN using individual digit cells. Each cell accepts one character and auto-advances focus to the next. Used for child auth and parent area access.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For child authentication PINs where a full keyboard isn&rsquo;t needed.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For parent area access codes that add a layer of child-proof security.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for passwords or long codes &mdash; use a standard text input instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for non-numeric entry &mdash; passcode cells are digit-only.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="passcode">
+          <div class="passcode-row">
+            <div class="passcode-cell filled">&bull;</div>
+            <div class="passcode-cell filled">&bull;</div>
+            <div class="passcode-cell focus"></div>
+            <div class="passcode-cell"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">With label</span>
+        <div class="passcode">
+          <span class="passcode-label">Enter your PIN</span>
+          <div class="passcode-row">
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- States -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>The passcode input has five states that guide the user through entry and provide feedback on errors.</p>
+
+    <div class="state-grid" style="grid-template-columns:1fr;">
+      <div class="state-cell">
+        <span class="state-cell-label">Empty</span>
+        <div class="passcode">
+          <div class="passcode-row">
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Focus</span>
+        <div class="passcode">
+          <div class="passcode-row">
+            <div class="passcode-cell focus"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Filling</span>
+        <div class="passcode">
+          <div class="passcode-row">
+            <div class="passcode-cell filled">&bull;</div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Error</span>
+        <div class="passcode error">
+          <div class="passcode-row">
+            <div class="passcode-cell">&bull;</div>
+            <div class="passcode-cell">&bull;</div>
+            <div class="passcode-cell">&bull;</div>
+            <div class="passcode-cell">&bull;</div>
+          </div>
+          <span class="passcode-error">Invalid</span>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Disabled</span>
+        <div class="passcode disabled">
+          <div class="passcode-row">
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- With label -->
+  <div class="doc-section">
+    <h2>With label</h2>
+    <p>An optional label can appear above the cells to describe the expected input.</p>
+
+    <div class="demo">
+      <div class="demo-item" style="align-items:flex-start">
+        <span class="demo-label">With label</span>
+        <div class="passcode">
+          <span class="passcode-label">Enter your PIN</span>
+          <div class="passcode-row">
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+            <div class="passcode-cell"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive demo -->
+  <div class="doc-section">
+    <h2>Interactive demo</h2>
+    <p>Click the first cell and type digits to see the fill behaviour. Press Backspace to clear.</p>
+
+    <div class="demo">
+      <div class="demo-item" style="align-items:flex-start">
+        <span class="demo-label">Try it</span>
+        <div class="passcode" id="interactive-passcode">
+          <div class="passcode-row">
+            <input class="passcode-cell" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-index="0">
+            <input class="passcode-cell" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-index="1">
+            <input class="passcode-cell" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-index="2">
+            <input class="passcode-cell" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-index="3">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anatomy -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Label</strong> (optional) &mdash; Bold text-md in <code>--text-primary</code>. Placed above the row.</li>
+        <li><strong>Cell</strong> (required) &mdash; 4 equal-width cells, 56px tall, 16px radius. White background with <code>--border-secondary</code> border.</li>
+        <li><strong>Dot</strong> (filled only) &mdash; A centered bullet character (&bull;) in <code>--text-primary</code>. Masks the digit for privacy.</li>
+        <li><strong>Error message</strong> (error only) &mdash; Regular text-sm in <code>--text-error-primary</code>. Appears below the row.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content guidelines -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Labels should describe what the code is for, like &ldquo;Enter your PIN&rdquo; or &ldquo;Parent passcode&rdquo;</li>
+        <li>Error messages should be short and helpful &mdash; &ldquo;Invalid&rdquo; or &ldquo;Incorrect PIN, try again&rdquo;</li>
+        <li>Don&rsquo;t reveal the digits &mdash; always show dots for entered values</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Token Reference -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Component width</td><td>max-width 378px, fluid</td></tr>
+        <tr><td>Cell height</td><td>56px</td></tr>
+        <tr><td>Cell radius</td><td><code>--radius-2xl</code> (16px)</td></tr>
+        <tr><td>Cell border (empty)</td><td>2px solid <code>--border-secondary</code></td></tr>
+        <tr><td>Cell border (focus/filling)</td><td>2px solid <code>--border-brand</code></td></tr>
+        <tr><td>Cell border (error)</td><td>2px solid <code>--border-error</code></td></tr>
+        <tr><td>Cell bg (default)</td><td><code>--bg-primary</code> (#ffffff)</td></tr>
+        <tr><td>Cell bg (disabled)</td><td><code>--bg-disabled</code> (#f5f5f5)</td></tr>
+        <tr><td>Cell width</td><td>48px (fixed)</td></tr>
+        <tr><td>Cell gap</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Label</td><td>text-md bold (16px/24px), <code>--text-primary</code></td></tr>
+        <tr><td>Dot</td><td>text-md regular (16px/24px), <code>--text-primary</code>, centered</td></tr>
+        <tr><td>Error text</td><td>text-sm regular (14px/20px), <code>--text-error-primary</code> (#d92d20)</td></tr>
+        <tr><td>Vertical gap</td><td><code>--spacing-md</code> (8px)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Each cell should be an <code>&lt;input type="text" inputmode="numeric"&gt;</code> with <code>maxlength="1"</code> and <code>pattern="[0-9]"</code>.</li>
+        <li><strong>Labels:</strong> Wrap the group in a <code>fieldset</code> with a <code>legend</code>, or use <code>aria-label</code> on the container. Each cell should have <code>aria-label="Digit 1"</code> etc.</li>
+        <li><strong>Keyboard:</strong> Typing a digit should auto-advance focus to the next cell. Backspace should clear and move back. Arrow keys should navigate between cells.</li>
+        <li><strong>Auto-submit:</strong> After all 4 digits are entered, the form can auto-submit. Announce the result via <code>aria-live="polite"</code>.</li>
+        <li><strong>Error:</strong> Associate the error message with the input group using <code>aria-describedby</code>. Use <code>aria-invalid="true"</code> on cells in error state.</li>
+        <li><strong>Touch targets:</strong> Each cell is 56px tall and flexible width, exceeding the 44px minimum.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+// Interactive passcode demo
+(function() {
+  var wrap = document.getElementById('interactive-passcode');
+  if (!wrap) return;
+  var cells = wrap.querySelectorAll('input.passcode-cell');
+
+  cells.forEach(function(cell, i) {
+    cell.addEventListener('keydown', function(e) {
+      if (e.key >= '0' && e.key <= '9') {
+        e.preventDefault();
+        cell.value = '\u2022'; // bullet dot
+        cell.classList.add('filled');
+        if (i < cells.length - 1) cells[i + 1].focus();
+      } else if (e.key === 'Backspace') {
+        e.preventDefault();
+        if (cell.value !== '') {
+          cell.value = '';
+          cell.classList.remove('filled');
+        } else if (i > 0) {
+          cells[i - 1].value = '';
+          cells[i - 1].classList.remove('filled');
+          cells[i - 1].focus();
+        }
+      } else if (e.key === 'ArrowLeft' && i > 0) {
+        e.preventDefault();
+        cells[i - 1].focus();
+      } else if (e.key === 'ArrowRight' && i < cells.length - 1) {
+        e.preventDefault();
+        cells[i + 1].focus();
+      }
+    });
+
+    cell.addEventListener('input', function() {
+      if (cell.value !== '\u2022' && cell.value !== '') {
+        cell.value = '';
+      }
+    });
+
+    cell.addEventListener('focus', function() {
+      cell.classList.add('focus');
+    });
+    cell.addEventListener('blur', function() {
+      cell.classList.remove('focus');
+    });
+  });
+})();
+</script>
+</body>
+</html>

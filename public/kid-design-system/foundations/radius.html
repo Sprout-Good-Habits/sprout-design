@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Radius</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+/* ── Radius demo grid ── */
+.radius-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-xl);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.radius-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+.radius-box {
+  width: 100px;
+  height: 100px;
+  background: var(--gray-100);
+  border: 2px solid var(--gray-300);
+}
+.radius-item code {
+  font-size: 12px;
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+}
+.radius-item .radius-label {
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+.radius-item .radius-value {
+  font-size: var(--font-size-text-xs);
+  color: var(--text-tertiary);
+  margin-top: calc(-1 * var(--spacing-xs));
+}
+
+/* ── Shadow patterns grid ── */
+.shadow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xl);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.shadow-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-3xl);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+}
+.shadow-box {
+  width: 120px;
+  height: 56px;
+  border-radius: var(--radius-xl);
+  background: var(--bg-primary);
+}
+.shadow-box-primary {
+  background: var(--brand-500);
+  box-shadow: 0 4px 0 0 var(--brand-600);
+}
+.shadow-box-secondary {
+  background: var(--bg-primary);
+  border: 2px solid var(--border-secondary);
+  box-shadow: 0 4px 0 0 var(--gray-200);
+}
+.shadow-box-destructive {
+  background: var(--fg-destructive-primary);
+  box-shadow: 0 4px 0 0 var(--red-600);
+}
+.shadow-box-disabled {
+  background: var(--gray-300);
+  box-shadow: 0 4px 0 0 var(--gray-400);
+}
+.shadow-box-elevation {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+.shadow-box-card-hover {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.shadow-item .shadow-label {
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+.shadow-item code {
+  font-size: 11px;
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  color: var(--text-tertiary);
+  text-align: center;
+  line-height: 18px;
+}
+
+/* ── Active state demo ── */
+.active-demo {
+  display: flex;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-3xl);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.active-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  padding: 0 var(--spacing-3xl);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-text-lg);
+  border: none;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  user-select: none;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.active-btn-primary {
+  background: var(--brand-500);
+  color: #ffffff;
+  box-shadow: 0 4px 0 0 var(--brand-600);
+}
+.active-btn-primary:active {
+  box-shadow: none;
+  transform: translateY(4px);
+}
+.active-btn-secondary {
+  background: var(--bg-primary);
+  color: var(--brand-500);
+  border: 2px solid var(--border-secondary);
+  box-shadow: 0 4px 0 0 var(--gray-200);
+}
+.active-btn-secondary:active {
+  box-shadow: none;
+  transform: translateY(4px);
+}
+.active-btn-destructive {
+  background: var(--fg-destructive-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 0 0 var(--red-600);
+}
+.active-btn-destructive:active {
+  box-shadow: none;
+  transform: translateY(4px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .radius-grid { grid-template-columns: repeat(3, 1fr); }
+  .shadow-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .radius-grid { grid-template-columns: repeat(2, 1fr); }
+  .shadow-grid { grid-template-columns: 1fr; }
+  .active-demo { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Radius</div>
+    <div class="sec-desc">Border radius tokens and shadow patterns used across the Sprout design system. Radius values are tokenized; shadows follow consistent hardcoded patterns.</div>
+  </div>
+
+  <!-- ── Radius ── -->
+  <div class="doc-section">
+    <h2>Border Radius</h2>
+    <p>Five radius tokens cover every corner in the system. Use these tokens exclusively &mdash; never hardcode pixel values for border-radius.</p>
+
+    <div class="radius-grid">
+      <div class="radius-item">
+        <div class="radius-box" style="border-radius:var(--radius-xs)"></div>
+        <span class="radius-label">xs</span>
+        <span class="radius-value">4px</span>
+        <code>--radius-xs</code>
+      </div>
+      <div class="radius-item">
+        <div class="radius-box" style="border-radius:var(--radius-sm)"></div>
+        <span class="radius-label">sm</span>
+        <span class="radius-value">6px</span>
+        <code>--radius-sm</code>
+      </div>
+      <div class="radius-item">
+        <div class="radius-box" style="border-radius:var(--radius-md)"></div>
+        <span class="radius-label">md</span>
+        <span class="radius-value">8px</span>
+        <code>--radius-md</code>
+      </div>
+      <div class="radius-item">
+        <div class="radius-box" style="border-radius:var(--radius-xl)"></div>
+        <span class="radius-label">xl</span>
+        <span class="radius-value">12px</span>
+        <code>--radius-xl</code>
+      </div>
+      <div class="radius-item">
+        <div class="radius-box" style="border-radius:var(--radius-full)"></div>
+        <span class="radius-label">full</span>
+        <span class="radius-value">9999px</span>
+        <code>--radius-full</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Radius usage table ── -->
+  <div class="doc-section">
+    <h2>Radius Usage</h2>
+    <p>Which token to reach for in each context.</p>
+    <table class="token-table">
+      <thead>
+        <tr><th>Token</th><th>Value</th><th>Use for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>--radius-xs</code></td><td>4px</td><td>Small chips, inline code, tags</td></tr>
+        <tr><td><code>--radius-sm</code></td><td>6px</td><td>Nav items, small interactive elements</td></tr>
+        <tr><td><code>--radius-md</code></td><td>8px</td><td>Cards, modals, info notes, code blocks</td></tr>
+        <tr><td><code>--radius-xl</code></td><td>12px</td><td>Large cards, containers, demo panels</td></tr>
+        <tr><td><code>--radius-full</code></td><td>9999px</td><td>Pills, avatars, circular buttons</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-note">
+      <strong>Note:</strong> Buttons and text inputs use 16px (<code>--radius-2xl</code>) and sheet top corners use 24px (<code>--radius-4xl</code>). These values exist in the component specs but are not yet part of the core token set shown above.
+    </div>
+  </div>
+
+  <!-- ── Shadow Patterns ── -->
+  <div class="doc-section">
+    <h2>Shadow Patterns</h2>
+    <p>Shadows are not tokenized &mdash; use these hardcoded patterns consistently across all implementations.</p>
+
+    <div class="shadow-grid">
+      <div class="shadow-item">
+        <div class="shadow-box shadow-box-primary"></div>
+        <span class="shadow-label">Primary</span>
+        <code>0 4px 0 0 var(--brand-600)</code>
+      </div>
+      <div class="shadow-item">
+        <div class="shadow-box shadow-box-secondary"></div>
+        <span class="shadow-label">Secondary</span>
+        <code>0 3px 0 0 var(--gray-200)</code>
+      </div>
+      <div class="shadow-item">
+        <div class="shadow-box shadow-box-destructive"></div>
+        <span class="shadow-label">Destructive</span>
+        <code>0 4px 0 0 var(--red-600)</code>
+      </div>
+      <div class="shadow-item">
+        <div class="shadow-box shadow-box-disabled"></div>
+        <span class="shadow-label">Disabled</span>
+        <code>0 4px 0 0 var(--gray-400)</code>
+      </div>
+      <div class="shadow-item">
+        <div class="shadow-box shadow-box-elevation"></div>
+        <span class="shadow-label">Elevation</span>
+        <code>0 8px 30px rgba(0,0,0,0.1)</code>
+      </div>
+      <div class="shadow-item">
+        <div class="shadow-box shadow-box-card-hover"></div>
+        <span class="shadow-label">Card Hover</span>
+        <code>0 4px 24px rgba(0,0,0,0.06)</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Active State Demo ── -->
+  <div class="doc-section">
+    <h2>Active State (Press Effect)</h2>
+    <p>On press, the shadow collapses and the element translates down by the shadow&rsquo;s Y offset. Click or hold these buttons to see the effect.</p>
+
+    <div class="active-demo">
+      <button class="active-btn active-btn-primary">Primary</button>
+      <button class="active-btn active-btn-secondary">Secondary</button>
+      <button class="active-btn active-btn-destructive">Destructive</button>
+    </div>
+
+    <table class="token-table">
+      <thead>
+        <tr><th>Variant</th><th>Resting Shadow</th><th>Active State</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Primary</td>
+          <td><code>0 4px 0 0 var(--brand-600)</code></td>
+          <td><code>box-shadow: none; transform: translateY(4px)</code></td>
+        </tr>
+        <tr>
+          <td>Secondary</td>
+          <td><code>0 3px 0 0 var(--gray-200)</code></td>
+          <td><code>box-shadow: none; transform: translateY(3px)</code></td>
+        </tr>
+        <tr>
+          <td>Destructive</td>
+          <td><code>0 4px 0 0 var(--red-600)</code></td>
+          <td><code>box-shadow: none; transform: translateY(4px)</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

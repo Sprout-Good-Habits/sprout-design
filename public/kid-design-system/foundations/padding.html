@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Padding</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+/* ── Padding Scale table ── */
+.padding-scale-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-text-sm);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.padding-scale-table th {
+  text-align: left;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 2px solid var(--border-primary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+.padding-scale-table td {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-secondary);
+  color: var(--text-secondary);
+}
+.padding-scale-table code {
+  font-size: 12px;
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+.padding-scale-table .swatch-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+.padding-swatch {
+  background: var(--violet-200);
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
+  height: 12px;
+}
+
+/* ── Usage Examples ── */
+.padding-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3xl);
+  margin: var(--spacing-xl) 0 var(--spacing-3xl);
+}
+.padding-example {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+.padding-example-label {
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+.padding-example-token {
+  font-size: var(--font-size-text-xs);
+  color: var(--text-tertiary);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+.padding-example-desc {
+  font-size: var(--font-size-text-xs);
+  color: var(--text-quaternary);
+}
+.padding-outer-box {
+  background: var(--gray-50);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.padding-inner-box {
+  background: var(--violet-400);
+  border-radius: var(--radius-xs);
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+<div class="breadcrumb" id="breadcrumb"></div>
+
+  <div class="page-header">
+    <div class="sec-title">Padding</div>
+    <div class="sec-desc">Internal spacing applied within components and containers. Padding defines the breathing room between content and its boundary.</div>
+  </div>
+
+  <!-- ── Padding Scale ── -->
+  <div class="doc-section">
+    <h2>Padding Scale</h2>
+    <p>Sprout padding uses the same spacing token scale. Apply these tokens to any <code>padding</code> property for consistent internal spacing across components.</p>
+    <table class="padding-scale-table">
+      <thead>
+        <tr><th>Name</th><th>Value</th><th>CSS Variable</th><th>Size</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>xxs</td>
+          <td>2 px</td>
+          <td><code>--spacing-xxs</code></td>
+          <td><div class="swatch-cell"><div class="padding-swatch" style="width:2px"></div></div></td>
+        </tr>
+        <tr>
+          <td>xs</td>
+          <td>4 px</td>
+          <td><code>--spacing-xs</code></td>
+          <td><div class="swatch-cell"><div class="padding-swatch" style="width:4px"></div></div></td>
+        </tr>
+        <tr>
+          <td>sm</td>
+          <td>6 px</td>
+          <td><code>--spacing-sm</code></td>
+          <td><div class="swatch-cell"><div class="padding-swatch" style="width:6px"></div></div></td>
+        </tr>
+        <tr>
+          <td>md</td>
+          <td>8 px</td>
+          <td><code>--spacing-md</code></td>
+          <td><div class="swatch-cell"><div class="padding-swatch" style="width:8px"></div></div></td>
+        </tr>
+        <tr>
+          <td>lg</td>
+          <td>12 px</td>
+          <td><code>--spacing-lg</code></td>
+          <td><div class="swatch-cell"><div class="padding-swatch" style="width:12px"></div></div></td>
+        </tr>
+        <tr>
+          <td>xl</td>
+          <td>16 px</td>
+          <td><code>--spacing-xl</code></td>
+          <td><div class="swatch-cell"><div class="padding-swatch" style="width:16px"></div></div></td>
+        </tr>
+        <tr>
+          <td>2xl</td>
+          <td>20 px</td>
+          <td><code>--spacing-2xl</code></td>
+          <td><div class="swatch-cell"><div class="padding-swatch" style="width:20px"></div></div></td>
+        </tr>
+        <tr>
+          <td>3xl</td>
+          <td>24 px</td>
+          <td><code>--spacing-3xl</code></td>
+          <td><div class="swatch-cell"><div class="padding-swatch" style="width:24px"></div></div></td>
+        </tr>
+        <tr>
+          <td>4xl</td>
+          <td>32 px</td>
+          <td><code>--spacing-4xl</code></td>
+          <td><div class="swatch-cell"><div class="padding-swatch" style="width:32px"></div></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Usage Examples ── -->
+  <div class="doc-section">
+    <h2>Usage Examples</h2>
+    <p>Each box below shows a fixed 40&times;40 px inner element surrounded by the token's padding. The gray-50 border represents the container boundary; the violet box is the content.</p>
+    <div class="padding-examples">
+
+      <div class="padding-example">
+        <span class="padding-example-label">xs &mdash; 4 px</span>
+        <div class="padding-outer-box" style="padding:var(--spacing-xs)">
+          <div class="padding-inner-box"></div>
+        </div>
+        <span class="padding-example-token">--spacing-xs</span>
+        <span class="padding-example-desc">Tight: chip labels, icon badges</span>
+      </div>
+
+      <div class="padding-example">
+        <span class="padding-example-label">md &mdash; 8 px</span>
+        <div class="padding-outer-box" style="padding:var(--spacing-md)">
+          <div class="padding-inner-box"></div>
+        </div>
+        <span class="padding-example-token">--spacing-md</span>
+        <span class="padding-example-desc">Compact: tags, small buttons</span>
+      </div>
+
+      <div class="padding-example">
+        <span class="padding-example-label">xl &mdash; 16 px</span>
+        <div class="padding-outer-box" style="padding:var(--spacing-xl)">
+          <div class="padding-inner-box"></div>
+        </div>
+        <span class="padding-example-token">--spacing-xl</span>
+        <span class="padding-example-desc">Default: buttons, inputs, compact cards</span>
+      </div>
+
+      <div class="padding-example">
+        <span class="padding-example-label">3xl &mdash; 24 px</span>
+        <div class="padding-outer-box" style="padding:var(--spacing-3xl)">
+          <div class="padding-inner-box"></div>
+        </div>
+        <span class="padding-example-token">--spacing-3xl</span>
+        <span class="padding-example-desc">Comfortable: standard cards, panels</span>
+      </div>
+
+      <div class="padding-example">
+        <span class="padding-example-label">4xl &mdash; 32 px</span>
+        <div class="padding-outer-box" style="padding:var(--spacing-4xl)">
+          <div class="padding-inner-box"></div>
+        </div>
+        <span class="padding-example-token">--spacing-4xl</span>
+        <span class="padding-example-desc">Spacious: hero sections, modal bodies</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

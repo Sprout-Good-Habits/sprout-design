@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Avatar</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Avatar",
+  "slug": "avatar",
+  "intent": {
+    "purpose": "Display a single circular avatar representing a user or the Sprout character, with customizable village character, silhouette fallback, initials fallback, or Sprout mascot",
+    "taskContext": ["identity-display", "participant-display", "personalization"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": ["circle-container"],
+    "allows": ["rive-character", "silhouette-svg", "user-initial", "sprout-character", "custom-background"],
+    "forbids": ["text-label", "badge", "nested-avatar"]
+  },
+  "variants": [
+    { "name": "Avatar", "useWhen": "Displaying a user's customized village character via Rive", "pairWith": [] },
+    { "name": "Silhouette", "useWhen": "Default placeholder when the user has not customized their character", "pairWith": [] },
+    { "name": "User initial", "useWhen": "Fallback showing the user's first-name initial", "pairWith": [] },
+    { "name": "Sprout", "useWhen": "Displaying the Sprout mascot character via Rive", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "XS", "useWhen": "Tight inline contexts — 24px" },
+    { "name": "SM", "useWhen": "Inside avatar groups and compact layouts — 32px" },
+    { "name": "MD", "useWhen": "Standard UI contexts — 40px" },
+    { "name": "LG", "useWhen": "Profile headers and prominent displays — 48px" },
+    { "name": "XL", "useWhen": "Customization preview and hero contexts — 64px" }
+  ],
+  "context": {
+    "density": ["default", "compact"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline", "inside-avatar-group", "inside-button-utility", "profile-header"]
+  },
+  "relationships": {
+    "related": ["AvatarGroup", "ButtonUtility"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["AvatarGroup", "Toolbar"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "img",
+    "keyboard": [],
+    "ariaAttributes": ["aria-label", "alt"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/avatar.css">
+<style>
+/* ── Demo layout helpers ── */
+.size-row {
+  display:flex; align-items:center; gap:var(--spacing-3xl, 24px);
+  flex-wrap:wrap;
+}
+.color-grid {
+  display:flex; gap:var(--spacing-lg, 12px);
+  flex-wrap:wrap;
+}
+
+/* ── Anatomy diagram ── */
+.anatomy-diagram {
+  display:flex; align-items:center; gap:var(--spacing-4xl, 32px);
+  padding:var(--spacing-3xl, 24px); justify-content:center;
+}
+.anatomy-callout {
+  display:flex; flex-direction:column; gap:var(--spacing-md, 8px);
+}
+.anatomy-callout-item {
+  display:flex; align-items:center; gap:var(--spacing-md, 8px);
+  font-size:var(--font-size-text-sm, 14px);
+  color:var(--text-secondary, #414651);
+}
+.anatomy-callout-dot {
+  width:8px; height:8px; border-radius:var(--radius-full, 9999px);
+  flex-shrink:0;
+}
+
+/* ── Customization reference ── */
+.custom-swatch {
+  width:44px; height:44px;
+  border-radius:var(--radius-md, 8px);
+  border:2px solid var(--border-secondary, #e9eaeb);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Avatar</div>
+    <div class="sec-desc">The avatar is a person&rsquo;s face in the product. Every village member gets a character that represents them everywhere &mdash; profiles, challenges, chat, coaching sessions, family view. The avatar shows <em>how</em> you relate to someone, not just who they are. Users personalize their avatar by choosing a hairstyle, skin tone, clothing, and background color in the <a href="/product-explorer/character/customize.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">character customizer</a>.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use the <strong>Avatar</strong> variant whenever the user has customized their village character (Rive).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use the <strong>Silhouette</strong> as the default placeholder before a user customizes their character.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Fall back to <strong>User initial</strong> when neither character nor silhouette data is available.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use the <strong>Sprout</strong> variant exclusively for the Sprout mascot character (Rive).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Always let the user&rsquo;s chosen <strong>background color</strong> show behind the character.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use avatars as buttons &mdash; wrap in a <a href="/components/button-utility.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Button Utility</a> for interactivity.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t hard-code background colors &mdash; always respect the user&rsquo;s saved preference.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Avatar</span>
+        <div class="avatar avatar-lg" id="demo-avatar"><canvas class="rive-user" width="132" height="120"></canvas></div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Silhouette</span>
+        <div class="avatar avatar-lg"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">User initial</span>
+        <div class="avatar avatar-lg">M</div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Sprout</span>
+        <div class="avatar avatar-lg" id="demo-sprout"><canvas class="rive-sprout" width="174" height="248"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ When to use ════ -->
+  <div class="doc-section">
+    <h2>When to use</h2>
+    <p>Avatars identify people and characters across the app. Choose the right variant based on available data.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Avatar</strong> &mdash; The primary variant. Renders the user&rsquo;s village character via Rive with their chosen hairstyle, skin tone, clothing, and background color.</li>
+        <li><strong>Silhouette</strong> &mdash; Default placeholder before a user has customized their character. Shows a gray human figure SVG on the <code>--bg-sky</code> background.</li>
+        <li><strong>User initial</strong> &mdash; Fallback for when neither the character nor silhouette is available (e.g., loading states). Shows the first letter of the user&rsquo;s name.</li>
+        <li><strong>Sprout</strong> &mdash; Reserved for the Sprout mascot. Uses the same Rive asset with the default Sprout appearance.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ When not to use ════ -->
+  <div class="doc-section">
+    <h2>When not to use</h2>
+    <div class="prose">
+      <ul>
+        <li>Don&rsquo;t use Avatar for decorative illustrations &mdash; it represents a specific person or character.</li>
+        <li>Don&rsquo;t add tap behavior to the avatar itself. Wrap it in a <strong>Button Utility</strong> if it needs to be interactive.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variants ════ -->
+  <div class="doc-section">
+    <h2>Variants</h2>
+    <p>Four types that share the same circular container.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Avatar (Rive)</span>
+        <div class="avatar avatar-lg avatar-bg-violet" id="variant-avatar"><canvas class="rive-user" width="132" height="120"></canvas></div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Silhouette (SVG)</span>
+        <div class="avatar avatar-lg"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">User initial</span>
+        <div class="avatar avatar-lg">D</div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Sprout (Rive)</span>
+        <div class="avatar avatar-lg" id="variant-sprout"><canvas class="rive-sprout" width="174" height="248"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Sizes ════ -->
+  <div class="doc-section">
+    <h2>Sizes</h2>
+    <p>Five sizes scale proportionally. The Rive canvas, silhouette SVG, and initial text all scale to match.</p>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Avatar (Rive)</h3>
+    <div class="demo">
+      <div class="size-row">
+        <div class="demo-item">
+          <span class="demo-label">XS &middot; 24px</span>
+          <div class="avatar avatar-xs" id="size-xs-user"><canvas class="rive-user" width="66" height="60"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">SM &middot; 32px</span>
+          <div class="avatar avatar-sm" id="size-sm-user"><canvas class="rive-user" width="88" height="80"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">MD &middot; 40px</span>
+          <div class="avatar avatar-md" id="size-md-user"><canvas class="rive-user" width="110" height="100"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">LG &middot; 48px</span>
+          <div class="avatar avatar-lg" id="size-lg-user"><canvas class="rive-user" width="132" height="120"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">XL &middot; 64px</span>
+          <div class="avatar avatar-xl" id="size-xl-user"><canvas class="rive-user" width="154" height="140"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Silhouette (SVG)</h3>
+    <div class="demo">
+      <div class="size-row">
+        <div class="demo-item">
+          <span class="demo-label">XS &middot; 24px</span>
+          <div class="avatar avatar-xs"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">SM &middot; 32px</span>
+          <div class="avatar avatar-sm"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">MD &middot; 40px</span>
+          <div class="avatar avatar-md"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">LG &middot; 48px</span>
+          <div class="avatar avatar-lg"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">XL &middot; 64px</span>
+          <div class="avatar avatar-xl"><img class="silhouette-img" src="/brand/assets/character-silhouette.svg" alt=""></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">User initial</h3>
+    <div class="demo">
+      <div class="size-row">
+        <div class="demo-item">
+          <span class="demo-label">XS &middot; 24px</span>
+          <div class="avatar avatar-xs">M</div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">SM &middot; 32px</span>
+          <div class="avatar avatar-sm">M</div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">MD &middot; 40px</span>
+          <div class="avatar avatar-md">M</div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">LG &middot; 48px</span>
+          <div class="avatar avatar-lg">M</div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">XL &middot; 64px</span>
+          <div class="avatar avatar-xl">M</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Sprout (Rive)</h3>
+    <div class="demo">
+      <div class="size-row">
+        <div class="demo-item">
+          <span class="demo-label">XS &middot; 24px</span>
+          <div class="avatar avatar-xs" id="size-xs-sprout"><canvas class="rive-sprout" width="86" height="124"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">SM &middot; 32px</span>
+          <div class="avatar avatar-sm" id="size-sm-sprout"><canvas class="rive-sprout" width="116" height="166"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">MD &middot; 40px</span>
+          <div class="avatar avatar-md" id="size-md-sprout"><canvas class="rive-sprout" width="144" height="208"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">LG &middot; 48px</span>
+          <div class="avatar avatar-lg" id="size-lg-sprout"><canvas class="rive-sprout" width="174" height="248"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">XL &middot; 64px</span>
+          <div class="avatar avatar-xl" id="size-xl-sprout"><canvas class="rive-sprout" width="230" height="332"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="anatomy-diagram">
+      <div class="avatar avatar-xl avatar-bg-violet" style="outline:2px dashed var(--brand-300);outline-offset:4px;transform:scale(1.25);transform-origin:center;" id="anatomy-avatar"><canvas class="rive-user" width="154" height="140"></canvas></div>
+      <div class="anatomy-callout">
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--brand-300);"></div> Circle container</div>
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--violet-300);"></div> Background color (user-selected)</div>
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--green-400);"></div> Content: Rive character, silhouette SVG, or initial</div>
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--gray-400);"></div> 2px white border (when inside a group)</div>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Circle container</strong> &mdash; Fully rounded (<code>border-radius: 9999px</code>), clips all content. Sized to one of the five scale steps.</li>
+        <li><strong>Background color</strong> &mdash; Defaults to <code>--bg-sky</code> (#e0f2fe). Users choose from 10 pastel options in the character customizer.</li>
+        <li><strong>Rive character</strong> (Avatar &amp; Sprout) &mdash; The village character asset rendered on a <code>&lt;canvas&gt;</code>. Uses the <code>Village-character</code> artboard with <code>State Machine 1</code>.</li>
+        <li><strong>Always grounded</strong> &mdash; The bottom edge of the container always clips the character. It is never floating in empty space.</li>
+        <li><strong>Silhouette SVG</strong> &mdash; A static gray figure (<code>--gray-300</code> / #d5d7da) rendered as an <code>&lt;img&gt;</code>, also anchored bottom-center within the circle.</li>
+        <li><strong>User initial</strong> &mdash; A single character centered in the circle, using <code>--text-brand-secondary</code> (#026aa2).</li>
+        <li><strong>Border</strong> &mdash; A 2px white border is added via <code>.avatar-bordered</code> when avatars overlap inside an <a href="/components/avatar-group.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar Group</a>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Customization ════ -->
+  <div class="doc-section">
+    <h2>Customization</h2>
+    <p>Users personalize their avatar in the <a href="/product-explorer/character/customize.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">character customizer</a>. The Rive state machine accepts these inputs to control appearance:</p>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Rive state machine inputs</h3>
+    <table class="token-table">
+      <thead><tr><th>Input</th><th>Type</th><th>Range</th><th>Controls</th></tr></thead>
+      <tbody>
+        <tr><td><code>skinID</code></td><td>Number</td><td>0&ndash;15</td><td>Skin tone</td></tr>
+        <tr><td><code>hairID</code></td><td>Number</td><td>0&ndash;6</td><td>Hairstyle (short, curly, buzz cut, side part, long, ponytail&hellip;)</td></tr>
+        <tr><td><code>hairshadeID</code></td><td>Number</td><td>0&ndash;12</td><td>Hair color</td></tr>
+        <tr><td><code>beardID</code></td><td>Number</td><td>0&ndash;7</td><td>Beard type (none, stubble, goatee, full beard&hellip;)</td></tr>
+        <tr><td><code>beardshadeID</code></td><td>Number</td><td>0&ndash;12</td><td>Beard color</td></tr>
+        <tr><td><code>clothingID</code></td><td>Number</td><td>0&ndash;11</td><td>Clothing type (t-shirt, hoodie, blazer&hellip;)</td></tr>
+        <tr><td><code>clothingcolourID</code></td><td>Number</td><td>0&ndash;10</td><td>Clothing color</td></tr>
+        <tr><td><code>glassID</code></td><td>Number</td><td>0&ndash;5</td><td>Glasses type (none, square, cat eye, oval, rounded square, round)</td></tr>
+        <tr><td><code>glassshadeID</code></td><td>Number</td><td>0&ndash;10</td><td>Glasses color</td></tr>
+        <tr><td><code>eyeshadeID</code></td><td>Number</td><td>0&ndash;7</td><td>Eye color</td></tr>
+        <tr><td><code>earringID</code></td><td>Number</td><td>0&ndash;6</td><td>Earring type (0&nbsp;=&nbsp;none)</td></tr>
+        <tr><td><code>facedetailID</code></td><td>Number</td><td>0&ndash;3</td><td>Face detail (none, blush, wrinkle, freckle)</td></tr>
+        <tr><td><code>headwearID</code></td><td>Number</td><td>0&ndash;4</td><td>Headwear type (0&nbsp;=&nbsp;none)</td></tr>
+        <tr><td><code>headwearshadeID</code></td><td>Number</td><td>0&ndash;10</td><td>Headwear color</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Background colors</h3>
+    <p>The background color is not a Rive input &mdash; it is applied as a CSS background on the circle container. 10 pastel options are available:</p>
+    <div class="demo" style="padding:16px;">
+      <div class="color-grid">
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#b9e6fe;" title="Blue (brand-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Blue</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#b2ccff;" title="Blue dark (blue-dark-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Dark blue</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#ddd6fe;" title="Violet (violet-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Violet</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#fcceee;" title="Pink (pink-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Pink</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#fecdca;" title="Red (red-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Red</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#abefc6;" title="Green (green-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Green</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#ceeab0;" title="Sprout (sprout-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Sprout</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#feee95;" title="Yellow (yellow-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Yellow</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#f9dbaf;" title="Orange (orange-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Orange</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="custom-swatch" style="background:#e9eaeb;" title="Gray (gray-200)"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Gray</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Example with different backgrounds</h3>
+    <div class="demo">
+      <div class="size-row">
+        <div class="demo-item">
+          <div class="avatar avatar-lg avatar-bg-blue" id="bg-blue"><canvas class="rive-user" width="132" height="120"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <div class="avatar avatar-lg avatar-bg-violet" id="bg-violet"><canvas class="rive-user" width="132" height="120"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <div class="avatar avatar-lg avatar-bg-pink" id="bg-pink"><canvas class="rive-user" width="132" height="120"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <div class="avatar avatar-lg avatar-bg-green" id="bg-green"><canvas class="rive-user" width="132" height="120"></canvas></div>
+        </div>
+        <div class="demo-item">
+          <div class="avatar avatar-lg avatar-bg-yellow" id="bg-yellow"><canvas class="rive-user" width="132" height="120"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Circle container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Border radius</td><td><code>--radius-full</code> (9999px)</td></tr>
+        <tr><td>Default background</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
+        <tr><td>Overflow</td><td><code>hidden</code></td></tr>
+        <tr><td>Group border</td><td>2px solid white</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Size scale</h3>
+    <table class="token-table">
+      <thead><tr><th>Size</th><th>Dimensions</th><th>Initial font size</th><th>Silhouette SVG</th><th>Canvas (Rive)</th></tr></thead>
+      <tbody>
+        <tr><td>XS</td><td>24 &times; 24px</td><td>12px (<code>--font-size-text-xs</code>)</td><td>39 &times; 35px</td><td>35 &times; 50px</td></tr>
+        <tr><td>SM</td><td>32 &times; 32px</td><td>14px (<code>--font-size-text-sm</code>)</td><td>53 &times; 47px</td><td>46 &times; 66px</td></tr>
+        <tr><td>MD</td><td>40 &times; 40px</td><td>16px (<code>--font-size-text-md</code>)</td><td>66 &times; 58px</td><td>58 &times; 83px</td></tr>
+        <tr><td>LG</td><td>48 &times; 48px</td><td>18px (<code>--font-size-text-lg</code>)</td><td>79 &times; 70px</td><td>69 &times; 99px</td></tr>
+        <tr><td>XL</td><td>56 &times; 56px</td><td>20px (<code>--font-size-text-xl</code>)</td><td>92 &times; 82px</td><td>81 &times; 116px</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Initial text</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Font family</td><td><code>--font-family-body</code> (Inter)</td></tr>
+        <tr><td>Font weight</td><td><code>--font-weight-regular</code> (400)</td></tr>
+        <tr><td>Color</td><td><code>--text-brand-secondary</code> (#026aa2)</td></tr>
+        <tr><td>Alignment</td><td>Center (flex)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Silhouette</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Asset</td><td><code>character-silhouette.svg</code></td></tr>
+        <tr><td>Fill color</td><td><code>--gray-300</code> (#d5d7da)</td></tr>
+        <tr><td>Positioning</td><td>Absolute, bottom-center, <code>overflow: hidden</code> by container</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Background color options</h3>
+    <table class="token-table">
+      <thead><tr><th>Name</th><th>Value</th><th>Token basis</th></tr></thead>
+      <tbody>
+        <tr><td>Blue</td><td>#b9e6fe</td><td><code>--brand-200</code></td></tr>
+        <tr><td>Dark blue</td><td>#b2ccff</td><td><code>--blue-dark-200</code></td></tr>
+        <tr><td>Violet</td><td>#ddd6fe</td><td><code>--violet-200</code></td></tr>
+        <tr><td>Pink</td><td>#fcceee</td><td><code>--pink-200</code></td></tr>
+        <tr><td>Red</td><td>#fecdca</td><td><code>--red-200</code></td></tr>
+        <tr><td>Green</td><td>#abefc6</td><td><code>--green-200</code></td></tr>
+        <tr><td>Sprout</td><td>#ceeab0</td><td><code>--sprout-200</code></td></tr>
+        <tr><td>Yellow</td><td>#feee95</td><td><code>--yellow-200</code></td></tr>
+        <tr><td>Orange</td><td>#f9dbaf</td><td><code>--orange-200</code></td></tr>
+        <tr><td>Gray</td><td>#e9eaeb</td><td><code>--gray-200</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Rive asset</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>File</td><td><code>sprot2.97_.riv</code></td></tr>
+        <tr><td>Artboard</td><td><code>Village-character</code></td></tr>
+        <tr><td>State machine</td><td><code>State Machine 1</code></td></tr>
+        <tr><td>Fit</td><td><code>Contain</code></td></tr>
+        <tr><td>Alignment</td><td><code>TopCenter</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Usage context ════ -->
+  <div class="doc-section">
+    <h2>Usage context</h2>
+    <p>Avatars appear in several contexts across the app:</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Avatar Group</strong> &mdash; Multiple avatars stacked with &minus;8px overlap inside an <a href="/components/avatar-group.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar Group</a>. Use <code>.avatar-bordered</code> for the 2px white stroke.</li>
+        <li><strong>Chat toolbar</strong> &mdash; SM-sized avatars inside a Button Utility in the toolbar trailing slot.</li>
+        <li><strong>Profile / settings</strong> &mdash; LG or XL size for profile headers and the character customizer.</li>
+        <li><strong>Inline references</strong> &mdash; XS or SM sizes for compact participant lists or mentions.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>All avatar variants must have <code>aria-label</code> describing who the avatar represents (e.g., <code>aria-label="Mom's avatar"</code>).</li>
+        <li>The Sprout avatar should carry <code>role="img"</code> and <code>aria-label="Sprout"</code>.</li>
+        <li>Silhouette avatars should have <code>aria-label</code> with the user&rsquo;s name even though the image is generic.</li>
+        <li>User initial avatars are self-describing via the visible letter, but should still carry an <code>aria-label</code> with the full name for screen readers.</li>
+        <li>Avatars are decorative when inside an interactive container (Button Utility) &mdash; the container provides the accessible label.</li>
+        <li>Rive <code>&lt;canvas&gt;</code> elements should have <code>pointer-events: none</code> to prevent capturing touch events from the container.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+/* ── Rive avatar initialization ── */
+var RIVE_USER_SRC = '/character2.91.riv';
+var RIVE_SPROUT_SRC = '/sprot2.97_.riv';
+var ARTBOARD = 'Village-character';
+var SM_NAME = 'State Machine 1';
+
+/* ── Presets (shared village character identities) ── */
+var PRESETS = {
+  shane:    { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0,  glassID:0, glassshadeID:0, eyeshadeID:3, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 },
+  zeev:     { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2,  glassID:1, glassshadeID:3, eyeshadeID:1, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 },
+  mali:     { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1,  glassID:0, glassshadeID:0, eyeshadeID:4, earringID:3, facedetailID:1, headwearID:0, headwearshadeID:0 },
+  grandpa:  { skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5,  glassID:4, glassshadeID:7, eyeshadeID:5, earringID:0, facedetailID:2, headwearID:2, headwearshadeID:4 },
+  coachEli: { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10, glassID:0, glassshadeID:0, eyeshadeID:2, earringID:0, facedetailID:0, headwearID:1, headwearshadeID:6 },
+  msChen:   { skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3,  glassID:2, glassshadeID:5, eyeshadeID:6, earringID:5, facedetailID:3, headwearID:0, headwearshadeID:0 },
+  liam:     { skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0,  glassID:0, glassshadeID:0, eyeshadeID:7, earringID:2, facedetailID:0, headwearID:3, headwearshadeID:8 }
+};
+var USER_STATE = PRESETS.shane;
+
+function initRive(canvas, opts) {
+  var w = parseInt(canvas.getAttribute('width'), 10) || 132;
+  var h = parseInt(canvas.getAttribute('height'), 10) || 120;
+  canvas.width = w;
+  canvas.height = h;
+  var r;
+  var config = {
+    src: opts.src,
+    canvas: canvas,
+    autoplay: true,
+    stateMachines: SM_NAME,
+    fit: rive.Fit.Contain,
+    alignment: rive.Alignment.Center,
+    onLoad: function() {
+      if (!r) return;
+      r.resizeDrawingSurfaceToCanvas();
+      try {
+        var inputs = r.stateMachineInputs(SM_NAME);
+        if (inputs && opts.state) {
+          inputs.forEach(function(inp) {
+            if (opts.state[inp.name] !== undefined) {
+              inp.value = opts.state[inp.name];
+            }
+          });
+        }
+      } catch(e) {}
+    }
+  };
+  if (opts.artboard) config.artboard = opts.artboard;
+  try {
+    r = new rive.Rive(config);
+  } catch(e) {
+    console.warn('Rive avatar init failed', e);
+  }
+}
+
+/* Per-avatar states for background demos (using presets) */
+var BG_STATES = {
+  'bg-blue':   PRESETS.coachEli,
+  'bg-violet': PRESETS.shane,
+  'bg-pink':   PRESETS.mali,
+  'bg-green':  PRESETS.liam,
+  'bg-yellow': PRESETS.zeev
+};
+
+/* Init all user avatar canvases (Avatar variant — character2.91.riv with Village-character artboard) */
+document.querySelectorAll('.rive-user').forEach(function(canvas) {
+  var parentId = canvas.parentElement.id;
+  var state = BG_STATES[parentId] || USER_STATE;
+  initRive(canvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: state });
+});
+
+/* Init all sprout canvases (Sprout variant — sprot2.97_.riv, default artboard) */
+document.querySelectorAll('.rive-sprout').forEach(function(canvas) {
+  initRive(canvas, { src: RIVE_SPROUT_SRC, state: { hairID: 1 } });
+});
+</script>
+</body>
+</html>

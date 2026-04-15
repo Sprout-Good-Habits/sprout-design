@@ -1,0 +1,34 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Chat Chips Component CSS
+   Option chips (AI response choices) and suggestion chips
+   (pre-conversation prompts).
+   ═══════════════════════════════════════════════════ */
+
+/* ── Option chips ── */
+.option-chips { display: flex; gap: var(--spacing-md, 8px); overflow-x: auto; padding: var(--spacing-xl, 16px); max-width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.option-chips::-webkit-scrollbar { display: none; }
+
+.option-chip {
+  flex-shrink: 0;
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  border-radius: var(--radius-4xl, 24px); border: none;
+  background: var(--brand-100, #e0f2fe);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-primary, #181d27);
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.option-chip:hover    { background: var(--brand-200, #b9e6fe); }
+.option-chip.selected { background: var(--brand-200, #b9e6fe); color: var(--text-primary, #181d27); }
+.option-chip.faded    { opacity: .4; pointer-events: none; }
+
+/* ── Suggestion chips ── */
+.suggestion-chips { display: flex; gap: var(--spacing-md, 8px); padding: var(--spacing-xl, 16px); overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; transition: opacity .2s; }
+.suggestion-chips.faded { opacity: 0; pointer-events: none; }
+.suggestion-chips::-webkit-scrollbar { display: none; }
+.suggestion-chips .option-chip { white-space: normal; max-width: 200px; text-align: left; display: flex; flex-direction: column; gap: var(--spacing-xxs, 2px); }
+
+.suggestion-chip-title { font-family: var(--font-family-body, 'Inter', sans-serif); font-size: var(--font-size-text-md, 16px); line-height: var(--line-height-text-md, 24px); font-weight: var(--font-weight-semibold, 600); color: var(--text-primary, #181d27); }
+.suggestion-chip-sub   { font-family: var(--font-family-body, 'Inter', sans-serif); font-size: var(--font-size-text-md, 16px); line-height: var(--line-height-text-md, 24px); font-weight: var(--font-weight-regular, 400); color: var(--text-secondary, #414651); }

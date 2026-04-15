@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Avatar Profile</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "AvatarProfile",
+  "slug": "avatar-profile",
+  "intent": {
+    "purpose": "Display a large hero banner with the user's village character on a customizable background color, used at the top of profile screens",
+    "taskContext": ["profile-header", "identity-display", "personalization"],
+    "sentiment": ["neutral", "positive"]
+  },
+  "composition": {
+    "requires": ["rive-character", "background-color"],
+    "allows": ["toolbar", "status-bar"],
+    "forbids": []
+  },
+  "variants": [
+    { "name": "Default", "useWhen": "Standalone profile banner without toolbar" },
+    { "name": "With toolbar", "useWhen": "Profile banner with navigation and actions" }
+  ],
+  "sizes": [
+    { "name": "Phone", "useWhen": "Mobile profile view — 402px wide, 264px tall" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["profile-top", "settings-header"]
+  },
+  "relationships": {
+    "related": ["Avatar", "Toolbar"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Toolbar"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "img",
+    "keyboard": [],
+    "ariaAttributes": ["aria-label"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/avatar-profile.css">
+<style>
+/* ── Device frame (reused from product explorer) ── */
+.device-wrapper {
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 32px;
+  padding: 4px;
+  box-shadow:
+    0 12px 16px -4px rgba(10,13,18,0.08),
+    0 4px 6px -2px rgba(10,13,18,0.03),
+    0 2px 2px -1px rgba(10,13,18,0.04);
+  display: inline-block;
+}
+.device-inner-shadow {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 28px;
+  padding: 4px;
+  position: relative;
+}
+.device-mockup {
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+.device-screen {
+  width: 402px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Status bar ── */
+.phone-status {
+  height: 54px;
+  padding: 14px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #181d27);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+}
+.phone-status-icons { display: flex; gap: 4px; align-items: center; }
+.phone-status-icons svg { width: 16px; height: 16px; }
+
+/* ── Toolbar ── */
+.toolbar-profile {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl, 16px) var(--spacing-md, 8px);
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 4;
+}
+.toolbar-profile .leading,
+.toolbar-profile .trailing {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+.toolbar-profile .trailing {
+  justify-content: flex-end;
+}
+.toolbar-profile .title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+}
+.btn-util {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg, 12px);
+  background: var(--bg-primary, #ffffff);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 3px 0 0 var(--gray-200, #e9eaeb);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.btn-util-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-util-icon svg { width: 100%; height: 100%; }
+
+/* ── Background color swatches (interactive demo) ── */
+.bg-picker {
+  display: flex;
+  gap: var(--spacing-md, 8px);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-lg, 12px);
+}
+.bg-swatch {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md, 8px);
+  border: 2px solid var(--border-secondary, #e9eaeb);
+  cursor: pointer;
+  transition: border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.bg-swatch:hover { border-color: var(--gray-400, #98a2b3); }
+.bg-swatch.active {
+  border-color: var(--brand-500, #0ba5ec);
+  box-shadow: 0 0 0 2px var(--brand-200, #b9e6fe);
+}
+
+/* ── Content placeholder ── */
+.content-placeholder {
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+  flex: 1;
+  padding: var(--spacing-3xl, 24px) var(--spacing-xl, 16px);
+  position: relative;
+  z-index: 3;
+  margin-top: 0;
+}
+.placeholder-bar {
+  height: 12px;
+  background: var(--gray-100, #f5f5f5);
+  border-radius: var(--radius-sm, 6px);
+  margin-bottom: var(--spacing-md, 8px);
+}
+.placeholder-bar-short { width: 60%; }
+.placeholder-bar-medium { width: 80%; }
+
+/* ── iPad overrides ── */
+.device-wrapper.ipad .device-screen {
+  width: 640px;
+  height: 960px;
+}
+
+/* ── Anatomy diagram ── */
+.anatomy-diagram {
+  display:flex; align-items:center; gap:var(--spacing-4xl, 32px);
+  padding:var(--spacing-3xl, 24px); justify-content:center;
+}
+.anatomy-callout {
+  display:flex; flex-direction:column; gap:var(--spacing-md, 8px);
+}
+.anatomy-callout-item {
+  display:flex; align-items:center; gap:var(--spacing-md, 8px);
+  font-size:var(--font-size-text-sm, 14px);
+  color:var(--text-secondary, #414651);
+}
+.anatomy-callout-dot {
+  width:8px; height:8px; border-radius:var(--radius-full, 9999px);
+  flex-shrink:0;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Avatar Profile</div>
+    <div class="sec-desc">A hero banner at the top of profile screens that prominently displays the user&rsquo;s village character on a customizable background color. The character is always grounded &mdash; the bottom edge of the banner clips the body, keeping the head and upper torso visible. Background colors are chosen by the user in the <a href="/product-explorer/character/customize.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">character customizer</a>.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use at the <strong>top of profile pages</strong> to give the user a strong sense of identity.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Always respect the user&rsquo;s chosen <strong>background color</strong> &mdash; never hard-code it.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Pair with a <strong>Toolbar</strong> overlay for navigation (back) and actions (settings).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> The character is <strong>always grounded</strong> &mdash; clipped at the bottom, never floating.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for non-profile contexts &mdash; this is specifically for user identity.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t add text or overlays on top of the character &mdash; keep the banner focused on the avatar.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview (device preview) ════ -->
+  <div class="variant-overview">
+    <div class="demo" style="justify-content:center;">
+      <div class="demo-item">
+        <span class="demo-label">Default</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup" style="background:var(--bg-sky, #e0f2fe);">
+              <div class="device-screen" style="height:874px;">
+                <div class="phone-status" style="background:var(--bg-sky, #e0f2fe);">
+                  <span>9:41</span>
+                  <div class="phone-status-icons">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="10" width="2" height="4" rx="0.5"/><rect x="4.5" y="7" width="2" height="7" rx="0.5"/><rect x="8" y="4" width="2" height="10" rx="0.5"/><rect x="11.5" y="1" width="2" height="13" rx="0.5"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.6c2 0 3.8.8 5.1 2.1l1.3-1.3C12.7 2.7 10.5 1.8 8 1.8S3.3 2.7 1.6 4.4l1.3 1.3C4.2 4.4 6 3.6 8 3.6zm0 3.6c1.2 0 2.3.5 3.1 1.2l1.3-1.3c-1.1-1-2.7-1.7-4.4-1.7s-3.3.6-4.4 1.7l1.3 1.3C5.7 7.7 6.8 7.2 8 7.2zm0 3.6c.5 0 1 .2 1.3.5l1.3-1.3c-.7-.6-1.6-1-2.6-1s-1.9.4-2.6 1l1.3 1.3c.3-.3.8-.5 1.3-.5zM8 14l1.5-1.5c-.4-.4-.9-.6-1.5-.6s-1.1.2-1.5.6L8 14z"/></svg>
+                    <svg viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="14.5" y="6" width="1.5" height="4" rx="0.5"/><rect x="1.5" y="5.5" width="10" height="5" rx="0.5"/></svg>
+                  </div>
+                </div>
+                <div class="avatar-profile" id="preview-profile" style="background:var(--bg-sky, #e0f2fe);">
+                  <canvas id="profile-rive" width="418" height="598"></canvas>
+                </div>
+                <div class="content-placeholder" style="flex:1;">
+                  <div class="placeholder-bar placeholder-bar-short"></div>
+                  <div class="placeholder-bar placeholder-bar-medium"></div>
+                  <div class="placeholder-bar placeholder-bar-short"></div>
+                  <div style="height:16px"></div>
+                  <div class="placeholder-bar"></div>
+                  <div class="placeholder-bar placeholder-bar-medium"></div>
+                  <div style="height:24px"></div>
+                  <div class="placeholder-bar placeholder-bar-short"></div>
+                  <div class="placeholder-bar"></div>
+                  <div class="placeholder-bar placeholder-bar-medium"></div>
+                  <div style="height:24px"></div>
+                  <div class="placeholder-bar placeholder-bar-short"></div>
+                  <div class="placeholder-bar placeholder-bar-medium"></div>
+                </div>
+                <!-- Home indicator -->
+                <div style="display:flex; justify-content:center; padding:8px 0 6px; background:var(--bg-primary, #ffffff);">
+                  <div style="width:134px; height:5px; background:var(--text-primary, #181d27); border-radius:100px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Variants ════ -->
+  <div class="doc-section">
+    <h2>Variants</h2>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 4px">Default</h3>
+    <p style="font-size:var(--font-size-text-sm, 14px);color:var(--text-tertiary, #535862);margin:0 0 12px">Standalone banner without navigation. Used when the profile is the root screen.</p>
+    <div class="demo" style="gap:var(--spacing-4xl, 32px); align-items:flex-start;">
+      <!-- Phone -->
+      <div class="demo-item">
+        <span class="demo-label">Phone</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup" style="background:var(--bg-sky, #e0f2fe);">
+              <div class="device-screen" style="height:874px;">
+                <div class="phone-status" style="background:var(--bg-sky, #e0f2fe);"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="10" width="2" height="4" rx="0.5"/><rect x="4.5" y="7" width="2" height="7" rx="0.5"/><rect x="8" y="4" width="2" height="10" rx="0.5"/><rect x="11.5" y="1" width="2" height="13" rx="0.5"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.6c2 0 3.8.8 5.1 2.1l1.3-1.3C12.7 2.7 10.5 1.8 8 1.8S3.3 2.7 1.6 4.4l1.3 1.3C4.2 4.4 6 3.6 8 3.6zm0 3.6c1.2 0 2.3.5 3.1 1.2l1.3-1.3c-1.1-1-2.7-1.7-4.4-1.7s-3.3.6-4.4 1.7l1.3 1.3C5.7 7.7 6.8 7.2 8 7.2zm0 3.6c.5 0 1 .2 1.3.5l1.3-1.3c-.7-.6-1.6-1-2.6-1s-1.9.4-2.6 1l1.3 1.3c.3-.3.8-.5 1.3-.5zM8 14l1.5-1.5c-.4-.4-.9-.6-1.5-.6s-1.1.2-1.5.6L8 14z"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="14.5" y="6" width="1.5" height="4" rx="0.5"/><rect x="1.5" y="5.5" width="10" height="5" rx="0.5"/></svg></div></div>
+                <div class="avatar-profile" style="background:var(--bg-sky, #e0f2fe);"><canvas class="rive-profile" width="418" height="598"></canvas></div>
+                <div class="content-placeholder" style="flex:1;"><div class="placeholder-bar placeholder-bar-short"></div><div class="placeholder-bar placeholder-bar-medium"></div><div class="placeholder-bar placeholder-bar-short"></div><div style="height:16px"></div><div class="placeholder-bar"></div><div class="placeholder-bar placeholder-bar-medium"></div><div style="height:24px"></div><div class="placeholder-bar placeholder-bar-short"></div><div class="placeholder-bar"></div><div class="placeholder-bar placeholder-bar-medium"></div></div>
+                <div style="display:flex; justify-content:center; padding:8px 0 6px; background:var(--bg-primary, #ffffff);"><div style="width:134px; height:5px; background:var(--text-primary, #181d27); border-radius:100px;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Tablet -->
+      <div class="demo-item">
+        <span class="demo-label">Tablet</span>
+        <div class="device-wrapper ipad">
+          <div class="device-inner-shadow">
+            <div class="device-mockup" style="background:var(--bg-sky, #e0f2fe);">
+              <div class="device-screen" style="width:640px; height:960px;">
+                <div class="phone-status" style="background:var(--bg-sky, #e0f2fe);"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="10" width="2" height="4" rx="0.5"/><rect x="4.5" y="7" width="2" height="7" rx="0.5"/><rect x="8" y="4" width="2" height="10" rx="0.5"/><rect x="11.5" y="1" width="2" height="13" rx="0.5"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.6c2 0 3.8.8 5.1 2.1l1.3-1.3C12.7 2.7 10.5 1.8 8 1.8S3.3 2.7 1.6 4.4l1.3 1.3C4.2 4.4 6 3.6 8 3.6zm0 3.6c1.2 0 2.3.5 3.1 1.2l1.3-1.3c-1.1-1-2.7-1.7-4.4-1.7s-3.3.6-4.4 1.7l1.3 1.3C5.7 7.7 6.8 7.2 8 7.2zm0 3.6c.5 0 1 .2 1.3.5l1.3-1.3c-.7-.6-1.6-1-2.6-1s-1.9.4-2.6 1l1.3 1.3c.3-.3.8-.5 1.3-.5zM8 14l1.5-1.5c-.4-.4-.9-.6-1.5-.6s-1.1.2-1.5.6L8 14z"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="14.5" y="6" width="1.5" height="4" rx="0.5"/><rect x="1.5" y="5.5" width="10" height="5" rx="0.5"/></svg></div></div>
+                <div class="avatar-profile" style="background:var(--bg-sky, #e0f2fe); height:320px;"><canvas class="rive-profile" width="520" height="744" style="width:260px; height:372px; margin-bottom:-75px;"></canvas></div>
+                <div class="content-placeholder" style="flex:1;"><div class="placeholder-bar placeholder-bar-short"></div><div class="placeholder-bar placeholder-bar-medium"></div><div class="placeholder-bar placeholder-bar-short"></div><div style="height:16px"></div><div class="placeholder-bar"></div><div class="placeholder-bar placeholder-bar-medium"></div><div style="height:24px"></div><div class="placeholder-bar placeholder-bar-short"></div><div class="placeholder-bar"></div><div class="placeholder-bar placeholder-bar-medium"></div></div>
+                <div style="display:flex; justify-content:center; padding:8px 0 6px; background:var(--bg-primary, #ffffff);"><div style="width:134px; height:5px; background:var(--text-primary, #181d27); border-radius:100px;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 4px">With toolbar</h3>
+    <p style="font-size:var(--font-size-text-sm, 14px);color:var(--text-tertiary, #535862);margin:0 0 12px">Banner with a Toolbar overlay showing back button, title, and settings. Used when navigating to another user&rsquo;s profile.</p>
+    <div class="demo" style="gap:var(--spacing-4xl, 32px); align-items:flex-start;">
+      <!-- Phone -->
+      <div class="demo-item">
+        <span class="demo-label">Phone</span>
+        <div class="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup" style="background:var(--bg-sky, #e0f2fe);">
+              <div class="device-screen" style="height:874px;">
+                <div class="phone-status" style="background:var(--bg-sky, #e0f2fe);"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="10" width="2" height="4" rx="0.5"/><rect x="4.5" y="7" width="2" height="7" rx="0.5"/><rect x="8" y="4" width="2" height="10" rx="0.5"/><rect x="11.5" y="1" width="2" height="13" rx="0.5"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.6c2 0 3.8.8 5.1 2.1l1.3-1.3C12.7 2.7 10.5 1.8 8 1.8S3.3 2.7 1.6 4.4l1.3 1.3C4.2 4.4 6 3.6 8 3.6zm0 3.6c1.2 0 2.3.5 3.1 1.2l1.3-1.3c-1.1-1-2.7-1.7-4.4-1.7s-3.3.6-4.4 1.7l1.3 1.3C5.7 7.7 6.8 7.2 8 7.2zm0 3.6c.5 0 1 .2 1.3.5l1.3-1.3c-.7-.6-1.6-1-2.6-1s-1.9.4-2.6 1l1.3 1.3c.3-.3.8-.5 1.3-.5zM8 14l1.5-1.5c-.4-.4-.9-.6-1.5-.6s-1.1.2-1.5.6L8 14z"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="14.5" y="6" width="1.5" height="4" rx="0.5"/><rect x="1.5" y="5.5" width="10" height="5" rx="0.5"/></svg></div></div>
+                <div class="avatar-profile" style="background:var(--bg-sky, #e0f2fe);">
+                  <nav class="toolbar-profile"><div class="leading"><button class="btn-util" aria-label="Back"><div class="btn-util-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></button></div><span class="title">Sam Lee</span><div class="trailing"><button class="btn-util" aria-label="Settings"><div class="btn-util-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div></button></div></nav>
+                  <canvas class="rive-profile" width="418" height="598"></canvas>
+                </div>
+                <div class="content-placeholder" style="flex:1;"><div class="placeholder-bar placeholder-bar-short"></div><div class="placeholder-bar placeholder-bar-medium"></div><div class="placeholder-bar placeholder-bar-short"></div><div style="height:16px"></div><div class="placeholder-bar"></div><div class="placeholder-bar placeholder-bar-medium"></div><div style="height:24px"></div><div class="placeholder-bar placeholder-bar-short"></div><div class="placeholder-bar"></div></div>
+                <div style="display:flex; justify-content:center; padding:8px 0 6px; background:var(--bg-primary, #ffffff);"><div style="width:134px; height:5px; background:var(--text-primary, #181d27); border-radius:100px;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Tablet -->
+      <div class="demo-item">
+        <span class="demo-label">Tablet</span>
+        <div class="device-wrapper ipad">
+          <div class="device-inner-shadow">
+            <div class="device-mockup" style="background:var(--bg-sky, #e0f2fe);">
+              <div class="device-screen" style="width:640px; height:960px;">
+                <div class="phone-status" style="background:var(--bg-sky, #e0f2fe);"><span>9:41</span><div class="phone-status-icons"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="10" width="2" height="4" rx="0.5"/><rect x="4.5" y="7" width="2" height="7" rx="0.5"/><rect x="8" y="4" width="2" height="10" rx="0.5"/><rect x="11.5" y="1" width="2" height="13" rx="0.5"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.6c2 0 3.8.8 5.1 2.1l1.3-1.3C12.7 2.7 10.5 1.8 8 1.8S3.3 2.7 1.6 4.4l1.3 1.3C4.2 4.4 6 3.6 8 3.6zm0 3.6c1.2 0 2.3.5 3.1 1.2l1.3-1.3c-1.1-1-2.7-1.7-4.4-1.7s-3.3.6-4.4 1.7l1.3 1.3C5.7 7.7 6.8 7.2 8 7.2zm0 3.6c.5 0 1 .2 1.3.5l1.3-1.3c-.7-.6-1.6-1-2.6-1s-1.9.4-2.6 1l1.3 1.3c.3-.3.8-.5 1.3-.5zM8 14l1.5-1.5c-.4-.4-.9-.6-1.5-.6s-1.1.2-1.5.6L8 14z"/></svg><svg viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="14.5" y="6" width="1.5" height="4" rx="0.5"/><rect x="1.5" y="5.5" width="10" height="5" rx="0.5"/></svg></div></div>
+                <div class="avatar-profile" style="background:var(--bg-sky, #e0f2fe); height:320px;">
+                  <nav class="toolbar-profile"><div class="leading"><button class="btn-util" aria-label="Back"><div class="btn-util-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div></button></div><span class="title">Sam Lee</span><div class="trailing"><button class="btn-util" aria-label="Settings"><div class="btn-util-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div></button></div></nav>
+                  <canvas class="rive-profile" width="520" height="744" style="width:260px; height:372px; margin-bottom:-75px;"></canvas>
+                </div>
+                <div class="content-placeholder" style="flex:1;"><div class="placeholder-bar placeholder-bar-short"></div><div class="placeholder-bar placeholder-bar-medium"></div><div class="placeholder-bar placeholder-bar-short"></div><div style="height:16px"></div><div class="placeholder-bar"></div><div class="placeholder-bar placeholder-bar-medium"></div><div style="height:24px"></div><div class="placeholder-bar placeholder-bar-short"></div><div class="placeholder-bar"></div></div>
+                <div style="display:flex; justify-content:center; padding:8px 0 6px; background:var(--bg-primary, #ffffff);"><div style="width:134px; height:5px; background:var(--text-primary, #181d27); border-radius:100px;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Background colors ════ -->
+  <div class="doc-section">
+    <h2>Background colors</h2>
+    <p>Users choose their profile background in the <a href="/product-explorer/character/customize.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">character customizer</a>. The banner always renders their saved color. Try different colors below:</p>
+
+    <div class="bg-picker" id="bg-picker">
+      <div class="bg-swatch active" data-color="var(--brand-100)" style="background:var(--brand-100, #e0f2fe);" title="Sky (default)"></div>
+      <div class="bg-swatch" data-color="var(--brand-200)" style="background:var(--brand-200, #b9e6fe);" title="Blue"></div>
+      <div class="bg-swatch" data-color="var(--blue-dark-200)" style="background:var(--blue-dark-200, #b2ccff);" title="Blue dark"></div>
+      <div class="bg-swatch" data-color="var(--violet-200)" style="background:var(--violet-200, #ddd6fe);" title="Violet"></div>
+      <div class="bg-swatch" data-color="var(--pink-200)" style="background:var(--pink-200, #fcceee);" title="Pink"></div>
+      <div class="bg-swatch" data-color="var(--red-200)" style="background:var(--red-200, #fecdca);" title="Red"></div>
+      <div class="bg-swatch" data-color="var(--green-200)" style="background:var(--green-200, #abefc6);" title="Green"></div>
+      <div class="bg-swatch" data-color="var(--sprout-200)" style="background:var(--sprout-200, #ceeab0);" title="Sprout"></div>
+      <div class="bg-swatch" data-color="var(--yellow-200)" style="background:var(--yellow-200, #feee95);" title="Yellow"></div>
+      <div class="bg-swatch" data-color="var(--orange-200)" style="background:var(--orange-200, #f9dbaf);" title="Orange"></div>
+    </div>
+
+    <div class="demo" style="justify-content:center; margin-top:var(--spacing-xl, 16px);">
+      <div class="demo-item">
+        <div style="width:402px; border-radius:var(--radius-xl, 12px); overflow:hidden; border:1px solid var(--border-secondary, #e9eaeb);">
+          <div class="avatar-profile" id="color-preview" style="background:var(--bg-sky, #e0f2fe);">
+            <canvas class="rive-profile" width="418" height="598"></canvas>
+          </div>
+          <div style="height:40px; background:var(--bg-primary, #ffffff);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="anatomy-diagram">
+      <div style="width:402px; border-radius:var(--radius-xl, 12px); overflow:hidden; border:2px dashed var(--brand-300); position:relative;">
+        <div class="avatar-profile" style="background:var(--bg-sky, #e0f2fe); outline:none;">
+          <div style="position:absolute; inset:0; border:2px dashed var(--green-400); border-radius:0; z-index:2; pointer-events:none;"></div>
+          <canvas class="rive-profile" width="418" height="598" style="outline:2px dashed var(--violet-300); outline-offset:-2px;"></canvas>
+        </div>
+        <div style="height:40px; background:var(--bg-primary, #ffffff);"></div>
+      </div>
+      <div class="anatomy-callout">
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--brand-300);"></div> Container (full-width, 264px tall)</div>
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--green-400);"></div> Background color (user-selected)</div>
+        <div class="anatomy-callout-item"><div class="anatomy-callout-dot" style="background:var(--violet-300);"></div> Rive character (centered, grounded)</div>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Container</strong> &mdash; Full-width block, 264px tall, with <code>overflow: hidden</code> to clip the character at the bottom.</li>
+        <li><strong>Background color</strong> &mdash; Defaults to <code>--bg-sky</code> (#e0f2fe). Users choose from 10 pastel options in the character customizer.</li>
+        <li><strong>Rive character</strong> &mdash; Centered horizontally, positioned so the head and upper torso are visible. Uses the <code>Village-character</code> artboard with <code>State Machine 1</code>.</li>
+        <li><strong>Always grounded</strong> &mdash; The bottom edge of the container always clips the character. It is never floating in empty space.</li>
+        <li><strong>Toolbar</strong> (optional) &mdash; Overlays the top of the banner with transparent background. Contains back button, title (user name), and trailing action (settings). Uses <a href="/components/button-utility.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Button Utility</a> for interactive controls.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Banner</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Phone</th><th>Tablet</th></tr></thead>
+      <tbody>
+        <tr><td>Screen width</td><td>402px</td><td>640px</td></tr>
+        <tr><td>Banner height</td><td>264px</td><td>320px</td></tr>
+        <tr><td>Background</td><td colspan="2">User-selected from 10 pastel options (default: <code>--bg-sky</code>)</td></tr>
+        <tr><td>Overflow</td><td colspan="2"><code>hidden</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Character</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Phone</th><th>Tablet</th></tr></thead>
+      <tbody>
+        <tr><td>Canvas size</td><td>209 &times; 299px</td><td>260 &times; 372px</td></tr>
+        <tr><td>Retina (2x)</td><td>418 &times; 598</td><td>520 &times; 744</td></tr>
+        <tr><td>Alignment</td><td colspan="2">Center (horizontal), grounded at bottom</td></tr>
+        <tr><td>Artboard</td><td colspan="2"><code>Village-character</code></td></tr>
+        <tr><td>State machine</td><td colspan="2"><code>State Machine 1</code></td></tr>
+        <tr><td>Fit</td><td colspan="2"><code>Contain</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Background options</h3>
+    <table class="token-table">
+      <thead><tr><th>Name</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Sky (default)</td><td><code>--brand-100</code> (#e0f2fe)</td></tr>
+        <tr><td>Blue</td><td><code>--brand-200</code> (#b9e6fe)</td></tr>
+        <tr><td>Blue dark</td><td><code>--blue-dark-200</code> (#b2ccff)</td></tr>
+        <tr><td>Violet</td><td><code>--violet-200</code> (#ddd6fe)</td></tr>
+        <tr><td>Pink</td><td><code>--pink-200</code> (#fcceee)</td></tr>
+        <tr><td>Red</td><td><code>--red-200</code> (#fecdca)</td></tr>
+        <tr><td>Green</td><td><code>--green-200</code> (#abefc6)</td></tr>
+        <tr><td>Sprout</td><td><code>--sprout-200</code> (#ceeab0)</td></tr>
+        <tr><td>Yellow</td><td><code>--yellow-200</code> (#feee95)</td></tr>
+        <tr><td>Orange</td><td><code>--orange-200</code> (#f9dbaf)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>The banner container should have <code>role="img"</code> and <code>aria-label</code> describing the user (e.g., <code>"Sam Lee's profile avatar"</code>).</li>
+        <li>The Rive <code>&lt;canvas&gt;</code> is decorative &mdash; it should have <code>pointer-events: none</code> and no focus.</li>
+        <li>When paired with a Toolbar, the toolbar buttons provide their own accessible labels (e.g., <code>"Back"</code>, <code>"Settings"</code>).</li>
+        <li>Background color choice is cosmetic and does not convey meaning &mdash; no ARIA attributes are needed for the color.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+var SM_NAME = 'State Machine 1';
+var USER_STATE = {
+  skinID: 11,
+  hairID: 4,
+  hairshadeID: 3,
+  beardID: 0,
+  beardshadeID: 0,
+  clothingcolourID: 0,
+  clothingID: 0,
+  glassID: 0,
+  glassshadeID: 0,
+  eyeshadeID: 3,
+  earringID: 0,
+  facedetailID: 0,
+  headwearID: 0,
+  headwearshadeID: 0
+};
+
+function initProfileRive(canvas) {
+  var w = parseInt(canvas.getAttribute('width'), 10) || 418;
+  var h = parseInt(canvas.getAttribute('height'), 10) || 598;
+  canvas.width = w;
+  canvas.height = h;
+  var r;
+  try {
+    r = new rive.Rive({
+      src: '/character2.91.riv',
+      canvas: canvas,
+      autoplay: true,
+      artboard: 'Village-character',
+      stateMachines: SM_NAME,
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.Center,
+      onLoad: function() {
+        if (!r) return;
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM_NAME);
+          if (inputs) {
+            inputs.forEach(function(inp) {
+              if (USER_STATE[inp.name] !== undefined) inp.value = USER_STATE[inp.name];
+            });
+          }
+        } catch(e) {}
+      }
+    });
+  } catch(e) {
+    console.warn('Rive profile init failed', e);
+  }
+}
+
+/* Init all profile canvases */
+document.querySelectorAll('.rive-profile').forEach(function(canvas) {
+  initProfileRive(canvas);
+});
+initProfileRive(document.getElementById('profile-rive'));
+
+/* Background color picker */
+var picker = document.getElementById('bg-picker');
+var colorPreview = document.getElementById('color-preview');
+var deviceProfile = document.getElementById('preview-profile');
+if (picker) {
+  picker.addEventListener('click', function(e) {
+    var swatch = e.target.closest('.bg-swatch');
+    if (!swatch) return;
+    var color = swatch.getAttribute('data-color');
+    picker.querySelectorAll('.bg-swatch').forEach(function(s) { s.classList.remove('active'); });
+    swatch.classList.add('active');
+    if (colorPreview) colorPreview.style.background = color;
+    if (deviceProfile) {
+      deviceProfile.style.background = color;
+      deviceProfile.closest('.device-mockup').style.background = color;
+      deviceProfile.closest('.device-screen').querySelector('.phone-status').style.background = color;
+    }
+  });
+}
+</script>
+</body>
+</html>

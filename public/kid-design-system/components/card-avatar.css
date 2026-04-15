@@ -1,0 +1,79 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — CardAvatar Component CSS
+   The avatar rendered inside a task card. Has two content
+   variants (Default and Village) and an optional progress
+   ring. Source: apps/child/components/common/CardAvatar.tsx
+   in sprout-app. Previously labelled "Goal icon" in Figma.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Base ── */
+.card-avatar {
+  position:relative;
+  display:inline-block;
+  flex-shrink:0;
+}
+
+/* ── Size modifiers ── */
+.card-avatar--big   { width:96px; height:96px; }
+.card-avatar--small { width:56px; height:56px; }
+
+/* ── Circle container ── */
+/* Holds the avatar content (emoji or Rive canvas) and clips to a circle.
+   Background matches the Figma Goal icon component (brand-200). */
+.card-avatar-circle {
+  position:absolute;
+  inset:0;
+  border-radius:var(--radius-full, 9999px);
+  overflow:hidden;
+  background:var(--brand-200, #b9e6fe);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ── Default variant — TossFace emoji content ── */
+.card-avatar-emoji {
+  font-family:'TossFace', sans-serif;
+  line-height:1;
+}
+.card-avatar--big   .card-avatar-emoji { font-size:44px; }
+.card-avatar--small .card-avatar-emoji { font-size:26px; }
+
+/* ── Village variant — Rive canvas content ── */
+/* Canvas is larger than the circle and positioned with a negative top offset
+   so only the character's head and upper body are visible. Sizes scale with
+   the .card-avatar modifier. Ratios are taken from /foundations/village-character.html
+   (64px avatar circle uses a 81x116 canvas at top -28). */
+.card-avatar-canvas {
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  pointer-events:none;
+  display:block;
+}
+.card-avatar--big .card-avatar-canvas {
+  width:122px;
+  height:174px;
+  top:-42px;
+}
+.card-avatar--small .card-avatar-canvas {
+  width:71px;
+  height:102px;
+  top:-25px;
+}
+
+/* ── Optional progress ring overlay ── */
+/* Rendered as an absolutely-positioned SVG on top of .card-avatar-circle so
+   it works identically on both the Default and Village variants. */
+.card-avatar-ring {
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}

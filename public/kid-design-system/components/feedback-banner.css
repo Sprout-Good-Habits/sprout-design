@@ -1,0 +1,74 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Feedback Banner Component CSS
+   Contextual feedback with hierarchy-colored backgrounds,
+   icon, title, content, and up to two action buttons.
+   ═══════════════════════════════════════════════════ */
+
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Base ── */
+.fb {
+  display:flex; flex-direction:column;
+  gap:var(--spacing-xl, 16px);
+  padding:var(--spacing-3xl, 24px) var(--spacing-xl, 16px);
+  width:358px;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+}
+
+/* ── Hierarchy backgrounds ── */
+.fb-default { background:var(--bg-primary, #ffffff); }
+.fb-success { background:var(--bg-success-secondary, #dcfae6); }
+.fb-warning { background:var(--bg-warning-secondary, #fef7c3); }
+.fb-error   { background:var(--bg-error-secondary, #fee4e2); }
+
+/* ── Top border (dual CTA) ── */
+.fb-bordered { border-top:1px solid var(--border-primary, #d5d7da); }
+
+/* ── Header: icon + title ── */
+.fb-header {
+  display:flex; align-items:center; gap:var(--spacing-lg, 12px);
+}
+.fb-icon {
+  width:var(--spacing-4xl, 32px); height:var(--spacing-4xl, 32px); flex-shrink:0;
+  font-family:'TossFace', sans-serif;
+  font-size:28px; line-height:32px;
+  text-align:center;
+}
+.fb-title {
+  flex:1;
+  font-size:var(--font-size-display-xs, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  line-height:var(--line-height-display-xs, 32px);
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+}
+.fb-default .fb-title { color:var(--text-primary, #181d27); }
+.fb-success .fb-title { color:var(--text-success-primary, #079455); }
+.fb-warning .fb-title { color:var(--text-warning-primary, #ca8504); }
+.fb-error   .fb-title { color:var(--text-error-primary, #d92d20); }
+
+/* ── Content: subtitle + description ── */
+.fb-content {
+  display:flex; flex-direction:column; gap:var(--spacing-xxs, 2px);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+}
+.fb-subtitle { font-weight:var(--font-weight-bold, 700); }
+.fb-desc     { font-weight:var(--font-weight-regular, 400); }
+
+.fb-default .fb-content { color:var(--text-primary, #181d27); }
+.fb-success .fb-content { color:var(--text-success-primary, #079455); }
+.fb-warning .fb-content { color:var(--text-warning-primary, #ca8504); }
+.fb-error   .fb-content { color:var(--text-error-primary, #d92d20); }
+
+/* ── Button overrides (uses buttons.css) ── */
+.fb .btn-sprout { width:100%; }
+
+/* ── Button row (dual CTA) ── */
+.fb-btn-row {
+  display:flex; gap:10px; width:100%;
+}
+.fb-btn-row .btn-sprout { flex:1; }

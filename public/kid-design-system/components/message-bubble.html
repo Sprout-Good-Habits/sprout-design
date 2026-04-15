@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Message Bubble</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "MessageBubble",
+  "slug": "message-bubble",
+  "intent": {
+    "purpose": "Display individual chat messages in a conversation between a child and Sprout or other participants",
+    "taskContext": ["chat", "messaging", "conversation"],
+    "sentiment": ["neutral", "playful"]
+  },
+  "composition": {
+    "requires": ["bubble"],
+    "allows": ["avatar", "sender-name", "media-grid", "waveform", "transcription-label", "deleted-icon"],
+    "forbids": ["nested-bubble"]
+  },
+  "variants": [
+    { "name": "Text (single-line)", "useWhen": "Short text messages that fit on one line", "pairWith": ["MessageComposer"] },
+    { "name": "Text (multi-line)", "useWhen": "Longer messages that wrap to multiple lines", "pairWith": ["MessageComposer"] },
+    { "name": "Voice message", "useWhen": "Audio recordings with waveform visualization and optional transcription", "pairWith": ["MessageComposer"] },
+    { "name": "Deleted", "useWhen": "Message has been removed by sender or moderator", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Phone", "useWhen": "Mobile layout, 370px container width" },
+    { "name": "Tablet", "useWhen": "Tablet layout, 576px container width" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline"]
+  },
+  "relationships": {
+    "related": ["MessageComposer", "AvatarGroup", "Loading"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["MessageComposer", "Toolbar"]
+  },
+  "states": ["default", "typing", "transcribing", "transcribed", "playing", "deleted"],
+  "accessibility": {
+    "role": "log",
+    "keyboard": ["Tab", "ArrowUp", "ArrowDown"],
+    "ariaAttributes": ["aria-label", "aria-live"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/message-bubble.css">
+<style>
+/* ── Demo overrides ── */
+.msg-demo-stack {
+  display:flex; flex-direction:column; gap:var(--spacing-lg, 12px); align-items:stretch;
+  width:370px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Message Bubble</div>
+    <div class="sec-desc">Message bubbles display individual chat messages in a conversation. Incoming messages appear left-aligned with an optional avatar, while outgoing messages are right-aligned with a distinct blue background.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for displaying text, voice, and media messages in chat conversations.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Pair with the Message Composer for a complete chat experience.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for system notifications or alerts. Use Toast or Feedback Banner instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't nest interactive components inside bubbles.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Variant overview -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Incoming</span>
+        <div class="msg-row msg-incoming">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-bubble msg-bubble-in">Single line looks like this</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Outgoing</span>
+        <div class="msg-row msg-outgoing">
+          <div class="msg-col msg-col-out">
+            <div class="msg-bubble msg-bubble-out">Single line looks like this</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Direction -->
+  <div class="doc-section">
+    <h2>Direction</h2>
+    <p>Messages have two directions. <strong>Incoming</strong> messages from Sprout or other participants align left with an avatar. <strong>Outgoing</strong> messages from the child align right with a blue background.</p>
+
+    <div class="state-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="state-cell">
+        <span class="state-cell-label">Incoming</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-sender">Mali</div>
+            <div class="msg-bubble msg-bubble-in">Single line looks like this</div>
+          </div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Outgoing</span>
+        <div class="msg-row msg-outgoing" style="width:auto;">
+          <div class="msg-col msg-col-out">
+            <div class="msg-bubble msg-bubble-out">Single line looks like this</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Types -->
+  <div class="doc-section">
+    <h2>Types</h2>
+    <p>Message bubbles support several content types for text, voice, and deleted states.</p>
+
+    <h3>Single-line</h3>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Incoming</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-bubble msg-bubble-in">Single line looks like this</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Outgoing</span>
+        <div class="msg-row msg-outgoing" style="width:auto;">
+          <div class="msg-col msg-col-out">
+            <div class="msg-bubble msg-bubble-out">Single line looks like this</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Multi-line</h3>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Incoming</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-bubble msg-bubble-in" style="width:224px;">Long / multi-paragraph line looks like this</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Outgoing</span>
+        <div class="msg-row msg-outgoing" style="width:auto;">
+          <div class="msg-col msg-col-out">
+            <div class="msg-bubble msg-bubble-out" style="width:256px;">Long / multi-paragraph line looks like this</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Voice message (incoming)</h3>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Transcribing</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-bubble msg-bubble-in msg-bubble-audio">
+              <div class="msg-audio-row">
+                <div class="msg-audio-play"><svg class="play-icon" viewBox="0 0 20 20"><polygon points="7,4 16,10 7,16" /></svg><svg class="pause-icon" viewBox="0 0 20 20"><rect x="5" y="3" width="3" height="14" rx="1"/><rect x="12" y="3" width="3" height="14" rx="1"/></svg></div>
+                <div class="msg-audio-waveform" id="waveform-1"></div>
+              </div>
+              <div class="msg-audio-label">Transcribing...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Transcribed</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-bubble msg-bubble-in msg-bubble-audio">
+              <div class="msg-audio-row">
+                <div class="msg-audio-play"><svg class="play-icon" viewBox="0 0 20 20"><polygon points="7,4 16,10 7,16" /></svg><svg class="pause-icon" viewBox="0 0 20 20"><rect x="5" y="3" width="3" height="14" rx="1"/><rect x="12" y="3" width="3" height="14" rx="1"/></svg></div>
+                <div class="msg-audio-waveform" id="waveform-2"></div>
+              </div>
+              <div class="msg-audio-label bold">Show transcript</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Playing</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-bubble msg-bubble-in msg-bubble-audio">
+              <div class="msg-audio-row">
+                <div class="msg-audio-play playing"><svg class="play-icon" viewBox="0 0 20 20"><polygon points="7,4 16,10 7,16" /></svg><svg class="pause-icon" viewBox="0 0 20 20"><rect x="5" y="3" width="3" height="14" rx="1"/><rect x="12" y="3" width="3" height="14" rx="1"/></svg></div>
+                <div class="msg-audio-waveform" id="waveform-5"></div>
+              </div>
+              <div class="msg-audio-label bold">Show transcript</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Voice message (outgoing)</h3>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Transcribing</span>
+        <div class="msg-row msg-outgoing" style="width:auto;">
+          <div class="msg-col msg-col-out">
+            <div class="msg-bubble msg-bubble-out msg-bubble-audio">
+              <div class="msg-audio-row">
+                <div class="msg-audio-play"><svg class="play-icon" viewBox="0 0 20 20"><polygon points="7,4 16,10 7,16" /></svg><svg class="pause-icon" viewBox="0 0 20 20"><rect x="5" y="3" width="3" height="14" rx="1"/><rect x="12" y="3" width="3" height="14" rx="1"/></svg></div>
+                <div class="msg-audio-waveform" id="waveform-3"></div>
+              </div>
+              <div class="msg-audio-label">Transcribing...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Transcribed</span>
+        <div class="msg-row msg-outgoing" style="width:auto;">
+          <div class="msg-col msg-col-out">
+            <div class="msg-bubble msg-bubble-out msg-bubble-audio">
+              <div class="msg-audio-row">
+                <div class="msg-audio-play"><svg class="play-icon" viewBox="0 0 20 20"><polygon points="7,4 16,10 7,16" /></svg><svg class="pause-icon" viewBox="0 0 20 20"><rect x="5" y="3" width="3" height="14" rx="1"/><rect x="12" y="3" width="3" height="14" rx="1"/></svg></div>
+                <div class="msg-audio-waveform" id="waveform-4"></div>
+              </div>
+              <div class="msg-audio-label bold">Show transcript</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Playing</span>
+        <div class="msg-row msg-outgoing" style="width:auto;">
+          <div class="msg-col msg-col-out">
+            <div class="msg-bubble msg-bubble-out msg-bubble-audio">
+              <div class="msg-audio-row">
+                <div class="msg-audio-play playing"><svg class="play-icon" viewBox="0 0 20 20"><polygon points="7,4 16,10 7,16" /></svg><svg class="pause-icon" viewBox="0 0 20 20"><rect x="5" y="3" width="3" height="14" rx="1"/><rect x="12" y="3" width="3" height="14" rx="1"/></svg></div>
+                <div class="msg-audio-waveform" id="waveform-6"></div>
+              </div>
+              <div class="msg-audio-label bold">Show transcript</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Deleted</h3>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Incoming</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-bubble msg-bubble-in" style="width:226px;">
+              <div class="msg-deleted">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><line x1="7" y1="7" x2="13" y2="13"/><line x1="13" y1="7" x2="7" y2="13"/></svg>
+                <span>Message was deleted</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Outgoing</span>
+        <div class="msg-row msg-outgoing" style="width:auto;">
+          <div class="msg-col msg-col-out">
+            <div class="msg-bubble msg-bubble-out" style="width:208px;">
+              <div class="msg-deleted">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><line x1="7" y1="7" x2="13" y2="13"/><line x1="13" y1="7" x2="7" y2="13"/></svg>
+                <span>Message was deleted</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- With media -->
+  <div class="doc-section">
+    <h2>With media</h2>
+    <p>Messages can include a photo or video grid above the text bubble. Image size depends on device: 104px on phone, 128px on tablet.</p>
+
+    <h3>Phone (104px)</h3>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Incoming</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-sender">Mali</div>
+            <div class="msg-images">
+              <div class="msg-image"></div>
+              <div class="msg-image"></div>
+              <div class="msg-image"></div>
+            </div>
+            <div class="msg-bubble msg-bubble-in">Look at these photos!</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Outgoing</span>
+        <div class="msg-row msg-outgoing" style="width:auto;">
+          <div class="msg-col msg-col-out">
+            <div class="msg-images msg-images-out">
+              <div class="msg-image"></div>
+              <div class="msg-image"></div>
+              <div class="msg-image"></div>
+            </div>
+            <div class="msg-bubble msg-bubble-out">Here you go!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Tablet (128px)</h3>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Incoming</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-sender">Mali</div>
+            <div class="msg-images msg-images-tablet">
+              <div class="msg-image msg-image-tablet"></div>
+              <div class="msg-image msg-image-tablet"></div>
+              <div class="msg-image msg-image-tablet"></div>
+            </div>
+            <div class="msg-bubble msg-bubble-in">Look at these photos!</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Outgoing</span>
+        <div class="msg-row msg-outgoing" style="width:auto;">
+          <div class="msg-col msg-col-out">
+            <div class="msg-images msg-images-out msg-images-tablet">
+              <div class="msg-image msg-image-tablet"></div>
+              <div class="msg-image msg-image-tablet"></div>
+              <div class="msg-image msg-image-tablet"></div>
+            </div>
+            <div class="msg-bubble msg-bubble-out">Here you go!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- With sender name -->
+  <div class="doc-section">
+    <h2>With sender name</h2>
+    <p>Incoming messages show a sender name label above the bubble in group conversations, so participants can tell who sent each message. The sender name uses <code>--font-size-text-xs</code> (12px) in <code>--text-secondary</code>.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">With sender</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-sender">Mali</div>
+            <div class="msg-bubble msg-bubble-in">Hey there! How are you doing today?</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Without sender</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-bubble msg-bubble-in">Hey there! How are you doing today?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typing indicator -->
+  <div class="doc-section">
+    <h2>Typing indicator</h2>
+    <p>An animated three-dot indicator is shown inside an incoming bubble while the other participant is composing a message.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Typing</span>
+        <div class="msg-row msg-incoming" style="width:auto;">
+          <div class="msg-avatar"><canvas class="rive-avatar" width="64" height="64"></canvas></div>
+          <div class="msg-col msg-col-in">
+            <div class="msg-bubble msg-bubble-in" style="padding:0;">
+              <div class="msg-typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anatomy -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Avatar</strong> (optional, incoming only) &mdash; 32px circle with sky-blue background. Uses the Sprout character positioned inside the circle (head cropped) or participant photo.</li>
+        <li><strong>Sender name</strong> (optional, incoming only) &mdash; text-xs (12px/16px) label in <code>--text-secondary</code>. Appears above the bubble in group conversations.</li>
+        <li><strong>Bubble</strong> (required) &mdash; Rounded container with 24px radius. White for incoming, <code>--brand-200</code> blue for outgoing.</li>
+        <li><strong>Text content</strong> (required for text type) &mdash; text-md (16px/24px) in <code>--text-primary</code>. Wraps at max-width 256px.</li>
+        <li><strong>Media grid</strong> (optional) &mdash; 104px square images, 20px radius, 4px gap. Wraps above the text bubble.</li>
+        <li><strong>Waveform row</strong> (voice type) &mdash; Play/pause button (gray circle, toggles between play and pause icon) + waveform bars inside the bubble.</li>
+        <li><strong>Transcription label</strong> (voice type) &mdash; text-xs (12px) in <code>--text-secondary</code>. "Transcribing..." (regular) or "Show transcript" (bold).</li>
+        <li><strong>Deleted indicator</strong> (deleted type) &mdash; x-circle icon (20px) + "Message was deleted" in <code>--text-secondary</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content guidelines -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Message text should be displayed exactly as typed by the user</li>
+        <li>The "Message was deleted" label is a system string, not user-editable</li>
+        <li>"Transcribing..." and "Show transcript" are fixed labels for voice message states</li>
+        <li>Sender names should be the participant's display name, not a username or ID</li>
+        <li>Media grids wrap naturally. Up to 5 images per message at phone width</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Token Reference -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Bubble radius</td><td><code>--radius-4xl</code> (24px)</td></tr>
+        <tr><td>Bubble padding</td><td><code>--spacing-lg</code> (12px) vertical, <code>--spacing-xl</code> (16px) horizontal</td></tr>
+        <tr><td>Bubble max-width</td><td>256px (phone), 536px (tablet)</td></tr>
+        <tr><td>Bubble min-width</td><td>90px</td></tr>
+        <tr><td>Fill (incoming)</td><td><code>--bg-primary</code> (#ffffff)</td></tr>
+        <tr><td>Fill (outgoing)</td><td><code>--brand-200</code> (#b9e6fe)</td></tr>
+        <tr><td>Text color</td><td><code>--text-primary</code> (#181d27)</td></tr>
+        <tr><td>Text font</td><td><code>--font-family-body</code> (Inter), <code>--font-weight-regular</code> (400)</td></tr>
+        <tr><td>Text size</td><td><code>--font-size-text-md</code> (16px) / <code>--line-height-text-md</code> (24px)</td></tr>
+        <tr><td>Avatar size</td><td>32px circle, <code>--bg-sky</code> background, 2px white border, <code>--radius-full</code></td></tr>
+        <tr><td>Row gap (incoming)</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Column gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Sender font</td><td><code>--font-family-body</code> (Inter), <code>--font-size-text-xs</code> (12px) / <code>--line-height-text-xs</code> (16px), <code>--text-secondary</code></td></tr>
+        <tr><td>Sender padding</td><td><code>--spacing-xl</code> (16px) horizontal</td></tr>
+        <tr><td>Media image size</td><td>104px (phone) / 128px (tablet)</td></tr>
+        <tr><td>Media image radius</td><td><code>--radius-3xl</code> (20px)</td></tr>
+        <tr><td>Media gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Voice bubble width</td><td>256px (phone) / 536px (tablet)</td></tr>
+        <tr><td>Voice bubble gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Play button bg</td><td><code>--gray-200</code> (#e9eaeb), <code>--radius-full</code></td></tr>
+        <tr><td>Play button padding</td><td><code>--spacing-sm</code> (6px)</td></tr>
+        <tr><td>Play/pause icon size</td><td>20px, <code>--fg-primary</code> (#181d27)</td></tr>
+        <tr><td>Waveform bar width</td><td><code>--spacing-xxs</code> (2px), 1px radius</td></tr>
+        <tr><td>Waveform bar gap</td><td><code>--spacing-xxs</code> (2px)</td></tr>
+        <tr><td>Waveform played color</td><td><code>--fg-secondary</code> (#414651)</td></tr>
+        <tr><td>Waveform unplayed color</td><td><code>--fg-quaternary</code> (#a4a7ae)</td></tr>
+        <tr><td>Transcription label</td><td><code>--font-size-text-xs</code> (12px) / <code>--line-height-text-xs</code> (16px), <code>--text-secondary</code></td></tr>
+        <tr><td>Transcription weight</td><td><code>--font-weight-regular</code> (transcribing), <code>--font-weight-bold</code> (transcribed)</td></tr>
+        <tr><td>Deleted icon</td><td>x-circle 20px, <code>--text-secondary</code></td></tr>
+        <tr><td>Deleted gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Deleted text</td><td><code>--font-size-text-md</code> (16px), <code>--text-secondary</code></td></tr>
+        <tr><td>Typing dot size</td><td><code>--spacing-md</code> (8px), <code>--gray-400</code></td></tr>
+        <tr><td>Typing dot gap</td><td><code>--spacing-xs</code> (4px)</td></tr>
+        <tr><td>Typing padding</td><td><code>--spacing-xl</code> (16px) horizontal, <code>--spacing-xl</code> (16px) vertical</td></tr>
+        <tr><td>Typing animation</td><td>1.4s ease-in-out infinite, 0.2s stagger</td></tr>
+        <tr><td>Container width</td><td>370px (phone) / 576px (tablet)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> The message list container should use <code>role="log"</code> with <code>aria-live="polite"</code> so new messages are announced by screen readers.</li>
+        <li><strong>Message structure:</strong> Each message should be a distinct element with <code>role="listitem"</code> or within a <code>role="list"</code> container.</li>
+        <li><strong>Direction:</strong> Indicate sent vs received using <code>aria-label</code> (e.g. "Mali said: Hello" or "You said: Hello").</li>
+        <li><strong>Voice messages:</strong> The play button needs <code>aria-label="Play voice message"</code>. Transcription status should be announced.</li>
+        <li><strong>Deleted messages:</strong> Screen readers should announce "Message was deleted" rather than leaving a silent gap.</li>
+        <li><strong>Media:</strong> Image attachments need descriptive <code>alt</code> text or <code>aria-label="Photo attachment"</code>.</li>
+        <li><strong>Typing indicator:</strong> Use <code>aria-label="Typing"</code> and <code>role="status"</code> so it's announced once.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+// Initialize Rive avatars
+var RIVE_SRC = '/sprot2.97_.riv';
+var SM_NAME = 'State Machine 1';
+document.querySelectorAll('.rive-avatar').forEach(function(canvas) {
+  canvas.width = 128;
+  canvas.height = 184;
+  canvas.style.width = '96px';
+  canvas.style.height = '138px';
+  try {
+    var r = new rive.Rive({
+      src: RIVE_SRC,
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: SM_NAME,
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.TopCenter,
+      onLoad: function() {
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM_NAME);
+          if (inputs) {
+            inputs.forEach(function(inp) {
+              if (inp.name === 'hairID') inp.value = 1;
+            });
+          }
+        } catch(e) {}
+      }
+    });
+  } catch(e) {
+    console.warn('Rive avatar init failed', e);
+  }
+});
+
+// Generate waveform bars
+document.querySelectorAll('.msg-audio-waveform').forEach(function(el) {
+  var bars = 42;
+  for (var i = 0; i < bars; i++) {
+    var bar = document.createElement('div');
+    bar.className = 'bar ' + (i < bars * 0.6 ? 'played' : 'unplayed');
+    var h = Math.round(2 + Math.random() * 16);
+    bar.style.height = h + 'px';
+    el.appendChild(bar);
+  }
+});
+</script>
+</body>
+</html>

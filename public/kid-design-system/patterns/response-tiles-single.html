@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Response Tiles Single</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/tile.css">
+<link rel="stylesheet" href="/components/buttons.css">
+<link rel="stylesheet" href="/components/segmented-control.css">
+<style>
+/* ── Device frame ── */
+.device-wrapper {
+  background:var(--bg-primary, #ffffff);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:32px; padding:4px;
+  box-shadow:0 12px 16px -4px rgba(10,13,18,0.08),0 4px 6px -2px rgba(10,13,18,0.03),0 2px 2px -1px rgba(10,13,18,0.04);
+}
+.device-inner-shadow {
+  background:var(--bg-primary, #ffffff);
+  border-radius:28px; padding:4px; overflow:hidden; position:relative;
+}
+.device-inner-shadow::after {
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  box-shadow:inset 0 0 6px 2px rgba(10,13,18,0.08),inset 0 0 4px 2px rgba(10,13,18,0.03);
+  z-index:6;
+}
+.device-mockup {
+  background:var(--bg-tertiary, #fafafa);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:24px; clip-path:inset(0 round 24px); position:relative;
+}
+.device-screen {
+  width:402px; height:874px;
+  position:relative; overflow:hidden;
+  background:var(--bg-sky, #e0f2fe);
+  user-select:none; -webkit-user-select:none;
+}
+.viewer { display:flex; justify-content:center; margin-top:var(--spacing-xl, 16px); }
+/* Device chat components */
+.dev-status-bar {
+  position:absolute; top:0; left:0; right:0; height:62px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  padding:0 24px 8px; z-index:10; pointer-events:none;
+}
+.dev-status-bar-time { font-size:17px; font-weight:600; color:var(--text-primary); letter-spacing:-0.01em; }
+.dev-status-bar-icons { display:flex; align-items:center; gap:6px; }
+.dev-toolbar {
+  position:absolute; top:62px; left:0; right:0; height:56px;
+  display:flex; align-items:flex-start; justify-content:space-between;
+  padding:0 16px 8px; z-index:10;
+  background:var(--bg-sky, #e0f2fe);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+}
+.dev-toolbar-btn {
+  width:48px; height:48px; display:flex; align-items:center; justify-content:center;
+  background:var(--bg-primary); border:2px solid var(--border-secondary);
+  border-radius:9999px; box-shadow:0 3px 0 0 var(--gray-200);
+}
+.dev-toolbar-btn svg { width:24px; height:24px; color:var(--text-primary); }
+.dev-toolbar-title {
+  position:absolute; left:50%; top:13px; transform:translateX(-50%);
+  font-size:18px; font-weight:600; color:var(--text-primary);
+}
+.dev-thread {
+  position:absolute; top:118px; left:0; right:0; bottom:113px;
+  overflow-y:auto; padding:16px;
+  display:flex; flex-direction:column; gap:8px;
+  z-index:5; scrollbar-width:none;
+}
+.dev-thread::-webkit-scrollbar { display:none; }
+.dev-msg-in, .dev-msg-out {
+  border-radius:24px; padding:12px 16px; max-width:256px;
+  font-size:14px; line-height:20px; color:var(--text-primary);
+}
+.dev-msg-in { background:var(--bg-primary); align-self:flex-start; }
+.dev-msg-out { background:var(--brand-200); align-self:flex-end; }
+.dev-tile-group { display:flex; flex-direction:column; gap:8px; width:100%; }
+.dev-tile-group .tile { padding:12px 16px; cursor:pointer; }
+.dev-tile-group .tile-leading { width:32px; height:32px; }
+.dev-tile-group .tile-leading-icon { font-size:24px; }
+@keyframes devTileIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.dev-tile-group .tile { animation:devTileIn 0.3s ease both; }
+.dev-tile-group .tile:nth-child(1) { animation-delay:0.05s; }
+.dev-tile-group .tile:nth-child(2) { animation-delay:0.1s; }
+.dev-tile-group .tile:nth-child(3) { animation-delay:0.15s; }
+.dev-tile-group .tile:nth-child(4) { animation-delay:0.2s; }
+.dev-grass-edge { position:absolute; bottom:89px; left:0; right:0; height:24px; border-radius:24px 24px 0 0; background:var(--bg-grass, #86cb3c); z-index:1; }
+.dev-grass-fill { position:absolute; bottom:0; left:0; right:0; height:89px; background:var(--bg-grass, #86cb3c); z-index:1; }
+.dev-composer {
+  position:absolute; bottom:34px; left:0; right:0; z-index:10;
+  display:flex; align-items:flex-end; gap:12px; padding:0 16px;
+}
+.dev-composer.locked { pointer-events:none; opacity:0.4; }
+.dev-composer-plus {
+  width:48px; height:48px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg-primary); border:2px solid var(--border-secondary);
+  border-radius:9999px; box-shadow:0 3px 0 0 var(--gray-200);
+}
+.dev-composer-plus svg { width:24px; height:24px; color:var(--text-primary); }
+.dev-composer-input {
+  flex:1; height:48px; border-radius:24px;
+  background:var(--bg-primary); border:2px solid var(--border-secondary);
+  box-shadow:0 3px 0 0 var(--gray-200);
+  display:flex; align-items:center; padding:0 16px;
+  font-size:16px; color:var(--text-placeholder-subtle, #d5d7da);
+}
+.dev-home-indicator {
+  position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+  width:134px; height:5px; border-radius:100px;
+  background:var(--text-primary); z-index:20;
+}
+/* ── Demo chat frame ── */
+.demo-chat {
+  background:var(--bg-sky, #e0f2fe);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-4xl, 24px);
+  padding:var(--spacing-xl, 16px);
+  max-width:402px;
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-md, 8px);
+}
+
+/* ── Message bubbles (inline demo) ── */
+.demo-msg {
+  border-radius:var(--radius-4xl, 24px);
+  padding:var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  max-width:280px;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  color:var(--text-primary, #181d27);
+}
+.demo-msg-in { background:var(--bg-primary, #ffffff); align-self:flex-start; }
+.demo-msg-out { background:var(--brand-200, #b9e6fe); align-self:flex-end; }
+
+/* ── Tile group inside chat ── */
+.demo-tile-group {
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-md, 8px);
+  width:100%;
+}
+.demo-tile-group .tile {
+  padding:var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+}
+.demo-tile-group .tile-leading { width:32px; height:32px; }
+.demo-tile-group .tile-leading-icon { font-size:24px; }
+
+/* ── Anatomy labels ── */
+.anatomy-wrapper { position:relative; display:inline-block; }
+.anatomy-label {
+  position:absolute;
+  background:var(--gray-900, #181d27);
+  color:white;
+  font-size:11px;
+  font-weight:var(--font-weight-semibold, 600);
+  padding:2px 8px;
+  border-radius:var(--radius-sm, 6px);
+  white-space:nowrap;
+  z-index:1;
+}
+.anatomy-line {
+  position:absolute;
+  border-left:1px dashed var(--gray-400, #a4a7ae);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Response Tiles Single</div>
+    <div class="sec-desc">Tiles presented inside the chat thread as tappable suggested responses. These are suggestions, not requirements — the kid can pick a tile or type their own response instead. Uses the DS Tile component (None variant) to keep a consistent visual language.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when Sprout asks a question with 2–4 distinct answer options.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use to guide the conversation without requiring the kid to type.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for open-ended prompts — use the composer instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use when more than one answer can be selected — use Multi-select instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Demo ════ -->
+  <div class="doc-section">
+    <h2>Example</h2>
+    <p>Sprout asks a question, tiles appear below. Tap one to select it — the tiles dismiss and the conversation continues.</p>
+    <div class="demo" style="justify-content:center;">
+      <div class="demo-chat" id="demoSingle">
+        <div class="demo-msg demo-msg-in">What did you get up to today?</div>
+        <div class="demo-tile-group" id="demoTiles1">
+          <div class="tile" data-label="School">
+            <div class="tile-leading tile-leading-icon">📚</div>
+            <div class="tile-content"><div class="tile-label">School</div><div class="tile-desc">Classes, homework, projects</div></div>
+          </div>
+          <div class="tile" data-label="Sports">
+            <div class="tile-leading tile-leading-icon">⚽</div>
+            <div class="tile-content"><div class="tile-label">Sports</div><div class="tile-desc">Practice, games, exercise</div></div>
+          </div>
+          <div class="tile" data-label="Art & Drawing">
+            <div class="tile-leading tile-leading-icon">🎨</div>
+            <div class="tile-content"><div class="tile-label">Art & Drawing</div></div>
+          </div>
+          <div class="tile" data-label="Music">
+            <div class="tile-leading tile-leading-icon">🎵</div>
+            <div class="tile-content"><div class="tile-label">Music</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Device Preview ════ -->
+  <div class="doc-section">
+    <h2>Device preview</h2>
+    <p>How the pattern looks in context. Tiles are suggestions — the composer stays active so the kid can type their own response instead.</p>
+    <div class="viewer">
+      <div class="device-wrapper">
+        <div class="device-inner-shadow">
+          <div class="device-mockup">
+            <div class="device-screen">
+              <div class="dev-status-bar">
+                <span class="dev-status-bar-time">9:41</span>
+                <span class="dev-status-bar-icons">
+                  <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+                  <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+                </span>
+              </div>
+              <div class="dev-toolbar">
+                <div class="dev-toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg></div>
+                <span class="dev-toolbar-title">Sprout</span>
+                <div style="width:48px"></div>
+              </div>
+              <div class="dev-thread" id="devThread">
+                <div class="dev-msg-in">Hey there! What did you get up to today?</div>
+                <div class="dev-tile-group" id="devTiles">
+                  <div class="tile" data-label="School"><div class="tile-leading tile-leading-icon">📚</div><div class="tile-content"><div class="tile-label">School</div><div class="tile-desc">Classes, homework, projects</div></div></div>
+                  <div class="tile" data-label="Sports"><div class="tile-leading tile-leading-icon">⚽</div><div class="tile-content"><div class="tile-label">Sports</div><div class="tile-desc">Practice, games, exercise</div></div></div>
+                  <div class="tile" data-label="Art & Drawing"><div class="tile-leading tile-leading-icon">🎨</div><div class="tile-content"><div class="tile-label">Art & Drawing</div></div></div>
+                  <div class="tile" data-label="Music"><div class="tile-leading tile-leading-icon">🎵</div><div class="tile-content"><div class="tile-label">Music</div></div></div>
+                </div>
+              </div>
+              <div class="dev-grass-edge"></div>
+              <div class="dev-grass-fill"></div>
+              <div class="dev-composer" id="devComposer">
+                <div class="dev-composer-plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+                <div class="dev-composer-input">Talk to Sprout...</div>
+              </div>
+              <div class="dev-home-indicator"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Behavior ════ -->
+  <div class="doc-section">
+    <h2>Behavior</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Appear:</strong> Tiles slide in below Sprout's message with a staggered animation (50ms delay per tile).</li>
+        <li><strong>Select:</strong> Tap a tile — it highlights with the <code>.checked</code> state (blue bg, brand border). After 400ms the group fades out.</li>
+        <li><strong>Dismiss:</strong> The group collapses and the kid's selection appears as an outgoing chat bubble.</li>
+        <li><strong>Chain:</strong> Sprout can respond with a follow-up message and present a new tile group.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Edge Cases ════ -->
+  <div class="doc-section">
+    <h2>Edge cases</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Composer stays open:</strong> Tiles are suggestions, not mandatory. The kid can ignore the tiles and type their own response, send a photo, or record audio instead. If they send a message, the tile group dismisses automatically.</li>
+        <li><strong>Single tap:</strong> Selection is immediate — one tap selects and triggers the dismiss animation. There's no undo once a tile is tapped.</li>
+        <li><strong>Chained tiles:</strong> A new tile group can appear after the previous one dismisses.</li>
+        <li><strong>Free text override:</strong> If the kid types and sends a message while tiles are showing, the tiles dismiss and the typed message is used instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Scenarios ════ -->
+  <div class="doc-section">
+    <h2>Scenarios</h2>
+    <div class="demo" style="gap:var(--spacing-3xl, 24px); flex-wrap:wrap;">
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Activity picker</span>
+        <div class="demo-chat" style="width:320px;">
+          <div class="demo-msg demo-msg-in">What did you get up to today?</div>
+          <div class="demo-tile-group">
+            <div class="tile"><div class="tile-leading tile-leading-icon">📚</div><div class="tile-content"><div class="tile-label">School</div></div></div>
+            <div class="tile"><div class="tile-leading tile-leading-icon">⚽</div><div class="tile-content"><div class="tile-label">Sports</div></div></div>
+            <div class="tile"><div class="tile-leading tile-leading-icon">🎨</div><div class="tile-content"><div class="tile-label">Art & Drawing</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Action prompt</span>
+        <div class="demo-chat" style="width:320px;">
+          <div class="demo-msg demo-msg-in">Want to tell me more about it?</div>
+          <div class="demo-tile-group">
+            <div class="tile"><div class="tile-leading tile-leading-icon">📷</div><div class="tile-content"><div class="tile-label">Show a photo</div></div></div>
+            <div class="tile"><div class="tile-leading tile-leading-icon">✍️</div><div class="tile-content"><div class="tile-label">Describe it to me</div></div></div>
+            <div class="tile"><div class="tile-leading tile-leading-icon">🎙️</div><div class="tile-content"><div class="tile-label">Tell me by voice</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Feelings check-in</span>
+        <div class="demo-chat" style="width:320px;">
+          <div class="demo-msg demo-msg-in">How are you feeling right now?</div>
+          <div class="demo-tile-group">
+            <div class="tile"><div class="tile-leading tile-leading-icon">😄</div><div class="tile-content"><div class="tile-label">Great!</div></div></div>
+            <div class="tile"><div class="tile-leading tile-leading-icon">😊</div><div class="tile-content"><div class="tile-label">Pretty good</div></div></div>
+            <div class="tile"><div class="tile-leading tile-leading-icon">😐</div><div class="tile-content"><div class="tile-label">Just okay</div></div></div>
+            <div class="tile"><div class="tile-leading tile-leading-icon">😞</div><div class="tile-content"><div class="tile-label">Not great</div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <div class="state-grid" style="grid-template-columns:repeat(3, 1fr); max-width:720px;">
+      <div class="state-cell">
+        <span class="state-cell-label">Default</span>
+        <div class="tile" style="width:100%;">
+          <div class="tile-leading tile-leading-icon">📚</div>
+          <div class="tile-content"><div class="tile-label">School</div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Hover</span>
+        <div class="tile" style="width:100%; background:var(--bg-secondary, #fafafa);">
+          <div class="tile-leading tile-leading-icon">📚</div>
+          <div class="tile-content"><div class="tile-label">School</div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <span class="state-cell-label">Selected</span>
+        <div class="tile checked" style="width:100%;">
+          <div class="tile-leading tile-leading-icon">📚</div>
+          <div class="tile-content"><div class="tile-label">School</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Keep labels short — 1–3 words. Use the description for context if needed.</li>
+        <li>Always include a leading emoji to make options scannable at a glance.</li>
+        <li>Limit to 2–4 tiles per group. More options overwhelm the chat flow.</li>
+        <li>Labels should feel like things the kid would say, not formal categories.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Composition ════ -->
+  <div class="doc-section">
+    <h2>Composition</h2>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Component</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Container</td><td><code>.tile-group</code></td><td>Vertical stack with 8px gap, full width</td></tr>
+        <tr><td>Each option</td><td>Tile (None variant)</td><td>Leading emoji + label + optional description</td></tr>
+        <tr><td>Leading</td><td><code>.tile-leading-icon</code></td><td>24px emoji (chat-size) vs 32px default</td></tr>
+        <tr><td>Selection state</td><td><code>.tile.checked</code></td><td>Blue bg + brand border from DS</td></tr>
+        <tr><td>Animation</td><td><code>tileSlideIn</code></td><td>Staggered 50ms per tile, 300ms ease</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>Container has <code>role="listbox"</code>, each tile has <code>role="option"</code> with <code>aria-selected</code>.</li>
+        <li>Tile touch target is minimum 56x44px (DS Tile default).</li>
+        <li>Reduced-motion users see tiles without slide-in animation.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="doc-section">
+    <h2>Prototypes</h2>
+    <div class="prose">
+      <ul>
+        <li><a href="/product-explorer/task/chat-tier-3-tiles.html">Chat Tier 3 + Tiles</a> &mdash; Text-first chat for older kids</li>
+        <li><a href="/product-explorer/task/chat-tier-2-tiles.html">Chat Tier 2 + Tiles</a> &mdash; Audio-first chat for younger kids (large mic, Sprout visible, compressed thread)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+
+<script>
+// ── Interactive demo ──
+(function() {
+  var group = document.getElementById('demoTiles1');
+  var chat = document.getElementById('demoSingle');
+  if (!group) return;
+
+  group.querySelectorAll('.tile').forEach(function(tile) {
+    tile.style.cursor = 'pointer';
+    tile.addEventListener('click', function() {
+      group.querySelectorAll('.tile').forEach(function(el) { el.classList.remove('checked'); });
+      tile.classList.add('checked');
+
+      setTimeout(function() {
+        group.style.transition = 'opacity 0.25s';
+        group.style.opacity = '0';
+        setTimeout(function() {
+          group.style.display = 'none';
+          var label = tile.getAttribute('data-label');
+          var msg = document.createElement('div');
+          msg.className = 'demo-msg demo-msg-out';
+          msg.textContent = 'I did ' + label.toLowerCase() + ' today!';
+          chat.appendChild(msg);
+
+          // Reset after 2s
+          setTimeout(function() {
+            msg.remove();
+            group.style.display = '';
+            group.style.opacity = '1';
+            group.querySelectorAll('.tile').forEach(function(el) { el.classList.remove('checked'); });
+          }, 2000);
+        }, 300);
+      }, 400);
+    });
+  });
+})();
+</script>
+
+<script>
+// ── Device preview interactivity ──
+(function() {
+  var devThread = document.getElementById('devThread');
+  var devTiles = document.getElementById('devTiles');
+  var devComposer = document.getElementById('devComposer');
+  if (!devTiles) return;
+
+  devTiles.querySelectorAll('.tile').forEach(function(tile) {
+    tile.style.cursor = 'pointer';
+    tile.addEventListener('click', function() {
+      devTiles.querySelectorAll('.tile').forEach(function(el) { el.classList.remove('checked'); });
+      tile.classList.add('checked');
+
+      setTimeout(function() {
+        devTiles.style.transition = 'opacity 0.25s';
+        devTiles.style.opacity = '0';
+        setTimeout(function() {
+          devTiles.style.display = 'none';
+          devComposer.classList.remove('locked');
+
+          var label = tile.getAttribute('data-label');
+          var msg = document.createElement('div');
+          msg.className = 'dev-msg-out';
+          msg.textContent = 'I did ' + label.toLowerCase() + ' today!';
+          devThread.appendChild(msg);
+
+          setTimeout(function() {
+            var reply = document.createElement('div');
+            reply.className = 'dev-msg-in';
+            reply.textContent = "That's awesome! Want to tell me more about it?";
+            devThread.appendChild(reply);
+            devThread.scrollTop = devThread.scrollHeight;
+
+            // Reset after 3s
+            setTimeout(function() {
+              msg.remove();
+              reply.remove();
+              devTiles.style.display = '';
+              devTiles.style.opacity = '1';
+              devComposer.classList.add('locked');
+              devTiles.querySelectorAll('.tile').forEach(function(el) { el.classList.remove('checked'); });
+            }, 3000);
+          }, 1200);
+        }, 300);
+      }, 400);
+    });
+  });
+})();
+</script>
+
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

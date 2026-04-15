@@ -1,0 +1,31 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Status Bar Component CSS
+   iOS-style status bar (time, cellular, wifi, battery).
+   ═══════════════════════════════════════════════════ */
+
+.status-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 62px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 var(--spacing-3xl, 24px) var(--spacing-md, 8px);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.status-bar-time {
+  font-size: 17px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  letter-spacing: -.01em;
+}
+
+.status-bar-icons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+}
+
+.status-bar-icons svg { display: block; }

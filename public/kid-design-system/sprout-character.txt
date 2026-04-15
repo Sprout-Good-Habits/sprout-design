@@ -1,0 +1,80 @@
+# Rive Sprout Character
+
+## 1. State Machine
+
+Current name: `State Machine 1`
+
+## 2. Rive File
+
+`sprot2.97_.riv` — default artboard, no artboard name needed.
+
+## 3. Inputs
+
+### Number Inputs
+| Input Name | Type | Range | Description |
+|------------|------|-------|-------------|
+| `skinID` | Number | 0-9 | Skin color index |
+| `hairID` | Number | 0-8 | Hair style index |
+| `looking` | Number | 0-3 | Eye direction: 0=top-left, 1=top-middle, 2=top-right |
+| `mouthselector` | Number | 0-12 | Mouth shape/viseme ID. 0=closed |
+
+### Boolean Inputs
+| Input Name | Type | Description |
+|------------|------|-------------|
+| `talkinganimation` | Boolean | Body movement during talking |
+| `talkingmouth toggle` | Boolean | Enable/disable mouth movement |
+
+### Trigger Inputs
+| Input Name | Description |
+|------------|-------------|
+| `smile` | Smiling expression |
+| `laugh` | Laughing expression |
+| `surprise` | Surprised expression |
+| `smugface` | Smugface/cheeky expression |
+| `sad` | Sad expression |
+| `doubtful` | Doubtful/analyzing expression |
+| `thinking` | Thinking expression (note: has trailing space in name) |
+| `celebration` | Full celebration animation |
+| `characterwave` | Wave hand animation (hello/goodbye) |
+
+## 4. Skin Colors (skinID)
+
+| skinID | HEX Color | Preview |
+|--------|-----------|---------|
+| 0 | #ACDC79 | Light green |
+| 1 | #F97066 | Coral |
+| 2 | #F670C7 | Hot pink |
+| 3 | #F38744 | Orange |
+| 4 | #FAC515 | Gold |
+| 5 | #47CD89 | Emerald |
+| 6 | #528BFF | Blue |
+| 7 | #36BFFA | Cyan |
+| 8 | #9B8AFB | Lavender |
+| 9 | #BEA091 | Beige |
+
+## 5. Hair Styles (hairID)
+
+| hairID | Style |
+|--------|-------|
+| 0 | None |
+| 1 | Short |
+| 2 | Curly |
+| 3 | Spiky |
+| 4 | Long |
+| 5 | Pigtails |
+| 6 | Mohawk |
+| 7 | Afro |
+| 8 | Bob |
+
+## 6. Mouth Shapes (mouthselector)
+
+Range: 0-12
+
+- `0` = closed mouth (default/rest)
+- `1-12` = open mouth variations (mapped to viseme phonemes)
+
+## 7. Display Setup
+
+- Rive fit: `Fit.Contain`
+- Rive alignment: `Alignment.Center`
+- Character must be grounded (clipped by bottom edge, never floating)

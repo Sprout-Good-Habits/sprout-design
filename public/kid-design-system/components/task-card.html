@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Task Card</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "TaskCard",
+  "slug": "task-card",
+  "intent": {
+    "purpose": "Represent a daily task or habit on the kid home screen with a state-driven badge",
+    "taskContext": ["kid-home", "task-tracking", "daily-tasks", "carousel", "list"],
+    "sentiment": ["playful", "motivational"]
+  },
+  "composition": {
+    "requires": ["background", "avatar", "name", "badge"],
+    "allows": ["subtitle", "gems", "streak"],
+    "forbids": ["nested-interactive"]
+  },
+  "variants": [
+    { "name": "Carousel Card", "useWhen": "Tier 1 (ages 4-6) kid home — HomeCarousel full-width card" },
+    { "name": "Task List Card", "useWhen": "Tier 2 and Tier 3 (ages 7-13) kid home — HomeTaskScroll list row" }
+  ],
+  "sizes": [
+    { "name": "Carousel Card", "useWhen": "Screen width − 32, 220px tall. 96px avatar, 30px bold title" },
+    { "name": "Task List Card", "useWhen": "Full width, 80px tall. 52px avatar, 16px bold title" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile"],
+    "placement": ["carousel", "list"]
+  },
+  "relationships": {
+    "related": ["Badges", "Avatar", "Toolbar"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["HomeCarousel", "HomeTaskScroll"]
+  },
+  "states": ["available", "inProgress", "submitted", "completed", "rejected"],
+  "accessibility": {
+    "role": "article",
+    "keyboard": ["Tab", "Enter"],
+    "ariaAttributes": ["aria-label", "aria-disabled"],
+    "minTouchTarget": "44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/kid-design-system/tokens.css">
+<link rel="stylesheet" href="/kid-design-system/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/buttons.css">
+<link rel="stylesheet" href="/kid-design-system/components/card-avatar.css">
+<script src="/kid-design-system/components/card-avatar.js" defer></script>
+<style>
+/* ── TossFace ── */
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display: swap;
+}
+
+/* ══════════════════════════════════════
+   TASK BADGE — 40px bookmark tab
+   Shared by both card formats
+   ══════════════════════════════════════ */
+.task-badge {
+  position: absolute;
+  top: 0;
+  width: 40px;
+  pointer-events: none;
+}
+.task-badge svg { display: block; width: 40px; }
+.task-badge-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.task-badge-icon svg { display: block; }
+.task-badge-icon .tf-badge {
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+}
+.task-list-card .task-badge-icon .tf-badge {
+  font-size: 16px;
+}
+.tb-icon-muted {
+  filter: grayscale(1) brightness(2);
+}
+.task-badge-streak {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-bold, 700);
+  color: #ffffff;
+  line-height: 1;
+  margin-top: var(--spacing-xs, 4px);
+}
+
+/* Badge state fills (source: Figma — StatusFlag component) */
+.tb-fill-available  { fill: var(--gray-300, #d5d7da); }
+.tb-fill-inProgress { fill: var(--gray-300, #d5d7da); }
+.tb-fill-submitted  { fill: var(--gray-400, #a4a7ae); }
+.tb-fill-completed  { fill: var(--red-400, #f97066); }
+.tb-fill-rejected   { fill: var(--yellow-400, #fac515); }
+
+/* ══════════════════════════════════════
+   FORMAT 1: Carousel Card (Tier 1)
+   Source: apps/child/components/tasks/TaskCard.tsx
+   ══════════════════════════════════════ */
+.task-card {
+  position: relative;
+  width: 360px;
+  height: 220px;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-2xl, 16px);
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(10,13,18,0.06);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  flex-shrink: 0;
+}
+.task-card-content {
+  padding: var(--spacing-xl, 16px);
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+/* .task-card-avatar removed — now uses shared .card-avatar.card-avatar--big from CardAvatar section */
+.task-card-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.task-card-name {
+  font-size: 30px;
+  line-height: 32px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  margin: 0;
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-card-sub {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-tertiary, #535862);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+.task-card-gems {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-tertiary, #535862);
+}
+.task-card-gems .tf-gem {
+  font-family: 'TossFace', sans-serif;
+  font-size: 14px;
+  line-height: 1;
+}
+.task-card .task-badge {
+  right: 24px;
+  height: 112px;
+}
+.task-card.is-dim .task-card-name,
+.task-card.is-dim .task-card-sub,
+.task-card.is-dim .task-card-gems {
+  opacity: 0.5;
+}
+
+/* ══════════════════════════════════════
+   FORMAT 2: Task List Card (Tier 2 and 3)
+   Source: apps/child/components/home/TaskListCard.tsx
+   ══════════════════════════════════════ */
+.task-list-card {
+  position: relative;
+  width: 420px;
+  height: 80px;
+  background: var(--bg-primary, #ffffff);
+  padding-left: var(--spacing-lg, 12px);
+  padding-right: 60px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  box-shadow: 0 2px 0 0 rgba(10,13,18,0.08);
+}
+.task-list-card-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  flex: 1;
+  min-width: 0;
+}
+/* .task-list-card-avatar removed — now uses shared .card-avatar.card-avatar--small from CardAvatar section */
+.task-list-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+}
+.task-list-card-name {
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+.task-list-card-sub {
+  color: var(--text-quaternary, #717680);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+.task-list-card-gems {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  color: var(--text-quaternary, #717680);
+}
+.task-list-card-gems .tf-gem {
+  font-family: 'TossFace', sans-serif;
+  line-height: 1;
+}
+.task-list-card .task-badge {
+  right: 12px;
+  height: 68px;
+}
+.task-list-card.is-dim .task-list-card-name,
+.task-list-card.is-dim .task-list-card-sub,
+.task-list-card.is-dim .task-list-card-gems {
+  opacity: 0.5;
+}
+
+/* Tier 2 sizing (17px body, 20px radius) */
+.task-list-card--t2 { border-radius: var(--radius-3xl, 20px); }
+.task-list-card--t2 .task-list-card-name { font-size: 17px; line-height: 24px; }
+.task-list-card--t2 .task-list-card-sub  { font-size: 13px; line-height: 16px; }
+.task-list-card--t2 .task-list-card-gems { font-size: 13px; line-height: 16px; }
+.task-list-card--t2 .task-list-card-gems .tf-gem { font-size: 13px; }
+
+/* Tier 3 sizing (15px body, 16px radius) */
+.task-list-card--t3 { border-radius: var(--radius-2xl, 16px); }
+.task-list-card--t3 .task-list-card-name { font-size: 15px; line-height: 22px; }
+.task-list-card--t3 .task-list-card-sub  { font-size: 11px; line-height: 14px; }
+.task-list-card--t3 .task-list-card-gems { font-size: 11px; line-height: 14px; }
+.task-list-card--t3 .task-list-card-gems .tf-gem { font-size: 11px; }
+
+/* Expanded card (rejected only) — adds an action area below the row.
+   Follows Figma: Tier 3 Warning card, ~186 px tall. Structure is a gray
+   (bg-secondary) outer wrapper with an inner white row (bg-primary, rounded)
+   and a separate action area below that inherits the outer gray background. */
+.task-list-card--expanded {
+  background: var(--bg-secondary, #fafafa);
+  /* inherits box-shadow from .task-list-card base (0 2px 0 0 rgba(10,13,18,0.08))
+     and inherits border-radius from .task-list-card--t3 (16px) so the outer
+     wrapper has the same shadow + rounded corners as every other card. */
+  height: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.task-list-card--expanded .task-list-card-row {
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-2xl, 16px);
+  padding: var(--spacing-xl, 16px);
+  padding-right: 72px; /* reserve space for the task badge */
+  gap: var(--spacing-lg, 12px);
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+.task-list-card--expanded .task-list-card-row .task-badge {
+  right: 16px;
+}
+.task-list-card-action {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+  align-items: stretch;
+  justify-content: center;
+  padding: var(--spacing-lg, 12px);
+  border-radius: var(--radius-2xl, 16px);
+  background: transparent; /* inherits bg-secondary from outer wrapper */
+}
+.task-list-card-action-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-tertiary, #535862);
+  text-align: center;
+}
+/* Action CTA uses the shared .btn-sprout.btn-secondary.btn-md component from
+   /kid-design-system/components/buttons.css. Override width to fill the action
+   area; the base .btn-sprout has a fixed 320px width. */
+.task-list-card-action .btn-sprout {
+  width: 100%;
+}
+
+/* ══════════════════════════════════════
+   Demo layout helpers
+   ══════════════════════════════════════ */
+.tc-overview-grid {
+  display: flex;
+  gap: var(--spacing-4xl, 32px);
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+}
+.tc-format-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tc-format-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-tertiary, #535862);
+  text-align: center;
+  margin-top: var(--spacing-md, 8px);
+}
+.tc-state-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+  align-items: flex-start;
+}
+.tc-state-label {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  padding: 2px 8px;
+  background: var(--gray-100, #f5f5f5);
+  border: 1px solid var(--gray-200, #e9eaeb);
+  border-radius: var(--radius-sm, 6px);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.tc-carousel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 360px);
+  gap: var(--spacing-3xl, 24px);
+  justify-content: center;
+}
+.tc-list-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4xl, 32px);
+}
+.tc-list-col-header {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  margin-bottom: var(--spacing-xs, 4px);
+}
+.tc-list-col-config {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-size: 11px;
+  color: var(--text-tertiary, #535862);
+  margin-bottom: var(--spacing-md, 8px);
+}
+
+/* Swatches for state table */
+.tc-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-xs, 4px);
+  border: 1px solid rgba(0,0,0,0.08);
+  vertical-align: middle;
+  margin-right: var(--spacing-xs, 4px);
+}
+
+/* Old .task-card-avatar--village / .task-list-card-avatar--village removed —
+   Village variant now lives inside .card-avatar.card-avatar--big/.card-avatar--small
+   in the CardAvatar section, using the shared .card-avatar-canvas (Rive). */
+
+/* ══════════════════════════════════════
+   CardAvatar — avatar with optional progress ring
+   (styles for .card-avatar* live in /kid-design-system/components/card-avatar.css,
+   imported at the top of this file. Classes below are doc-page-local helpers
+   for the ring-state demo grid only.)
+   ══════════════════════════════════════ */
+.ring-avatar {
+  display: inline-block;
+  line-height: 1;
+}
+.ring-avatar svg { display: block; }
+.ring-grid {
+  display: grid;
+  grid-template-columns: repeat(8, auto);
+  gap: var(--spacing-xl, 16px);
+  justify-content: center;
+  align-items: center;
+}
+.ring-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ring-label {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-size: 11px;
+  color: var(--text-tertiary, #535862);
+  margin-top: var(--spacing-sm, 6px);
+  text-align: center;
+}
+.ring-size-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-secondary, #414651);
+  margin-bottom: var(--spacing-md, 8px);
+}
+
+/* .card-avatar* rules moved to /kid-design-system/components/card-avatar.css
+   (imported at the top of this file). The component is now reusable via
+   a single <link> + <script> import, matching the button-utility convention. */
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+
+  <div class="page-header">
+    <div class="sec-title">Task Card</div>
+    <div class="sec-desc">Represents a single daily task or habit on the kid home screen. The card has five visual states across its completion lifecycle, and two physical formats depending on the child's age tier. Ground truth: <code>apps/child/components/tasks/TaskCard.tsx</code> and <code>apps/child/components/home/TaskListCard.tsx</code> in the sprout-app repo.</div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For recurring daily tasks a kid completes on their home screen</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> When you need a visual overview of what a kid has to do today, with clear state feedback</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Not for one-off actions or navigation. Use <a href="/kid-design-system/components/tile.html" style="color:var(--brand-600)">Tile</a> or <a href="/kid-design-system/components/buttons.html" style="color:var(--brand-600)">Buttons</a> instead</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Not for interactive elements inside the card other than the whole-card tap. Use a <a href="/kid-design-system/components/sheet.html" style="color:var(--brand-600)">Sheet</a> for additional actions</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Variant overview                        -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="variant-overview">
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="tc-overview-grid">
+
+        <div class="tc-format-col">
+          <div class="task-card">
+            <div class="task-card-content">
+              <div class="card-avatar card-avatar--big"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4AC;</span></div></div>
+              <div class="task-card-bottom">
+                <div class="task-card-name">Talk to Sprout</div>
+                <div class="task-card-sub">Chat with Sprout about your day</div>
+                <div class="task-card-gems">Earn 10 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect class="tb-fill-available" width="40" height="104"/>
+                <path class="tb-fill-available" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/>
+              </svg>
+              <div class="task-badge-icon">
+                <span class="tf-badge tb-icon-muted">&#x1F525;</span>
+              </div>
+            </div>
+          </div>
+          <div class="tc-format-label">Carousel Card (Tier 1, ages 4-6)</div>
+        </div>
+
+        <div class="tc-format-col">
+          <div class="task-list-card task-list-card--t2">
+            <div class="task-list-card-content">
+              <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4AC;</span></div></div>
+              <div class="task-list-card-text">
+                <div class="task-list-card-name">Talk to Sprout</div>
+                <div class="task-list-card-sub">Chat with Sprout about your day</div>
+                <div class="task-list-card-gems">Earn 10 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect class="tb-fill-available" width="40" height="60"/>
+                <path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/>
+              </svg>
+              <div class="task-badge-icon">
+                <span class="tf-badge tb-icon-muted">&#x1F525;</span>
+              </div>
+            </div>
+          </div>
+          <div class="tc-format-label">Task List Card (Tiers 2 &amp; 3, ages 7-13)</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- State machine                          -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>State machine</h2>
+    <p>Both formats share the same five visual states. The TypeScript type is <code>TaskCardVisualState = 'available' | 'inProgress' | 'submitted' | 'completed' | 'rejected'</code>, defined in <code>apps/child/lib/task-visual.ts</code>. Only <code>available</code>, <code>inProgress</code>, and <code>rejected</code> are tappable. The visual state flows through the shared <code>TaskBadge</code> component (<code>apps/child/components/tasks/TaskBadge.tsx</code>), which flips colour + icon + interactivity + subtitle copy.</p>
+
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th>State</th>
+          <th>Badge</th>
+          <th>Icon</th>
+          <th>Subtitle</th>
+          <th>Gems line</th>
+          <th>Tappable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>available</code></td>
+          <td><span class="tc-swatch" style="background:var(--gray-300, #d5d7da);"></span><code>gray-300</code></td>
+          <td>Flame (muted)</td>
+          <td>Task description</td>
+          <td>Earn X gems</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td><code>inProgress</code></td>
+          <td><span class="tc-swatch" style="background:var(--gray-300, #d5d7da);"></span><code>gray-300</code></td>
+          <td>Loading spinner</td>
+          <td>Try it again</td>
+          <td>Earn X gems</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td><code>submitted</code></td>
+          <td><span class="tc-swatch" style="background:var(--gray-400, #a4a7ae);"></span><code>gray-400</code> (<code>fg.disabled</code>)</td>
+          <td>Hourglass</td>
+          <td>Reviewing...</td>
+          <td>Earn X gems (if reward)</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td><code>completed</code></td>
+          <td><span class="tc-swatch" style="background:var(--red-400, #f97066);"></span><code>red-400</code></td>
+          <td>Flame (full color) + streak number</td>
+          <td>Done!</td>
+          <td>Earned X gems</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td><code>rejected</code></td>
+          <td><span class="tc-swatch" style="background:var(--yellow-400, #fac515);"></span><code>yellow-400</code></td>
+          <td>Warning triangle</td>
+          <td>Try again</td>
+          <td>Earn X gems</td>
+          <td>Yes</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><code>available &rarr; submitted</code> on child submission</li>
+        <li><code>submitted &rarr; completed</code> when parent approves and <code>canSubmitMore</code> is <code>false</code></li>
+        <li><code>submitted &rarr; available</code> (displayed as <code>inProgress</code>) when parent approves and <code>canSubmitMore</code> is <code>true</code> and <code>completedToday &gt; 0</code></li>
+        <li><code>submitted &rarr; rejected</code> when parent rejects</li>
+        <li><code>rejected &rarr; available</code> when child retries</li>
+      </ul>
+    </div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px); padding:var(--spacing-xl, 16px) var(--spacing-2xl, 20px); background:var(--gray-50, #fafafa); border:1px solid var(--gray-200, #e9eaeb); border-radius:var(--radius-xl, 12px);">
+      <strong>Note on <code>available</code> vs <code>inProgress</code>.</strong> Both states share the same task badge colour (<code>gray-300</code>) and flame icon. They are differentiated by the <strong>CardAvatar progress ring</strong>: <code>available</code> has no ring (or a 0% ring), while <code>inProgress</code> shows a partial ring (driven by <code>completedToday / dailyTarget</code>). The subtitle also changes from the task description to "Try it again". The current sprout-app <code>TaskBadge.tsx</code> uses <code>brand-500</code> for the <code>inProgress</code> badge &mdash; this is a known drift that should be resolved in code to match Figma (which keeps the badge gray and uses the CardAvatar progress ring as the primary visual signal).
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Carousel Card (Tier 1)                 -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Carousel Card (Tier 1)</h2>
+    <p>Full-width white card used by <code>HomeCarousel</code> for ages 4-6. Width is <code>screenWidth - 32</code> (approximately 360px) and height is a fixed 220px. The task avatar sits in the top-left, the task name + subtitle + gems line in the bottom-left, and the 40 &times; 112 px bookmark badge overlays the top-right at <code>right: 24</code>.</p>
+
+    <h3>Anatomy</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Background</strong> (required) &mdash; <code>--bg-primary</code> white, <code>--radius-2xl</code> (16px) radius, soft drop shadow</li>
+        <li><strong>Avatar</strong> (required) &mdash; 96 &times; 96 px rounded square with the task emoji. Renders via <code>CardAvatar</code> component</li>
+        <li><strong>Task name</strong> (required) &mdash; 30 px / 32 line-height, <code>--font-weight-bold</code>, <code>--text-primary</code>, up to 2 lines</li>
+        <li><strong>Subtitle</strong> (optional) &mdash; <code>--font-size-text-sm</code>, <code>--text-tertiary</code>, single line with ellipsis. Content depends on state</li>
+        <li><strong>Gems line</strong> (optional) &mdash; <code>--font-size-text-sm</code>, <code>--text-tertiary</code>, inline 14 px TossFace gem glyph. Rendered only when the task has a gem reward (<code>gems &gt; 0</code>). Tasks with no reward never show a gems line, in any state</li>
+        <li><strong>Task badge</strong> (required) &mdash; 40 &times; 112 px bookmark at top-right. Colour + icon + optional streak number driven by visual state. See <a href="#task-badge">Task badge</a> section below</li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">States</h3>
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="tc-carousel-grid">
+
+        <!-- available -->
+        <div class="tc-state-col">
+          <div class="task-card">
+            <div class="task-card-content">
+              <div class="card-avatar card-avatar--big"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4D6;</span></div></div>
+              <div class="task-card-bottom">
+                <div class="task-card-name">Read for 20 min</div>
+                <div class="task-card-sub">Read a book and share what you liked</div>
+                <div class="task-card-gems">Earn 15 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-available" width="40" height="104"/><path class="tb-fill-available" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+              <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+            </div>
+          </div>
+          <span class="tc-state-label">available</span>
+        </div>
+
+        <!-- inProgress -->
+        <div class="tc-state-col">
+          <div class="task-card">
+            <div class="task-card-content">
+              <div class="card-avatar card-avatar--big">
+                <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4AC;</span></div>
+                <svg class="card-avatar-ring" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="46" stroke="#d5d7da" stroke-width="4"/><circle cx="48" cy="48" r="46" stroke="#0ba5ec" stroke-width="4" stroke-dasharray="144.5 289" stroke-linecap="round" transform="rotate(-90 48 48)"/></svg>
+              </div>
+              <div class="task-card-bottom">
+                <div class="task-card-name">Talk to Sprout</div>
+                <div class="task-card-sub">Try it again</div>
+                <div class="task-card-gems">Earn 10 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-inProgress" width="40" height="104"/><path class="tb-fill-inProgress" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+              <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+            </div>
+          </div>
+          <span class="tc-state-label">inProgress</span>
+        </div>
+
+        <!-- submitted -->
+        <div class="tc-state-col">
+          <div class="task-card is-dim">
+            <div class="task-card-content">
+              <div class="card-avatar card-avatar--big"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4DD;</span></div></div>
+              <div class="task-card-bottom">
+                <div class="task-card-name">Homework</div>
+                <div class="task-card-sub">Reviewing...</div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-submitted" width="40" height="104"/><path class="tb-fill-submitted" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+              <div class="task-badge-icon"><span class="tf-badge">&#x23F3;</span></div>
+            </div>
+          </div>
+          <span class="tc-state-label">submitted</span>
+        </div>
+
+        <!-- completed -->
+        <div class="tc-state-col">
+          <div class="task-card is-dim">
+            <div class="task-card-content">
+              <div class="card-avatar card-avatar--big"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1FAE7;</span></div></div>
+              <div class="task-card-bottom">
+                <div class="task-card-name">Brush Teeth</div>
+                <div class="task-card-sub">Done!</div>
+                <div class="task-card-gems">Earned 5 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-completed" width="40" height="104"/><path class="tb-fill-completed" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+              <div class="task-badge-icon"><span class="tf-badge">&#x1F525;</span><div class="task-badge-streak">9</div></div>
+            </div>
+          </div>
+          <span class="tc-state-label">completed</span>
+        </div>
+
+        <!-- rejected -->
+        <div class="tc-state-col">
+          <div class="task-card">
+            <div class="task-card-content">
+              <div class="card-avatar card-avatar--big"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F3B9;</span></div></div>
+              <div class="task-card-bottom">
+                <div class="task-card-name">Practice Piano</div>
+                <div class="task-card-sub">Try again</div>
+                <div class="task-card-gems">Earn 20 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-rejected" width="40" height="104"/><path class="tb-fill-rejected" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+              <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x26A0;&#xFE0F;</span></div>
+            </div>
+          </div>
+          <span class="tc-state-label">rejected</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Task List Card (Tier 2 & 3)            -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Task List Card (Tier 2 &amp; Tier 3)</h2>
+    <p>Full-width white row used by <code>HomeTaskScroll</code> for ages 7-13. Fixed 80px height with a 52 px avatar on the left, stacked text in the middle, and a smaller 40 &times; 68 px bookmark badge at the top-right (<code>right: 12</code>). <strong>Tier 2 and Tier 3 share the same component</strong>, with only font-size, touch-target, and border-radius differing via the <code>useAgeTier()</code> config in <code>apps/child/constants/ageTierConfig.ts</code>.</p>
+
+    <h3>Anatomy</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Background</strong> (required) &mdash; <code>--bg-primary</code> white, tier-specific radius (20px at Tier 2, 16px at Tier 3)</li>
+        <li><strong>Avatar</strong> (required) &mdash; 52 &times; 52 px rounded square with the task emoji (Default type) or the Rive village character (Village type). See the <a href="#type-variants">Type variants</a> section</li>
+        <li><strong>Task name</strong> (required) &mdash; <code>--font-weight-bold</code>, <code>--text-primary</code>. Tier 2: 17px. Tier 3: 15px. Single line with ellipsis</li>
+        <li><strong>Subtitle</strong> (optional) &mdash; <code>--text-quaternary</code>. Tier 2: 13px. Tier 3: 11px. Single line with ellipsis</li>
+        <li><strong>Gems line</strong> (optional) &mdash; <code>--text-quaternary</code> with inline 12 px TossFace gem glyph. Rendered only when the task has a gem reward (<code>gems &gt; 0</code>). Tasks with no reward never show a gems line, in any state</li>
+        <li><strong>Task badge</strong> (required) &mdash; 40 &times; 68 px bookmark at top-right with 16 px icon</li>
+        <li><strong>Action area</strong> (Tier 3 <code>rejected</code> only) &mdash; The card expands to ~186 px tall and reveals an action area below the row, with <code>--bg-secondary</code> background, a centered description, and a full-width CTA button. The CTA is the shared <a href="/kid-design-system/components/buttons.html" style="color:var(--brand-600)">Button</a> component (<code>.btn-sprout.btn-secondary.btn-md</code>). Tier 2 stays at 222 px in all states</li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">States — side-by-side tier comparison</h3>
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="tc-list-columns">
+
+        <!-- TIER 2 COLUMN -->
+        <div>
+          <div class="tc-list-col-header">Tier 2 &mdash; ages 7-9</div>
+          <div class="tc-list-col-config">17 px body &middot; 48 px touch &middot; 20 px radius</div>
+
+          <div class="tc-state-col">
+            <div class="task-list-card task-list-card--t2">
+              <div class="task-list-card-content">
+                <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4D6;</span></div></div>
+                <div class="task-list-card-text">
+                  <div class="task-list-card-name">Read for 20 min</div>
+                  <div class="task-list-card-sub">Read a book and share what you liked</div>
+                  <div class="task-list-card-gems">Earn 15 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                </div>
+              </div>
+              <div class="task-badge">
+                <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+              </div>
+            </div>
+            <span class="tc-state-label">available</span>
+
+            <div class="task-list-card task-list-card--t2">
+              <div class="task-list-card-content">
+                <div class="card-avatar card-avatar--small">
+                  <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4AC;</span></div>
+                  <svg class="card-avatar-ring" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="26" stroke="#d5d7da" stroke-width="3"/><circle cx="28" cy="28" r="26" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="81.7 163" stroke-linecap="round" transform="rotate(-90 28 28)"/></svg>
+                </div>
+                <div class="task-list-card-text">
+                  <div class="task-list-card-name">Talk to Sprout</div>
+                  <div class="task-list-card-sub">Try it again</div>
+                  <div class="task-list-card-gems">Earn 10 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                </div>
+              </div>
+              <div class="task-badge">
+                <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-inProgress" width="40" height="60"/><path class="tb-fill-inProgress" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+              </div>
+            </div>
+            <span class="tc-state-label">inProgress</span>
+
+            <div class="task-list-card task-list-card--t2 is-dim">
+              <div class="task-list-card-content">
+                <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4DD;</span></div></div>
+                <div class="task-list-card-text">
+                  <div class="task-list-card-name">Homework</div>
+                  <div class="task-list-card-sub">Reviewing...</div>
+                </div>
+              </div>
+              <div class="task-badge">
+                <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-submitted" width="40" height="60"/><path class="tb-fill-submitted" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                <div class="task-badge-icon"><span class="tf-badge">&#x23F3;</span></div>
+              </div>
+            </div>
+            <span class="tc-state-label">submitted</span>
+
+            <div class="task-list-card task-list-card--t2 is-dim">
+              <div class="task-list-card-content">
+                <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1FAE7;</span></div></div>
+                <div class="task-list-card-text">
+                  <div class="task-list-card-name">Brush Teeth</div>
+                  <div class="task-list-card-sub">Done!</div>
+                  <div class="task-list-card-gems">Earned 5 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                </div>
+              </div>
+              <div class="task-badge">
+                <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-completed" width="40" height="60"/><path class="tb-fill-completed" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                <div class="task-badge-icon"><span class="tf-badge">&#x1F525;</span><div class="task-badge-streak">9</div></div>
+              </div>
+            </div>
+            <span class="tc-state-label">completed</span>
+
+            <div class="task-list-card task-list-card--t2">
+              <div class="task-list-card-content">
+                <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F3B9;</span></div></div>
+                <div class="task-list-card-text">
+                  <div class="task-list-card-name">Practice Piano</div>
+                  <div class="task-list-card-sub">Try again</div>
+                  <div class="task-list-card-gems">Earn 20 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                </div>
+              </div>
+              <div class="task-badge">
+                <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-rejected" width="40" height="60"/><path class="tb-fill-rejected" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x26A0;&#xFE0F;</span></div>
+              </div>
+            </div>
+            <span class="tc-state-label">rejected</span>
+          </div>
+        </div>
+
+        <!-- TIER 3 COLUMN -->
+        <div>
+          <div class="tc-list-col-header">Tier 3 &mdash; ages 10-13</div>
+          <div class="tc-list-col-config">15 px body &middot; 44 px touch &middot; 16 px radius</div>
+
+          <div class="tc-state-col">
+            <div class="task-list-card task-list-card--t3">
+              <div class="task-list-card-content">
+                <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4D6;</span></div></div>
+                <div class="task-list-card-text">
+                  <div class="task-list-card-name">Read for 20 min</div>
+                  <div class="task-list-card-sub">Read a book and share what you liked</div>
+                  <div class="task-list-card-gems">Earn 15 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                </div>
+              </div>
+              <div class="task-badge">
+                <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+              </div>
+            </div>
+            <span class="tc-state-label">available</span>
+
+            <div class="task-list-card task-list-card--t3">
+              <div class="task-list-card-content">
+                <div class="card-avatar card-avatar--small">
+                  <div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4AC;</span></div>
+                  <svg class="card-avatar-ring" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="26" stroke="#d5d7da" stroke-width="3"/><circle cx="28" cy="28" r="26" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="81.7 163" stroke-linecap="round" transform="rotate(-90 28 28)"/></svg>
+                </div>
+                <div class="task-list-card-text">
+                  <div class="task-list-card-name">Talk to Sprout</div>
+                  <div class="task-list-card-sub">Try it again</div>
+                  <div class="task-list-card-gems">Earn 10 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                </div>
+              </div>
+              <div class="task-badge">
+                <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-inProgress" width="40" height="60"/><path class="tb-fill-inProgress" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+              </div>
+            </div>
+            <span class="tc-state-label">inProgress</span>
+
+            <div class="task-list-card task-list-card--t3 is-dim">
+              <div class="task-list-card-content">
+                <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F4DD;</span></div></div>
+                <div class="task-list-card-text">
+                  <div class="task-list-card-name">Homework</div>
+                  <div class="task-list-card-sub">Reviewing...</div>
+                </div>
+              </div>
+              <div class="task-badge">
+                <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-submitted" width="40" height="60"/><path class="tb-fill-submitted" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                <div class="task-badge-icon"><span class="tf-badge">&#x23F3;</span></div>
+              </div>
+            </div>
+            <span class="tc-state-label">submitted</span>
+
+            <div class="task-list-card task-list-card--t3 is-dim">
+              <div class="task-list-card-content">
+                <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1FAE7;</span></div></div>
+                <div class="task-list-card-text">
+                  <div class="task-list-card-name">Brush Teeth</div>
+                  <div class="task-list-card-sub">Done!</div>
+                  <div class="task-list-card-gems">Earned 5 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                </div>
+              </div>
+              <div class="task-badge">
+                <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-completed" width="40" height="60"/><path class="tb-fill-completed" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                <div class="task-badge-icon"><span class="tf-badge">&#x1F525;</span><div class="task-badge-streak">9</div></div>
+              </div>
+            </div>
+            <span class="tc-state-label">completed</span>
+
+            <div class="task-list-card task-list-card--t3 task-list-card--expanded">
+              <div class="task-list-card-row">
+                <div class="task-list-card-content">
+                  <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F3B9;</span></div></div>
+                  <div class="task-list-card-text">
+                    <div class="task-list-card-name">Practice Piano</div>
+                    <div class="task-list-card-sub">Try again!</div>
+                    <div class="task-list-card-gems">Earn 10&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+                  </div>
+                </div>
+                <div class="task-badge">
+                  <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-rejected" width="40" height="60"/><path class="tb-fill-rejected" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+                  <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x26A0;&#xFE0F;</span></div>
+                </div>
+              </div>
+              <div class="task-list-card-action">
+                <div class="task-list-card-action-desc">Take a new photo to complete this task</div>
+                <button class="btn-sprout btn-secondary btn-md" type="button">TRY AGAIN</button>
+              </div>
+            </div>
+            <span class="tc-state-label">rejected (expanded)</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Task Badge                             -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section" id="task-badge">
+    <h2>Task badge</h2>
+    <p>The 40 px bookmark tab that hangs off the top edge of every task card. It's the single source of truth for visual state and is shared across both card formats. Source: <code>apps/child/components/tasks/TaskBadge.tsx</code>.</p>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Width</strong> &mdash; 40 px (constant)</li>
+        <li><strong>Height</strong> &mdash; 112 px on Carousel Card, 68 px on Task List Card</li>
+        <li><strong>Icon size</strong> &mdash; 24 px when badge height is &ge; 60, 16 px otherwise</li>
+        <li><strong>Tail</strong> &mdash; 8 px diagonal curl at the bottom-right, rendered as a single SVG <code>&lt;path&gt;</code></li>
+        <li><strong>Colour</strong> &mdash; Full-bleed fill of the state colour (<code>gray-300</code>, <code>brand-500</code>, <code>fg.disabled</code>, <code>red-400</code>, <code>yellow-500</code>)</li>
+        <li><strong>Streak overlay</strong> &mdash; Only in <code>completed</code> state when <code>streak &gt; 0</code>. White <code>--font-size-text-xs</code> bold number below the flame icon</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Type variants — Default vs Village     -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section" id="type-variants">
+    <h2>Type variants</h2>
+    <p>Each task card has two Type variants that change how the avatar slot renders. The card chrome, state machine, and task badge are identical between the two &mdash; only the avatar content differs.</p>
+
+    <table class="token-table">
+      <thead><tr><th>Type</th><th>Avatar content</th><th>Use when</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>Default</code></td>
+          <td>Task emoji in a coloured rounded square</td>
+          <td>General tasks where the activity itself is the visual &mdash; reading, homework, chores, piano</td>
+        </tr>
+        <tr>
+          <td><code>Village</code></td>
+          <td>The kid's personalized Rive village character (<code>character2.91.riv</code>)</td>
+          <td>Tasks where the kid's identity is more relevant than the activity &mdash; onboarding, goal milestones, identity-driven prompts</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Default vs Village &mdash; side by side</h3>
+    <div class="demo" style="background:var(--bg-secondary, #fafafa);">
+      <div class="tc-overview-grid">
+
+        <!-- Default — Carousel Card -->
+        <div class="tc-format-col">
+          <div class="task-card">
+            <div class="task-card-content">
+              <div class="card-avatar card-avatar--big"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F3B9;</span></div></div>
+              <div class="task-card-bottom">
+                <div class="task-card-name">Practice Piano</div>
+                <div class="task-card-sub">Play through today's lesson</div>
+                <div class="task-card-gems">Earn 10 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-available" width="40" height="104"/><path class="tb-fill-available" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+              <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+            </div>
+          </div>
+          <div class="tc-format-label">Default &mdash; Carousel</div>
+        </div>
+
+        <!-- Village — Carousel Card -->
+        <div class="tc-format-col">
+          <div class="task-card">
+            <div class="task-card-content">
+              <div class="card-avatar card-avatar--big">
+                <div class="card-avatar-circle">
+                  <canvas class="card-avatar-canvas" width="244" height="348"></canvas>
+                </div>
+              </div>
+              <div class="task-card-bottom">
+                <div class="task-card-name">Build your village</div>
+                <div class="task-card-sub">Unlock new character pieces</div>
+                <div class="task-card-gems">Earn 25 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 112" fill="none"><rect class="tb-fill-available" width="40" height="104"/><path class="tb-fill-available" d="M40 104H0L37.6 111.5C38.4 111.75 40 111 40 109.5V104Z"/></svg>
+              <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+            </div>
+          </div>
+          <div class="tc-format-label">Village &mdash; Carousel</div>
+        </div>
+
+        <!-- Default — Task List Card -->
+        <div class="tc-format-col">
+          <div class="task-list-card task-list-card--t2">
+            <div class="task-list-card-content">
+              <div class="card-avatar card-avatar--small"><div class="card-avatar-circle"><span class="card-avatar-emoji">&#x1F3B9;</span></div></div>
+              <div class="task-list-card-text">
+                <div class="task-list-card-name">Practice Piano</div>
+                <div class="task-list-card-sub">Play through today's lesson</div>
+                <div class="task-list-card-gems">Earn 10 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+              <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+            </div>
+          </div>
+          <div class="tc-format-label">Default &mdash; Task List</div>
+        </div>
+
+        <!-- Village — Task List Card -->
+        <div class="tc-format-col">
+          <div class="task-list-card task-list-card--t2">
+            <div class="task-list-card-content">
+              <div class="card-avatar card-avatar--small">
+                <div class="card-avatar-circle">
+                  <canvas class="card-avatar-canvas" width="142" height="204"></canvas>
+                </div>
+              </div>
+              <div class="task-list-card-text">
+                <div class="task-list-card-name">Build your village</div>
+                <div class="task-list-card-sub">Unlock new character pieces</div>
+                <div class="task-list-card-gems">Earn 25 gems&nbsp;<span class="tf-gem">&#x1F48E;</span></div>
+              </div>
+            </div>
+            <div class="task-badge">
+              <svg viewBox="0 0 40 68" fill="none"><rect class="tb-fill-available" width="40" height="60"/><path class="tb-fill-available" d="M40 60H0L37.6 67.5C38.4 67.75 40 67 40 65.5V60Z"/></svg>
+              <div class="task-badge-icon"><span class="tf-badge tb-icon-muted">&#x1F525;</span></div>
+            </div>
+          </div>
+          <div class="tc-format-label">Village &mdash; Task List</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li>The Village examples above render the live Rive animation from <code>character2.91.riv</code>, using the same init pattern as <a href="/kid-design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a></li>
+        <li>The character's appearance is driven by Rive state machine inputs for skin, hair, clothing, beard, glasses, eyes, earrings, and face details. See the <a href="/kid-design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a> foundation for the full input list and allowed values</li>
+        <li>The Village avatar uses the same <code>.card-avatar--big</code> and <code>.card-avatar--small</code> sizes as the Default variant, with the only difference being the circle content (Rive canvas instead of TossFace emoji)</li>
+        <li>The Task Badge, state machine, subtitle copy, gems line, and interactivity rules are all identical between Default and Village. Only the avatar slot changes</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- CardAvatar                               -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section" id="card-avatar">
+    <h2>CardAvatar</h2>
+    <p>The <strong>CardAvatar</strong> is the avatar rendered inside a task card. It has two content variants (<code>Default</code> and <code>Village</code>) and an optional progress ring that shows streak progress toward a goal &mdash; used to visualize how close the kid is to a reward, level, or village-character unlock. Eight discrete ring states cover 0 &rarr; 87.5%, looping back to 0 at 100%. Source: <code>apps/child/components/common/CardAvatar.tsx</code> in sprout-app. Previously labelled <code>Goal icon</code> / <code>GoalIcon</code> in Figma.</p>
+
+    <h3>Variants</h3>
+    <table class="token-table">
+      <thead><tr><th>Variant</th><th>Content</th><th>Use when</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>Default</code></td>
+          <td>TossFace emoji on a <code>--brand-100</code> background</td>
+          <td>The activity itself is the visual &mdash; reading, piano, homework, chores</td>
+        </tr>
+        <tr>
+          <td><code>Village</code></td>
+          <td>Live Rive village character from <code>character2.91.riv</code> on a <code>--brand-100</code> background</td>
+          <td>The kid's identity is the visual &mdash; onboarding, milestones, goal-unlock rewards. See <a href="/kid-design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a> for the full Rive spec and customization inputs</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="demo" style="background:var(--bg-sky, #e0f2fe);">
+      <div class="ring-grid" style="grid-template-columns: repeat(4, auto); gap: 40px;">
+
+        <div class="ring-col">
+          <div class="card-avatar card-avatar--big">
+            <div class="card-avatar-circle">
+              <span class="card-avatar-emoji">&#x1F3B9;</span>
+            </div>
+          </div>
+          <div class="ring-label">Default &middot; big</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="card-avatar card-avatar--big">
+            <div class="card-avatar-circle">
+              <canvas class="card-avatar-canvas" width="244" height="348"></canvas>
+            </div>
+          </div>
+          <div class="ring-label">Village &middot; big</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="card-avatar card-avatar--small">
+            <div class="card-avatar-circle">
+              <span class="card-avatar-emoji">&#x1F3B9;</span>
+            </div>
+          </div>
+          <div class="ring-label">Default &middot; small</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="card-avatar card-avatar--small">
+            <div class="card-avatar-circle">
+              <canvas class="card-avatar-canvas" width="142" height="204"></canvas>
+            </div>
+          </div>
+          <div class="ring-label">Village &middot; small</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li>The Village variant uses the same Rive file, artboard, and state machine as the rest of the product &mdash; <code>character2.91.riv</code>, artboard <code>Village-character</code>, state machine <code>State Machine 1</code>. See <a href="/kid-design-system/foundations/village-character.html" style="color:var(--brand-600)">Village Character</a> for the full customization input reference</li>
+        <li>The canvas is clipped by the circle container (<code>overflow: hidden</code>) and positioned with a negative <code>top</code> offset so only the character's head and shoulders are visible, per <code>feedback_avatar_grounded.md</code> (avatar always grounded)</li>
+        <li>The progress ring described below is a separate SVG overlay and works identically on both variants &mdash; it stacks on top of whatever content is in the circle</li>
+      </ul>
+    </div>
+
+    <h3>Sizes</h3>
+    <table class="token-table">
+      <thead><tr><th>Size</th><th>Diameter</th><th>Used in</th></tr></thead>
+      <tbody>
+        <tr><td><code>small</code></td><td>56 px</td><td>Task List Card (Tier 2 &amp; Tier 3)</td></tr>
+        <tr><td><code>big</code></td><td>96 px</td><td>Carousel Card (Tier 1)</td></tr>
+      </tbody>
+    </table>
+    <div class="prose" style="margin-top:var(--spacing-md, 8px);">
+      <ul>
+        <li>Figma currently labels these as "Tier 2" (56 px) and "Tier 3" (96 px), which is confusing because the sizes don't line up with the card tier numbering. The Figma symbols should be renamed to <code>small</code> / <code>big</code> to match the cards they live inside</li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Progress states &mdash; big (96 px)</h3>
+    <div class="demo" style="background:var(--bg-sky, #e0f2fe);">
+      <div class="ring-grid">
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="48" cy="48" r="42" fill="#e0f2fe"/>
+              <text x="48" y="62" text-anchor="middle" font-size="44" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#d5d7da" stroke-width="4"/>
+            </svg>
+          </div>
+          <div class="ring-label">0% / 100%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="48" cy="48" r="42" fill="#e0f2fe"/>
+              <text x="48" y="62" text-anchor="middle" font-size="44" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#d5d7da" stroke-width="4"/>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#0ba5ec" stroke-width="4" stroke-dasharray="36.1 289" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 48 48)"/>
+            </svg>
+          </div>
+          <div class="ring-label">12.5%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="48" cy="48" r="42" fill="#e0f2fe"/>
+              <text x="48" y="62" text-anchor="middle" font-size="44" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#d5d7da" stroke-width="4"/>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#0ba5ec" stroke-width="4" stroke-dasharray="72.3 289" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 48 48)"/>
+            </svg>
+          </div>
+          <div class="ring-label">25%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="48" cy="48" r="42" fill="#e0f2fe"/>
+              <text x="48" y="62" text-anchor="middle" font-size="44" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#d5d7da" stroke-width="4"/>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#0ba5ec" stroke-width="4" stroke-dasharray="108.4 289" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 48 48)"/>
+            </svg>
+          </div>
+          <div class="ring-label">37.5%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="48" cy="48" r="42" fill="#e0f2fe"/>
+              <text x="48" y="62" text-anchor="middle" font-size="44" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#d5d7da" stroke-width="4"/>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#0ba5ec" stroke-width="4" stroke-dasharray="144.5 289" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 48 48)"/>
+            </svg>
+          </div>
+          <div class="ring-label">50%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="48" cy="48" r="42" fill="#e0f2fe"/>
+              <text x="48" y="62" text-anchor="middle" font-size="44" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#d5d7da" stroke-width="4"/>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#0ba5ec" stroke-width="4" stroke-dasharray="180.6 289" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 48 48)"/>
+            </svg>
+          </div>
+          <div class="ring-label">62.5%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="48" cy="48" r="42" fill="#e0f2fe"/>
+              <text x="48" y="62" text-anchor="middle" font-size="44" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#d5d7da" stroke-width="4"/>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#0ba5ec" stroke-width="4" stroke-dasharray="216.8 289" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 48 48)"/>
+            </svg>
+          </div>
+          <div class="ring-label">75%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="48" cy="48" r="42" fill="#e0f2fe"/>
+              <text x="48" y="62" text-anchor="middle" font-size="44" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#d5d7da" stroke-width="4"/>
+              <circle cx="48" cy="48" r="46" fill="none" stroke="#0ba5ec" stroke-width="4" stroke-dasharray="252.9 289" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 48 48)"/>
+            </svg>
+          </div>
+          <div class="ring-label">87.5%</div>
+        </div>
+
+      </div>
+    </div>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Progress states &mdash; small (56 px)</h3>
+    <div class="demo" style="background:var(--bg-sky, #e0f2fe);">
+      <div class="ring-grid">
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="25" fill="#e0f2fe"/>
+              <text x="28" y="36" text-anchor="middle" font-size="26" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#d5d7da" stroke-width="3"/>
+            </svg>
+          </div>
+          <div class="ring-label">0% / 100%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="25" fill="#e0f2fe"/>
+              <text x="28" y="36" text-anchor="middle" font-size="26" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#d5d7da" stroke-width="3"/>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="20.4 164" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 28 28)"/>
+            </svg>
+          </div>
+          <div class="ring-label">12.5%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="25" fill="#e0f2fe"/>
+              <text x="28" y="36" text-anchor="middle" font-size="26" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#d5d7da" stroke-width="3"/>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="40.8 164" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 28 28)"/>
+            </svg>
+          </div>
+          <div class="ring-label">25%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="25" fill="#e0f2fe"/>
+              <text x="28" y="36" text-anchor="middle" font-size="26" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#d5d7da" stroke-width="3"/>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="61.3 164" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 28 28)"/>
+            </svg>
+          </div>
+          <div class="ring-label">37.5%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="25" fill="#e0f2fe"/>
+              <text x="28" y="36" text-anchor="middle" font-size="26" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#d5d7da" stroke-width="3"/>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="81.7 164" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 28 28)"/>
+            </svg>
+          </div>
+          <div class="ring-label">50%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="25" fill="#e0f2fe"/>
+              <text x="28" y="36" text-anchor="middle" font-size="26" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#d5d7da" stroke-width="3"/>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="102.1 164" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 28 28)"/>
+            </svg>
+          </div>
+          <div class="ring-label">62.5%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="25" fill="#e0f2fe"/>
+              <text x="28" y="36" text-anchor="middle" font-size="26" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#d5d7da" stroke-width="3"/>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="122.5 164" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 28 28)"/>
+            </svg>
+          </div>
+          <div class="ring-label">75%</div>
+        </div>
+
+        <div class="ring-col">
+          <div class="ring-avatar">
+            <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="25" fill="#e0f2fe"/>
+              <text x="28" y="36" text-anchor="middle" font-size="26" font-family="TossFace">&#x1F3B9;</text>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#d5d7da" stroke-width="3"/>
+              <circle cx="28" cy="28" r="26" fill="none" stroke="#0ba5ec" stroke-width="3" stroke-dasharray="142.9 164" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 28 28)"/>
+            </svg>
+          </div>
+          <div class="ring-label">87.5%</div>
+        </div>
+
+      </div>
+    </div>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Anatomy</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Circle container</strong> &mdash; Filled circle in <code>--brand-100</code>, <code>border-radius: var(--radius-full)</code>, <code>overflow: hidden</code> so child content (emoji or Rive canvas) is clipped to the circle</li>
+        <li><strong>Avatar content</strong> &mdash; Either the task emoji (<strong>Default</strong> variant, TossFace glyph sized 44 px on big / 26 px on small) or the Rive village character (<strong>Village</strong> variant, <code>character2.91.riv</code> loaded as a canvas inside the circle and clipped to the head-and-shoulders frame via a negative <code>top</code> offset)</li>
+        <li><strong>Track ring</strong> &mdash; Full-circle stroke in <code>--gray-300</code>, 4 px wide on big, 3 px on small. Always visible behind the progress arc when a ring is present</li>
+        <li><strong>Progress arc</strong> &mdash; Same radius as the track, stroked in <code>--brand-500</code>, rounded caps, rotated so 0% starts at 12 o'clock. Uses <code>stroke-dasharray</code> with the filled length equal to <code>circumference &times; progress</code></li>
+        <li><strong>Layering</strong> &mdash; The progress ring is rendered as an SVG <em>overlay</em> on top of the circle container, so the same ring works identically on both Default and Village variants</li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Stroke dasharray reference</h3>
+    <table class="token-table">
+      <thead><tr><th>Progress</th><th>Big (r = 46, C &asymp; 289)</th><th>Small (r = 26, C &asymp; 163)</th></tr></thead>
+      <tbody>
+        <tr><td>0% / 100%</td><td><code>0 289</code></td><td><code>0 163</code></td></tr>
+        <tr><td>12.5%</td><td><code>36.1 289</code></td><td><code>20.4 163</code></td></tr>
+        <tr><td>25%</td><td><code>72.3 289</code></td><td><code>40.8 163</code></td></tr>
+        <tr><td>37.5%</td><td><code>108.4 289</code></td><td><code>61.3 163</code></td></tr>
+        <tr><td>50%</td><td><code>144.5 289</code></td><td><code>81.7 163</code></td></tr>
+        <tr><td>62.5%</td><td><code>180.6 289</code></td><td><code>102.1 163</code></td></tr>
+        <tr><td>75%</td><td><code>216.8 289</code></td><td><code>122.5 163</code></td></tr>
+        <tr><td>87.5%</td><td><code>252.9 289</code></td><td><code>142.9 163</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Tier config reference                  -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Tier config reference</h2>
+    <p>From <code>apps/child/constants/ageTierConfig.ts</code>. The config drives font sizes, touch targets, and border radii across the child app. Tier 1 uses a different card component (<code>TaskCard</code>) while Tiers 2 and 3 share <code>TaskListCard</code>.</p>
+
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Tier 1 (4-6)</th>
+          <th>Tier 2 (7-9)</th>
+          <th>Tier 3 (10-13)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Body font</td><td><code>20 px</code></td><td><code>17 px</code></td><td><code>15 px</code></td></tr>
+        <tr><td>Touch target</td><td><code>56 px</code></td><td><code>48 px</code></td><td><code>44 px</code></td></tr>
+        <tr><td>Border radius</td><td><code>24 px</code></td><td><code>20 px</code></td><td><code>16 px</code></td></tr>
+        <tr><td>Home screen</td><td><code>HomeCarousel</code></td><td><code>HomeTaskScroll</code></td><td><code>HomeTaskScroll</code></td></tr>
+        <tr><td>Card component</td><td><code>TaskCard</code></td><td><code>TaskListCard</code></td><td><code>TaskListCard</code></td></tr>
+        <tr><td>Chat default</td><td>Voice-first</td><td>Voice-first</td><td>Text-first</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Token reference                        -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3>Carousel Card (Tier 1)</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Width</td><td><code>screenWidth - 32</code> (approximately 360 px)</td></tr>
+        <tr><td>Height</td><td>220 px</td></tr>
+        <tr><td>Background</td><td><code>--bg-primary</code></td></tr>
+        <tr><td>Border radius</td><td><code>--radius-2xl</code> (16 px)</td></tr>
+        <tr><td>Padding</td><td><code>--spacing-xl</code> (16 px)</td></tr>
+        <tr><td>Avatar</td><td>96 &times; 96 px, <code>--radius-4xl</code> (32 px)</td></tr>
+        <tr><td>Task name font</td><td>30 px / 32 line-height, <code>--font-weight-bold</code>, <code>--text-primary</code></td></tr>
+        <tr><td>Subtitle font</td><td><code>--font-size-text-sm</code> / <code>--line-height-text-sm</code>, <code>--text-tertiary</code></td></tr>
+        <tr><td>Gems font</td><td><code>--font-size-text-sm</code>, <code>--text-tertiary</code>, 14 px TossFace gem</td></tr>
+        <tr><td>Task badge</td><td>40 &times; 112 px, top-right at <code>right: 24</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Task List Card (Tier 2 &amp; 3)</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Tier 2</th><th>Tier 3</th></tr></thead>
+      <tbody>
+        <tr><td>Width</td><td colspan="2">Full-width (<code>flex: 1</code>)</td></tr>
+        <tr><td>Height</td><td colspan="2">80 px</td></tr>
+        <tr><td>Background</td><td colspan="2"><code>--bg-primary</code></td></tr>
+        <tr><td>Border radius</td><td><code>--radius-3xl</code> (20 px)</td><td><code>--radius-2xl</code> (16 px)</td></tr>
+        <tr><td>Padding-left</td><td colspan="2"><code>--spacing-lg</code> (12 px)</td></tr>
+        <tr><td>Content gap</td><td colspan="2"><code>--spacing-md</code> (8 px)</td></tr>
+        <tr><td>Avatar</td><td colspan="2">52 &times; 52 px, <code>--radius-xl</code> (16 px)</td></tr>
+        <tr><td>Task name font</td><td>17 px / 24 line-height, <code>--font-weight-bold</code></td><td>15 px / 22 line-height, <code>--font-weight-bold</code></td></tr>
+        <tr><td>Subtitle font</td><td>13 px / 16 line-height, <code>--text-quaternary</code></td><td>11 px / 14 line-height, <code>--text-quaternary</code></td></tr>
+        <tr><td>Gems font</td><td>13 px, <code>--text-quaternary</code>, 13 px gem</td><td>11 px, <code>--text-quaternary</code>, 11 px gem</td></tr>
+        <tr><td>Task badge</td><td colspan="2">40 &times; 68 px, top-right at <code>right: 12</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:var(--spacing-3xl, 24px);">Task Badge state colors</h3>
+    <table class="token-table">
+      <thead><tr><th>State</th><th>Background</th><th>Icon</th></tr></thead>
+      <tbody>
+        <tr><td><code>available</code></td><td><code>--gray-300</code> (<code>#d5d7da</code>)</td><td>Muted flame</td></tr>
+        <tr><td><code>inProgress</code></td><td><code>--gray-300</code> (<code>#d5d7da</code>) &mdash; same as available</td><td>Loading spinner</td></tr>
+        <tr><td><code>submitted</code></td><td><code>--gray-400</code> (<code>#a4a7ae</code>, <code>fg.disabled</code>)</td><td>Hourglass</td></tr>
+        <tr><td><code>completed</code></td><td><code>--red-400</code> (<code>#f97066</code>)</td><td>Flame + streak number</td></tr>
+        <tr><td><code>rejected</code></td><td><code>--yellow-400</code> (<code>#fac515</code>)</td><td>Warning triangle</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Content guidelines                     -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li>Titles should start with a verb and stay to 1 to 3 words ("Practice Piano", "Read for 20 min")</li>
+        <li>Subtitles are state-driven, not author-driven. They come from <code>getTaskSubtitle()</code> in <code>task-visual.ts</code> and fall back to the task description only in the <code>available</code> state</li>
+        <li>Choose a TossFace emoji that directly represents the activity. Avoid abstract or ambiguous symbols</li>
+        <li>Gems copy is tense-aware: "Earn X gems" in every state except <code>completed</code>, which reads "Earned X gems"</li>
+        <li>The gems line is fully optional. It is rendered only when the task has a gem reward (<code>gems &gt; 0</code> in <code>getTaskGemsText()</code>). Tasks with no gem value never show a gems line in any state</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- Accessibility                          -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Touch targets</strong> &mdash; Both formats exceed the 44 px minimum. Tier 1: full 360 &times; 220. Tier 2/3: full card row at 80 px</li>
+        <li><strong>Interactive states</strong> &mdash; Only <code>available</code>, <code>inProgress</code>, and <code>rejected</code> wire up <code>onPress</code>. In <code>submitted</code> and <code>completed</code>, the card renders with <code>disabled={true}</code> and <code>aria-disabled="true"</code></li>
+        <li><strong>Label</strong> &mdash; Each card should have an <code>aria-label</code> combining the task name and state, e.g., "Talk to Sprout, available, earn 10 gems"</li>
+        <li><strong>Badge semantics</strong> &mdash; The task badge is decorative and colour-coded. Always pair with the subtitle text so the state is conveyed to screen readers</li>
+        <li><strong>Contrast</strong> &mdash; White text / icons on the brand, red, yellow, and disabled-gray badge backgrounds meet WCAG AA at 16 px and above</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: April 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/kid-design-system/nav.js"></script>
+<script src="/kid-design-system/spec-renderer.js"></script>
+<script src="/kid-design-system/shell.js"></script>
+<!-- Rive runtime + CardAvatar Village auto-init is handled by
+     /kid-design-system/components/card-avatar.js (imported at the top of this file).
+     Any .card-avatar-canvas element on the page is discovered and initialised
+     automatically on DOMContentLoaded. -->
+</body>
+</html>

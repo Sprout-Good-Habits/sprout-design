@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Conversational Feedback</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "ConversationalFeedback",
+  "slug": "conversational-feedback",
+  "intent": {
+    "purpose": "Pair a character avatar with a text message to create a conversational moment — used for encouragement, coaching nudges, and contextual feedback",
+    "taskContext": ["encouragement", "coaching", "streak-celebration", "conversational-feedback"],
+    "sentiment": ["positive", "neutral"]
+  },
+  "composition": {
+    "requires": ["subtitles"],
+    "allows": ["avatar-portrait", "avatar"],
+    "forbids": ["button", "nested-conversational-feedback"]
+  },
+  "variants": [
+    { "name": "Conversational", "useWhen": "Character speaks to the user with presence — uses Avatar Portrait and centered Subtitles", "pairWith": ["AvatarPortrait", "Subtitles"] },
+    { "name": "Feedback", "useWhen": "Compact feedback with an icon — uses circular Avatar and left-aligned Subtitles with leading icon", "pairWith": ["Avatar", "Subtitles"] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "Fill container width" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline", "overlay"]
+  },
+  "relationships": {
+    "related": ["AvatarPortrait", "Avatar", "Subtitles"],
+    "escalatesTo": [],
+    "degradesTo": ["Subtitles"],
+    "groupsWith": []
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "status",
+    "keyboard": [],
+    "ariaAttributes": ["aria-label", "aria-live"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/avatar.css">
+<link rel="stylesheet" href="/components/avatar-portrait.css">
+<link rel="stylesheet" href="/components/subtitles.css">
+<link rel="stylesheet" href="/components/conversational-feedback.css">
+<style>
+/* ── Demo helpers ── */
+.demo-row {
+  display:flex; flex-direction:column; gap:var(--spacing-3xl, 24px);
+}
+.demo-constrained {
+  max-width:350px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Conversational Feedback</div>
+    <div class="sec-desc">Pairs a character with a text message to create a conversational moment. The character can speak to the user with full presence using an <a href="/components/avatar-portrait.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">Avatar Portrait</a>, or deliver compact feedback using a circular <a href="/components/avatar.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">Avatar</a>. The message is always a <a href="/components/subtitles.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">Subtitles</a> component.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Conversational</strong> when the character is &ldquo;speaking&rdquo; &mdash; gives the character presence via Avatar Portrait.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Feedback</strong> for compact encouragement with a leading icon &mdash; uses the circular Avatar.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Incoming</strong> direction when the character initiates (avatar on the leading side).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Outgoing</strong> direction when the message follows the user&rsquo;s action (avatar on the trailing side).</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for user-to-user chat &mdash; use <a href="/components/message-bubble.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Message Bubble</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t add buttons or interactive elements inside this component.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-row">
+        <div class="demo-item">
+          <span class="demo-label">Conversational &middot; Incoming</span>
+          <div class="demo-constrained">
+            <div class="conversational-feedback">
+              <div class="avatar-portrait" id="overview-incoming" aria-label="Character portrait"><canvas class="rive-user" width="394" height="564"></canvas></div>
+              <div class="subtitles subtitles-default subtitles-centered">
+                <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">Feedback &middot; Incoming</span>
+          <div class="demo-constrained">
+            <div class="conversational-feedback">
+              <div class="avatar avatar-xl" id="overview-feedback-in" aria-label="Character avatar"><canvas class="rive-user" width="154" height="140"></canvas></div>
+              <div class="subtitles subtitles-default subtitles-left-icon">
+                <div class="subtitles-leading"><span class="tossface">&#x1F525;</span></div>
+                <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">Conversational &middot; Outgoing</span>
+          <div class="demo-constrained">
+            <div class="conversational-feedback">
+              <div class="subtitles subtitles-default subtitles-centered">
+                <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+              </div>
+              <div class="avatar-portrait" id="overview-outgoing" aria-label="Character portrait"><canvas class="rive-user" width="394" height="564"></canvas></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-item">
+          <span class="demo-label">Feedback &middot; Outgoing</span>
+          <div class="demo-constrained">
+            <div class="conversational-feedback">
+              <div class="subtitles subtitles-default subtitles-left-icon">
+                <div class="subtitles-leading"><span class="tossface">&#x1F525;</span></div>
+                <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+              </div>
+              <div class="avatar avatar-xl" id="overview-feedback-out" aria-label="Character avatar"><canvas class="rive-user" width="154" height="140"></canvas></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ When to use ════ -->
+  <div class="doc-section">
+    <h2>When to use</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Streak celebrations</strong> &mdash; The character congratulates the user on maintaining a streak.</li>
+        <li><strong>Coaching nudges</strong> &mdash; A gentle prompt from the character to encourage the user to continue.</li>
+        <li><strong>Task completion</strong> &mdash; Positive reinforcement after finishing an exercise or quest.</li>
+        <li><strong>Welcome back</strong> &mdash; A personalized greeting when the user returns to the app.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ When not to use ════ -->
+  <div class="doc-section">
+    <h2>When not to use</h2>
+    <div class="prose">
+      <ul>
+        <li>Don&rsquo;t use for real-time chat between users &mdash; use <a href="/components/message-bubble.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Message Bubble</a>.</li>
+        <li>Don&rsquo;t use for system-level alerts &mdash; use <a href="/components/toast.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Toast</a>.</li>
+        <li>Don&rsquo;t use for long-form content &mdash; the Subtitles text is capped and rotates.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Types ════ -->
+  <div class="doc-section">
+    <h2>Types</h2>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Conversational</h3>
+    <p>The character &ldquo;speaks&rdquo; to the user. Uses <strong>Avatar Portrait</strong> (120 &times; 176px) for full character presence, paired with <strong>centered Subtitles</strong>.</p>
+    <div class="demo">
+      <div class="demo-row">
+        <div class="demo-constrained">
+          <div class="conversational-feedback">
+            <div class="avatar-portrait" id="type-conv-in" aria-label="Character portrait"><canvas class="rive-user" width="394" height="564"></canvas></div>
+            <div class="subtitles subtitles-default subtitles-centered">
+              <p class="subtitles-text">Great job today!<br>You&rsquo;re getting stronger</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Feedback</h3>
+    <p>Compact encouragement. Uses the circular <strong>Avatar</strong> (XL, 56px) paired with <strong>left-aligned Subtitles + leading icon</strong>.</p>
+    <div class="demo">
+      <div class="demo-row">
+        <div class="demo-constrained">
+          <div class="conversational-feedback">
+            <div class="avatar avatar-xl" id="type-feedback-in" aria-label="Character avatar"><canvas class="rive-user" width="154" height="140"></canvas></div>
+            <div class="subtitles subtitles-default subtitles-left-icon">
+              <div class="subtitles-leading"><span class="tossface">&#x1F525;</span></div>
+              <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Direction ════ -->
+  <div class="doc-section">
+    <h2>Direction</h2>
+    <p>Direction controls where the avatar sits relative to the Subtitles.</p>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Incoming</h3>
+    <p>Avatar on the <strong>leading</strong> (left) side. The character is initiating the message &mdash; it feels like the character is speaking to the user.</p>
+    <div class="demo">
+      <div class="demo-row" style="gap:var(--spacing-xl, 16px);">
+        <div class="demo-constrained">
+          <div class="conversational-feedback">
+            <div class="avatar-portrait" id="dir-conv-in" aria-label="Character portrait"><canvas class="rive-user" width="394" height="564"></canvas></div>
+            <div class="subtitles subtitles-default subtitles-centered">
+              <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+            </div>
+          </div>
+        </div>
+        <div class="demo-constrained">
+          <div class="conversational-feedback">
+            <div class="avatar avatar-xl" id="dir-fb-in" aria-label="Character avatar"><canvas class="rive-user" width="154" height="140"></canvas></div>
+            <div class="subtitles subtitles-default subtitles-left-icon">
+              <div class="subtitles-leading"><span class="tossface">&#x1F525;</span></div>
+              <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Outgoing</h3>
+    <p>Avatar on the <strong>trailing</strong> (right) side. The message follows something the user did &mdash; the character reacts to the user&rsquo;s action.</p>
+    <div class="demo">
+      <div class="demo-row" style="gap:var(--spacing-xl, 16px);">
+        <div class="demo-constrained">
+          <div class="conversational-feedback">
+            <div class="subtitles subtitles-default subtitles-centered">
+              <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+            </div>
+            <div class="avatar-portrait" id="dir-conv-out" aria-label="Character portrait"><canvas class="rive-user" width="394" height="564"></canvas></div>
+          </div>
+        </div>
+        <div class="demo-constrained">
+          <div class="conversational-feedback">
+            <div class="subtitles subtitles-default subtitles-left-icon">
+              <div class="subtitles-leading"><span class="tossface">&#x1F525;</span></div>
+              <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+            </div>
+            <div class="avatar avatar-xl" id="dir-fb-out" aria-label="Character avatar"><canvas class="rive-user" width="154" height="140"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Composition ════ -->
+  <div class="doc-section">
+    <h2>Composition</h2>
+    <p>Conversational Feedback is a composition of existing components. It does not introduce new visual elements.</p>
+    <table class="token-table">
+      <thead><tr><th>Type</th><th>Avatar component</th><th>Subtitles layout</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Conversational</strong></td><td><a href="/components/avatar-portrait.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar Portrait</a> (120 &times; 176px)</td><td>Centered</td></tr>
+        <tr><td><strong>Feedback</strong></td><td><a href="/components/avatar.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar</a> XL (56px circle)</td><td>Left aligned + icon</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="demo" style="padding:var(--spacing-3xl, 24px);">
+      <div class="demo-constrained">
+        <div class="conversational-feedback" style="outline:2px dashed var(--brand-300);outline-offset:4px;">
+          <div class="avatar-portrait" id="anatomy-avatar" aria-label="Character portrait" style="outline:2px dashed var(--green-400);outline-offset:2px;"><canvas class="rive-user" width="394" height="564"></canvas></div>
+          <div class="subtitles subtitles-default subtitles-centered" style="outline:2px dashed var(--violet-300);outline-offset:2px;">
+            <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Container</strong> &mdash; Flex row, fills parent width, <code>gap: 8px</code> (<code>--spacing-md</code>), items vertically centered.</li>
+        <li><strong>Avatar slot</strong> &mdash; Either an Avatar Portrait (Conversational) or circular Avatar XL (Feedback). Position determined by direction: leading for Incoming, trailing for Outgoing.</li>
+        <li><strong>Subtitles</strong> &mdash; Fills the remaining space (<code>flex: 1</code>). Layout variant is determined by type: Centered for Conversational, Left aligned + icon for Feedback.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Layout</td><td><code>display: flex</code></td></tr>
+        <tr><td>Width</td><td>Fill container (100%)</td></tr>
+        <tr><td>Gap</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Alignment</td><td><code>align-items: center</code></td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:var(--spacing-lg, 12px);font-size:var(--font-size-text-sm, 14px);color:var(--text-secondary, #414651);">All visual styling is owned by the child components. See <a href="/components/avatar-portrait.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar Portrait</a>, <a href="/components/avatar.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar</a>, and <a href="/components/subtitles.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Subtitles</a> for their individual tokens.</p>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>Use <code>role="status"</code> on the container so screen readers announce the feedback without interrupting.</li>
+        <li>Add <code>aria-live="polite"</code> when the component appears dynamically.</li>
+        <li>The avatar is decorative in this context &mdash; the Subtitles text carries the meaning. Mark the avatar with <code>aria-hidden="true"</code> or use a descriptive <code>aria-label</code> on the container instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+/* ── Rive initialization ── */
+var RIVE_USER_SRC = '/character2.91.riv';
+var ARTBOARD = 'Village-character';
+var SM_NAME = 'State Machine 1';
+
+var PRESETS = {
+  shane:    { skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0,  glassID:0, glassshadeID:0, eyeshadeID:3, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 },
+  zeev:     { skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2,  glassID:1, glassshadeID:3, eyeshadeID:5, earringID:0, facedetailID:0, headwearID:2, headwearshadeID:5 },
+  mali:     { skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1,  glassID:0, glassshadeID:0, eyeshadeID:4, earringID:3, facedetailID:3, headwearID:0, headwearshadeID:0 },
+  coachEli: { skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10, glassID:0, glassshadeID:0, eyeshadeID:2, earringID:0, facedetailID:1, headwearID:1, headwearshadeID:8 }
+};
+
+var CHAR_STATES = {
+  'overview-incoming':   PRESETS.shane,
+  'overview-feedback-in': PRESETS.shane,
+  'overview-outgoing':   PRESETS.mali,
+  'overview-feedback-out': PRESETS.mali,
+  'type-conv-in':        PRESETS.coachEli,
+  'type-feedback-in':    PRESETS.zeev,
+  'dir-conv-in':         PRESETS.shane,
+  'dir-fb-in':           PRESETS.shane,
+  'dir-conv-out':        PRESETS.mali,
+  'dir-fb-out':          PRESETS.mali,
+  'anatomy-avatar':      PRESETS.shane
+};
+
+function initRive(canvas, opts) {
+  var w = parseInt(canvas.getAttribute('width'), 10) || 394;
+  var h = parseInt(canvas.getAttribute('height'), 10) || 564;
+  canvas.width = w;
+  canvas.height = h;
+  var r;
+  var config = {
+    src: opts.src,
+    canvas: canvas,
+    autoplay: true,
+    stateMachines: SM_NAME,
+    fit: rive.Fit.Contain,
+    alignment: rive.Alignment.Center,
+    onLoad: function() {
+      if (!r) return;
+      r.resizeDrawingSurfaceToCanvas();
+      try {
+        var inputs = r.stateMachineInputs(SM_NAME);
+        if (inputs && opts.state) {
+          inputs.forEach(function(inp) {
+            if (opts.state[inp.name] !== undefined) {
+              inp.value = opts.state[inp.name];
+            }
+          });
+        }
+      } catch(e) {}
+    }
+  };
+  if (opts.artboard) config.artboard = opts.artboard;
+  try {
+    r = new rive.Rive(config);
+  } catch(e) {
+    console.warn('Rive init failed', e);
+  }
+}
+
+/* Init all canvases */
+document.querySelectorAll('.rive-user').forEach(function(canvas) {
+  var parent = canvas.closest('[id]');
+  var state = parent ? (CHAR_STATES[parent.id] || PRESETS.shane) : PRESETS.shane;
+  initRive(canvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: state });
+});
+</script>
+</body>
+</html>

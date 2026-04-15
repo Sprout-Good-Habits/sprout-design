@@ -1,0 +1,112 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Button Utility Component CSS
+   Pill-shaped utility buttons for toolbars and compact
+   actions. Supports icons, labels, emoji, and avatar groups.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+.tf-icon {
+  font-family:'TossFace', sans-serif;
+  font-size:var(--font-size-display-xs, 24px); line-height:1;
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+
+/* ── Base ── */
+.btn-util {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  padding:var(--spacing-lg, 12px);
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-full, 9999px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  overflow:hidden;
+  cursor:pointer;
+  box-sizing:border-box;
+  flex-shrink:0;
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.btn-util:hover {
+  background:var(--gray-50, #fafafa);
+}
+.btn-util:active {
+  box-shadow:none;
+  transform:translateY(2px);
+}
+
+/* ── With gap (multi-symbol, icon+value, icon+label) ── */
+.btn-util-gap,
+.btn-util-with-label { gap:var(--spacing-md, 8px); }
+
+/* ── Small padding (for user group variant) ── */
+.btn-util-sm { padding:var(--spacing-md, 8px); }
+
+/* ── Disabled state ── */
+.btn-util-disabled {
+  background:var(--gray-300, #d5d7da);
+  border-color:var(--gray-400, #a4a7ae);
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);
+  cursor:not-allowed;
+  pointer-events:none;
+}
+
+/* ── Primary variant ── */
+.btn-util-primary {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-util-primary:hover {
+  background:var(--brand-400, #36bffa);
+}
+.btn-util-primary:active {
+  background:var(--brand-500, #0ba5ec);
+  box-shadow:none;
+  transform:translateY(2px);
+}
+.btn-util-primary.btn-util-disabled {
+  background:var(--gray-300, #d5d7da);
+  border-color:var(--gray-400, #a4a7ae);
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);
+}
+
+/* ── Pressed state (for demos) ── */
+.btn-util-pressed {
+  box-shadow:none;
+  transform:translateY(2px);
+}
+.btn-util-primary.btn-util-pressed {
+  background:var(--brand-500, #0ba5ec);
+  box-shadow:none;
+  transform:translateY(2px);
+}
+
+/* ── Icon slot ── */
+.btn-util-icon {
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  overflow:hidden;
+}
+.btn-util-icon svg {
+  width:24px; height:24px;
+}
+
+/* ── Value label ── */
+.btn-util-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  font-weight:var(--font-weight-regular, 400);
+  line-height:var(--line-height-text-md, 24px);
+  color:var(--text-secondary, #414651);
+  white-space:nowrap;
+}

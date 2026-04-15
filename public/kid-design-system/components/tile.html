@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Tile</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Tile",
+  "slug": "tile",
+  "intent": {
+    "purpose": "Let users choose between options presented as distinct, tappable cards",
+    "taskContext": ["selection", "exercises", "onboarding"],
+    "sentiment": ["neutral"]
+  },
+  "composition": {
+    "requires": [],
+    "allows": ["leading-avatar", "leading-icon", "leading-swatch", "description", "chevron", "radio-indicator", "checkbox-indicator", "image-thumb"],
+    "forbids": ["button", "nested-tile"]
+  },
+  "variants": [
+    { "name": "Navigation", "useWhen": "Navigating to a sub-screen, shows chevron", "pairWith": [] },
+    { "name": "Radio", "useWhen": "Single-select from a list, shows radio indicator", "pairWith": [] },
+    { "name": "Checkbox", "useWhen": "Multi-select from a list, shows checkbox indicator", "pairWith": [] },
+    { "name": "None", "useWhen": "Selection without a trailing indicator, avatar + label only", "pairWith": [] },
+    { "name": "Image", "useWhen": "Image or photo selection from a grid, square with image fill", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 56px height minimum" },
+    { "name": "Square", "useWhen": "Image type — compact square layout" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline", "inside-sheet"]
+  },
+  "relationships": {
+    "related": ["Avatar", "Checkbox", "Radio", "Sheet"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["Sheet"]
+  },
+  "states": ["unchecked", "checked", "hover", "success", "error", "warning", "disabled"],
+  "accessibility": {
+    "role": "option",
+    "keyboard": ["Enter", "Space", "ArrowUp", "ArrowDown"],
+    "ariaAttributes": ["aria-selected", "aria-checked"],
+    "minTouchTarget": "56x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/avatar.css">
+<link rel="stylesheet" href="/components/tile.css">
+<style>
+/* ── Doc-specific overrides ── */
+.state-cell .tile { width:100%; }
+.state-cell .tile.tile-image { width:112px; }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Tile</div>
+    <div class="sec-desc">Tiles are bordered, tappable cards that let users choose between options. Each tile is visually distinct with its own border and shadow, making it ideal for selection flows, exercises, and onboarding.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a tile when you want the user to pick from a set of distinct, card-like options.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Checkbox</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-orange" id="overview-avatar-check"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Leo</div>
+          </div>
+          <div class="tile-checkbox">
+            <svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Radio</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-sky" id="overview-avatar-radio"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Mia</div>
+          </div>
+          <div class="tile-radio">
+            <div class="tile-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Navigation</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-green" id="overview-avatar-nav"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Shane</div>
+          </div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">None</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-violet" id="overview-avatar-none"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Ava</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Sortable</span>
+        <div class="tile tile-sortable">
+          <div class="avatar avatar-md avatar-bg-orange" id="overview-avatar-sort"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Drag me</div>
+          </div>
+          <div class="tile-drag-handle">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Image</span>
+        <div class="tile tile-image">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example image">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Leading element ════ -->
+  <div class="doc-section">
+    <h2>Leading element</h2>
+    <p>The leading element is an optional 40px <code>.Leading</code> subcomponent with three types. It can be shown or hidden via <code>showLeading</code>.</p>
+    <p>The leading area is a horizontal container with <code>gap: 4px</code>, so you can <strong>stack multiple leading elements</strong> side by side. For example, the Sortable variant uses a number badge + emoji, or a number badge + avatar.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Avatar</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-green" id="demo-avatar-nav"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Shane</div>
+            <div class="tile-desc">Soccer drill &mdash; dribbling</div>
+          </div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Icon</span>
+        <div class="tile">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content">
+            <div class="tile-label">Draw and paint</div>
+            <div class="tile-desc">Express yourself with colors</div>
+          </div>
+          <div class="tile-checkbox">
+            <svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Swatch</span>
+        <div class="tile">
+          <div class="tile-leading tile-leading-swatch" style="background:#ffc7ba"></div>
+          <div class="tile-content">
+            <div class="tile-label">Peach</div>
+          </div>
+          <div class="tile-radio">
+            <div class="tile-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Multiple leading</span>
+        <div class="tile tile-sortable">
+          <div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
+            <div class="sort-number">1</div>
+            <div class="tile-leading tile-leading-icon">&#128024;</div>
+          </div>
+          <div class="tile-content">
+            <div class="tile-label">Ant</div>
+          </div>
+          <div class="tile-drag-handle">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li>Wrap multiple leading elements in a <code>.tile-leading-group</code> container with <code>display:flex; gap:4px</code>.</li>
+        <li>Common combinations: number badge + emoji, number badge + avatar.</li>
+        <li>Keep to 2 elements max to avoid crowding the tile.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Usage guidelines ════ -->
+  <div class="doc-section">
+    <h2>Usage guidelines</h2>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:0 0 8px">Types</h3>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Navigation</strong> when making a choice navigates to another screen or step in a flow.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Radio</strong> to select a single item from a mutually exclusive list.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Checkbox</strong> to select multiple items from a list.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>None</strong> when no trailing indicator is needed &mdash; avatar and label only.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Image</strong> to select from photos or illustrations &mdash; 112px square tiles with an image fill.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Sortable</strong> for drag-to-reorder exercises &mdash; shows a drag handle and supports multiple leading elements (e.g. number badge + emoji).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use section headers to separate lists with different types on the same page.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix different types in the same list.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use Navigation when the user needs to choose options within a form &mdash; use Radio or Checkbox instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use a tile when there is just one primary option &mdash; use a button instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use Radio or Checkbox directly in a form, unless used as a full screen.</li>
+      </ul>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Leading element</h3>
+    <p>The leading element is an optional 40px <code>.Leading</code> subcomponent (<code>showLeading</code>) with three types: <strong>Avatar</strong>, <strong>Icon</strong>, and <strong>Swatch</strong>.</p>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use an <strong>Avatar</strong> when the tile represents a person &mdash; family members, leaderboard entries, participants.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use an <strong>Icon</strong> (Toss Face emoji) for activity or category lists.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use a <strong>Swatch</strong> for color selection &mdash; a 40px rounded square with a color fill.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Always respect the user&rsquo;s profile <strong>background color</strong> on the avatar.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t mix different leading types in the same list.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t hard-code avatar background colors &mdash; always use the color from the user&rsquo;s profile.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>Checkbox, Radio, Navigation, and None tiles are composed of up to four parts. All parts are configurable via boolean props: <code>showLeading</code>, <code>showLabel</code>, <code>showDescription</code>. The Image type is a compact 112px square containing only an image.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Full anatomy (avatar)</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-green" id="anatomy-avatar"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Shane</div>
+            <div class="tile-desc">Soccer drill &mdash; dribbling</div>
+          </div>
+          <div class="tile-chevron">
+            <svg viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Full anatomy (icon)</span>
+        <div class="tile">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content">
+            <div class="tile-label">Draw and paint</div>
+            <div class="tile-desc">Express yourself with colors</div>
+          </div>
+          <div class="tile-checkbox">
+            <svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Full anatomy (swatch)</span>
+        <div class="tile">
+          <div class="tile-leading tile-leading-swatch" style="background:#ffc7ba"></div>
+          <div class="tile-content">
+            <div class="tile-label">Peach</div>
+          </div>
+          <div class="tile-radio">
+            <div class="tile-radio-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">No trailing (None)</span>
+        <div class="tile">
+          <div class="avatar avatar-md avatar-bg-violet" id="anatomy-avatar-none"><canvas class="rive-user" width="110" height="100"></canvas></div>
+          <div class="tile-content">
+            <div class="tile-label">Ava</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Leading element</strong> (optional, <code>showLeading</code>) &mdash; 40px <code>.Leading</code> subcomponent. Three types: <strong>Avatar</strong> (40px circle), <strong>Icon</strong> (40px Toss Face emoji), or <strong>Swatch</strong> (40px rounded square with color fill).</li>
+        <li><strong>Label</strong> (optional, <code>showLabel</code>) &mdash; Bold, text-md (16px/24px). The primary option name.</li>
+        <li><strong>Description</strong> (optional, <code>showDescription</code>) &mdash; Regular, text-sm (14px/20px). Extra context when the label alone isn&rsquo;t enough.</li>
+        <li><strong>Trailing indicator</strong> (optional) &mdash; 24px. Checkbox, radio, or chevron depending on the type. None type has no indicator.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>States</h2>
+    <p>Tiles have six states: <strong>unchecked</strong> (default), <strong>selected</strong> (blue), three validation states &mdash; <strong>success</strong> (green), <strong>error</strong> (red), <strong>warning</strong> (yellow) &mdash; and <strong>disabled</strong> (muted, flat).</p>
+
+    <div class="state-grid" style="grid-template-columns:repeat(6, 1fr);">
+      <div class="state-cell"><span class="state-cell-label">Unchecked</span></div>
+      <div class="state-cell"><span class="state-cell-label">Selected</span></div>
+      <div class="state-cell"><span class="state-cell-label">Success</span></div>
+      <div class="state-cell"><span class="state-cell-label">Error</span></div>
+      <div class="state-cell"><span class="state-cell-label">Warning</span></div>
+      <div class="state-cell"><span class="state-cell-label">Disabled</span></div>
+
+      <!-- Checkbox -->
+      <div class="state-cell">
+        <div class="tile">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile checked">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile success">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile error">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile warning-static">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile disabled">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-checkbox"><svg class="tile-check-icon" viewBox="0 0 14 14"><polyline points="2.5 7 5.5 10.5 11.5 3.5"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Radio -->
+      <div class="state-cell">
+        <div class="tile">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-radio"><div class="tile-radio-dot"></div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile checked">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-radio"><div class="tile-radio-dot"></div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile success">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-radio"><div class="tile-radio-dot"></div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile error">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-radio"><div class="tile-radio-dot"></div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile warning-static">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-radio"><div class="tile-radio-dot"></div></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile disabled">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-radio"><div class="tile-radio-dot"></div></div>
+        </div>
+      </div>
+
+      <!-- Sortable -->
+      <div class="state-cell">
+        <div class="tile tile-sortable">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-sortable checked">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-sortable success">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-sortable error">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-sortable warning-static">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-sortable disabled">
+          <div class="tile-leading tile-leading-icon">&#127912;</div>
+          <div class="tile-content"><div class="tile-label">Label</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Image -->
+      <div class="state-cell">
+        <div class="tile tile-image">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example">
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-image checked">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example">
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-image success">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example">
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-image error">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example">
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-image warning-static">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example">
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-image disabled">
+          <img class="tile-image-thumb" src="https://placehold.co/96x96/e8e8e8/ccc?text=·" alt="Example">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Validation states ════ -->
+  <div class="doc-section">
+    <h2>Validation states</h2>
+    <p>Validation states are applied after the user submits an answer in exercises and quizzes. They are <strong>non-interactive</strong> (<code>pointer-events: none</code>) &mdash; the user can&rsquo;t change their selection after validation.</p>
+
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#9679;</span> <strong><code>.success</code></strong> &mdash; The option the kid selected and it was correct.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#9679;</span> <strong><code>.error</code></strong> &mdash; The option the kid selected but it was wrong.</li>
+        <li><span style="color:var(--yellow-500, #eaaa08)">&#9679;</span> <strong><code>.warning</code></strong> &mdash; The correct answer the kid didn&rsquo;t pick. Flashes yellow for ~1.5s then returns to default so the kid can try again. Use <code>.warning-static</code> in docs/demos to show the yellow state without animation.</li>
+        <li><span style="color:var(--gray-400, #a4a7ae)">&#9679;</span> <strong><code>.disabled</code></strong> &mdash; Options that were not selected and are not the correct answer. Muted label, no shadow, non-interactive.</li>
+      </ul>
+    </div>
+
+    <h3>Token reference</h3>
+    <table class="token-table">
+      <thead><tr><th>State</th><th>Background</th><th>Border &amp; Shadow</th></tr></thead>
+      <tbody>
+        <tr><td>Success</td><td><code>--green-100</code> (#dcfae6)</td><td><code>--green-300</code> (#75e0a7)</td></tr>
+        <tr><td>Error</td><td><code>--red-100</code> (#fee4e2)</td><td><code>--red-300</code> (#fda29b)</td></tr>
+        <tr><td>Warning</td><td><code>--yellow-100</code> (#fef7c3)</td><td><code>--yellow-300</code> (#fde272)</td></tr>
+        <tr><td>Disabled</td><td><code>--bg-primary</code> (white)</td><td>none (flat)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Content guidelines ════ -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <p>Tile copy should:</p>
+    <div class="prose">
+      <ul>
+        <li>Keep labels short &mdash; ideally 2&ndash;4 words</li>
+        <li>Start with a verb or noun that names the option</li>
+        <li>Use sentence case (only capitalise the first letter of the first word)</li>
+        <li>Use the description for extra context only when the label isn&rsquo;t self-explanatory</li>
+        <li>Avoid ending labels or descriptions with a period</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token Reference</h2>
+    <p>All tile styles map to Sprout design tokens. Checkbox, Radio, Navigation, and None share the same container &mdash; only the trailing indicator differs. Image uses a compact square container.</p>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Unchecked (default)</th><th>Checked (selected)</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td><code>--bg-primary</code></td><td><code>--bg-brand-secondary</code></td></tr>
+        <tr><td>Border</td><td><code>2px solid</code> <code>--border-secondary</code></td><td><code>2px solid</code> <code>--brand-300</code></td></tr>
+        <tr><td>Shadow</td><td><code>--shadow-secondary</code></td><td><code>0 3px 0 0</code> <code>--brand-300</code></td></tr>
+        <tr><td>Border radius</td><td colspan="2"><code>--radius-xl</code></td></tr>
+        <tr><td>Padding</td><td colspan="2"><code>--spacing-xl</code> vertical, <code>--spacing-2xl</code> horizontal</td></tr>
+        <tr><td>Gap</td><td colspan="2"><code>--spacing-xl</code></td></tr>
+        <tr><td>Width</td><td colspan="2">Fill container</td></tr>
+        <tr><td>Label font</td><td colspan="2"><code>--font-size-text-md</code> / <code>--line-height-text-md</code> / <code>--font-weight-bold</code></td></tr>
+        <tr><td>Label color</td><td colspan="2"><code>--text-primary</code></td></tr>
+        <tr><td>Description font</td><td colspan="2"><code>--font-size-text-sm</code> / <code>--line-height-text-sm</code> / <code>--font-weight-regular</code></td></tr>
+        <tr><td>Description color</td><td colspan="2"><code>--text-secondary</code></td></tr>
+        <tr><td>Leading: Avatar</td><td colspan="2">40px circle, <code>--bg-sky</code> default</td></tr>
+        <tr><td>Leading: Icon</td><td colspan="2">40px, <code>--font-family-tossface</code>, 32px</td></tr>
+        <tr><td>Leading: Swatch</td><td colspan="2">40px square, <code>--radius-md</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Trailing indicators</h3>
+    <table class="token-table">
+      <thead><tr><th>Type</th><th>Size</th><th>Radius</th><th>Unchecked</th><th>Checked</th></tr></thead>
+      <tbody>
+        <tr><td>Checkbox</td><td>24px</td><td><code>--radius-sm</code></td><td><code>--border-secondary</code></td><td><code>--brand-500</code> fill, <code>--fg-white</code> check</td></tr>
+        <tr><td>Radio</td><td>24px</td><td><code>--radius-full</code></td><td><code>--border-secondary</code></td><td><code>--brand-500</code> fill, <code>--fg-white</code> 8px dot</td></tr>
+        <tr><td>Navigation</td><td>24px</td><td>&mdash;</td><td><code>--text-tertiary</code></td><td><code>--brand-500</code></td></tr>
+        <tr><td>None</td><td colspan="4">&mdash; No trailing indicator</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Image variant</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Size</td><td>112px &times; 112px</td></tr>
+        <tr><td>Padding</td><td><code>--spacing-md</code></td></tr>
+        <tr><td>Gap</td><td>0</td></tr>
+        <tr><td>Overflow</td><td>Clip</td></tr>
+        <tr><td>Image radius</td><td><code>--radius-md</code></td></tr>
+        <tr><td>Image fit</td><td><code>object-fit: cover</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <p>Tiles are interactive selection controls. They must be usable by all input methods.</p>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Checkbox type &rarr; use <code>role="option"</code> in a <code>role="listbox"</code>, or native <code>&lt;input type="checkbox"&gt;</code>. Radio type &rarr; use <code>role="radio"</code> in a <code>role="radiogroup"</code>, or native <code>&lt;input type="radio"&gt;</code>. Navigation type &rarr; use <code>&lt;a&gt;</code> or <code>role="link"</code>.</li>
+        <li><strong>Keyboard:</strong> Items must be selectable with <kbd>Enter</kbd> or <kbd>Space</kbd>. Arrow keys should move focus between items.</li>
+        <li><strong>Focus ring:</strong> A visible <code>2px</code> focus ring appears on keyboard navigation. Do not remove <code>:focus-visible</code> outlines.</li>
+        <li><strong>ARIA state:</strong> Use <code>aria-selected="true"</code> for checked items and <code>aria-selected="false"</code> for unchecked. Radio groups should use <code>aria-checked</code>.</li>
+        <li><strong>Contrast:</strong> Labels (<code>--text-primary</code> on <code>--bg-primary</code>) and descriptions (<code>--text-secondary</code> on <code>--bg-primary</code>) both pass WCAG AA.</li>
+        <li><strong>Touch targets:</strong> The entire row (minimum 56px tall) is the tap target, exceeding the 44&times;44px guideline.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+/* ── Rive avatar initialization (matches avatar component) ── */
+var RIVE_USER_SRC = '/character2.91.riv';
+var ARTBOARD = 'Village-character';
+var SM_NAME = 'State Machine 1';
+var USER_STATE = { skinID:11, hairID:4, hairshadeID:3, beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0 };
+
+function initRive(canvas, opts) {
+  var w = parseInt(canvas.getAttribute('width'), 10) || 132;
+  var h = parseInt(canvas.getAttribute('height'), 10) || 120;
+  canvas.width = w;
+  canvas.height = h;
+  var r;
+  var config = {
+    src: opts.src,
+    canvas: canvas,
+    autoplay: true,
+    stateMachines: SM_NAME,
+    fit: rive.Fit.Contain,
+    alignment: rive.Alignment.Center,
+    onLoad: function() {
+      if (!r) return;
+      r.resizeDrawingSurfaceToCanvas();
+      try {
+        var inputs = r.stateMachineInputs(SM_NAME);
+        if (inputs && opts.state) {
+          inputs.forEach(function(inp) {
+            if (opts.state.hasOwnProperty(inp.name)) inp.value = opts.state[inp.name];
+          });
+        }
+      } catch(e) {}
+    }
+  };
+  if (opts.artboard) config.artboard = opts.artboard;
+  r = new rive.Rive(config);
+}
+
+document.querySelectorAll('.rive-user').forEach(function(canvas) {
+  initRive(canvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: USER_STATE });
+});
+</script>
+</body>
+</html>

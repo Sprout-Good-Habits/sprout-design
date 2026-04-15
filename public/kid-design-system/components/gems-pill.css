@@ -1,0 +1,53 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Gems Earned Pill
+   A small rounded pill showing gem count earned
+   from a completed quest.
+   ═══════════════════════════════════════════════════ */
+
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Base ── */
+.gems-earned {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#fff;
+  padding:8px 16px;
+  border-radius:var(--radius-full, 9999px);
+  margin-top:var(--spacing-xl, 16px);
+  font-size:var(--font-size-text-sm, 15px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--sprout-600, #4f7a21);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+
+.gems-earned-icon {
+  font-family:'TossFace', sans-serif;
+  font-size:16px;
+  line-height:1;
+}
+
+/* ── Size: Small ── */
+.gems-earned-sm {
+  padding:6px 12px;
+  font-size:var(--font-size-text-xs, 12px);
+  gap:4px;
+}
+.gems-earned-sm .gems-earned-icon {
+  font-size:13px;
+}
+
+/* ── Size: Large ── */
+.gems-earned-lg {
+  padding:10px 20px;
+  font-size:var(--font-size-text-md, 16px);
+  gap:8px;
+}
+.gems-earned-lg .gems-earned-icon {
+  font-size:20px;
+}

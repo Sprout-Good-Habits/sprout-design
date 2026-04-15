@@ -1,0 +1,29 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Chat Action Buttons CSS
+   Primary/secondary action buttons with loading, done, faded states.
+   ═══════════════════════════════════════════════════ */
+
+.action-btns { display: flex; gap: var(--spacing-md, 8px); padding: var(--spacing-md, 8px) 0; align-self: flex-start; }
+
+.action-btn {
+  padding: var(--spacing-lg, 12px) var(--spacing-3xl, 24px);
+  border-radius: 11px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  cursor: pointer; border: none;
+  transition: all .2s;
+  display: flex; align-items: center; gap: var(--spacing-sm, 6px);
+}
+
+.action-btn-primary   { background: var(--green-500, #17b26a); color: var(--text-white, #fff); }
+.action-btn-primary:hover { background: var(--green-700, #067647); }
+.action-btn-secondary { background: var(--bg-primary, #fff); border: 1px solid var(--border-primary, #d5d7da); color: var(--text-quaternary, #717680); }
+.action-btn-secondary:hover { background: var(--bg-secondary, #fafafa); }
+
+.action-btn.loading { pointer-events: none; }
+.action-btn.done    { background: var(--bg-success-primary, #dcfae6); border: 1px solid var(--green-500, #17b26a); color: var(--green-500, #17b26a); pointer-events: none; }
+.action-btn.faded   { opacity: .5; pointer-events: none; }
+
+.action-btn .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: var(--white, #fff); border-radius: 50%; animation: rspin .6s linear infinite; }
+.action-btn-secondary .spinner { border-color: rgba(107,114,128,.3); border-top-color: var(--gray-500, #717680); }

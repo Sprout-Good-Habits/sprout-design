@@ -1,0 +1,307 @@
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Tile component ── */
+.tile {
+  display:flex; align-items:center; gap:var(--spacing-xl, 16px);
+  box-sizing:border-box;
+  width:100%;
+  padding:var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-xl, 12px);
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  cursor:pointer;
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.tile:hover {
+  background:var(--bg-secondary, #fafafa);
+}
+.tile.checked,
+.tile.selected {
+  background:var(--bg-brand-secondary, #e0f2fe);
+  border-color:var(--brand-300, #7cd4fd);
+  box-shadow:0 3px 0 0 var(--brand-300, #7cd4fd);
+}
+.tile:active {
+  box-shadow:none;
+  transform:translateY(2px);
+}
+
+/* ── Validation states ── */
+.tile.success {
+  background:var(--green-100, #dcfae6);
+  border-color:var(--green-300, #75e0a7);
+  box-shadow:0 4px 0 0 var(--green-300, #75e0a7);
+  pointer-events:none;
+}
+.tile.error {
+  background:var(--red-100, #fee4e2);
+  border-color:var(--red-300, #fda29b);
+  box-shadow:0 4px 0 0 var(--red-300, #fda29b);
+  pointer-events:none;
+}
+.tile.warning {
+  animation:tileWarningFlash 2s ease forwards;
+}
+@keyframes tileWarningFlash {
+  0% {
+    background:var(--bg-primary, #ffffff);
+    border-color:var(--border-secondary, #e9eaeb);
+    box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  }
+  15% {
+    background:var(--yellow-100, #fef7c3);
+    border-color:var(--yellow-300, #fde272);
+    box-shadow:0 4px 0 0 var(--yellow-300, #fde272);
+  }
+  70% {
+    background:var(--yellow-100, #fef7c3);
+    border-color:var(--yellow-300, #fde272);
+    box-shadow:0 4px 0 0 var(--yellow-300, #fde272);
+  }
+  100% {
+    background:var(--bg-primary, #ffffff);
+    border-color:var(--border-secondary, #e9eaeb);
+    box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  }
+}
+/* Static warning (for docs/demos without animation) */
+.tile.warning-static {
+  background:var(--yellow-100, #fef7c3);
+  border-color:var(--yellow-300, #fde272);
+  box-shadow:0 4px 0 0 var(--yellow-300, #fde272);
+  pointer-events:none;
+}
+
+/* ── Disabled state ── */
+.tile.disabled {
+  background:var(--bg-primary, #ffffff);
+  border-color:var(--border-secondary, #e9eaeb);
+  box-shadow:none;
+  pointer-events:none;
+  cursor:default;
+}
+.tile.disabled .tile-label {
+  color:var(--gray-400, #a4a7ae);
+}
+.tile.disabled .tile-desc {
+  color:var(--gray-300, #d5d7da);
+}
+.tile.disabled .tile-leading,
+.tile.disabled .avatar {
+  filter:grayscale(1);
+  mix-blend-mode:luminosity;
+}
+
+/* Validation: indicators stay filled (success + error are final states) */
+.success .tile-checkbox,
+.success .tile-radio,
+.error .tile-checkbox,
+.error .tile-radio {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-500, #0ba5ec);
+}
+.success .tile-check-icon,
+.success .tile-radio-dot,
+.error .tile-check-icon,
+.error .tile-radio-dot {
+  display:block;
+}
+
+/* ── Leading element (.Leading subcomponent) ── */
+.tile-leading {
+  width:40px; height:40px;
+  flex-shrink:0;
+  position:relative;
+}
+
+/* Leading: Icon (Toss Face emoji) */
+.tile-leading-icon {
+  display:flex; align-items:center; justify-content:center;
+  font-family:'TossFace', sans-serif;
+  font-size:32px; line-height:1;
+}
+
+/* Leading: Group (multiple leading elements side by side) */
+.tile-leading-group {
+  display:flex; gap:var(--spacing-xs, 4px);
+  align-items:center; flex-shrink:0;
+}
+
+/* Leading: Swatch (color fill) */
+.tile-leading-swatch {
+  border-radius:var(--radius-md, 8px);
+}
+
+/* ── Content ── */
+.tile-content { flex:1; min-width:0; }
+.tile-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-md, 16px);
+  line-height:var(--line-height-text-md, 24px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--text-primary, #181d27);
+}
+.tile-desc {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651);
+}
+
+/* ── Trailing indicators ── */
+
+/* Checkbox (rounded square) */
+.tile-checkbox {
+  width:24px; height:24px; flex-shrink:0;
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-sm, 6px);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg-primary, #ffffff);
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.checked .tile-checkbox,
+.selected .tile-checkbox {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-500, #0ba5ec);
+}
+.tile-check-icon {
+  display:none; width:14px; height:14px;
+  stroke:var(--fg-white, #ffffff); stroke-width:2.5; fill:none;
+}
+.checked .tile-check-icon,
+.selected .tile-check-icon { display:block; }
+
+/* Radio (circle) */
+.tile-radio {
+  width:24px; height:24px; flex-shrink:0;
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-full, 9999px);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg-primary, #ffffff);
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.checked .tile-radio,
+.selected .tile-radio {
+  background:var(--brand-500, #0ba5ec);
+  border-color:var(--brand-500, #0ba5ec);
+}
+.tile-radio-dot {
+  display:none; width:8px; height:8px;
+  border-radius:var(--radius-full, 9999px);
+  background:var(--fg-white, #ffffff);
+}
+.checked .tile-radio-dot,
+.selected .tile-radio-dot { display:block; }
+
+/* Navigation (chevron) */
+.tile-chevron {
+  width:24px; height:24px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text-tertiary, #535862);
+}
+.checked .tile-chevron,
+.selected .tile-chevron {
+  color:var(--brand-500, #0ba5ec);
+}
+.tile-chevron svg {
+  width:12px; height:12px; stroke:currentColor;
+  stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round;
+}
+
+/* ── Compact size (sm) ── */
+.tile.tile-sm {
+  gap:var(--spacing-lg, 12px);
+  padding:var(--spacing-lg, 12px) var(--spacing-xl, 14px);
+}
+.tile-sm .tile-leading {
+  width:32px; height:32px;
+}
+.tile-sm .tile-leading-icon {
+  font-size:28px;
+}
+.tile-sm .tile-label {
+  font-size:var(--font-size-text-sm, 14px);
+  line-height:var(--line-height-text-sm, 20px);
+}
+.tile-sm .tile-desc {
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:16px;
+}
+.tile-sm .tile-checkbox,
+.tile-sm .tile-radio {
+  width:20px; height:20px;
+}
+.tile-sm .tile-check-icon {
+  width:12px; height:12px;
+}
+.tile-sm .tile-radio-dot {
+  width:6px; height:6px;
+}
+
+/* ── Swatch variant (standalone color swatch tile) ── */
+.tile.tile-swatch {
+  width:auto;
+  padding:var(--spacing-md, 8px);
+  gap:0;
+  overflow:clip;
+}
+.tile-swatch-color {
+  width:40px; height:40px;
+  border-radius:var(--radius-md, 8px);
+  flex-shrink:0;
+}
+
+/* ── Image variant (square image tile) ── */
+.tile.tile-image {
+  width:112px; height:112px;
+  padding:var(--spacing-md, 8px);
+  gap:0;
+  overflow:clip;
+  position:relative;
+}
+.tile-image-thumb {
+  flex:1; min-width:0; min-height:0;
+  border-radius:var(--radius-md, 8px);
+  object-fit:cover;
+  width:100%; height:100%;
+}
+
+/* ── Sortable variant (drag to reorder) ── */
+.tile.tile-sortable {
+  gap:var(--spacing-md, 8px);
+  padding:var(--spacing-xl, 16px);
+  cursor:grab;
+  touch-action:none;
+}
+.tile.tile-sortable:active {
+  cursor:grabbing;
+}
+
+/* Drag handle (dots-grid icon) */
+.tile-drag-handle {
+  width:24px; height:24px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--gray-400, #a4a7ae);
+}
+.tile-drag-handle svg {
+  width:16px; height:16px;
+}
+
+/* Dragging state */
+.tile.tile-sortable.dragging {
+  background:var(--bg-brand-secondary, #e0f2fe);
+  border-color:var(--brand-300, #7cd4fd);
+  box-shadow:0 8px 16px -4px rgba(10,13,18,0.12), 0 4px 6px -2px rgba(10,13,18,0.05);
+  z-index:10;
+  transform:scale(1.02);
+  cursor:grabbing;
+}

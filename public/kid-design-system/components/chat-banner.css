@@ -1,0 +1,59 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Chat Banner Component CSS
+   Notification banners: reconnection, delete undo, toast.
+   Also defines the shared @keyframes rspin animation.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Shared spinner keyframe ── */
+@keyframes rspin { to { transform: rotate(360deg); } }
+
+/* ── Banner base ── */
+.banner {
+  position: absolute; left: var(--spacing-xl, 16px); right: var(--spacing-xl, 16px);
+  z-index: 30; display: flex; align-items: center; gap: 10px;
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--bg-primary, #fff); border: none;
+  box-shadow: 0 1px 8px 0 rgba(0,0,0,.06);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-secondary, #414651);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s, transform .3s;
+}
+.banner.show   { opacity: 1; pointer-events: auto; }
+.banner.hiding { opacity: 0; transform: translateY(-20px); }
+
+.banner-icon     { width: 20px; height: 20px; flex-shrink: 0; color: var(--fg-tertiary, #717680); }
+.banner-icon svg { width: 100%; height: 100%; }
+.banner-text     { flex: 1; min-width: 0; }
+
+/* ── Reconnection variant ── */
+.banner-reconnect { top: 122px; opacity: 1; pointer-events: auto; }
+.reconnect-spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--brand-200, #b9e6fe);
+  border-top-color: var(--brand-500, #0ba5ec);
+  border-radius: 50%;
+  animation: rspin .8s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ── Undo link ── */
+.banner-undo {
+  flex-shrink: 0;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--brand-500, #0ba5ec);
+  background: none; border: none; padding: 0; cursor: pointer; white-space: nowrap;
+}
+
+/* ── Delete banner ── */
+.banner-delete { top: 140px; }
+
+/* ── Toast banner ── */
+.banner-toast { top: 140px; }

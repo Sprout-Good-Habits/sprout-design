@@ -1,0 +1,23 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Tool Usage Component CSS
+   Collapsible tool/activity feed shown during AI processing.
+   ═══════════════════════════════════════════════════ */
+
+.tool-usage { display: flex; align-items: center; gap: var(--spacing-sm, 6px); cursor: pointer; padding: var(--spacing-xs, 4px) 0; align-self: flex-start; }
+.tool-usage-avatar  { display: none; }
+.tool-usage-chevron { width: 14px; height: 14px; color: var(--gray-400, #a4a7ae); transition: transform .2s; flex-shrink: 0; }
+.tool-usage-chevron.open { transform: rotate(180deg); }
+.tool-usage-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 13px; color: var(--gray-400, #a4a7ae);
+  transition: opacity .3s cubic-bezier(.25,.1,.25,1), transform .3s cubic-bezier(.25,.1,.25,1);
+}
+.tool-usage-label.fade-out { opacity: 0; transform: translateY(-6px); }
+.tool-usage-details {
+  display: none;
+  padding: var(--spacing-xs, 4px) 0;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 13px; color: var(--gray-400, #a4a7ae);
+  line-height: var(--line-height-text-sm, 20px);
+}
+.tool-usage-details.open { display: block; }

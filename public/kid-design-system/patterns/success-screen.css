@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════════════════
+   Result Screen pattern
+   Full-screen layout for quest / task outcomes (completion,
+   partial, pending parent review).
+
+   The Result Screen is a composition of existing foundations
+   and components, not a bag of new ones. What this file owns:
+
+     .result-screen   — the sky-blue wrapper (Background foundation)
+     .result-content  — the title / description / stat-card zone
+     .result-title
+     .result-desc
+
+   What it DOES NOT own (use the originals):
+
+     Grass     →  .grass-container + .grass-edge + .grass-fill
+                  from /foundations/background.html
+     Character →  a Rive canvas positioned per
+                  /foundations/character.html
+     Action    →  a Primary Button from /components/buttons.html
+                  (.btn-sprout.btn-primary.btn-lg)
+
+   The selectors below supply the layout slots (positioning)
+   without redefining the components themselves.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Wrapper ── */
+.result-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-sky, #e0f2fe);
+}
+
+/* ── Text content zone (title + description + optional stats) ── */
+.result-content {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 16px 0;
+}
+
+.result-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #181d27);
+  margin-bottom: 4px;
+}
+
+.result-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-tertiary, #535862);
+  max-width: 370px;
+}
+
+/* ── Character canvas slot ──
+   Any Rive canvas placed directly inside .result-screen is
+   positioned as the grounded Sprout (690×690, bottom:-196,
+   horizontally centered). This matches the "Chat (Tier 2)"
+   character placement documented in /foundations/character.html.
+   Use Fit.Contain + Alignment.BottomCenter on the Rive instance. */
+.result-screen > canvas {
+  position: absolute;
+  bottom: -196px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 690px;
+  height: 690px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Grass slot ──
+   Reuses .grass-container / .grass-edge / .grass-fill from the
+   Background foundation. These selectors only supply the
+   pattern-specific position (pinned to the bottom at z:1) and
+   the grass-fill height (89px, "main" variant). */
+.result-screen > .grass-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.result-screen > .grass-container > .grass-edge {
+  width: 100%;
+  height: 24px;
+  background: var(--bg-grass, #86cb3c);
+  border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+}
+.result-screen > .grass-container > .grass-fill {
+  width: 100%;
+  height: 89px;
+  background: var(--bg-grass, #86cb3c);
+}
+
+/* ── Action slot ──
+   The action is just a Primary Button. No wrapper component.
+   The pattern positions it full-width at the bottom of the
+   screen, the button component handles its own look and feel. */
+.result-screen > .btn-sprout {
+  position: absolute;
+  bottom: 45px;
+  left: 16px;
+  right: 16px;
+  width: auto;
+  z-index: 10;
+}
+
+/* ── Stat card row (optional, nested inside .result-content) ── */
+.result-content .stat-card-row {
+  margin-top: 24px;
+  max-width: 370px;
+}
+.result-content .stat-card {
+  opacity: 0;
+  transform: scale(0.8);
+  animation: result-stat-card-pop 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8) forwards;
+}
+.result-content .stat-card-row .stat-card:nth-child(1) { animation-delay: 200ms; }
+.result-content .stat-card-row .stat-card:nth-child(2) { animation-delay: 300ms; }
+
+@keyframes result-stat-card-pop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-content .stat-card {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

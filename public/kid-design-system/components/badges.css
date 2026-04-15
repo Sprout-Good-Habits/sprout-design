@@ -1,0 +1,79 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Badges Component CSS
+   Pill badges, inline badges, and status badges
+   for streak counts, achievements, and overlays.
+   ═══════════════════════════════════════════════════ */
+
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+.tf-inline { font-family:'TossFace', sans-serif; }
+
+/* ── Pill Badge ── */
+.badge-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:var(--spacing-xxs, 2px);
+  padding:var(--spacing-xs, 4px) var(--spacing-sm, 6px);
+  border-radius:var(--radius-full, 9999px);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:var(--line-height-text-xs, 16px);
+  font-weight:var(--font-weight-regular, 400);
+}
+.badge-pill .tf {
+  font-family:'TossFace', sans-serif;
+  font-size:var(--font-size-text-md, 16px);
+  line-height:1;
+  width:16px; height:16px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ── Pill color variants ── */
+.pill-brand     { background:var(--brand-200, #b9e6fe);     color:var(--brand-700, #026aa2); }
+.pill-blue-dark { background:var(--blue-dark-200, #b2ccff); color:var(--blue-dark-700, #004eeb); }
+.pill-violet    { background:var(--violet-200, #ddd6fe);    color:var(--violet-700, #5925dc); }
+.pill-pink      { background:var(--pink-200, #fcceee);      color:var(--pink-700, #c11574); }
+.pill-red       { background:var(--red-200, #fecdca);       color:var(--red-700, #b42318); }
+.pill-orange    { background:var(--orange-200, #f9dbaf);    color:var(--orange-700, #b93815); }
+.pill-yellow    { background:var(--yellow-200, #feee95);    color:var(--yellow-700, #a15c07); }
+.pill-green     { background:var(--green-200, #abefc6);     color:var(--green-700, #067647); }
+
+/* ── Inline Badge ── */
+.badge-inline {
+  display:inline-flex;
+  align-items:center;
+  gap:var(--spacing-xs, 4px);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  font-weight:var(--font-weight-regular, 400);
+  color:var(--text-secondary, #414651);
+  line-height:1;
+  min-width:24px;
+}
+.badge-inline .tf {
+  font-family:'TossFace', sans-serif;
+  font-size:var(--font-size-text-md, 16px);
+  line-height:1;
+  width:16px; height:16px;
+}
+
+/* ── Status Badge (emoji box overlay) ── */
+.badge-status {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:var(--spacing-xxs, 2px);
+  background:var(--bg-primary, #ffffff);
+  border-radius:var(--radius-xs, 4px);
+  font-family:'TossFace', sans-serif;
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:1;
+}
+
+/* ── Inactive streak ── */
+.flame-muted {
+  filter:grayscale(1) brightness(2);
+}

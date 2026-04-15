@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Sort Tiles</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/tile.css">
+<link rel="stylesheet" href="/components/buttons.css">
+<link rel="stylesheet" href="/components/segmented-control.css">
+<style>
+/* ── Toss Face emoji font ── */
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Device frame ── */
+.device-wrapper{background:var(--bg-primary);border:1px solid rgba(0,0,0,0.08);border-radius:32px;padding:4px;box-shadow:0 12px 16px -4px rgba(10,13,18,0.08),0 4px 6px -2px rgba(10,13,18,0.03),0 2px 2px -1px rgba(10,13,18,0.04);}
+.device-inner-shadow{background:var(--bg-primary);border-radius:28px;padding:4px;overflow:hidden;position:relative;}
+.device-inner-shadow::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 6px 2px rgba(10,13,18,0.08),inset 0 0 4px 2px rgba(10,13,18,0.03);z-index:6;}
+.device-mockup{background:var(--bg-tertiary);border:2px solid var(--border-secondary);border-radius:24px;clip-path:inset(0 round 24px);position:relative;}
+.device-screen{width:402px;height:874px;position:relative;overflow:hidden;background:var(--bg-sky);user-select:none;}
+.viewer{display:flex;justify-content:center;margin-top:var(--spacing-xl);}
+.dev-status-bar{position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;z-index:10;pointer-events:none;}
+.dev-status-bar-time{font-size:17px;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em;}
+.dev-status-bar-icons{display:flex;align-items:center;gap:6px;}
+.dev-toolbar{position:absolute;top:62px;left:0;right:0;height:56px;display:flex;align-items:flex-start;justify-content:space-between;padding:0 16px 8px;z-index:10;background:var(--bg-sky);box-shadow:0 3px 0 0 var(--gray-200);}
+.dev-toolbar-btn{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--bg-primary);border:2px solid var(--border-secondary);border-radius:9999px;box-shadow:0 3px 0 0 var(--gray-200);}
+.dev-toolbar-btn svg{width:24px;height:24px;color:var(--text-primary);}
+.dev-toolbar-title{position:absolute;left:50%;top:13px;transform:translateX(-50%);font-size:18px;font-weight:600;color:var(--text-primary);}
+.dev-thread{position:absolute;top:118px;left:0;right:0;bottom:113px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;z-index:5;scrollbar-width:none;}
+.dev-thread::-webkit-scrollbar{display:none;}
+.dev-msg-in,.dev-msg-out{border-radius:24px;padding:12px 16px;max-width:256px;font-size:14px;line-height:20px;color:var(--text-primary);}
+.dev-msg-in{background:var(--bg-primary);align-self:flex-start;}
+.dev-msg-out{background:var(--brand-200);align-self:flex-end;}
+.dev-grass-edge{position:absolute;bottom:89px;left:0;right:0;height:24px;border-radius:24px 24px 0 0;background:var(--bg-grass, #86cb3c);z-index:1;}
+.dev-grass-fill{position:absolute;bottom:0;left:0;right:0;height:89px;background:var(--bg-grass, #86cb3c);z-index:1;}
+.dev-home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:var(--text-primary);z-index:20;}
+.dev-confirm-bar{position:absolute;bottom:34px;left:0;right:0;z-index:10;padding:0 16px;display:flex;align-items:center;justify-content:center;height:48px;}
+
+/* ── Sort layout ── */
+.sort-group{display:flex;flex-direction:column;gap:8px;width:100%;}
+.sort-list{display:flex;flex-direction:column;gap:8px;position:relative;}
+.sort-number{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--gray-100, #f5f5f5);border-radius:9999px;font-size:13px;font-weight:700;color:var(--text-tertiary, #535862);flex-shrink:0;}
+.tile.success .sort-number{background:var(--green-300, #75e0a7);color:#fff;}
+.tile.warning-static .sort-number{background:var(--yellow-300, #fde272);color:var(--text-primary);}
+.sort-placeholder{min-height:56px;border:2px dashed var(--brand-300, #7cd4fd);border-radius:12px;background:var(--bg-brand-secondary, #e0f2fe);opacity:0.4;}
+
+/* Confirm button */
+.tile-group-confirm{display:flex;align-items:center;justify-content:center;width:100%;height:48px;font-family:var(--font-family-body, 'Inter', sans-serif);font-size:16px;font-weight:700;border-radius:16px;cursor:pointer;padding:12px;background:var(--fg-brand-primary, #0ba5ec);color:#fff;border:none;border-bottom:2px solid var(--brand-600, #0086c9);box-shadow:0 4px 0 0 var(--brand-600, #0086c9);transition:background 0.15s,box-shadow 0.15s,transform 0.15s;}
+.tile-group-confirm:active{box-shadow:none;transform:translateY(4px);}
+.tile-group-confirm.state-disabled{background:var(--gray-300, #d5d7da);color:var(--text-disabled, #717680);border-bottom:2px solid var(--gray-400, #a4a7ae);box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);cursor:default;pointer-events:none;}
+
+/* ── Demo chat frame ── */
+.demo-chat{background:var(--bg-sky);border:2px solid var(--border-secondary);border-radius:24px;padding:16px;max-width:402px;display:flex;flex-direction:column;gap:8px;}
+.demo-msg{border-radius:24px;padding:12px 16px;max-width:280px;font-size:14px;line-height:20px;color:var(--text-primary);}
+.demo-msg-in{background:var(--bg-primary);align-self:flex-start;}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Sort Tiles</div>
+    <div class="sec-desc">An exercise pattern where the kid drags tiles to put them in the correct order. Uses the DS Tile Sortable variant with a drag handle. The composer is hidden and a "Check" button takes its place, validating the order on tap.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for sequencing, ranking, or ordering exercises (e.g. "smallest to biggest", "first to last").</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use when learning the correct order is the goal &mdash; wrong answers are safe to retry.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use for more than 6 items &mdash; dragging becomes difficult in a scrollable list.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don't use when the order doesn't matter &mdash; use Multi-select tiles instead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Device Preview ════ -->
+  <div class="doc-section">
+    <h2>Device preview</h2>
+    <p>Press and drag tiles to reorder. Tap "Check" to validate. Correct positions flash green, wrong positions flash yellow then return for retry. Try it!</p>
+    <div class="viewer">
+      <div class="device-wrapper">
+        <div class="device-inner-shadow">
+          <div class="device-mockup">
+            <div class="device-screen" id="devScreen">
+              <div class="dev-status-bar">
+                <span class="dev-status-bar-time">9:41</span>
+                <span class="dev-status-bar-icons">
+                  <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+                  <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+                </span>
+              </div>
+              <div class="dev-toolbar">
+                <div class="dev-toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg></div>
+                <span class="dev-toolbar-title">Sprout</span>
+                <div style="width:48px"></div>
+              </div>
+              <div class="dev-thread" id="devThread">
+                <div class="dev-msg-in">Put these in order from smallest to biggest!</div>
+                <div class="sort-group" id="devSortGroup">
+                  <div class="sort-list" id="devSortList"></div>
+                </div>
+              </div>
+              <div class="dev-grass-edge"></div>
+              <div class="dev-grass-fill"></div>
+              <div class="dev-confirm-bar" id="devConfirmBar">
+                <button class="tile-group-confirm" id="devCheckBtn" style="width:100%;">Check</button>
+              </div>
+              <div class="dev-home-indicator"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Behavior ════ -->
+  <div class="doc-section">
+    <h2>Behavior</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Drag:</strong> Press and hold a tile, then drag to reorder. A dashed placeholder shows the drop position. The tile elevates with a shadow while dragging.</li>
+        <li><strong>Number badges:</strong> Each tile shows its current position number (1, 2, 3...). Numbers update automatically when tiles are reordered.</li>
+        <li><strong>Check:</strong> Tap "Check" to validate the order. Each tile gets a state:
+          <ul>
+            <li><strong>Success (green)</strong> &mdash; correct position</li>
+            <li><strong>Warning (yellow)</strong> &mdash; wrong position, flashes then returns to default for retry</li>
+          </ul>
+        </li>
+        <li><strong>All correct:</strong> Button changes to "Correct!", exercise dismisses after 800ms, composer returns.</li>
+        <li><strong>Some wrong:</strong> Wrong tiles flash yellow for 500ms then return to default. The kid can drag and try again.</li>
+        <li><strong>Composer:</strong> Hidden during the exercise. Returns after completion.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ States ════ -->
+  <div class="doc-section">
+    <h2>Tile states</h2>
+    <div class="state-grid" style="grid-template-columns:repeat(4, 1fr);">
+      <div class="state-cell"><span class="state-cell-label">Default</span></div>
+      <div class="state-cell"><span class="state-cell-label">Dragging</span></div>
+      <div class="state-cell"><span class="state-cell-label">Success</span></div>
+      <div class="state-cell"><span class="state-cell-label">Warning</span></div>
+
+      <div class="state-cell">
+        <div class="tile tile-sortable" style="width:100%;">
+          <div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">1</div><div class="tile-leading tile-leading-icon">&#128024;</div></div>
+          <div class="tile-content"><div class="tile-label">Ant</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-sortable dragging" style="width:100%;">
+          <div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">1</div><div class="tile-leading tile-leading-icon">&#128024;</div></div>
+          <div class="tile-content"><div class="tile-label">Ant</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-sortable success" style="width:100%;">
+          <div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">1</div><div class="tile-leading tile-leading-icon">&#128024;</div></div>
+          <div class="tile-content"><div class="tile-label">Ant</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+      <div class="state-cell">
+        <div class="tile tile-sortable warning-static" style="width:100%;">
+          <div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">3</div><div class="tile-leading tile-leading-icon">&#128024;</div></div>
+          <div class="tile-content"><div class="tile-label">Ant</div></div>
+          <div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Scenarios ════ -->
+  <div class="doc-section">
+    <h2>Scenarios</h2>
+    <div class="demo" style="gap:var(--spacing-3xl, 24px); flex-wrap:wrap;">
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Size ordering</span>
+        <div class="demo-chat" style="width:340px;">
+          <div class="demo-msg demo-msg-in">Smallest to biggest!</div>
+          <div class="sort-group">
+            <div class="sort-list">
+              <div class="tile tile-sortable"><div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">1</div><div class="tile-leading tile-leading-icon">&#128024;</div></div><div class="tile-content"><div class="tile-label">Ant</div></div><div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div></div>
+              <div class="tile tile-sortable"><div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">2</div><div class="tile-leading tile-leading-icon">&#128007;</div></div><div class="tile-content"><div class="tile-label">Rabbit</div></div><div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div></div>
+              <div class="tile tile-sortable"><div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">3</div><div class="tile-leading tile-leading-icon">&#128021;</div></div><div class="tile-content"><div class="tile-label">Dog</div></div><div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div></div>
+              <div class="tile tile-sortable"><div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">4</div><div class="tile-leading tile-leading-icon">&#128024;</div></div><div class="tile-content"><div class="tile-label">Elephant</div></div><div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item" style="flex:none;">
+        <span class="demo-label">Steps in order</span>
+        <div class="demo-chat" style="width:340px;">
+          <div class="demo-msg demo-msg-in">Put these morning steps in order!</div>
+          <div class="sort-group">
+            <div class="sort-list">
+              <div class="tile tile-sortable"><div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">1</div><div class="tile-leading tile-leading-icon">&#9200;</div></div><div class="tile-content"><div class="tile-label">Wake up</div></div><div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div></div>
+              <div class="tile tile-sortable"><div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">2</div><div class="tile-leading tile-leading-icon">&#128715;</div></div><div class="tile-content"><div class="tile-label">Brush teeth</div></div><div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div></div>
+              <div class="tile tile-sortable"><div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;"><div class="sort-number">3</div><div class="tile-leading tile-leading-icon">&#127860;</div></div><div class="tile-content"><div class="tile-label">Eat breakfast</div></div><div class="tile-drag-handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ Edge Cases ════ -->
+  <div class="doc-section">
+    <h2>Edge cases</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Composer hidden:</strong> The composer is replaced by the "Check" button during the exercise. The kid cannot type, send images, or record audio.</li>
+        <li><strong>Rapid tapping:</strong> While validation is showing (success/warning flash), tiles are locked to prevent re-dragging.</li>
+        <li><strong>Partial correct:</strong> Tiles in the right position show green, tiles in the wrong position show yellow. The kid only needs to fix the yellow ones.</li>
+        <li><strong>Retry:</strong> After wrong positions flash yellow, all tiles return to default and the kid can drag again. No penalty.</li>
+        <li><strong>Max items:</strong> Keep to 3&ndash;6 items. Longer lists make dragging tedious on mobile.</li>
+        <li><strong>Shuffled start:</strong> Items are always shuffled on load. The shuffle guarantees the initial order is never correct.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Composition ════ -->
+  <div class="doc-section">
+    <h2>Composition</h2>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Component</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Container</td><td><code>.sort-group</code> &gt; <code>.sort-list</code></td><td>Vertical stack, 8px gap</td></tr>
+        <tr><td>Each item</td><td><code>.tile.tile-sortable</code></td><td>DS Tile Sortable variant</td></tr>
+        <tr><td>Leading group</td><td><code>.tile-leading-group</code></td><td>Number badge + emoji/avatar, 4px gap</td></tr>
+        <tr><td>Number badge</td><td><code>.sort-number</code></td><td>28px circle, updates on reorder. Green on success, yellow on warning.</td></tr>
+        <tr><td>Drag handle</td><td><code>.tile-drag-handle</code></td><td>dots-grid icon, 24x24, gray-400</td></tr>
+        <tr><td>Placeholder</td><td><code>.sort-placeholder</code></td><td>Dashed brand-300 border, 40% opacity</td></tr>
+        <tr><td>Check button</td><td>Primary button</td><td>Replaces composer. Always active (kid can check anytime).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>Tiles use <code>touch-action: none</code> and pointer events for cross-device drag support.</li>
+        <li>Wrong answers use non-punitive yellow flash &mdash; no error sounds or negative language.</li>
+        <li>Number badges provide clear position feedback for screen readers.</li>
+        <li>The "Check" button confirms the order &mdash; dragging alone doesn't auto-validate.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="doc-section">
+    <h2>Prototypes</h2>
+    <div class="prose">
+      <ul>
+        <li><a href="/product-explorer/task/chat-tier-3-tiles.html">Chat Tier 3 + Tiles</a> &mdash; Text-first chat for older kids</li>
+        <li><a href="/product-explorer/task/chat-tier-2-tiles.html">Chat Tier 2 + Tiles</a> &mdash; Audio-first chat for younger kids (large mic, Sprout visible, compressed thread)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+
+<script>
+// ── Device preview: interactive sort ──
+(function() {
+  var list = document.getElementById('devSortList');
+  var checkBtn = document.getElementById('devCheckBtn');
+  var devThread = document.getElementById('devThread');
+
+  var dragHandleSVG = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="20" r="2"/><circle cx="16" cy="20" r="2"/></svg>';
+
+  var items = [
+    { emoji: '&#128024;', content: 'Ant', correctIndex: 0 },
+    { emoji: '&#128007;', content: 'Rabbit', correctIndex: 1 },
+    { emoji: '&#128021;', content: 'Dog', correctIndex: 2 },
+    { emoji: '&#128024;', content: 'Elephant', correctIndex: 3 }
+  ];
+
+  // Shuffle
+  var shuffled = items.slice();
+  for (var i = shuffled.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = t;
+  }
+  if (shuffled.every(function(s, i) { return s.correctIndex === i; })) {
+    var t = shuffled[0]; shuffled[0] = shuffled[1]; shuffled[1] = t;
+  }
+
+  function buildTiles() {
+    list.innerHTML = '';
+    shuffled.forEach(function(item, i) {
+      var tile = document.createElement('div');
+      tile.className = 'tile tile-sortable';
+      tile.dataset.correctIndex = item.correctIndex;
+      tile.innerHTML =
+        '<div class="tile-leading-group" style="display:flex;gap:4px;align-items:center;flex-shrink:0;">' +
+          '<div class="sort-number">' + (i + 1) + '</div>' +
+          '<span class="tile-leading tile-leading-icon">' + item.emoji + '</span>' +
+        '</div>' +
+        '<div class="tile-content"><div class="tile-label">' + item.content + '</div></div>' +
+        '<div class="tile-drag-handle">' + dragHandleSVG + '</div>';
+      list.appendChild(tile);
+    });
+  }
+
+  buildTiles();
+
+  // Drag logic
+  var dragTile = null, dragStartY = 0, dragStartIdx = 0, placeholder = null, tileH = 0;
+
+  function onDown(e) {
+    var tile = e.target.closest('.tile.tile-sortable');
+    if (!tile || tile.classList.contains('success') || tile.classList.contains('warning-static')) return;
+    dragTile = tile;
+    dragStartY = e.clientY || e.touches[0].clientY;
+    dragStartIdx = Array.from(list.children).indexOf(tile);
+    tileH = tile.offsetHeight + 8;
+    placeholder = document.createElement('div');
+    placeholder.className = 'sort-placeholder';
+    placeholder.style.height = tile.offsetHeight + 'px';
+    var rect = tile.getBoundingClientRect();
+    var lr = list.getBoundingClientRect();
+    tile.style.position = 'absolute';
+    tile.style.width = rect.width + 'px';
+    tile.style.left = '0';
+    tile.style.top = (rect.top - lr.top) + 'px';
+    tile.classList.add('dragging');
+    list.insertBefore(placeholder, tile.nextSibling);
+    e.preventDefault();
+  }
+
+  function onMove(e) {
+    if (!dragTile) return;
+    var cy = e.clientY || (e.touches && e.touches[0].clientY);
+    if (!cy) return;
+    var dy = cy - dragStartY;
+    dragTile.style.top = (dragStartIdx * tileH + dy) + 'px';
+    var lr = list.getBoundingClientRect();
+    var tr = dragTile.getBoundingClientRect();
+    var centerY = tr.top + tr.height / 2 - lr.top;
+    var ti = Math.max(0, Math.min(shuffled.length - 1, Math.round(centerY / tileH)));
+    var ch = Array.from(list.children).filter(function(c) { return c !== dragTile; });
+    if (ti < ch.length) list.insertBefore(placeholder, ch[ti]);
+    else list.appendChild(placeholder);
+    e.preventDefault();
+  }
+
+  function onUp() {
+    if (!dragTile) return;
+    var ch = Array.from(list.children).filter(function(c) { return c !== dragTile; });
+    var ni = ch.indexOf(placeholder);
+    if (placeholder.parentNode) placeholder.remove();
+    dragTile.style.position = '';
+    dragTile.style.width = '';
+    dragTile.style.left = '';
+    dragTile.style.top = '';
+    dragTile.classList.remove('dragging');
+    var item = shuffled.splice(dragStartIdx, 1)[0];
+    shuffled.splice(ni, 0, item);
+    dragTile = null; placeholder = null;
+    buildTiles();
+    setup();
+  }
+
+  function setup() {
+    list.querySelectorAll('.tile.tile-sortable').forEach(function(t) {
+      t.addEventListener('pointerdown', onDown);
+    });
+  }
+
+  list.addEventListener('pointermove', onMove);
+  list.addEventListener('pointerup', onUp);
+  list.addEventListener('pointercancel', onUp);
+  list.addEventListener('touchmove', function(e) { if (dragTile) e.preventDefault(); }, { passive: false });
+  setup();
+
+  checkBtn.addEventListener('click', function() {
+    var tiles = list.querySelectorAll('.tile.tile-sortable');
+    var allOk = true;
+    tiles.forEach(function(t, i) {
+      if (parseInt(t.dataset.correctIndex) === i) {
+        t.classList.add('success');
+      } else {
+        allOk = false;
+        t.classList.add('warning-static');
+      }
+    });
+    if (allOk) {
+      checkBtn.textContent = 'Correct!';
+      setTimeout(function() {
+        // Reset
+        checkBtn.textContent = 'Check';
+        for (var i = shuffled.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = tmp;
+        }
+        buildTiles(); setup();
+      }, 2000);
+    } else {
+      setTimeout(function() {
+        tiles.forEach(function(t) { t.classList.remove('success', 'warning-static'); });
+        setup();
+      }, 500);
+    }
+  });
+})();
+</script>
+
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

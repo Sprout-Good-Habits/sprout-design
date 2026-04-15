@@ -1,0 +1,213 @@
+/* ============================================
+   Sprout Button Recording Component
+   Circular 72px start/stop recording control
+   with Sprout's signature raised shadow and
+   press animation. Two types (Primary, Secondary)
+   and two actions (Start, Stop).
+
+   Contracts worth knowing before you edit:
+
+   1. The .btn-record-icon slot is consumer-pluggable.
+      The component paints via `color: var(--fg-secondary)`
+      (Secondary) or `color: var(--text-white)` (Primary),
+      so any inline SVG using currentColor will render
+      correctly. Do NOT reintroduce a pseudo-element that
+      hides or replaces the SVG — the Camera pattern uses
+      a camera icon, the Video pattern uses a dot, and the
+      state grid uses a mic. All live side-by-side.
+
+   2. Secondary Stop is visually identical to Primary Stop
+      by Figma contract (V Stop == Primary Stop). That is
+      why .btn-record-primary.btn-record-stop and
+      .btn-record-secondary.btn-record-stop share every
+      rule below via a merged selector. Do NOT split the
+      selectors unless the Figma spec changes.
+
+   3. Disabled is a single shared treatment across all
+      four combinations (Primary/Secondary × Start/Stop).
+      Gray-300 fill, gray-400 stroke and shadow, and
+      fg-quaternary indicator. Do NOT override for
+      Secondary — it was split earlier and caused a
+      regression.
+   ============================================ */
+
+/* ── Base ── */
+.btn-record {
+  display:flex; align-items:center; justify-content:center;
+  box-sizing:border-box;
+  width:72px; height:72px;
+  padding:0;
+  border:none;
+  border-radius:var(--radius-full, 9999px);
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:background 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ── Icon slot ── */
+.btn-record-icon {
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  color:inherit;
+}
+.btn-record-icon svg {
+  width:24px; height:24px;
+  display:block;
+}
+
+/* ═══════════════════════════════════════════
+   Type: Primary (solid filled)
+   ═══════════════════════════════════════════ */
+
+/* ── Primary · Start recording (blue) ── */
+/* Full 2px darker-blue stroke wraps the circle, plus a 4px box-shadow */
+/* underneath for the chunky raised "base". Matches Figma exactly.     */
+.btn-record-primary.btn-record-start {
+  background:var(--brand-500, #0ba5ec); color:var(--text-white, #ffffff);
+  border:2px solid var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9);
+}
+.btn-record-primary.btn-record-start:hover {
+  background:var(--brand-400, #36bffa);
+}
+.btn-record-primary.btn-record-start:active,
+.btn-record-primary.btn-record-start.state-active {
+  background:var(--brand-500, #0ba5ec);
+  border:2px solid var(--brand-600, #0086c9);
+  box-shadow:none; transform:translateY(4px);
+}
+.btn-record-primary.btn-record-start.state-loading {
+  background:var(--brand-500, #0ba5ec);
+  border:2px solid var(--brand-600, #0086c9);
+  box-shadow:0 4px 0 0 var(--brand-600, #0086c9); cursor:wait;
+}
+
+/* ── Primary · Stop recording (red) ── */
+/* Note: Figma V (Secondary) Stop is visually identical to Primary Stop, */
+/* so .btn-record-secondary.btn-record-stop shares these rules.          */
+.btn-record-primary.btn-record-stop,
+.btn-record-secondary.btn-record-stop {
+  background:var(--red-500, #f04438); color:var(--text-white, #ffffff);
+  border:2px solid var(--red-600, #d92d20);
+  box-shadow:0 4px 0 0 var(--red-600, #d92d20);
+}
+.btn-record-primary.btn-record-stop:hover,
+.btn-record-secondary.btn-record-stop:hover {
+  background:var(--red-400, #f97066);
+}
+.btn-record-primary.btn-record-stop:active,
+.btn-record-primary.btn-record-stop.state-active,
+.btn-record-secondary.btn-record-stop:active,
+.btn-record-secondary.btn-record-stop.state-active {
+  background:var(--red-500, #f04438);
+  border:2px solid var(--red-600, #d92d20);
+  box-shadow:none; transform:translateY(4px);
+}
+.btn-record-primary.btn-record-stop.state-loading,
+.btn-record-secondary.btn-record-stop.state-loading {
+  background:var(--red-500, #f04438);
+  border:2px solid var(--red-600, #d92d20);
+  box-shadow:0 4px 0 0 var(--red-600, #d92d20); cursor:wait;
+}
+
+/* ═══════════════════════════════════════════
+   Type: Secondary (white with fg-secondary indicator)
+   Only affects Start — Secondary Stop inherits the
+   Primary Stop rules above (same Figma visual).
+   ═══════════════════════════════════════════ */
+
+.btn-record-secondary.btn-record-start {
+  background:var(--bg-primary, #ffffff);
+  color:var(--fg-secondary, #414651);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  box-shadow:0 4px 0 0 var(--gray-200, #e9eaeb);
+}
+.btn-record-secondary.btn-record-start:hover {
+  background:var(--bg-secondary, #fafafa);
+}
+.btn-record-secondary.btn-record-start:active,
+.btn-record-secondary.btn-record-start.state-active {
+  background:var(--bg-primary, #ffffff);
+  box-shadow:none; transform:translateY(4px);
+}
+.btn-record-secondary.btn-record-start.state-loading {
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  box-shadow:0 4px 0 0 var(--gray-200, #e9eaeb); cursor:wait;
+}
+
+/* Secondary Start renders whatever SVG the consumer provides in the   */
+/* .btn-record-icon slot. The Figma V Start spec shows a neutral       */
+/* indicator dot — consumers that want that look can drop in a filled  */
+/* circle SVG. Consumers that want a context-specific glyph (e.g. a    */
+/* camera shutter icon in the Camera pattern) can drop in that SVG     */
+/* instead. `color: var(--fg-secondary)` paints stroke and fill via    */
+/* currentColor so the glyph stays consistent with the button text.    */
+
+/* ═══════════════════════════════════════════
+   Disabled (shared across types)
+   ═══════════════════════════════════════════ */
+
+/* All disabled variants share the same gray treatment (gray-300 bg,   */
+/* gray-400 stroke and shadow, fg-quaternary indicator). Secondary     */
+/* Start Disabled falls through to this rule rather than keeping the  */
+/* white fill it has in default/hover, matching the Figma V Disabled. */
+.btn-record.state-disabled,
+.btn-record:disabled,
+.btn-record[aria-disabled="true"] {
+  background:var(--gray-300, #d5d7da);
+  color:var(--fg-quaternary, #a4a7ae);
+  border:2px solid var(--gray-400, #a4a7ae);
+  box-shadow:0 4px 0 0 var(--gray-400, #a4a7ae);
+  cursor:not-allowed; pointer-events:none;
+  transform:none;
+}
+
+/* ═══════════════════════════════════════════
+   Loading spinner
+   ═══════════════════════════════════════════ */
+
+.btn-record-spinner {
+  display:inline-block;
+  width:24px; height:24px;
+  border-radius:50%;
+  animation:btn-record-spin 1.0s linear infinite;
+}
+/* Spinner colors per type. Secondary Stop inherits Primary Stop (red bg), */
+/* so its spinner also uses the white-on-red treatment.                     */
+.btn-record-primary .btn-record-spinner,
+.btn-record-secondary.btn-record-stop .btn-record-spinner {
+  border:2.5px solid rgba(255,255,255,0.3);
+  border-top-color:var(--text-white, #ffffff);
+}
+.btn-record-secondary.btn-record-start .btn-record-spinner {
+  border:2.5px solid rgba(65,70,81,0.2);
+  border-top-color:var(--fg-secondary, #414651);
+}
+@keyframes btn-record-spin { to { transform:rotate(360deg); } }
+
+/* ═══════════════════════════════════════════
+   Focus ring (keyboard accessibility)
+   ═══════════════════════════════════════════ */
+
+.btn-record:focus-visible {
+  outline:3px solid var(--brand-400, #36bffa);
+  outline-offset:3px;
+}
+.btn-record-primary.btn-record-stop:focus-visible,
+.btn-record-secondary.btn-record-stop:focus-visible {
+  outline-color:var(--red-400, #f97066);
+}
+
+/* ═══════════════════════════════════════════
+   Reduced motion
+   ═══════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-record { transition:none; }
+  .btn-record:active,
+  .btn-record.state-active { transform:none; }
+  .btn-record-spinner { animation:none; }
+}

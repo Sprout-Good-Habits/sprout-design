@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Toast</title>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Toast",
+  "slug": "toast",
+  "intent": {
+    "purpose": "Provide brief, non-blocking feedback about an action or event",
+    "taskContext": ["success-feedback", "error-feedback", "warning", "info"],
+    "sentiment": ["positive", "negative", "cautionary", "informational"]
+  },
+  "composition": {
+    "requires": ["title"],
+    "allows": ["icon", "description", "action-link", "close-button", "progress-bar"],
+    "forbids": ["nested-toast", "image", "button"]
+  },
+  "variants": [
+    { "name": "Success", "useWhen": "Confirming a completed action", "pairWith": [], "sentiment": "positive" },
+    { "name": "Error", "useWhen": "Communicating a failure or problem", "pairWith": [], "sentiment": "negative" },
+    { "name": "Warning", "useWhen": "Alerting about a potential issue", "pairWith": [], "sentiment": "cautionary" },
+    { "name": "Info", "useWhen": "Sharing neutral status updates", "pairWith": [], "sentiment": "informational" }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — 370px width" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["bottom-center"]
+  },
+  "relationships": {
+    "related": ["ActionPrompt"],
+    "escalatesTo": ["ActionPrompt", "Sheet"],
+    "degradesTo": [],
+    "groupsWith": []
+  },
+  "states": ["entering", "visible", "exiting"],
+  "accessibility": {
+    "role": "status",
+    "keyboard": ["Tab"],
+    "ariaAttributes": ["aria-live", "aria-label"],
+    "minTouchTarget": "44x44px"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/toast.css">
+<link rel="stylesheet" href="/components/progress-bar.css">
+<style>
+/* -- Preferred icon grid -- */
+.icon-grid {
+  display:flex; gap:var(--spacing-xl, 16px); flex-wrap:wrap;
+}
+.icon-chip {
+  display:flex; align-items:center; gap:var(--spacing-md, 8px);
+  padding:var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  background:var(--bg-secondary, #fafafa);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-md, 8px);
+  font-size:var(--font-size-text-sm, 14px);
+  color:var(--text-secondary, #414651);
+}
+.icon-chip .toast-icon { font-size:var(--font-size-text-xl, 20px); }
+
+/* Animation preview phone frame */
+.phone-frame-anim {
+  width:402px; height:460px;
+  background:var(--bg-sky, #e0f2fe);
+  border-radius:var(--radius-4xl, 24px);
+  overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  display:flex; flex-direction:column;
+  position:relative;
+}
+.phone-frame-anim .phone-content {
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:var(--spacing-lg, 12px);
+  z-index:1;
+}
+.phone-frame-anim .toast-container {
+  position:absolute; bottom:var(--spacing-3xl, 24px); left:var(--spacing-xl, 16px); right:var(--spacing-xl, 16px);
+  display:flex; justify-content:center;
+  z-index:2;
+}
+.phone-frame-anim .toast-container .toast,
+.phone-frame-toast .toast {
+  width:100%; box-sizing:border-box;
+}
+.phone-frame-anim .toast-container.hidden { display:none; }
+.phone-frame-anim .bg-grass {
+  position:absolute; bottom:0; left:0; width:100%; z-index:0;
+}
+.phone-frame-anim .bg-grass-edge {
+  height:var(--spacing-3xl, 24px); background:var(--bg-grass, #86cb3c);
+  border-radius:var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0;
+}
+.phone-frame-anim .bg-grass-fill {
+  background:var(--bg-grass, #86cb3c); height:17px;
+}
+
+/* Trigger button */
+.btn-trigger {
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:var(--spacing-md, 8px);
+  padding:var(--spacing-md, 8px) var(--spacing-xl, 16px);
+  background:var(--bg-primary, #ffffff);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-full, 9999px);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-sm, 14px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-primary, #181d27);
+  cursor:pointer;
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  transition:all 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.btn-trigger:hover { background:var(--gray-50, #fafafa); }
+.btn-trigger:active { box-shadow:none; transform:translateY(2px); }
+.btn-trigger:disabled {
+  opacity:0.5; cursor:not-allowed;
+  box-shadow:0 3px 0 0 var(--gray-200, #e9eaeb);
+  transform:none;
+}
+
+/* Variant selector */
+.variant-picker {
+  display:flex; gap:var(--spacing-xs, 4px);
+}
+.variant-pill {
+  padding:var(--spacing-xs, 4px) var(--spacing-lg, 12px);
+  border-radius:var(--radius-full, 9999px);
+  border:1.5px solid var(--border-secondary, #e9eaeb);
+  background:var(--bg-primary, #ffffff);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  font-weight:var(--font-weight-medium, 500);
+  color:var(--text-secondary, #414651);
+  cursor:pointer;
+  transition:all 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.variant-pill:hover { background:var(--gray-50, #fafafa); }
+.variant-pill.active {
+  background:var(--brand-50, #f0f9ff);
+  border-color:var(--brand-500, #0ba5ec);
+  color:var(--brand-700, #026aa2);
+  font-weight:var(--font-weight-semibold, 600);
+}
+
+/* Duration selector */
+.duration-row {
+  display:flex; align-items:center; gap:var(--spacing-md, 8px);
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-tertiary, #535862);
+}
+.duration-row select {
+  padding:var(--spacing-xs, 4px) var(--spacing-md, 8px);
+  border:1.5px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-sm, 6px);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  background:var(--bg-primary, #ffffff);
+  color:var(--text-primary, #181d27);
+}
+
+/* Animation spec table */
+.anim-spec {
+  display:flex; gap:var(--spacing-3xl, 24px); flex-wrap:wrap; margin-top:var(--spacing-xl, 16px);
+}
+.anim-spec-card {
+  flex:1; min-width:200px;
+  padding:var(--spacing-xl, 16px);
+  background:var(--bg-secondary, #fafafa);
+  border:1px solid var(--border-secondary, #e9eaeb);
+  border-radius:var(--radius-md, 8px);
+}
+.anim-spec-card h4 {
+  font-size:var(--font-size-text-sm, 14px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-primary, #181d27);
+  margin-bottom:var(--spacing-md, 8px);
+}
+.anim-spec-card p {
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-secondary, #414651);
+  line-height:var(--line-height-text-xs, 16px);
+}
+.anim-spec-card code {
+  background:var(--bg-primary, #ffffff);
+  padding:1px 5px;
+  border-radius:var(--radius-xs, 4px);
+  font-size:11px;
+  border:1px solid var(--border-secondary, #e9eaeb);
+}
+
+/* -- Phone frame for placement demos -- */
+.phone-frame-toast {
+  width:402px; height:300px;
+  background:var(--bg-primary, #ffffff);
+  border-radius:var(--radius-4xl, 24px);
+  overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  border:2px solid var(--border-secondary, #e9eaeb);
+  display:flex; flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+  padding:0 var(--spacing-xl, 16px) var(--spacing-3xl, 24px);
+}
+.phone-frame-toast .phone-content {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-text-xs, 12px);
+  color:var(--text-quaternary, #717680);
+}
+.phone-frame-toast .toast {
+  width:100%;
+}
+
+/* Toast demo grid */
+.toast-demo-grid {
+  display:flex; flex-direction:column; gap:var(--spacing-xl, 16px);
+}
+
+/* Let demos be wider */
+.demo { flex-wrap:wrap; }
+.demo-item { min-width:370px; }
+
+@media(max-width:768px) {
+  .toast { width:100%; }
+  .phone-frame-toast { width:100%; }
+  .demo-item { min-width:100%; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Toast</div>
+    <div class="sec-desc">Toasts provide brief, non-blocking feedback about an action or event. They appear at the bottom of the screen and auto-dismiss after a short delay.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For confirming completed actions: saved, sent, deleted, unlocked.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For surfacing non-critical errors that don&rsquo;t block the flow.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> For tips, hints, or brief system status updates.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for persistent messages &mdash; use an <a href="/components/action-prompt.html" style="color:var(--brand-500)">action prompt</a> instead.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for actions that require a decision &mdash; use a <a href="/components/sheet.html" style="color:var(--brand-500)">sheet</a> or dialog.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for critical errors that block the user &mdash; use a banner with <code>role="alert"</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Success</span>
+        <div class="toast toast-success">
+          <span class="toast-icon">&#9989;</span>
+          <div class="toast-content">
+            <div class="toast-title">Progress saved</div>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Error</span>
+        <div class="toast toast-error">
+          <span class="toast-icon">&#9888;&#65039;</span>
+          <div class="toast-content">
+            <div class="toast-title">Upload failed</div>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Warning</span>
+        <div class="toast toast-warning">
+          <span class="toast-icon">&#9200;</span>
+          <div class="toast-content">
+            <div class="toast-title">5 minutes left</div>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Info</span>
+        <div class="toast toast-info">
+          <span class="toast-icon">&#10024;</span>
+          <div class="toast-content">
+            <div class="toast-title">AI analysis complete</div>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anatomy -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <p>A toast is a floating card with an icon, text content, an optional close button, and a progress bar that indicates auto-dismiss timing.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Structure</span>
+        <div class="toast toast-success">
+          <span class="toast-icon">&#9989;</span>
+          <div class="toast-content">
+            <div class="toast-title">Label</div>
+            <div class="toast-desc">Description</div>
+            <div class="toast-action">Action</div>
+          </div>
+          <div class="toast-close">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><strong>Icon</strong> (optional) &mdash; 20px Toss Face emoji in a 24px wrapper. Reinforces the message at a glance.</li>
+        <li><strong>Label</strong> (required) &mdash; <code>text-md</code> bold (16px/24px). Short, descriptive headline.</li>
+        <li><strong>Description</strong> (optional) &mdash; <code>text-sm</code> regular (14px/20px). Additional context below the label.</li>
+        <li><strong>Action</strong> (optional) &mdash; <code>text-sm</code> bold (14px/20px), <code>--brand-700</code>. Provides a direct path to follow up.</li>
+        <li><strong>Close button</strong> (optional) &mdash; 24px icon. Allows manual dismissal.</li>
+        <li><strong>Progress bar</strong> &mdash; 4px bar at the bottom edge. Fills from left to right to show time remaining before auto-dismiss.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Preferred icons -->
+  <div class="doc-section">
+    <h2>Preferred icons</h2>
+    <p>The icon slot accepts any Toss Face emoji. The following are the preferred instances defined in the Figma component. Choose the icon that best matches the message content.</p>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Success</h3>
+    <div class="icon-grid">
+      <div class="icon-chip"><span class="toast-icon">&#9989;&#65039;</span> Check mark</div>
+      <div class="icon-chip"><span class="toast-icon">&#127881;</span> Party</div>
+      <div class="icon-chip"><span class="toast-icon">&#128190;</span> Floppy disk</div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Error</h3>
+    <div class="icon-grid">
+      <div class="icon-chip"><span class="toast-icon">&#9888;&#65039;</span> Warning sign</div>
+      <div class="icon-chip"><span class="toast-icon">&#10062;&#65039;</span> Green X box</div>
+      <div class="icon-chip"><span class="toast-icon">&#128683;</span> Prohibited</div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Info</h3>
+    <div class="icon-grid">
+      <div class="icon-chip"><span class="toast-icon">&#10024;</span> Sparkles</div>
+      <div class="icon-chip"><span class="toast-icon">&#128161;</span> Lightbulb</div>
+      <div class="icon-chip"><span class="toast-icon">&#127775;</span> Glowing star</div>
+    </div>
+
+    <div class="prose" style="margin-top:16px">
+      <ul>
+        <li>The default placeholder is &#9898;&#65039; (white circle) &mdash; always swap it for a contextual icon before shipping.</li>
+        <li>Warning toasts share the same icon pool as Error &mdash; pick the icon that best fits the message.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Variants -->
+  <div class="doc-section">
+    <h2>Variants</h2>
+    <p>Toasts come in four semantic variants. The container and text styles stay the same &mdash; only the progress bar color changes to signal the message type.</p>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Success</h3>
+    <p>Use to confirm a completed action.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">With all elements</span>
+        <div class="toast toast-success">
+          <span class="toast-icon">&#9989;</span>
+          <div class="toast-content">
+            <div class="toast-title">Quest completed!</div>
+            <div class="toast-desc">You earned 10 gems for finishing the challenge</div>
+            <div class="toast-action">View rewards</div>
+          </div>
+          <div class="toast-close">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Label only</span>
+        <div class="toast toast-success">
+          <span class="toast-icon">&#128190;</span>
+          <div class="toast-content">
+            <div class="toast-title">Progress saved</div>
+          </div>
+          <div class="toast-close">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Error</h3>
+    <p>Use for non-blocking errors that don&rsquo;t require immediate action.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">With description &amp; action</span>
+        <div class="toast toast-error">
+          <span class="toast-icon">&#9888;&#65039;</span>
+          <div class="toast-content">
+            <div class="toast-title">Upload failed</div>
+            <div class="toast-desc">Your photo couldn&rsquo;t be saved</div>
+            <div class="toast-action">Retry</div>
+          </div>
+          <div class="toast-close">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Label only</span>
+        <div class="toast toast-error">
+          <span class="toast-icon">&#10060;</span>
+          <div class="toast-content">
+            <div class="toast-title">Something went wrong</div>
+          </div>
+          <div class="toast-close">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Warning</h3>
+    <p>Use to alert the user to something that needs attention but doesn&rsquo;t block them.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">With description</span>
+        <div class="toast toast-warning">
+          <span class="toast-icon">&#9200;</span>
+          <div class="toast-content">
+            <div class="toast-title">5 minutes left</div>
+            <div class="toast-desc">Screen time is almost up</div>
+          </div>
+          <div class="toast-close">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">With action</span>
+        <div class="toast toast-warning">
+          <span class="toast-icon">&#128276;</span>
+          <div class="toast-content">
+            <div class="toast-title">Low gems balance</div>
+            <div class="toast-desc">You have 3 gems remaining</div>
+            <div class="toast-action">Earn more</div>
+          </div>
+          <div class="toast-close">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Info</h3>
+    <p>Use for neutral, informational messages &mdash; tips, feature announcements, or AI feedback.</p>
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">With description &amp; action</span>
+        <div class="toast toast-info">
+          <span class="toast-icon">&#10024;</span>
+          <div class="toast-content">
+            <div class="toast-title">AI analysis complete</div>
+            <div class="toast-desc">Your submission has been reviewed</div>
+            <div class="toast-action">View feedback</div>
+          </div>
+          <div class="toast-close">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Tip</span>
+        <div class="toast toast-info">
+          <span class="toast-icon">&#128161;</span>
+          <div class="toast-content">
+            <div class="toast-title">Tip</div>
+            <div class="toast-desc">Swipe left to see more options</div>
+          </div>
+          <div class="toast-close">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placement -->
+  <div class="doc-section">
+    <h2>Placement</h2>
+    <p>Toasts appear at the bottom center of the screen, above the safe area. They float over content and should not push the layout.</p>
+
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Bottom center (default)</span>
+        <div class="phone-frame-anim" style="height:300px">
+          <div class="phone-content">
+            <span style="font-size:var(--font-size-text-xs,12px);color:var(--text-quaternary,#717680)">Screen content</span>
+          </div>
+          <div class="toast-container" style="position:absolute;bottom:24px;left:16px;right:16px;display:flex;justify-content:center;z-index:2">
+            <div class="toast toast-success" style="width:100%">
+              <span class="toast-icon">&#9989;</span>
+              <div class="toast-content">
+                <div class="toast-title">Saved successfully</div>
+              </div>
+              <div class="toast-close">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+            </div>
+          </div>
+          <div class="bg-grass">
+            <div class="bg-grass-edge"></div>
+            <div class="bg-grass-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Position at the bottom center, 24px above the safe area.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Only show one toast at a time &mdash; queue additional toasts.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t place toasts at the top of the screen &mdash; that&rsquo;s reserved for banners.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t cover navigation or critical interactive elements.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Dismissal -->
+  <div class="doc-section">
+    <h2>Dismissing a toast</h2>
+    <p>Toasts can be dismissed in three ways:</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Auto-dismiss</strong> &mdash; the progress bar fills over 3&ndash;5 seconds, then the toast slides away. Use 5s when an action link is present.</li>
+        <li><strong>Close button</strong> &mdash; tapping the X icon removes the toast immediately.</li>
+        <li><strong>Swipe</strong> &mdash; swiping the toast down or sideways dismisses it (native gesture).</li>
+      </ul>
+    </div>
+    <p>Pause the auto-dismiss timer when the user is hovering over or has focus inside the toast.</p>
+  </div>
+
+  <!-- Animation preview -->
+  <div class="doc-section">
+    <h2>Animation preview</h2>
+    <p>Toast entry and exit follow Apple HIG motion guidelines. The progress bar counts down linearly to show time remaining. Hover pauses the timer.</p>
+
+    <div style="display:flex;flex-direction:column;gap:var(--spacing-xl,16px);align-items:center">
+      <!-- Controls -->
+      <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-lg,12px);align-items:center;justify-content:center">
+        <div class="variant-picker">
+          <button class="variant-pill active" data-variant="success" onclick="pickVariant(this)">Success</button>
+          <button class="variant-pill" data-variant="error" onclick="pickVariant(this)">Error</button>
+          <button class="variant-pill" data-variant="warning" onclick="pickVariant(this)">Warning</button>
+          <button class="variant-pill" data-variant="info" onclick="pickVariant(this)">Info</button>
+        </div>
+        <div class="duration-row">
+          <label>Duration</label>
+          <select id="anim-duration" onchange="updateDuration(this.value)">
+            <option value="3">3 s</option>
+            <option value="4" selected>4 s</option>
+            <option value="5">5 s</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Phone frame -->
+      <div class="phone-frame-anim">
+        <div class="phone-content">
+          <button class="btn-trigger" id="anim-trigger" onclick="showToast()">Show toast</button>
+        </div>
+        <div class="toast-container hidden" id="anim-toast-container">
+          <div class="toast toast-success" id="anim-toast" role="status" aria-live="polite"
+               onmouseenter="pauseToast()" onmouseleave="resumeToast()">
+            <span class="toast-icon">&#9989;</span>
+            <div class="toast-content">
+              <div class="toast-title">Quest completed!</div>
+              <div class="toast-desc">You earned 10 gems</div>
+            </div>
+            <div class="toast-close" aria-label="Dismiss" onclick="dismissToast()">
+              <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+            <div class="toast-progress"><div class="toast-progress-fill"></div></div>
+          </div>
+        </div>
+        <div class="bg-grass">
+          <div class="bg-grass-edge"></div>
+          <div class="bg-grass-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spec cards -->
+    <div class="anim-spec">
+      <div class="anim-spec-card">
+        <h4>Entry</h4>
+        <p>350 ms spring slide-up<br><code>cubic-bezier(0.34, 1.56, 0.64, 1)</code></p>
+      </div>
+      <div class="anim-spec-card">
+        <h4>Exit</h4>
+        <p>250 ms ease-in slide-down<br><code>ease-in</code></p>
+      </div>
+      <div class="anim-spec-card">
+        <h4>Progress</h4>
+        <p>Linear countdown, 3–5 s<br><code>linear</code></p>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:16px">
+      <ul>
+        <li><strong>Reduced motion:</strong> When <code>prefers-reduced-motion: reduce</code> is active, entry and exit use opacity fade instead of slide.</li>
+        <li><strong>Hover pause:</strong> Hovering over the toast pauses both the progress bar and the auto-dismiss timer.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content guidelines -->
+  <div class="doc-section">
+    <h2>Content guidelines</h2>
+    <div class="prose">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Keep the label short &mdash; lead with the outcome, not the process (&ldquo;Saved&rdquo; not &ldquo;Your changes have been saved&rdquo;).</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use the description to add context only when the label isn&rsquo;t enough.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Choose an icon that matches the message content, not just the severity level.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use technical jargon &mdash; keep language simple for parents and kids.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use the action link for navigation &mdash; link to the relevant follow-up, not another page.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Token Reference -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Layout</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Width</td><td>370px</td></tr>
+        <tr><td>Border radius</td><td><code>--radius-xl</code> (12px)</td></tr>
+        <tr><td>Padding</td><td><code>--spacing-lg</code> (12px) vertical, <code>--spacing-xl</code> (16px) horizontal</td></tr>
+        <tr><td>Gap (icon &harr; content &harr; close)</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Content gap (label &harr; desc)</td><td><code>--spacing-xxs</code> (2px)</td></tr>
+        <tr><td>Background</td><td><code>--bg-primary</code> (white)</td></tr>
+        <tr><td>Border</td><td>2px solid <code>--border-secondary</code> (#e9eaeb)</td></tr>
+        <tr><td>Shadow</td><td>shadow-lg (3-layer: 0 12px 16px, 0 4px 6px, 0 2px 2px)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Typography</h3>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Style</th></tr></thead>
+      <tbody>
+        <tr><td>Icon</td><td>20px Toss Face emoji in 24px wrapper</td></tr>
+        <tr><td>Label</td><td><code>text-md</code> bold (16px/24px), <code>--text-primary</code></td></tr>
+        <tr><td>Description</td><td><code>text-sm</code> regular (14px/20px), <code>--text-secondary</code></td></tr>
+        <tr><td>Action</td><td><code>text-sm</code> bold (14px/20px), <code>--brand-700</code> (#026aa2)</td></tr>
+        <tr><td>Close icon</td><td>24px icon, <code>--text-quaternary</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-lg, 18px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary, #181d27);margin:24px 0 8px">Progress bar by variant</h3>
+    <table class="token-table">
+      <thead><tr><th>Variant</th><th>Progress fill</th><th>Track</th></tr></thead>
+      <tbody>
+        <tr><td>Success</td><td><code>--green-500</code> (#17b26a)</td><td rowspan="4"><code>--bg-secondary</code> (#fafafa)</td></tr>
+        <tr><td>Error</td><td><code>--red-500</code> (#f04438)</td></tr>
+        <tr><td>Warning</td><td><code>--yellow-500</code> (#eaaa08)</td></tr>
+        <tr><td>Info</td><td><code>--brand-500</code> (#0ba5ec)</td></tr>
+      </tbody>
+    </table>
+    <h3>Animation</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Entry</td><td>0.5s <code>cubic-bezier(0.5, 1.8, 0.3, 0.8)</code> (spring) &mdash; slide up from bottom</td></tr>
+        <tr><td>Exit</td><td>0.35s <code>ease-in</code> &mdash; slide down</td></tr>
+        <tr><td>Countdown bar</td><td>Linear over <code>--toast-duration</code> (default 4s)</td></tr>
+        <tr><td>Reduced motion</td><td>Entry/exit replaced with crossfade (opacity only)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Properties -->
+  <div class="doc-section">
+    <h2>Properties</h2>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>hierarchy</code></td><td>Success | Error | Warning | Info</td><td>Success</td><td>Sets the progress bar color</td></tr>
+        <tr><td><code>showIcon</code></td><td>boolean</td><td>true</td><td>Show/hide the leading icon</td></tr>
+        <tr><td><code>showDescription</code></td><td>boolean</td><td>true</td><td>Show/hide the description text</td></tr>
+        <tr><td><code>showAction</code></td><td>boolean</td><td>true</td><td>Show/hide the action link</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Accessibility -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>Role:</strong> Use <code>role="status"</code> with <code>aria-live="polite"</code> for success, warning, and info toasts. Use <code>role="alert"</code> for error toasts so screen readers announce them immediately.</li>
+        <li><strong>Close button:</strong> Must have <code>aria-label="Dismiss"</code> and be keyboard accessible.</li>
+        <li><strong>Action link:</strong> Use a semantic <code>&lt;button&gt;</code> element, not a styled <code>&lt;div&gt;</code>.</li>
+        <li><strong>Auto-dismiss:</strong> Pause the timer on hover and focus so users have time to read and interact.</li>
+        <li><strong>Focus management:</strong> When a toast is dismissed, do not steal focus from the user&rsquo;s current position.</li>
+        <li><strong>Motion:</strong> If animating entry/exit, respect <code>prefers-reduced-motion</code> &mdash; use opacity fade instead of slide.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+<script>
+/* ── Toast animation preview ── */
+(function () {
+  var variants = {
+    success: { icon: '\u2705', title: 'Quest completed!', desc: 'You earned 10 gems' },
+    error:   { icon: '\u26A0\uFE0F', title: 'Upload failed', desc: 'Your photo couldn\u2019t be saved' },
+    warning: { icon: '\u23F0', title: '5 minutes left', desc: 'Screen time is almost up' },
+    info:    { icon: '\u2728', title: 'AI analysis complete', desc: 'Your submission has been reviewed' }
+  };
+
+  var currentVariant = 'success';
+  var currentDuration = 4;
+  var dismissTimer = null;
+  var isPaused = false;
+  var isShowing = false;
+
+  var container = document.getElementById('anim-toast-container');
+  var toast = document.getElementById('anim-toast');
+  var trigger = document.getElementById('anim-trigger');
+
+  window.pickVariant = function (btn) {
+    document.querySelectorAll('.variant-pill').forEach(function (p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    currentVariant = btn.getAttribute('data-variant');
+  };
+
+  window.updateDuration = function (val) {
+    currentDuration = parseInt(val, 10);
+  };
+
+  window.showToast = function () {
+    if (isShowing) return;
+    isShowing = true;
+    trigger.disabled = true;
+
+    var v = variants[currentVariant];
+    toast.querySelector('.toast-icon').textContent = v.icon;
+    toast.querySelector('.toast-title').textContent = v.title;
+    toast.querySelector('.toast-desc').textContent = v.desc;
+
+    toast.className = 'toast toast-' + currentVariant;
+    toast.style.setProperty('--toast-duration', currentDuration + 's');
+
+    container.classList.remove('hidden');
+    toast.classList.remove('toast-anim-exit', 'toast-anim-idle', 'toast-anim-paused');
+    toast.classList.add('toast-anim-enter');
+
+    toast.addEventListener('animationend', onEnterEnd);
+
+    clearTimeout(dismissTimer);
+    dismissTimer = setTimeout(function () {
+      if (!isPaused) exitToast();
+    }, 350 + currentDuration * 1000);
+  };
+
+  function onEnterEnd(e) {
+    if (e.target !== toast) return;
+    toast.removeEventListener('animationend', onEnterEnd);
+    toast.classList.remove('toast-anim-enter');
+    toast.classList.add('toast-anim-idle');
+  }
+
+  function exitToast() {
+    clearTimeout(dismissTimer);
+    toast.classList.remove('toast-anim-enter', 'toast-anim-idle', 'toast-anim-paused');
+    toast.classList.add('toast-anim-exit');
+    toast.addEventListener('animationend', onExitEnd);
+  }
+
+  function onExitEnd(e) {
+    if (e.target !== toast) return;
+    toast.removeEventListener('animationend', onExitEnd);
+    toast.classList.remove('toast-anim-exit');
+    container.classList.add('hidden');
+    isShowing = false;
+    isPaused = false;
+    trigger.disabled = false;
+  }
+
+  window.dismissToast = function () {
+    if (!isShowing) return;
+    exitToast();
+  };
+
+  window.pauseToast = function () {
+    if (!isShowing) return;
+    isPaused = true;
+    clearTimeout(dismissTimer);
+    toast.classList.add('toast-anim-paused');
+  };
+
+  window.resumeToast = function () {
+    if (!isShowing) return;
+    isPaused = false;
+    toast.classList.remove('toast-anim-paused');
+    dismissTimer = setTimeout(function () {
+      exitToast();
+    }, currentDuration * 1000);
+  };
+})();
+</script>
+</body>
+</html>

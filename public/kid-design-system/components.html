@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Components</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/progress-bar.css">
+<style>
+@font-face {
+  font-family: 'TossFace';
+  src: url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xl, 16px);
+  margin-top: var(--spacing-3xl, 24px);
+}
+@media (max-width: 800px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .gallery-grid { grid-template-columns: 1fr; } }
+.gallery-card {
+  display: block;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-xl, 12px);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+}
+.gallery-card:hover {
+  border-color: var(--gray-300, #d5d7da);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  text-decoration: none;
+}
+.gallery-thumb {
+  height: 120px;
+  background: var(--bg-secondary, #fafafa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: 'TossFace', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
+  font-size: 40px;
+}
+.gallery-body {
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px) var(--spacing-lg, 12px);
+}
+.gallery-title {
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  line-height: 18px;
+}
+.gallery-desc {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-tertiary, #535862);
+  line-height: 18px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content page-wide">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="page-header">
+        <div class="sec-title">Components <span class="sec-title-sub">Sprout UI library</span></div>
+        <div class="sec-desc">Reusable UI elements for building Sprout experiences — buttons, inputs, sheets, toasts, and more.</div>
+      </div>
+
+      <div class="section-group">
+      <div class="section-heading">
+        <h2>All components</h2>
+        <p>Buttons, inputs, avatars — everything you need to build Sprout's mobile app experiences.</p>
+      </div>
+      <div class="gallery-grid">
+        <a class="gallery-card" href="/components/action-prompt.html">
+          <div class="gallery-thumb">⭐</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Action Prompt</div>
+            <div class="gallery-desc">Contextual prompts with CTAs</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/alert.html">
+          <div class="gallery-thumb">⚠️</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Alert</div>
+            <div class="gallery-desc">Modal card for confirmation and acknowledgement</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/avatar.html">
+          <div class="gallery-thumb">🧑</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Avatar</div>
+            <div class="gallery-desc">Customizable user and character circles</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/avatar-group.html">
+          <div class="gallery-thumb">👥</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Avatar Group</div>
+            <div class="gallery-desc">Stacked user avatars</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/button-recording.html">
+          <div class="gallery-thumb">🔴</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Button Recording</div>
+            <div class="gallery-desc">Circular start/stop recording control</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/button-utility.html">
+          <div class="gallery-thumb">🎯</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Button Utility</div>
+            <div class="gallery-desc">Pill-shaped icon actions</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/buttons.html">
+          <div class="gallery-thumb">🔘</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Buttons</div>
+            <div class="gallery-desc">Primary, secondary, and destructive</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/checkbox.html">
+          <div class="gallery-thumb">☑️</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Checkbox</div>
+            <div class="gallery-desc">Multi-select toggle controls</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/inputs.html">
+          <div class="gallery-thumb">✏️</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Input</div>
+            <div class="gallery-desc">Text fields and form controls</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/passcode-input.html">
+          <div class="gallery-thumb">🔢</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Input Passcode</div>
+            <div class="gallery-desc">PIN and code entry fields</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/tile.html">
+          <div class="gallery-thumb">📋</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Tile</div>
+            <div class="gallery-desc">Bordered selection cards with icons, labels, actions</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/loading.html">
+          <div class="gallery-thumb">🔄</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Loading</div>
+            <div class="gallery-desc">Spinners and progress indicators</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/message-bubble.html">
+          <div class="gallery-thumb">💬</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Message Bubble</div>
+            <div class="gallery-desc">Chat message containers</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/message-composer.html">
+          <div class="gallery-thumb">🎤</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Message Composer</div>
+            <div class="gallery-desc">Text, voice, and media input</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/progress-bar.html">
+          <div class="gallery-thumb">📊</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Progress Bar</div>
+            <div class="gallery-desc">Linear progress indicators</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/radio.html">
+          <div class="gallery-thumb">🔵</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Radio</div>
+            <div class="gallery-desc">Single-select option controls</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/sheet.html">
+          <div class="gallery-thumb">📄</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Sheet</div>
+            <div class="gallery-desc">Bottom sheet overlays</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/social-buttons.html">
+          <div class="gallery-thumb">🔑</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Social Buttons</div>
+            <div class="gallery-desc">Third-party sign-in buttons</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/stat-card.html">
+          <div class="gallery-thumb">🎯</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Stat Card</div>
+            <div class="gallery-desc">Tier-labelled metric tile for result screens</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/switch.html">
+          <div class="gallery-thumb">🔛</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Switch</div>
+            <div class="gallery-desc">On/off toggle controls</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/segmented-control.html">
+          <div class="gallery-thumb">🔘</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Segmented Control</div>
+            <div class="gallery-desc">Category switching with sliding pill</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/tab-bar.html">
+          <div class="gallery-thumb">🏠️</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Tab Bar</div>
+            <div class="gallery-desc">Bottom navigation with emoji tabs</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/toast.html">
+          <div class="gallery-thumb">🔔</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Toast</div>
+            <div class="gallery-desc">Temporary notifications</div>
+          </div>
+        </a>
+        <a class="gallery-card" href="/components/toolbar.html">
+          <div class="gallery-thumb">🧭</div>
+          <div class="gallery-body">
+            <div class="gallery-title">Toolbar</div>
+            <div class="gallery-desc">Bottom action bars</div>
+          </div>
+        </a>
+      </div>
+      </div>
+
+      <div class="last-updated">Last updated: March 2026</div>
+    </div>
+  </div>
+  <div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

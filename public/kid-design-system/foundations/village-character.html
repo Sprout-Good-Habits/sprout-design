@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Village Character</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<style>
+/* ── Demo container ── */
+.demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-4xl, 32px);
+  padding: var(--spacing-7xl, 64px) var(--spacing-4xl, 32px);
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  margin: var(--spacing-xl, 16px) 0;
+  flex-wrap: wrap;
+}
+
+/* ── Variant section ── */
+.variant-section {
+  margin: var(--spacing-5xl, 40px) 0;
+}
+.variant-title {
+  font-size: var(--font-size-text-lg, 18px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  margin: 0 0 var(--spacing-sm, 6px);
+}
+.variant-desc {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+  margin: 0 0 var(--spacing-xl, 16px);
+}
+
+/* ── Standalone Rive preview ── */
+.rive-standalone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4xl, 32px);
+  background: var(--bg-sky, #e0f2fe);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  margin: var(--spacing-3xl, 24px) 0;
+}
+.rive-standalone canvas {
+  border-radius: var(--radius-xl, 12px);
+}
+
+/* ── Anatomy list ── */
+.anatomy-list {
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  padding: var(--spacing-xl, 16px) var(--spacing-3xl, 24px);
+  margin: var(--spacing-xl, 16px) 0 var(--spacing-3xl, 24px);
+}
+.anatomy-list ul {
+  list-style: none;
+  padding: 0;
+}
+.anatomy-list li {
+  padding: var(--spacing-md, 8px) 0;
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.anatomy-list li:last-child { border-bottom: none; }
+
+/* ── Usage table ── */
+.usage-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--spacing-xl, 16px) 0;
+  font-size: var(--font-size-text-sm, 14px);
+}
+.usage-table th, .usage-table td {
+  text-align: left;
+  padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.usage-table th {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  font-size: var(--font-size-text-xs, 12px);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.usage-table td {
+  color: var(--text-secondary, #414651);
+}
+
+/* ── Avatar circles for where-it-appears ── */
+.avatar-circle {
+  width: 64px; height: 64px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--bg-sky, #e0f2fe);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.avatar-circle canvas {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  width: 81px; height: 116px;
+  top: -28px;
+  display: block;
+  pointer-events: none;
+}
+
+/* ── Profile banner preview ── */
+.profile-banner {
+  width: 300px;
+  height: 180px;
+  background: var(--bg-sky, #e0f2fe);
+  border-radius: var(--radius-xl, 12px);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.profile-banner canvas {
+  position: relative;
+  width: 140px; height: 200px;
+  pointer-events: none;
+  margin-bottom: -40px;
+}
+
+/* ── Principle cards ── */
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--spacing-xl, 16px);
+  margin: var(--spacing-xl, 16px) 0;
+}
+.principle-card {
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  padding: var(--spacing-3xl, 24px);
+}
+.principle-card h4 {
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  margin: 0 0 var(--spacing-md, 8px);
+}
+.principle-card p {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+  margin: 0;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="sec-title">Village Character</div>
+      <div class="sec-desc">The Village Character is the animated avatar that represents every family member in Sprout. Built as a Rive animation with deep customization &mdash; skin tone, hairstyle, hair color, beard, clothing &mdash; it&rsquo;s a person&rsquo;s face in the product. The character appears everywhere: profiles, challenges, chat, coaching sessions, and the family view.</div>
+
+      <!-- ════ Design principles ════ -->
+      <div class="doc-section">
+        <h2>Design principles</h2>
+
+        <div class="principle-grid">
+          <div class="principle-card">
+            <h4>Identity, not decoration</h4>
+            <p>The avatar shows <em>how</em> you relate to someone, not just who they are. Every village member gets a character that represents them everywhere in the product.</p>
+          </div>
+          <div class="principle-card">
+            <h4>Always grounded</h4>
+            <p>The bottom edge of the container always clips the character. It is never floating in empty space. Whether in a 24px circle or a full-width banner, the character is anchored.</p>
+          </div>
+          <div class="principle-card">
+            <h4>Consistent across contexts</h4>
+            <p>The same Rive file and state machine powers every instance &mdash; from tiny avatars to profile banners. Customization choices persist everywhere.</p>
+          </div>
+          <div class="principle-card">
+            <h4>User-owned customization</h4>
+            <p>Background colors, hairstyles, skin tones, and clothing are chosen by the user in the character customizer. Never hard-code these values.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ Interactive preview ════ -->
+      <div class="doc-section">
+        <h2>Interactive preview</h2>
+        <p>The Village Character is a Rive state machine with customizable skin tone, hair, beard, and clothing. The animation plays idle behaviors automatically.</p>
+        <div class="rive-standalone">
+          <canvas id="rive-standalone" width="400" height="400"></canvas>
+        </div>
+      </div>
+
+      <!-- ════ Where it appears ════ -->
+      <div class="doc-section">
+        <h2>Where it appears</h2>
+        <p>The Village Character renders at different scales and contexts across the product, always using the same Rive file.</p>
+
+        <table class="usage-table">
+          <thead><tr><th>Context</th><th>Component</th><th>Size</th></tr></thead>
+          <tbody>
+            <tr><td>Profile header</td><td><a href="/components/avatar-profile.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar Profile</a></td><td>209 &times; 299px (phone), 260 &times; 372px (tablet)</td></tr>
+            <tr><td>Chat, toolbar, lists</td><td><a href="/components/avatar.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar</a> (XS&ndash;XL)</td><td>24px &ndash; 56px circle</td></tr>
+            <tr><td>Participant groups</td><td><a href="/components/avatar-group.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar Group</a></td><td>24px &ndash; 40px overlapping circles</td></tr>
+            <tr><td>Family view, challenges</td><td><a href="/components/avatar-row.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Avatar Row</a></td><td>24px &ndash; 40px labeled circles</td></tr>
+            <tr><td>Character customizer</td><td><a href="/product-explorer/character/customize.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Customize Avatar</a></td><td>280 &times; 280px canvas</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ════ Anatomy ════ -->
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <div class="anatomy-list">
+          <ul>
+            <li><strong>Rive file</strong> &mdash; <code>character2.91.riv</code>. Contains all body parts, customization options, and animations in a single state machine.</li>
+            <li><strong>Artboard</strong> &mdash; <code>Village-character</code>. The specific artboard within the Rive file.</li>
+            <li><strong>State machine</strong> &mdash; <code>State Machine 1</code>. Controls idle behavior, mouth animations, and customization inputs.</li>
+            <li><strong>Fit mode</strong> &mdash; <code>rive.Fit.Contain</code>. The character scales to fill the canvas while preserving aspect ratio.</li>
+            <li><strong>Alignment</strong> &mdash; <code>rive.Alignment.Center</code> for avatars, varies by context for larger placements.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ════ Customization inputs ════ -->
+      <div class="doc-section">
+        <h2>Customization inputs</h2>
+        <p>The Rive state machine exposes number inputs for personalizing each character. See the <a href="/resources/village-character.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Village Character resource page</a> for the full reference of all IDs and color values.</p>
+
+        <table class="usage-table">
+          <thead><tr><th>Input</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>skinID</code></td><td>Number (0&ndash;15)</td><td>Skin color index &mdash; 16 tones from light to dark</td></tr>
+            <tr><td><code>hairID</code></td><td>Number (0&ndash;6)</td><td>Hair style &mdash; short, curly, buzz cut, sidepart, curly, long, ponytail</td></tr>
+            <tr><td><code>hairshadeID</code></td><td>Number (0&ndash;12)</td><td>Hair colour &mdash; 13 shades from black to white</td></tr>
+            <tr><td><code>beardID</code></td><td>Number (0&ndash;7)</td><td>Beard type &mdash; none, long beard, stubble, jawline, goatee, full beard, mustache</td></tr>
+            <tr><td><code>beardshadeID</code></td><td>Number (0&ndash;12)</td><td>Beard colour &mdash; same palette as hair</td></tr>
+            <tr><td><code>clothingcolourID</code></td><td>Number (0&ndash;10)</td><td>Clothing colour &mdash; 11 options</td></tr>
+            <tr><td><code>clothingID</code></td><td>Number (0&ndash;11)</td><td>Clothing type &mdash; t-shirt, cardigan, blazer, hoodie, etc.</td></tr>
+            <tr><td><code>mouthselector</code></td><td>Number (0&ndash;20)</td><td>Mouth shape / viseme for speech animation</td></tr>
+            <tr><td><code>talkingmouth toggle</code></td><td>Boolean</td><td>Enable/disable mouth movement animation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ════ Presets ════ -->
+      <div class="doc-section">
+        <h2>Presets</h2>
+        <p>Quick-start combinations for common village roles. Use these as defaults or starting points in prototypes and demos.</p>
+
+        <table class="usage-table">
+          <thead><tr><th>Name</th><th>Role</th><th>skinID</th><th>hairID</th><th>hairshadeID</th><th>beardID</th><th>clothingcolourID</th><th>clothingID</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Shane</strong></td><td>Kid, 8</td><td>11</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td></tr>
+            <tr><td><strong>Zeev</strong></td><td>Dad</td><td>5</td><td>0</td><td>0</td><td>6</td><td>5</td><td>2</td></tr>
+            <tr><td><strong>Mali</strong></td><td>Mom</td><td>8</td><td>5</td><td>5</td><td>0</td><td>7</td><td>1</td></tr>
+            <tr><td><strong>Grandpa</strong></td><td>Family</td><td>14</td><td>3</td><td>11</td><td>7</td><td>1</td><td>5</td></tr>
+            <tr><td><strong>Coach Eli</strong></td><td>Soccer</td><td>3</td><td>1</td><td>7</td><td>0</td><td>2</td><td>10</td></tr>
+            <tr><td><strong>Ms. Chen</strong></td><td>Teacher</td><td>9</td><td>6</td><td>2</td><td>0</td><td>4</td><td>3</td></tr>
+            <tr><td><strong>Liam</strong></td><td>Kid, 4</td><td>6</td><td>2</td><td>9</td><td>0</td><td>8</td><td>0</td></tr>
+          </tbody>
+        </table>
+
+        <div class="demo" id="preset-demo" style="gap: var(--spacing-xl, 16px);">
+        </div>
+      </div>
+
+      <!-- ════ Rendering guidelines ════ -->
+      <div class="doc-section">
+        <h2>Rendering guidelines</h2>
+
+        <div class="variant-section">
+          <div class="variant-title">Avatar circles (XS&ndash;XL)</div>
+          <div class="variant-desc">In small circles, only the head and upper body are visible. The canvas extends beyond the circle bounds and <code>overflow: hidden</code> clips to the circle. Position with negative <code>top</code> offset to frame the face. Use <code>rive.Alignment.Center</code>.</div>
+        </div>
+
+        <div class="variant-section">
+          <div class="variant-title">Profile banners</div>
+          <div class="variant-desc">In full-width banners, the character is centered horizontally with the upper body visible. The bottom of the container clips the torso. Canvas is sized to show head through mid-chest. Use <code>rive.Alignment.Center</code>.</div>
+        </div>
+
+        <div class="variant-section">
+          <div class="variant-title">Character customizer</div>
+          <div class="variant-desc">In the customizer, the full character is visible on the sky background. The character sits above the customizer panel. Canvas is large enough to show the complete figure. Use <code>rive.Alignment.Center</code>.</div>
+        </div>
+
+        <table class="usage-table">
+          <thead><tr><th>Property</th><th>Avatar circles</th><th>Profile banner</th><th>Customizer</th></tr></thead>
+          <tbody>
+            <tr><td>Fit mode</td><td colspan="3"><code>rive.Fit.Contain</code></td></tr>
+            <tr><td>Alignment</td><td><code>Center</code></td><td><code>Center</code></td><td><code>Center</code></td></tr>
+            <tr><td>Clipping</td><td>Circle (<code>overflow: hidden</code>)</td><td>Rectangle (<code>overflow: hidden</code>)</td><td>None (full character visible)</td></tr>
+            <tr><td>Canvas resolution</td><td>2x CSS size for retina</td><td>2x CSS size for retina</td><td>560 &times; 560</td></tr>
+            <tr><td>Grounded</td><td colspan="3">Always &mdash; bottom edge clips, never floating</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ════ Background colors ════ -->
+      <div class="doc-section">
+        <h2>Background colors</h2>
+        <p>Users choose a background color in the character customizer. This color persists across all avatar instances for that user.</p>
+
+        <table class="usage-table">
+          <thead><tr><th>Name</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Sky (default)</td><td><code>--bg-sky</code> (#e0f2fe)</td></tr>
+            <tr><td>Blue</td><td><code>--brand-200</code> (#b9e6fe)</td></tr>
+            <tr><td>Blue dark</td><td><code>--blue-dark-200</code> (#b2ccff)</td></tr>
+            <tr><td>Violet</td><td><code>--violet-200</code> (#ddd6fe)</td></tr>
+            <tr><td>Pink</td><td><code>--pink-200</code> (#fcceee)</td></tr>
+            <tr><td>Red</td><td><code>--red-200</code> (#fecdca)</td></tr>
+            <tr><td>Green</td><td><code>--green-200</code> (#abefc6)</td></tr>
+            <tr><td>Sprout</td><td><code>--sprout-200</code> (#ceeab0)</td></tr>
+            <tr><td>Yellow</td><td><code>--yellow-200</code> (#feee95)</td></tr>
+            <tr><td>Orange</td><td><code>--orange-200</code> (#f9dbaf)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ════ When to use ════ -->
+      <div class="doc-section">
+        <h2>When to use</h2>
+        <div class="prose">
+          <ul>
+            <li><span style="color:var(--green-500)">&#10003;</span> Use the Village Character whenever displaying a <strong>user&rsquo;s identity</strong> &mdash; profiles, chat bubbles, participant lists, family view.</li>
+            <li><span style="color:var(--green-500)">&#10003;</span> Always render from the <strong>Rive file</strong> (<code>character2.91.riv</code>) &mdash; never assemble from static images.</li>
+            <li><span style="color:var(--green-500)">&#10003;</span> Always respect the user&rsquo;s <strong>saved customization</strong> (skin, hair, clothing, background).</li>
+            <li><span style="color:var(--green-500)">&#10003;</span> Fall back to <strong>Silhouette</strong> before the user has customized, or <strong>User initial</strong> when no data is available.</li>
+            <li><span style="color:var(--red-500)">&#10007;</span> Don&rsquo;t use the Village Character for the <strong>Sprout mascot</strong> &mdash; Sprout has its own Rive file (<code>sprot2.97_.riv</code>). See <a href="/foundations/character.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Character (Sprout)</a>.</li>
+            <li><span style="color:var(--red-500)">&#10007;</span> Don&rsquo;t hard-code customization values &mdash; always read from the user&rsquo;s saved state.</li>
+            <li><span style="color:var(--red-500)">&#10007;</span> Don&rsquo;t use on content-heavy screens where the character would obstruct the UI.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ════ Accessibility ════ -->
+      <div class="doc-section">
+        <h2>Accessibility</h2>
+        <div class="prose">
+          <ul>
+            <li><strong>Motion:</strong> Respect <code>prefers-reduced-motion</code>. Pause or disable Rive animations when the user prefers reduced motion.</li>
+            <li><strong>Decorative in context:</strong> When the character appears inside a labeled component (Avatar Row label, Toolbar title), the canvas is decorative &mdash; the label provides the accessible name.</li>
+            <li><strong>Standalone contexts:</strong> When the character is the primary content (profile banner), add <code>role="img"</code> and <code>aria-label</code> describing the user.</li>
+            <li><strong>Performance:</strong> Lazy-initialize Rive instances only when visible. Pause off-screen instances to save resources.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ════ Related ════ -->
+      <div class="doc-section">
+        <h2>Related</h2>
+        <div class="gallery-grid">
+          <a href="/foundations/character.html" class="gallery-card">
+            <div class="gallery-thumb"><span style="font-size:48px;">&#x1F331;</span></div>
+            <div class="gallery-body">
+              <div class="gallery-title">Character (Sprout)</div>
+              <div class="gallery-desc">The Sprout mascot, a separate Rive file</div>
+            </div>
+          </a>
+          <a href="/components/avatar.html" class="gallery-card">
+            <div class="gallery-thumb"><div class="thumb-avatar-group"><span style="background:var(--brand-200,#b9e6fe)"></span></div></div>
+            <div class="gallery-body">
+              <div class="gallery-title">Avatar</div>
+              <div class="gallery-desc">Customizable user and character circles</div>
+            </div>
+          </a>
+          <a href="/components/avatar-profile.html" class="gallery-card">
+            <div class="gallery-thumb"><span style="font-size:48px;">&#x1F9D1;</span></div>
+            <div class="gallery-body">
+              <div class="gallery-title">Avatar Profile</div>
+              <div class="gallery-desc">Full-width hero banner for profiles</div>
+            </div>
+          </a>
+          <a href="/components/avatar-group.html" class="gallery-card">
+            <div class="gallery-thumb"><div class="thumb-avatar-group"><span style="background:var(--brand-200,#b9e6fe)"></span><span style="background:var(--sprout-200,#ceeab0)"></span><span style="background:var(--violet-200,#ddd6fe)"></span></div></div>
+            <div class="gallery-body">
+              <div class="gallery-title">Avatar Group</div>
+              <div class="gallery-desc">Stacked user avatars</div>
+            </div>
+          </a>
+          <a href="/components/avatar-row.html" class="gallery-card">
+            <div class="gallery-thumb"><div style="display:flex;gap:6px;"><span style="width:24px;height:24px;border-radius:9999px;background:var(--brand-200,#b9e6fe);display:block;"></span><span style="width:24px;height:24px;border-radius:9999px;background:var(--sprout-200,#ceeab0);display:block;"></span><span style="width:24px;height:24px;border-radius:9999px;background:var(--violet-200,#ddd6fe);display:block;"></span></div></div>
+            <div class="gallery-body">
+              <div class="gallery-title">Avatar Row</div>
+              <div class="gallery-desc">Labeled avatar list for family view</div>
+            </div>
+          </a>
+          <a href="/resources/village-character.html" class="gallery-card">
+            <div class="gallery-thumb"><span style="font-size:48px;">&#x1F4D6;</span></div>
+            <div class="gallery-body">
+              <div class="gallery-title">Village Character (Resource)</div>
+              <div class="gallery-desc">Full reference of IDs, palettes, and options</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="last-updated">Last updated: March 2026</div>
+    </div>
+  </div>
+  <div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/shell.js"></script>
+<script>
+var RIVE_SRC = '/character2.91.riv';
+var ARTBOARD = 'Village-character';
+var SM_NAME = 'State Machine 1';
+
+var USER_STATE = {
+  skinID: 11,
+  hairID: 4,
+  hairshadeID: 3,
+  beardID: 0,
+  beardshadeID: 0,
+  clothingcolourID: 0,
+  clothingID: 0
+};
+
+function initRive(canvasId) {
+  var canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  var w = parseInt(canvas.getAttribute('width'), 10);
+  var h = parseInt(canvas.getAttribute('height'), 10);
+  canvas.width = w;
+  canvas.height = h;
+  var r;
+  try {
+    r = new rive.Rive({
+      src: RIVE_SRC,
+      canvas: canvas,
+      autoplay: true,
+      artboard: ARTBOARD,
+      stateMachines: SM_NAME,
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.Center,
+      onLoad: function() {
+        if (!r) return;
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM_NAME);
+          if (inputs) {
+            inputs.forEach(function(inp) {
+              if (USER_STATE[inp.name] !== undefined) inp.value = USER_STATE[inp.name];
+            });
+          }
+        } catch(e) {}
+      }
+    });
+  } catch(e) {
+    console.warn('Rive init failed for', canvasId, e);
+  }
+}
+
+initRive('rive-standalone');
+
+/* ── Presets ── */
+var PRESETS = [
+  { name:'Shane',     role:'Kid, 8',  state:{ skinID:11, hairID:4, hairshadeID:3,  beardID:0, beardshadeID:0, clothingcolourID:0, clothingID:0,  glassID:0, glassshadeID:0, eyeshadeID:3, earringID:0, facedetailID:0, headwearID:0, headwearshadeID:0 }},
+  { name:'Zeev',      role:'Dad',     state:{ skinID:5,  hairID:0, hairshadeID:0,  beardID:6, beardshadeID:0, clothingcolourID:5, clothingID:2,  glassID:1, glassshadeID:3, eyeshadeID:5, earringID:0, facedetailID:0, headwearID:2, headwearshadeID:5 }},
+  { name:'Mali',      role:'Mom',     state:{ skinID:8,  hairID:5, hairshadeID:5,  beardID:0, beardshadeID:0, clothingcolourID:7, clothingID:1,  glassID:0, glassshadeID:0, eyeshadeID:4, earringID:3, facedetailID:3, headwearID:0, headwearshadeID:0 }},
+  { name:'Grandpa',   role:'Family',  state:{ skinID:14, hairID:3, hairshadeID:11, beardID:7, beardshadeID:11,clothingcolourID:1, clothingID:5,  glassID:4, glassshadeID:7, eyeshadeID:1, earringID:0, facedetailID:2, headwearID:3, headwearshadeID:2 }},
+  { name:'Coach Eli', role:'Soccer',  state:{ skinID:3,  hairID:1, hairshadeID:7,  beardID:0, beardshadeID:0, clothingcolourID:2, clothingID:10, glassID:0, glassshadeID:0, eyeshadeID:2, earringID:0, facedetailID:1, headwearID:1, headwearshadeID:8 }},
+  { name:'Ms. Chen',  role:'Teacher', state:{ skinID:9,  hairID:6, hairshadeID:2,  beardID:0, beardshadeID:0, clothingcolourID:4, clothingID:3,  glassID:2, glassshadeID:5, eyeshadeID:6, earringID:5, facedetailID:0, headwearID:0, headwearshadeID:0 }},
+  { name:'Liam',      role:'Kid, 4',  state:{ skinID:6,  hairID:2, hairshadeID:9,  beardID:0, beardshadeID:0, clothingcolourID:8, clothingID:0,  glassID:0, glassshadeID:0, eyeshadeID:7, earringID:2, facedetailID:0, headwearID:4, headwearshadeID:10 }}
+];
+
+var presetDemo = document.getElementById('preset-demo');
+if (presetDemo) {
+  PRESETS.forEach(function(p, idx) {
+    var item = document.createElement('div');
+    item.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:4px;';
+
+    var circle = document.createElement('div');
+    circle.style.cssText = 'width:64px; height:64px; border-radius:9999px; background:var(--bg-sky, #e0f2fe); overflow:hidden; position:relative;';
+
+    var canvas = document.createElement('canvas');
+    canvas.id = 'preset-' + idx;
+    canvas.width = 162;
+    canvas.height = 232;
+    canvas.style.cssText = 'position:absolute; left:50%; transform:translateX(-50%); width:81px; height:116px; top:-28px; display:block; pointer-events:none;';
+    circle.appendChild(canvas);
+
+    var label = document.createElement('span');
+    label.style.cssText = 'font-family:var(--font-family-body); font-size:var(--font-size-text-xs, 12px); line-height:var(--line-height-text-xs, 16px); color:var(--text-primary, #181d27); font-weight:var(--font-weight-semibold, 600);';
+    label.textContent = p.name;
+
+    var role = document.createElement('span');
+    role.style.cssText = 'font-family:var(--font-family-body); font-size:var(--font-size-text-xs, 12px); line-height:var(--line-height-text-xs, 16px); color:var(--text-tertiary, #535862);';
+    role.textContent = p.role;
+
+    item.appendChild(circle);
+    item.appendChild(label);
+    item.appendChild(role);
+    presetDemo.appendChild(item);
+
+    // Init Rive for this preset
+    var r;
+    try {
+      r = new rive.Rive({
+        src: RIVE_SRC,
+        canvas: canvas,
+        autoplay: true,
+        artboard: ARTBOARD,
+        stateMachines: SM_NAME,
+        fit: rive.Fit.Contain,
+        alignment: rive.Alignment.Center,
+        onLoad: function() {
+          if (!r) return;
+          r.resizeDrawingSurfaceToCanvas();
+          try {
+            var inputs = r.stateMachineInputs(SM_NAME);
+            if (inputs) {
+              inputs.forEach(function(inp) {
+                if (p.state[inp.name] !== undefined) inp.value = p.state[inp.name];
+              });
+            }
+          } catch(e) {}
+        }
+      });
+    } catch(e) {}
+  });
+}
+</script>
+</body>
+</html>

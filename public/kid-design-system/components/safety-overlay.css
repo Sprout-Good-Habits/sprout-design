@@ -1,0 +1,51 @@
+/* ============================================
+   Safety Overlay (SFW Overlay)
+   Full-screen dark overlay with backdrop blur
+   shown when the on-device SFW check fails.
+   ============================================ */
+
+.safety-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-5xl, 40px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.safety-overlay .safety-overlay-icon {
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: var(--spacing-xl, 16px);
+}
+
+.safety-overlay .safety-overlay-heading {
+  font-size: var(--font-size-text-lg, 18px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-text-lg, 28px);
+  color: #fff;
+  margin: 0 0 var(--spacing-md, 8px);
+}
+
+.safety-overlay .safety-overlay-desc {
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-text-sm, 20px);
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 260px;
+  margin: 0;
+}
+
+.safety-overlay .safety-overlay-fine-print {
+  margin-top: var(--spacing-3xl, 24px);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  font-weight: var(--font-weight-regular, 400);
+  color: rgba(255, 255, 255, 0.4);
+}

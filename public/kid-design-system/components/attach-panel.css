@@ -1,0 +1,108 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Attach Panel + Plus Pill + iOS Keyboard CSS
+   Attachment panel (stacked rows), inline plus-pill expansion,
+   and decorative iOS keyboard for prototyping.
+   ═══════════════════════════════════════════════════ */
+
+/* ── iOS keyboard (decorative) ── */
+.ios-keyboard {
+  display: flex; flex-direction: column; box-sizing: border-box;
+  margin-top: 0; margin-bottom: 0;
+  background: rgba(209,213,219,.92); border-radius: 27px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', system-ui, sans-serif;
+  overflow: hidden;
+  max-height: 0; opacity: 0;
+  transition:
+    max-height .35s cubic-bezier(.2,.9,.3,1),
+    opacity .25s ease,
+    margin-top .35s cubic-bezier(.2,.9,.3,1),
+    margin-bottom .35s cubic-bezier(.2,.9,.3,1);
+}
+.ios-keyboard.open { max-height: 276px; opacity: 1; margin-top: 16px; margin-bottom: calc(-1 * var(--spacing-2xl, 20px)); }
+
+.ios-kb-keys { display: flex; flex-direction: column; gap: 13px; padding: 11px 6.5px 2px; }
+.ios-kb-row  { display: flex; gap: 6.5px; justify-content: center; }
+.ios-kb-row--r2       { padding: 0 20px; }
+.ios-kb-row--r3       { gap: 14.25px; }
+.ios-kb-row--r3-inner { display: flex; flex: 1; gap: 6.5px; min-width: 0; }
+.ios-kb-row--r4       { gap: 6px; }
+
+.ios-kb-key { flex: 1 1 0; min-width: 0; height: 42px; border-radius: 8.5px; background: white; display: flex; align-items: center; justify-content: center; font-size: 25px; color: #595959; box-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.ios-kb-key--fn     { flex: 0 0 45px; background: rgba(172,180,190,.38); color: #595959; font-size: 23px; }
+.ios-kb-key--abc    { flex: 0 0 92.25px; background: rgba(172,180,190,.38); color: #595959; font-size: 18px; font-weight: 400; letter-spacing: .2px; }
+.ios-kb-key--space  { flex: 1; min-width: 0; }
+.ios-kb-key--return { flex: 0 0 92.25px; background: #08f; color: white; font-size: 19px; font-weight: 400; }
+
+.ios-kb-bottom      { display: flex; align-items: flex-start; justify-content: space-between; padding: 12px 39px 0 36px; height: 56px; box-sizing: border-box; }
+.ios-kb-bottom-icon { display: flex; align-items: center; justify-content: center; }
+.ios-kb-bottom-icon img { display: block; }
+
+/* ── Attachment panel (Alt B) ── */
+.attach-panel {
+  padding: 0 16px 0; display: flex; flex-direction: column; gap: 16px;
+  box-sizing: border-box; justify-content: center;
+  margin-top: 0; margin-bottom: 0; overflow: hidden;
+  max-height: 0; min-height: 0; opacity: 0;
+  transition:
+    max-height .4s cubic-bezier(.2,.9,.3,1),
+    min-height .4s cubic-bezier(.2,.9,.3,1),
+    opacity .3s ease,
+    margin-top .4s cubic-bezier(.2,.9,.3,1),
+    margin-bottom .4s cubic-bezier(.2,.9,.3,1),
+    padding .4s cubic-bezier(.2,.9,.3,1);
+}
+.attach-panel.open { max-height: 276px; min-height: 276px; opacity: 1; padding: 0 16px 34px; margin-top: 16px; margin-bottom: calc(-1 * var(--spacing-2xl, 20px)); }
+
+.attach-panel-row {
+  flex: 1 0 0; min-height: 56px;
+  display: flex; align-items: center; gap: 8px; padding: 16px;
+  background: white; border-radius: 16px;
+  box-shadow: 0 1px 6px 0 rgba(0,0,0,.04);
+  cursor: pointer; overflow: hidden;
+  transition: background .15s, transform .4s cubic-bezier(.2,.9,.3,1), opacity .3s ease;
+  transform: translateY(20px); opacity: 0;
+}
+.attach-panel.open .attach-panel-row { transform: translateY(0); opacity: 1; }
+.attach-panel.open .attach-panel-row:nth-child(1) { transition-delay: 0s; }
+.attach-panel.open .attach-panel-row:nth-child(2) { transition-delay: .05s; }
+.attach-panel.open .attach-panel-row:nth-child(3) { transition-delay: .1s; }
+.attach-panel-row:hover  { background: var(--bg-secondary, #fafafa); }
+.attach-panel-row:active { transform: scale(.97); transition-duration: .1s; }
+
+.attach-panel-icon { width: 40px; height: 40px; padding: 8px; border-radius: 100px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-sizing: border-box; }
+.attach-panel-icon svg { width: 24px; height: 24px; }
+.attach-panel-icon--photos   { background: #d1e0ff; color: #2d5fbe; }
+.attach-panel-icon--camera   { background: #f5f5f5; color: var(--text-primary, #181d27); }
+.attach-panel-icon--document { background: #e0f2fe; color: #0ba5ec; }
+.attach-panel-label { font-family: var(--font-family-body, 'Inter', sans-serif); font-size: var(--font-size-text-md, 16px); line-height: var(--line-height-text-md, 24px); font-weight: var(--font-weight-regular, 400); color: var(--text-primary, #181d27); }
+
+/* ── Inline plus-pill (expands from + button) ── */
+.plus-pill {
+  display: flex; align-items: center; height: 36px; padding: 0 6px;
+  background: var(--bg-tertiary, #f5f5f5); border-radius: 999px;
+  flex-shrink: 0; overflow: hidden; cursor: pointer; border: none;
+  gap: 0; transition: gap .35s cubic-bezier(.2,.9,.3,1);
+}
+.plus-pill .plus-pill-icon     { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--fg-tertiary, #717680); cursor: pointer; background: none; border: none; padding: 0; }
+.plus-pill .plus-pill-icon:hover { color: var(--text-primary, #181d27); }
+.plus-pill .plus-pill-icon svg { width: 24px; height: 24px; }
+
+/* + icon rotates 45deg to become X */
+.plus-pill .plus-pill-plus svg      { transition: transform .35s cubic-bezier(.2,.9,.3,1); }
+.plus-pill.expanded .plus-pill-plus svg { transform: rotate(45deg); }
+
+/* Extra icons: hidden by width, animate in */
+.plus-pill .plus-pill-extra { display: flex; align-items: center; gap: 16px; overflow: hidden; max-width: 0; opacity: 0; transition: max-width .35s cubic-bezier(.2,.9,.3,1), opacity .25s ease .05s; }
+.plus-pill.expanded { gap: 16px; }
+.plus-pill.expanded .plus-pill-extra { max-width: 200px; opacity: 1; }
+
+/* Hide the separate X button (the + becomes X via rotation) */
+.plus-pill #inlineCloseBtn { display: none; }
+
+/* Plain mode: strip pill styling (used by Panel flow) */
+.plus-pill.plain { background: none; padding: 0; height: auto; border-radius: 0; }
+
+/* Icon swap bounce for panel mode */
+@keyframes icon-swap { 0% { transform: scale(.7); opacity: 0; } 50% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+.plus-pill.plain .plus-pill-plus { transition: transform .3s cubic-bezier(.2,.9,.3,1); }
+.plus-pill.plain.swapping .plus-pill-plus { animation: icon-swap .3s cubic-bezier(.2,.9,.3,1) forwards; }

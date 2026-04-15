@@ -1,0 +1,38 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Artifact Component CSS
+   Artifact inline card and detail bottom sheet.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Artifact card ── */
+.artifact-card { background: var(--bg-primary, #fff); border: 1px solid var(--border-secondary, #e9eaeb); border-radius: var(--radius-2xl, 16px); padding: var(--spacing-lg, 12px); display: flex; align-items: center; gap: 10px; width: 100%; align-self: stretch; margin-top: var(--spacing-xs, 4px); cursor: pointer; transition: background .15s; }
+.artifact-card:hover { background: var(--bg-tertiary, #f5f5f5); }
+.artifact-icon    { font-size: var(--font-size-display-xs, 24px); line-height: 1; flex-shrink: 0; }
+.artifact-body    { flex: 1; min-width: 0; }
+.artifact-name    { font-family: var(--font-family-body, 'Inter', sans-serif); font-size: var(--font-size-text-sm, 14px); font-weight: var(--font-weight-semibold, 600); color: var(--text-primary, #181d27); display: flex; align-items: center; gap: var(--spacing-sm, 6px); }
+.artifact-version { font-family: var(--font-family-body, 'Inter', sans-serif); font-size: 10px; font-weight: var(--font-weight-semibold, 600); color: var(--text-quaternary, #717680); background: var(--gray-100, #f5f5f5); padding: var(--spacing-xxs, 2px) var(--spacing-sm, 6px); border-radius: var(--radius-full, 9999px); }
+.artifact-sub     { font-family: var(--font-family-body, 'Inter', sans-serif); font-size: var(--font-size-text-xs, 12px); color: var(--text-quaternary, #717680); margin-top: var(--spacing-xxs, 2px); }
+.artifact-link    { font-family: var(--font-family-body, 'Inter', sans-serif); font-size: var(--font-size-text-sm, 14px); font-weight: var(--font-weight-semibold, 600); color: var(--brand-400, #36bffa); flex-shrink: 0; white-space: nowrap; }
+
+/* ── Artifact sheet ── */
+.artifact-sheet-scrim { position: absolute; inset: 0; background: var(--bg-overlay, rgba(10,13,18,.2)); z-index: 17; opacity: 0; pointer-events: none; transition: opacity .35s ease; }
+.artifact-sheet-scrim.open { opacity: 1; pointer-events: auto; }
+
+.artifact-sheet { position: absolute; bottom: 0; left: 0; right: 0; background: var(--bg-primary, #fff); border-radius: var(--radius-4xl, 24px) var(--radius-4xl, 24px) 0 0; z-index: 18; transform: translateY(100%); transition: transform .35s cubic-bezier(.2,.9,.3,1); padding-bottom: var(--spacing-4xl, 40px); display: flex; flex-direction: column; max-height: 80%; }
+.artifact-sheet.open { transform: translateY(0); }
+.artifact-sheet .sheet-top { padding: var(--spacing-xl, 16px); flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+
+.artifact-sheet-header { display: flex; align-items: center; gap: var(--spacing-md, 8px); width: 100%; padding: 0 var(--spacing-xl, 16px); }
+.artifact-sheet-title  { flex: 1; font-family: var(--font-family-body, 'Inter', sans-serif); font-size: var(--font-size-text-md, 16px); font-weight: var(--font-weight-bold, 700); color: var(--text-primary, #181d27); }
+.artifact-sheet-close  { width: 44px; height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gray-400, #a4a7ae); background: none; border: none; border-radius: var(--radius-full, 9999px); }
+.artifact-sheet-close:hover { background: var(--bg-tertiary, #f5f5f5); }
+.artifact-sheet-close svg   { width: 24px; height: 24px; }
+
+.artifact-sheet-body    { flex: 1; overflow-y: auto; padding: var(--spacing-xl, 16px); font-family: var(--font-family-body, 'Inter', sans-serif); font-size: var(--font-size-text-sm, 14px); color: var(--text-secondary, #414651); line-height: 22px; }
+.artifact-sheet-body h3 { font-size: 15px; font-weight: var(--font-weight-bold, 700); color: var(--text-primary, #181d27); margin: 0 0 var(--spacing-md, 8px); }
+.artifact-sheet-body p  { margin: 0 0 var(--spacing-lg, 12px); }
+.artifact-sheet-body ul { margin: 0 0 var(--spacing-lg, 12px); padding-left: var(--spacing-2xl, 20px); }
+.artifact-sheet-body li { margin-bottom: var(--spacing-xs, 4px); }
+
+.artifact-sheet-footer { padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px); }
+.artifact-sheet-assign { width: 100%; padding: var(--spacing-lg, 12px); border-radius: var(--radius-xl, 12px); background: var(--green-500, #17b26a); color: var(--text-white, #fff); font-family: var(--font-family-body, 'Inter', sans-serif); font-size: var(--font-size-text-sm, 14px); font-weight: var(--font-weight-semibold, 600); border: none; cursor: pointer; }
+.artifact-sheet-assign:hover { background: var(--green-700, #067647); }

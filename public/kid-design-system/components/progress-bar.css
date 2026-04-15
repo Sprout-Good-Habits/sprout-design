@@ -1,0 +1,209 @@
+/* ═══════════════════════════════════════════════════════════
+   Progress Bar
+   Linear progress indicator for quest/exercise flows.
+   Types: Continuous (24px track) · Stepper (16px track)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Container ── */
+.progress-bar {
+  display:flex; flex-direction:column;
+  gap:0px;
+  height:42px; width:100%;
+  align-items:flex-start;
+  justify-content:flex-end;
+  padding:0;
+  position:relative;
+  background:none;
+  border-radius:0;
+  overflow:visible;
+}
+
+/* ── Message (optional streak callout) ── */
+.progress-message {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:var(--line-height-text-xs, 16px);
+  font-weight:var(--font-weight-bold, 700);
+  color:var(--brand-500, #0ba5ec);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  width:100%;
+  position:relative;
+  flex-shrink:0;
+}
+.progress-message:empty,
+.progress-message.hidden {
+  display:none;
+}
+
+/* ── Track ── */
+/* Continuous type: 24px tall.  Stepper type: 16px tall. */
+.progress-track {
+  width:100%; height:24px;
+  background:var(--bg-secondary, #fafafa);
+  border-radius:var(--radius-full, 9999px);
+  position:relative;
+  flex-shrink:0;
+  display:flex; flex-direction:column;
+  align-items:flex-start;
+}
+.progress-bar.stepper .progress-track {
+  height:16px;
+}
+
+/* ── Fill ── */
+.progress-fill {
+  flex:1 0 0;
+  height:auto;
+  background:var(--brand-500, #0ba5ec);
+  border-radius:var(--radius-full, 9999px);
+  min-width:24px; min-height:1px;
+  padding:var(--spacing-xs, 4px) var(--spacing-md, 8px);
+  box-sizing:border-box;
+  position:relative;
+  transition:width 0.35s cubic-bezier(0.5, 1.8, 0.3, 0.8);
+  display:flex; flex-direction:column;
+  align-items:flex-start;
+}
+
+/* Inner highlight */
+.progress-fill::after {
+  content:'';
+  display:block;
+  width:100%; height:4px;
+  background:var(--utility-brand-300, #7cd4fd);
+  border-radius:var(--radius-full, 9999px);
+  flex-shrink:0;
+}
+
+/* ── Counter (optional current/total label centered on the track) ── */
+.progress-counter {
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  line-height:var(--line-height-text-xs, 16px);
+  font-weight:var(--font-weight-semibold, 600);
+  color:var(--text-quaternary, #717680);
+  text-align:center;
+  white-space:nowrap;
+  mix-blend-mode:multiply;
+  pointer-events:none;
+  z-index:1;
+}
+
+/* ── Sparkle confetti animation ── */
+@keyframes sparkle-pop {
+  0%   { opacity:0; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(0); }
+  30%  { opacity:1; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(1); }
+  70%  { opacity:1; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(1); }
+  100% { opacity:0; transform:translate(var(--tx), var(--ty)) rotate(45deg) scale(0.5); }
+}
+
+@keyframes sparkle-shimmer {
+  0%   { opacity:0; transform:translateX(-100%); }
+  20%  { opacity:0.6; }
+  100% { opacity:0; transform:translateX(20px); }
+}
+
+.spark-overlay {
+  position:absolute; top:0; left:0; right:0; bottom:0;
+  pointer-events:none; z-index:10;
+  overflow:visible;
+}
+
+.sparkle {
+  position:absolute;
+  width:var(--sz, 6px); height:var(--sz, 6px);
+  border-radius:var(--radius-xxs, 2px);
+  background:var(--c, var(--brand-500, #0ba5ec));
+  transform:rotate(45deg);
+  animation:sparkle-pop var(--dur, 0.55s) cubic-bezier(0.5,1.8,0.3,0.8) forwards;
+  animation-delay:var(--d, 0s);
+}
+
+.sparkle-shimmer {
+  position:absolute;
+  width:24px; height:100%;
+  top:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+  border-radius:var(--radius-full, 9999px);
+  animation:sparkle-shimmer 0.5s cubic-bezier(0.5,1.8,0.3,0.8) forwards;
+  pointer-events:none;
+}
+
+/* ── Checkpoints layer ── */
+.progress-checkpoints {
+  position:absolute; inset:0;
+  display:flex; align-items:center;
+  pointer-events:none;
+}
+
+/* ── Individual checkpoint — 24px circle centered on the track ── */
+.progress-checkpoint {
+  position:absolute;
+  top:50%;
+  transform:translate(-50%, -50%);
+  width:24px; height:24px;
+  border-radius:var(--radius-full, 9999px);
+  background:var(--bg-secondary, #fafafa);
+  display:flex; align-items:center; justify-content:center;
+  padding:var(--spacing-xs, 4px);
+  box-sizing:border-box;
+  user-select:none;
+  transition:background 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Last checkpoint — flush to right edge of track */
+.progress-checkpoint:last-child {
+  left:auto !important;
+  right:0;
+  transform:translateY(-50%);
+}
+
+/* ── Type 1: Number ── */
+.progress-checkpoint.checkpoint-number .progress-checkpoint-label {
+  display:block;
+  color:var(--text-quaternary, #717680);
+  transition:color 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.progress-checkpoint.checkpoint-number.reached {
+  background:var(--fg-brand-primary, #0ba5ec);
+}
+.progress-checkpoint.checkpoint-number.reached .progress-checkpoint-label {
+  color:var(--text-white, #ffffff);
+}
+
+/* ── Type 2: Icon ── */
+.progress-checkpoint.checkpoint-icon .progress-checkpoint-check {
+  display:none;
+}
+.progress-checkpoint.checkpoint-icon.reached {
+  background:var(--fg-brand-primary, #0ba5ec);
+}
+.progress-checkpoint.checkpoint-icon.reached .progress-checkpoint-check {
+  display:block;
+}
+
+/* Checkpoint label (number) */
+.progress-checkpoint-label {
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  font-size:var(--font-size-text-xs, 12px);
+  font-weight:var(--font-weight-semibold, 600);
+  line-height:var(--line-height-text-xs, 16px);
+  text-align:center;
+  display:none;
+}
+
+/* Checkmark icon */
+.progress-checkpoint-check {
+  width:20px; height:20px;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill { transition:none; }
+  .sparkle { animation:none; display:none; }
+  .sparkle-shimmer { animation:none; display:none; }
+}

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Subtitles</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script type="application/ld+json">
+{
+  "@type": "DesignComponent",
+  "name": "Subtitles",
+  "slug": "subtitles",
+  "intent": {
+    "purpose": "Display a text bubble for conversational or feedback messages, used standalone or composed inside Conversational Feedback",
+    "taskContext": ["conversational-feedback", "encouragement", "inline-messaging"],
+    "sentiment": ["neutral", "positive"]
+  },
+  "composition": {
+    "requires": ["text"],
+    "allows": ["leading-icon"],
+    "forbids": ["avatar", "button", "nested-subtitles"]
+  },
+  "variants": [
+    { "name": "Centered", "useWhen": "Default conversational messages — text is centered", "pairWith": [] },
+    { "name": "Left aligned", "useWhen": "Messages that benefit from left-aligned reading flow", "pairWith": [] },
+    { "name": "Left aligned + icon", "useWhen": "Messages with a leading emoji or icon for added context", "pairWith": [] }
+  ],
+  "sizes": [
+    { "name": "Default", "useWhen": "All contexts — Fill container width, flexible height" }
+  ],
+  "context": {
+    "density": ["default"],
+    "modality": ["mobile", "tablet"],
+    "placement": ["inline", "inside-conversational-feedback", "overlay"]
+  },
+  "relationships": {
+    "related": ["ConversationalFeedback", "Toast", "MessageBubble"],
+    "escalatesTo": [],
+    "degradesTo": [],
+    "groupsWith": ["AvatarPortrait", "Avatar"]
+  },
+  "states": ["default"],
+  "accessibility": {
+    "role": "status",
+    "keyboard": [],
+    "ariaAttributes": ["aria-label", "aria-live"],
+    "minTouchTarget": "N/A"
+  }
+}
+</script>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/components/subtitles.css">
+<style>
+/* ── Demo helpers ── */
+.context-pair {
+  display:flex; gap:var(--spacing-3xl, 24px); flex-wrap:wrap; align-items:flex-start;
+}
+.overlay-bg {
+  background:var(--gray-900, #181d27);
+  border-radius:var(--radius-xl, 12px);
+  padding:var(--spacing-xl, 16px);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+<div class="content-area">
+<div class="page-content">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="page-header">
+    <div class="sec-title">Subtitles</div>
+    <div class="sec-desc">A text bubble that delivers short conversational or feedback messages. Subtitles can be used standalone or composed inside <strong>Conversational Feedback</strong> alongside an <a href="/components/avatar-portrait.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">Avatar Portrait</a> or <a href="/components/avatar.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">Avatar</a>.</div>
+    <div class="prose" style="margin-top:var(--spacing-xl, 16px);">
+      <ul>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use for short encouragement, feedback, or conversational messages.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use <strong>Centered</strong> for simple messages, <strong>Left aligned</strong> for longer text, <strong>Left aligned + icon</strong> when an emoji adds context.</li>
+        <li><span style="color:var(--green-500, #17b26a)">&#10003;</span> Use the <strong>Overlay</strong> context when placed on top of rich backgrounds or images.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t use for long-form content &mdash; text is capped at 120px height because messages rotate like subtitles.</li>
+        <li><span style="color:var(--red-500, #f04438)">&#10007;</span> Don&rsquo;t add buttons or interactive elements inside subtitles.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Variant overview ════ -->
+  <div class="variant-overview">
+    <div class="demo">
+      <div class="demo-item">
+        <span class="demo-label">Centered</span>
+        <div class="subtitles subtitles-default subtitles-centered">
+          <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Left aligned</span>
+        <div class="subtitles subtitles-default subtitles-left">
+          <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="demo-label">Left aligned + icon</span>
+        <div class="subtitles subtitles-default subtitles-left-icon">
+          <div class="subtitles-leading"><span class="tossface">&#x1F525;</span></div>
+          <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ When to use ════ -->
+  <div class="doc-section">
+    <h2>When to use</h2>
+    <p>Subtitles deliver brief, contextual messages to the user.</p>
+    <div class="prose">
+      <ul>
+        <li><strong>Standalone</strong> &mdash; As a lightweight feedback message on its own, e.g., a streak celebration or coaching nudge.</li>
+        <li><strong>Inside Conversational Feedback</strong> &mdash; Paired with an Avatar Portrait or Avatar to create a full conversational moment with character presence.</li>
+        <li><strong>Overlay context</strong> &mdash; On top of dark or busy backgrounds where the default style wouldn&rsquo;t have enough contrast.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ When not to use ════ -->
+  <div class="doc-section">
+    <h2>When not to use</h2>
+    <div class="prose">
+      <ul>
+        <li>Don&rsquo;t use for full chat messages &mdash; use <a href="/components/message-bubble.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Message Bubble</a> instead.</li>
+        <li>Don&rsquo;t use for system alerts or errors &mdash; use <a href="/components/toast.html" style="color:var(--brand-600);font-weight:600;text-decoration:none">Toast</a> instead.</li>
+        <li>Don&rsquo;t use for long text that exceeds the 120px max height &mdash; the content will be clipped.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Layouts ════ -->
+  <div class="doc-section">
+    <h2>Layouts</h2>
+    <p>Three layout options control text alignment and whether a leading icon is shown.</p>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Centered</h3>
+    <p>Text is centered. Best for short, punchy messages.</p>
+    <div class="demo">
+      <div class="subtitles subtitles-default subtitles-centered">
+        <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Left aligned</h3>
+    <p>Text is left-aligned. Better for slightly longer messages or a more natural reading flow.</p>
+    <div class="demo">
+      <div class="subtitles subtitles-default subtitles-left">
+        <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Left aligned + icon</h3>
+    <p>A 40px leading icon slot precedes left-aligned text. Use when an emoji adds meaning (e.g., &#x1F525; for streaks, &#x1F3C6; for achievements).</p>
+    <div class="demo">
+      <div class="demo-item">
+        <div class="subtitles subtitles-default subtitles-left-icon">
+          <div class="subtitles-leading"><span class="tossface">&#x1F525;</span></div>
+          <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Context ════ -->
+  <div class="doc-section">
+    <h2>Context</h2>
+    <p>Two contexts adapt the bubble to its surroundings.</p>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Default</h3>
+    <p>Light background (<code>--bg-secondary</code>) with a subtle border. Used on white or light screens.</p>
+    <div class="demo">
+      <div class="context-pair">
+        <div class="subtitles subtitles-default subtitles-centered">
+          <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+        </div>
+        <div class="subtitles subtitles-default subtitles-left-icon">
+          <div class="subtitles-leading"><span class="tossface">&#x1F525;</span></div>
+          <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Overlay</h3>
+    <p>Semi-transparent dark background with white text. Used on top of images, illustrations, or dark backgrounds.</p>
+    <div class="demo">
+      <div class="overlay-bg">
+        <div class="context-pair">
+          <div class="subtitles subtitles-overlay subtitles-centered">
+            <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+          </div>
+          <div class="subtitles subtitles-overlay subtitles-left-icon">
+            <div class="subtitles-leading"><span class="tossface">&#x1F525;</span></div>
+            <p class="subtitles-text">You&rsquo;re on fire!<br>Keep up that streak</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ Transitions ════ -->
+  <div class="doc-section">
+    <h2>Transitions</h2>
+    <p>Subtitle messages rotate in and out following <a href="/foundations/transitions.html" style="color:var(--brand-600);text-decoration:none;font-weight:600">iOS motion principles</a>. Only the text content transitions &mdash; the container stays in place.</p>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Text rotation</h3>
+    <p>When a new message replaces the current one, the outgoing text exits downward while the incoming text enters from above, creating a vertical &ldquo;ticker&rdquo; motion.</p>
+    <table class="token-table">
+      <thead><tr><th>Step</th><th>Property</th><th>Value</th><th>Duration</th><th>Easing</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="2"><strong>Exit</strong> (outgoing text)</td><td>opacity</td><td>1 &rarr; 0</td><td rowspan="2"><code>0.25s</code></td><td rowspan="2"><code>easeIn</code></td></tr>
+        <tr><td>translateY</td><td>0 &rarr; 8px</td></tr>
+        <tr><td rowspan="2"><strong>Enter</strong> (incoming text)</td><td>opacity</td><td>0 &rarr; 1</td><td rowspan="2"><code>0.35s</code></td><td rowspan="2"><code>spring</code></td></tr>
+        <tr><td>translateY</td><td>&minus;8px &rarr; 0</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Sequencing</h3>
+    <div class="prose">
+      <ul>
+        <li>The exit completes before the enter begins &mdash; the two never overlap.</li>
+        <li>Follow the iOS pattern: <strong>exit with easeIn</strong> (0.25s), then <strong>enter with spring</strong> (0.35s).</li>
+        <li>The leading icon (if present) transitions together with the text as a single unit.</li>
+      </ul>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">First appearance</h3>
+    <div class="prose">
+      <ul>
+        <li>When the Subtitles component first appears on screen, the text enters with the same <strong>spring</strong> animation (0.35s, translateY &minus;8px &rarr; 0, opacity 0 &rarr; 1).</li>
+        <li>No exit animation is needed for the first message.</li>
+      </ul>
+    </div>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Reduced motion</h3>
+    <div class="prose">
+      <ul>
+        <li>When <code>prefers-reduced-motion: reduce</code> is active, replace the vertical slide with a simple crossfade (opacity only, 0.2s easeInOut).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Anatomy ════ -->
+  <div class="doc-section">
+    <h2>Anatomy</h2>
+    <div class="demo" style="padding:var(--spacing-3xl, 24px);justify-content:center;display:flex;">
+      <div class="subtitles subtitles-default subtitles-left-icon" style="outline:2px dashed var(--brand-300);outline-offset:4px;">
+        <div class="subtitles-leading" style="outline:2px dashed var(--green-400);outline-offset:2px;"><span class="tossface">&#x1F525;</span></div>
+        <p class="subtitles-text" style="outline:2px dashed var(--violet-300);outline-offset:2px;">You&rsquo;re on fire!<br>Keep up that streak</p>
+      </div>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Container</strong> &mdash; Fills parent width, <code>padding: 16px</code> (<code>--spacing-xl</code>), <code>border-radius: 12px</code> (<code>--radius-xl</code>).</li>
+        <li><strong>Text</strong> &mdash; Body text (<code>--font-size-text-md</code>, 16px) with a max height of 120px. Messages are short and rotate in/out like subtitles &mdash; overflowing text is clipped.</li>
+        <li><strong>Leading icon</strong> (optional) &mdash; 40 &times; 40px slot for a TossFace emoji, separated by 8px gap (<code>--spacing-md</code>).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════ Token reference ════ -->
+  <div class="doc-section">
+    <h2>Token reference</h2>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:16px 0 8px">Container</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Width</td><td>Fill container (100%)</td></tr>
+        <tr><td>Padding</td><td><code>--spacing-xl</code> (16px)</td></tr>
+        <tr><td>Border radius</td><td><code>--radius-xl</code> (12px)</td></tr>
+        <tr><td>Background (Default)</td><td><code>--bg-secondary</code> (#fafafa)</td></tr>
+        <tr><td>Border (Default)</td><td>1px solid <code>--border-secondary</code> (#e9eaeb)</td></tr>
+        <tr><td>Background (Overlay)</td><td><code>--bg-overlay</code> (rgba(10,13,18,0.2))</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Text</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Token / Value</th></tr></thead>
+      <tbody>
+        <tr><td>Font family</td><td><code>--font-family-body</code> (Inter)</td></tr>
+        <tr><td>Font size</td><td><code>--font-size-text-md</code> (16px)</td></tr>
+        <tr><td>Font weight</td><td><code>--font-weight-regular</code> (400)</td></tr>
+        <tr><td>Line height</td><td><code>--line-height-text-md</code> (24px)</td></tr>
+        <tr><td>Max height</td><td>120px</td></tr>
+        <tr><td>Color (Default)</td><td><code>--text-primary</code> (#181d27)</td></tr>
+        <tr><td>Color (Overlay)</td><td><code>--text-white</code> (#ffffff)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:var(--font-size-text-md, 16px);font-weight:var(--font-weight-semibold, 600);color:var(--text-primary);margin:24px 0 8px">Leading icon</h3>
+    <table class="token-table">
+      <thead><tr><th>Property</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Size</td><td>40 &times; 40px</td></tr>
+        <tr><td>Gap from text</td><td><code>--spacing-md</code> (8px)</td></tr>
+        <tr><td>Emoji font</td><td>TossFace (32px)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ Accessibility ════ -->
+  <div class="doc-section">
+    <h2>Accessibility</h2>
+    <div class="prose">
+      <ul>
+        <li>Use <code>role="status"</code> so screen readers announce the message without interrupting the user.</li>
+        <li>Add <code>aria-live="polite"</code> when the message appears dynamically (e.g., after completing a task).</li>
+        <li>Leading emojis are decorative &mdash; the text content should be self-explanatory without the icon.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="last-updated">Last updated: March 2026</div>
+</div>
+</div>
+<div class="toc-sidebar" id="toc"></div>
+</div>
+<script src="/nav.js"></script>
+<script src="/spec-renderer.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

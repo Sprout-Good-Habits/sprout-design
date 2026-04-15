@@ -1,0 +1,97 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Celebration Screen
+   A full-screen celebration layout shown when a
+   quest is approved. Features gradient background,
+   bouncing emoji, heading, summary, gems pill,
+   agent bubble, and continue button.
+   ═══════════════════════════════════════════════════ */
+
+@font-face {
+  font-family:'TossFace';
+  src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype');
+  font-display:swap;
+}
+
+/* ── Base container ── */
+.celebration {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+  background:linear-gradient(135deg, #f5fbee 0%, #e0f2fe 100%);
+  text-align:center;
+  padding:40px 24px;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+}
+
+/* ── Partial completion variant (warmer gradient) ── */
+.celebration-partial {
+  background:linear-gradient(135deg, #f5fbee 0%, #fefbe8 100%);
+}
+
+/* ── Bouncing emoji ── */
+.celebration-emoji {
+  font-size:80px;
+  margin-bottom:var(--spacing-xl, 16px);
+  font-family:'TossFace', sans-serif;
+  animation:celebration-bounce 0.6s ease-out;
+}
+
+@keyframes celebration-bounce {
+  0%   { transform:scale(0.3); }
+  50%  { transform:scale(1.15); }
+  100% { transform:scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebration-emoji { animation:none; }
+}
+
+/* ── Heading ── */
+.celebration h2,
+.celebration-heading {
+  font-size:var(--font-size-display-xs, 24px);
+  font-weight:800;
+  color:var(--text-primary, #181d27);
+  margin-bottom:var(--spacing-md, 8px);
+  line-height:var(--line-height-display-xs, 32px);
+  font-family:var(--font-family-display, 'Inter', sans-serif);
+}
+
+/* ── Summary text ── */
+.celebration p,
+.celebration-summary {
+  font-size:var(--font-size-text-sm, 14px);
+  color:var(--text-tertiary, #717680);
+  line-height:1.5;
+  max-width:260px;
+}
+
+/* ── Agent bubble (inside celebration) ── */
+.celebration .agent-bubble-row {
+  margin-top:var(--spacing-3xl, 24px);
+  width:260px;
+}
+
+/* ── Continue button ── */
+.celebration-btn {
+  margin-top:var(--spacing-3xl, 24px);
+  background:var(--sprout-500, #669f2a);
+  color:#fff;
+  padding:14px 40px;
+  border-radius:var(--radius-xl, 14px);
+  font-size:var(--font-size-text-sm, 15px);
+  font-weight:var(--font-weight-bold, 700);
+  border:none;
+  cursor:pointer;
+  font-family:var(--font-family-body, 'Inter', sans-serif);
+  transition:background 0.15s ease;
+}
+.celebration-btn:hover {
+  background:var(--sprout-600, #4f7a21);
+}
+.celebration-btn:focus-visible {
+  outline:2px solid var(--sprout-500, #669f2a);
+  outline-offset:2px;
+}
