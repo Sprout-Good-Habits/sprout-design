@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent DS — Catalog §1 Ported</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-messages.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-action-buttons.css">
+<link rel="stylesheet" href="/kid-design-system/components/tool-usage.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-banner.css">
+<style>
+/* Page chrome (mirrors components.html) */
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px;margin-bottom:48px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section h3{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:24px;font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:16px 0 4px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:var(--bg-secondary);padding:1px 6px;border-radius:4px;color:var(--text-secondary)}
+.doc-demo{width:100%;max-width:720px;min-height:120px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);padding:32px;box-sizing:border-box;margin-top:12px;display:flex;flex-direction:column;gap:16px}
+.variant-row{display:flex;flex-direction:column;gap:6px}
+.variant-label{font-size:11px;font-weight:600;color:var(--text-quaternary);text-transform:uppercase;letter-spacing:.5px}
+
+/* Rename table */
+.rename-table{width:100%;border-collapse:collapse;font-family:var(--font-family-body);font-size:14px;margin-top:8px}
+.rename-table th,.rename-table td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--border-secondary);vertical-align:top}
+.rename-table th{font-weight:var(--font-weight-semibold,600);color:var(--text-primary);background:var(--bg-secondary)}
+.rename-table code{font-size:12px}
+
+/* Gap callout */
+.callout{border:1px solid var(--border-secondary);border-left:3px solid var(--brand-500,#0ba5ec);border-radius:12px;padding:16px 20px;background:var(--bg-primary);margin:16px 0}
+.callout strong{color:var(--text-primary)}
+
+/* Proposed intent-color extensions — scoped to this demo only.
+   If adopted, these should move into chat-action-buttons.css. */
+.action-btn-amber  { background:#f79009; color:#fff; }
+.action-btn-amber:hover  { background:#dc6803; }
+.action-btn-violet { background:#7a5af8; color:#fff; }
+.action-btn-violet:hover { background:#6938ef; }
+.action-btn-red    { background:#d92d20; color:#fff; }
+.action-btn-red:hover    { background:#b42318; }
+
+/* Sprout emoji avatar (TossFace) — fallback while Rive avatar is not wired up here */
+@font-face{font-family:'TossFace';src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype')}
+.avatar-emoji{font-family:'TossFace','Apple Color Emoji','Segoe UI Emoji',sans-serif;font-size:18px;color:var(--text-primary)}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <div class="doc-hero">
+        <h1 class="doc-title">Catalog §1 — Ported to Parent DS</h1>
+        <p class="doc-desc">A proof-of-concept port of Section 1 (Conversation Core) from the Skills Component Catalog into the parent design system. Uses tokenized parent DS classes (<code>.msg-bubble-in</code>, <code>.action-btn</code>, <code>.typing-indicator</code>) instead of the catalog's inline styles and abbreviations.</p>
+      </div>
+
+      <div class="doc-divider"></div>
+
+      <!-- ─────────────────────────────────────────── -->
+      <!-- CLASS RENAME MAP                            -->
+      <!-- ─────────────────────────────────────────── -->
+      <div class="doc-section">
+        <h2>Class rename map</h2>
+        <p>Every catalog class in §1 has a parent DS equivalent. Where a concept exists in both, the parent DS name wins.</p>
+        <table class="rename-table">
+          <thead><tr><th>Catalog</th><th>Parent DS</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>.msg.from-sprout</code></td><td><code>.msg-group.msg-incoming</code> + <code>.msg-bubble.msg-bubble-in</code></td><td>Split group wrapper from bubble; use real <code>.avatar</code></td></tr>
+            <tr><td><code>.msg.from-parent</code></td><td><code>.msg-group.msg-outgoing</code> + <code>.msg-bubble.msg-bubble-out</code></td><td>No avatar for outgoing</td></tr>
+            <tr><td>(missing)</td><td><code>.msg-bubble-coparent</code></td><td>Adds co-parent variant the catalog omits</td></tr>
+            <tr><td><code>.msg-avatar</code> (emoji)</td><td><code>.avatar.avatar-sm.avatar-bg-sprout</code></td><td>Use real Avatar component (Rive or silhouette); demo here falls back to TossFace</td></tr>
+            <tr><td><code>.msg-body</code> / <code>.msg-text</code></td><td><code>.msg-col</code> / <code>.msg-bubble</code></td><td>One class per role, not nested element types</td></tr>
+            <tr><td><code>.msg-actions</code> (button row)</td><td><code>.action-btns</code></td><td>Catalog conflates msg-action icons with response buttons; parent DS separates them</td></tr>
+            <tr><td><code>.msg-btn.primary</code></td><td><code>.action-btn.action-btn-primary</code></td><td>Green filled</td></tr>
+            <tr><td><code>.msg-btn.secondary</code></td><td><code>.action-btn.action-btn-secondary</code></td><td>Outlined</td></tr>
+            <tr><td><code>.msg-btn.disabled</code></td><td><code>.action-btn.faded</code> (or <code>.loading</code> / <code>.done</code>)</td><td>Parent DS models state, not just disabled</td></tr>
+            <tr><td><code>.msg-btn.amber</code> / <code>.violet</code> / <code>.red</code></td><td><em>no equivalent</em></td><td>See callout below</td></tr>
+            <tr><td><code>.thinking-attach</code> (sprout-msg inline)</td><td><code>.tool-usage</code> + <code>.tool-usage-details</code></td><td>Already a parent DS component</td></tr>
+            <tr><td><code>.typing-indicator</code> + <code>.ti-dots</code> / <code>.ti-context</code></td><td><code>.typing-indicator</code> + <code>.typing-indicator-label</code></td><td>Parent DS uses a fading text label, not bouncing dots</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ─────────────────────────────────────────── -->
+      <!-- GAP: ACTION-BUTTON INTENT COLORS            -->
+      <!-- ─────────────────────────────────────────── -->
+      <div class="doc-section">
+        <h2>Gap: intent-colored action buttons</h2>
+        <p>The catalog models action buttons by <em>intent</em> (<code>.amber</code>=consent, <code>.violet</code>=connect, <code>.red</code>=destructive). The parent DS models them by <em>state</em> (<code>.action-btn-primary</code> + <code>.loading</code> / <code>.done</code> / <code>.faded</code>). These two models don't overlap.</p>
+        <div class="callout">
+          <strong>Proposal:</strong> add <code>.action-btn-amber</code>, <code>.action-btn-violet</code>, and <code>.action-btn-red</code> as intent modifiers in <code>chat-action-buttons.css</code>, keeping <code>-primary</code> / <code>-secondary</code> as the defaults. Demo below uses this extension (scoped to this page) so you can see what it would look like before committing.
+        </div>
+      </div>
+
+      <div class="doc-divider"></div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- COMPONENT 1: SPROUT MESSAGE                  -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="doc-section">
+        <h2>1. Sprout Message</h2>
+        <p>Messages from Sprout to the parent. Uses <code>.msg-group.msg-incoming</code> with <code>.msg-row</code>, a real <code>.avatar</code>, and <code>.msg-bubble.msg-bubble-in</code>. The sender label (<code>.msg-sender</code>) sits above the bubble with a 56px left indent so it aligns with the bubble text, not the avatar.</p>
+
+        <div class="doc-demo">
+          <div class="variant-row">
+            <div class="variant-label">State — Question</div>
+            <div class="msg-group msg-incoming">
+              <div class="msg-sender">Sprout</div>
+              <div class="msg-row msg-incoming">
+                <div class="msg-avatar"><div class="avatar avatar-sm avatar-bg-sprout avatar-emoji">🌱</div></div>
+                <div class="msg-col"><div class="msg-bubble msg-bubble-in">What time is Ben's bedtime on school nights?</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">State — Statement</div>
+            <div class="msg-group msg-incoming">
+              <div class="msg-row msg-incoming">
+                <div class="msg-avatar"><div class="avatar avatar-sm avatar-bg-sprout avatar-emoji">🌱</div></div>
+                <div class="msg-col"><div class="msg-bubble msg-bubble-in">I've saved Ben's bedtime as 8:30 PM on weeknights.</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">State — Blocked</div>
+            <div class="msg-group msg-incoming">
+              <div class="msg-row msg-incoming">
+                <div class="msg-avatar"><div class="avatar avatar-sm avatar-bg-sprout avatar-emoji">🌱</div></div>
+                <div class="msg-col"><div class="msg-bubble msg-bubble-in">I can't access Ben's grades. The school portal connection expired. Want me to reconnect?</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">Content — With tool-usage attachment</div>
+            <div class="msg-group msg-incoming">
+              <div class="msg-row msg-incoming">
+                <div class="msg-avatar"><div class="avatar avatar-sm avatar-bg-sprout avatar-emoji">🌱</div></div>
+                <div class="msg-col">
+                  <div class="msg-bubble msg-bubble-in">Here's what I found about the reading program.</div>
+                  <div class="tool-usage">
+                    <div class="tool-usage-chevron open">▾</div>
+                    <div class="tool-usage-label">Checked library portal</div>
+                  </div>
+                  <div class="tool-usage-details open">
+                    Searched Oak Park Library catalog. Found summer reading program, ages 5-12, starts June 1.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- COMPONENT 2: PARENT MESSAGE                  -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="doc-section">
+        <h2>2. Parent Message</h2>
+        <p>Right-aligned blue bubble, no avatar. Uses <code>.msg-group.msg-outgoing</code> with <code>.msg-bubble.msg-bubble-out</code>. File and photo attachments use the parent DS <code>.msg-attachments</code> system.</p>
+
+        <div class="doc-demo">
+          <div class="variant-row">
+            <div class="variant-label">Content — Short answer</div>
+            <div class="msg-group msg-outgoing"><div class="msg-bubble msg-bubble-out">8:30pm</div></div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">Content — Instruction</div>
+            <div class="msg-group msg-outgoing"><div class="msg-bubble msg-bubble-out">Set Ben's bedtime to 8:30pm on weeknights and 9:30pm on weekends. Also add a 15-minute wind-down reminder.</div></div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">Content — Voice transcription (italic)</div>
+            <div class="msg-group msg-outgoing"><div class="msg-bubble msg-bubble-out" style="font-style:italic">🎤 "Ben has soccer practice Tuesdays and Thursdays at four thirty"</div></div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">Content — File attachment</div>
+            <div class="msg-group msg-outgoing">
+              <div class="msg-bubble msg-bubble-out">This is the report card</div>
+              <div class="msg-attachments" style="margin-top:4px;max-width:300px">
+                <div class="msg-attachments-file">
+                  <div class="msg-attachments-file-icon">📄</div>
+                  <div class="msg-attachments-file-info">
+                    <div class="msg-attachments-file-name">Q3-report-card.pdf</div>
+                    <div class="msg-attachments-file-meta">2.1 MB · PDF</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- COMPONENT 3: ACTION BUTTONS                  -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="doc-section">
+        <h2>3. Action Buttons</h2>
+        <p>Inline response buttons after a Sprout message. Parent DS baseline is <code>.action-btn-primary</code> / <code>.action-btn-secondary</code> with state modifiers. Intent-colored modifiers below (<code>.action-btn-amber</code>, <code>-violet</code>, <code>-red</code>) are proposed extensions needed to fully absorb the catalog's intent model.</p>
+
+        <div class="doc-demo">
+          <div class="variant-row">
+            <div class="variant-label">Default (primary + secondary)</div>
+            <div class="action-btns">
+              <button class="action-btn action-btn-primary">Create quest</button>
+              <button class="action-btn action-btn-secondary">Skip</button>
+            </div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">State — Done</div>
+            <div class="action-btns">
+              <button class="action-btn action-btn-primary done">Created</button>
+              <button class="action-btn action-btn-secondary faded">Skip</button>
+            </div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">State — Loading</div>
+            <div class="action-btns">
+              <button class="action-btn action-btn-primary loading"><span class="spinner"></span>Creating...</button>
+              <button class="action-btn action-btn-secondary faded">Skip</button>
+            </div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">Intent — Amber (consent) <em style="color:var(--text-quaternary);font-weight:400;text-transform:none;letter-spacing:0"> · proposed</em></div>
+            <div class="action-btns">
+              <button class="action-btn action-btn-amber">Allow access</button>
+              <button class="action-btn action-btn-secondary">Not now</button>
+            </div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">Intent — Violet (connect) <em style="color:var(--text-quaternary);font-weight:400;text-transform:none;letter-spacing:0"> · proposed</em></div>
+            <div class="action-btns">
+              <button class="action-btn action-btn-violet">Connect Google Calendar</button>
+              <button class="action-btn action-btn-secondary">Skip</button>
+            </div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">Intent — Red (destructive) <em style="color:var(--text-quaternary);font-weight:400;text-transform:none;letter-spacing:0"> · proposed</em></div>
+            <div class="action-btns">
+              <button class="action-btn action-btn-red">Delete skill</button>
+              <button class="action-btn action-btn-secondary">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- COMPONENT 4: TYPING INDICATOR                -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="doc-section">
+        <h2>4. Typing Indicator</h2>
+        <p>Parent DS models the typing indicator as an <strong>avatar + fading text label</strong> (not bouncing dots). The catalog's "context" text becomes the default label, so the <em>contextual</em> variant is actually the canonical form in parent DS.</p>
+
+        <div class="doc-demo">
+          <div class="variant-row">
+            <div class="variant-label">Simple (thinking)</div>
+            <div class="typing-indicator">
+              <div class="msg-avatar"><div class="avatar avatar-sm avatar-bg-sprout avatar-emoji">🌱</div></div>
+              <div class="typing-indicator-label">Thinking…</div>
+            </div>
+          </div>
+
+          <div class="variant-row">
+            <div class="variant-label">With context</div>
+            <div class="typing-indicator">
+              <div class="msg-avatar"><div class="avatar avatar-sm avatar-bg-sprout avatar-emoji">🌱</div></div>
+              <div class="typing-indicator-label"><strong>Looking up</strong> Mali's schedule…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- BONUS: CO-PARENT (parent DS gains this)      -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="doc-section">
+        <h2>Bonus — Co-parent message</h2>
+        <p>The catalog doesn't have a co-parent variant. Parent DS does: <code>.msg-bubble-coparent</code>. Keeping this on the port so it doesn't get lost.</p>
+
+        <div class="doc-demo">
+          <div class="msg-group msg-incoming">
+            <div class="msg-sender">Alex (co-parent)</div>
+            <div class="msg-row msg-incoming">
+              <div class="msg-avatar"><div class="avatar avatar-sm avatar-bg-violet">A</div></div>
+              <div class="msg-col"><div class="msg-bubble msg-bubble-coparent">Did you see Emma's reading streak?</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-divider"></div>
+
+      <!-- ─────────────────────────────────────────── -->
+      <!-- DECISIONS LOG                                -->
+      <!-- ─────────────────────────────────────────── -->
+      <div class="doc-section">
+        <h2>Decisions made during this port</h2>
+        <ol style="padding-left:20px;color:var(--text-tertiary);line-height:24px">
+          <li><strong>Avatar</strong> — kept the 🌱 TossFace emoji as a fallback here, but real usage should drop in the parent DS <code>.avatar</code> Rive canvas (<code>canvas.rive-sprout</code>) or silhouette SVG. Catalog's inline emoji avatars aren't grounded or branded.</li>
+          <li><strong>Typing indicator</strong> — dropped the bouncing dots; parent DS is a fading text label. This is a visual change the catalog should absorb, not the other way around.</li>
+          <li><strong>Action button intents</strong> — added <code>.action-btn-amber/-violet/-red</code> as a proposed extension to <code>chat-action-buttons.css</code>. If rejected, the catalog needs to stop encoding intent in color and pick a different signal (icon, copy, or confirm sheet).</li>
+          <li><strong>Attachments inside Sprout messages</strong> — replaced catalog's <code>.thinking-attach</code> with parent DS <code>.tool-usage</code> + <code>.tool-usage-details</code>. Same idea, already a real component.</li>
+          <li><strong>Sender label</strong> — catalog omits sender labels entirely. Parent DS keeps them (for co-parent disambiguation and first-message-of-a-group). Ported accordingly.</li>
+        </ol>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Ported April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

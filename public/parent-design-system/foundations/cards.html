@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System / Cards</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/parent-design-system/catalog-components.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section h3{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:24px 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-section a{color:var(--brand-700,#026aa2)}
+
+/* Lens table */
+.lens-table{width:720px;border-collapse:collapse;font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);margin:16px 0 24px;table-layout:fixed}
+.lens-table th{text-align:left;padding:12px;border-bottom:2px solid var(--border-primary);font-weight:var(--font-weight-semibold,600);font-size:var(--font-size-text-xs,12px);text-transform:uppercase;letter-spacing:0.04em;color:var(--text-tertiary)}
+.lens-table td{padding:14px 12px;border-bottom:1px solid var(--border-secondary);color:var(--text-secondary);vertical-align:top}
+.lens-table .lens-name{font-weight:var(--font-weight-semibold,600);color:var(--text-primary);font-size:var(--font-size-text-sm,14px);margin-bottom:2px}
+.lens-table .lens-desc{font-size:12px;color:var(--text-tertiary);line-height:18px}
+.lens-table th.col-name,.lens-table td.col-name{width:160px}
+.lens-table th.col-when,.lens-table td.col-when{width:200px}
+.lens-table code{font-size:11px}
+
+/* Inventory table */
+.inv-table{width:720px;border-collapse:collapse;font-size:12px;line-height:18px;margin:16px 0 24px;table-layout:fixed}
+.inv-table th{text-align:left;padding:10px 12px;border-bottom:2px solid var(--border-primary);font-weight:var(--font-weight-semibold,600);font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-tertiary)}
+.inv-table td{padding:10px 12px;border-bottom:1px solid var(--border-secondary);color:var(--text-secondary);vertical-align:top;font-size:12px}
+.inv-table th.col-comp,.inv-table td.col-comp{width:160px}
+.inv-table .comp-name{font-family:var(--font-family-body);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);font-size:12px}
+.inv-table .comp-class{font-family:'SF Mono','Fira Code',monospace;font-size:10px;color:var(--text-quaternary);display:block;margin-top:2px}
+.inv-table .lens-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:0.02em;background:var(--gray-100);color:var(--text-secondary);margin-right:4px}
+.inv-table .lens-tag.row{background:#fef3c7;color:#92400e}
+.inv-table .lens-tag.stat{background:#e0f2fe;color:#026aa2}
+.inv-table .lens-tag.list{background:#ede9fe;color:#5b21b6}
+.inv-table .lens-tag.bannered{background:#dcfce7;color:#166534}
+.inv-table .lens-tag.action{background:#fee2e2;color:#991b1b}
+.inv-table .lens-tag.default{background:var(--gray-100);color:var(--text-secondary)}
+.inv-table .lens-tag.bsemantic{background:var(--brand-50);color:var(--brand-600)}
+.inv-table .lens-tag.bstrong{background:var(--red-50);color:var(--red-500)}
+.inv-table .lens-tag.tonal{background:var(--sprout-50);color:var(--sprout-600)}
+.inv-table .lens-tag.dashed{background:var(--amber-50);color:var(--amber-600);border:1px dashed var(--amber-400)}
+
+/* Recipes section */
+.recipe-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 24px}
+.recipe-card{background:var(--bg-secondary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl,16px);padding:20px}
+.recipe-card-label{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:var(--brand-700,#026aa2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.recipe-card-title{font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.recipe-card-formula{font-family:'SF Mono','Fira Code',monospace;font-size:11px;color:var(--text-tertiary);margin:0 0 8px}
+.recipe-card-body{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-tertiary)}
+
+/* Mini live demos */
+.mini-demo-row{display:flex;flex-wrap:wrap;gap:16px;margin:16px 0 24px;padding:24px;background:var(--brand-25);border-radius:var(--radius-2xl,16px);align-items:flex-start;justify-content:center}
+.mini-demo-row > *{max-width:240px}
+/* Force TossFace for emoji glyphs in demo cards. TossFace only ships emoji
+   glyphs, so Latin text falls through to the body font automatically. */
+.mini-demo-row .cc-avatar,
+.mini-demo-row .sc-head,
+.mini-demo-row .ga-title,
+.mini-demo-row .er-icon,
+.mini-demo-row .ag-icon,
+.mini-demo-row .cfc-title,
+.mini-demo-row .ic-title,
+.mini-demo-row .cpc-emoji,
+.mini-demo-row .ra-banner .emoji,
+.mini-demo-row .sv-icon{font-family:'TossFace','Apple Color Emoji','Segoe UI Emoji',var(--font-family-body),sans-serif}
+
+/* ── Card surface = chat-card baseline ──
+   Match .artifact-card / .confirm-card from the kid-design-system that the
+   chat actually uses: white bg, 1px solid --border-secondary, --radius-2xl
+   (16px), --spacing-xl (16px) padding. No dashed, no shadow. Scoped to this
+   page so other pages keep their card variants. */
+.mini-demo-row > *{
+  background:var(--bg-primary,#fff)!important;
+  border:1px solid var(--border-secondary,#e9eaeb)!important;
+  border-radius:var(--radius-2xl,16px)!important;
+  padding:var(--spacing-xl,16px)!important;
+  box-shadow:none!important;
+}
+/* Bannered cards keep their inner header band, but the outer surface
+   still follows the chat-card rule (gray border, white bg, 16px radius). */
+.mini-demo-row .result-attach,
+.mini-demo-row .error-recovery{overflow:hidden!important;padding:0!important}
+.mini-demo-row .ra-body,
+.mini-demo-row .er-body{padding:var(--spacing-lg,12px) var(--spacing-xl,16px)}
+
+/* ── Type per /foundations/type.html, anchored on the chat's
+   confirm-card / artifact-card sizes ──
+   Card title  → 15px / 700  (matches confirm-card-title)
+   Body        → 14 / 20, 400 (text-sm)
+   UI label    → 14 / 20, 600 (text-sm semibold — artifact-name)
+   Detail      → 13 / 20, 400 (matches confirm-card-label/value/desc)
+   Caption     → 12 / 16, 400-600 (text-xs — artifact-sub) */
+
+/* Card title (confirm-card-title parity: 15/700) */
+.mini-demo-row .sc-head,
+.mini-demo-row .ga-title,
+.mini-demo-row .er-title,
+.mini-demo-row .ag-title,
+.mini-demo-row .cfc-title,
+.mini-demo-row .ic-title,
+.mini-demo-row .ra-banner .title{
+  font-family:var(--font-family-body);
+  font-size:15px;
+  line-height:22px;
+  font-weight:var(--font-weight-bold,700);
+  color:var(--text-primary)
+}
+
+/* Body / primary copy (text-sm 400) */
+.mini-demo-row .ag-detail,
+.mini-demo-row .er-explain,
+.mini-demo-row .dc-body,
+.mini-demo-row .ic-preview,
+.mini-demo-row .ra-body .hed{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-sm,14px);
+  line-height:var(--line-height-text-sm,20px);
+  font-weight:var(--font-weight-regular,400);
+  color:var(--text-primary)
+}
+
+/* UI label (text-sm 600 — artifact-name parity) */
+.mini-demo-row .sv-name,
+.mini-demo-row .cc-name,
+.mini-demo-row .cpc-text,
+.mini-demo-row .ag-btn,
+.mini-demo-row .cfc-item{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-sm,14px);
+  line-height:var(--line-height-text-sm,20px);
+  font-weight:var(--font-weight-semibold,600);
+  color:var(--text-primary)
+}
+
+/* Detail role (values inside list rows) */
+.mini-demo-row .sc-row,
+.mini-demo-row .sc-row .label,
+.mini-demo-row .sc-row .value,
+.mini-demo-row .ga-sub,
+.mini-demo-row .ra-body .detail{
+  font-size:13px;
+  line-height:20px;
+  color:var(--text-tertiary)
+}
+.mini-demo-row .sc-row .value{color:var(--text-primary)}
+
+/* ── Action button colors ──
+   Primary = brand-500, Secondary = gray-200, Destructive = red-500.
+   Never two primaries in the same row. Override the catalog's defaults
+   (green-500 / gray-100 / etc) locally on this page. */
+.mini-demo-row .ag-btn,
+.mini-demo-row .confirm-card-btn,
+.mini-demo-row .msg-btn{
+  border:none!important;
+  border-radius:11px!important;
+  padding:10px!important;
+  font-size:var(--font-size-text-sm,14px)!important;
+  line-height:var(--line-height-text-sm,20px)!important;
+  font-weight:var(--font-weight-semibold,600)!important;
+  text-align:center;
+  cursor:pointer
+}
+.mini-demo-row .ag-btn.approve,
+.mini-demo-row .msg-btn.primary{background:var(--brand-500)!important;color:#fff!important}
+.mini-demo-row .ag-btn.deny,
+.mini-demo-row .ag-btn.modify,
+.mini-demo-row .msg-btn.secondary{background:var(--gray-200)!important;color:var(--text-primary)!important}
+.mini-demo-row .ag-btn.destructive,
+.mini-demo-row .msg-btn.red{background:var(--red-500)!important;color:#fff!important}
+
+/* Caption role (meta, timestamps, source labels, status pills) */
+.mini-demo-row .sv-meta,
+.mini-demo-row .cc-detail,
+.mini-demo-row .dc-to,
+.mini-demo-row .dc-via,
+.mini-demo-row .ic-from,
+.mini-demo-row .ra-body .src,
+.mini-demo-row .ra-banner .sub,
+.mini-demo-row .cpc-detail,
+.mini-demo-row .dc-label,
+.mini-demo-row .ag-badge,
+.mini-demo-row .er-type,
+.mini-demo-row .pill{
+  font-size:var(--font-size-text-xs,12px);
+  line-height:var(--line-height-text-xs,16px);
+  color:var(--text-tertiary)
+}
+
+/* Drift box */
+.drift-box{background:#fffbeb;border:1px solid #fde68a;border-left:3px solid #f59e0b;border-radius:var(--radius-2xl,16px);padding:20px 24px;margin:16px 0 24px}
+.drift-box-title{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:#b45309;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.drift-box ul{margin:0;padding-left:20px}
+.drift-box li{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-secondary);margin-bottom:6px}
+.drift-box li code{font-size:12px}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Cards</h1>
+        <p class="doc-desc">28 different card components live in the catalog. Behind them are three reusable lenses (structure, surface, intent) that combine into the cards we ship. Pick from each lens, get the right card.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>The three lenses</h2>
+        <p>Every card answers three questions: <strong>what shape</strong>, <strong>what skin</strong>, <strong>what mood</strong>. Picking one value from each lens gives you a card. Existing cards are not arbitrary; each one is a specific (structure, surface, intent) triple.</p>
+      </div>
+
+      <!-- Lens 1: Structure -->
+      <div class="doc-section">
+        <h3>Lens 1: Structure (the shape)</h3>
+        <table class="lens-table">
+          <thead>
+            <tr><th class="col-name">Structure</th><th class="col-when">Pick when</th><th>Examples</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="lens-name">Row</div><div class="lens-desc">single horizontal line: icon + text + meta + optional pill</div></td>
+              <td>One thing to surface, no expansion needed</td>
+              <td>saved-attach, contact-card, doc-attach, sent-card, notif-banner</td>
+            </tr>
+            <tr>
+              <td><div class="lens-name">Stat</div><div class="lens-desc">title + short body, sometimes footer</div></td>
+              <td>Concept, milestone, or single fact</td>
+              <td>grad-attach, draft-card, reply-card, completion-card</td>
+            </tr>
+            <tr>
+              <td><div class="lens-name">List</div><div class="lens-desc">header + repeating rows (key-value, options, log entries)</div></td>
+              <td>Multiple comparable items</td>
+              <td>struct-card, trigger-card, track-card, export-card, skill-attach</td>
+            </tr>
+            <tr>
+              <td><div class="lens-name">Bannered</div><div class="lens-desc">colored top header strip + neutral body below</div></td>
+              <td>The result of a search, error, or share, where the topic deserves a header band</td>
+              <td>result-attach, error-recovery, share-card, export-card</td>
+            </tr>
+            <tr>
+              <td><div class="lens-name">Action</div><div class="lens-desc">stat or list + action buttons row at the bottom</div></td>
+              <td>Decision required: approve, deny, confirm, choose</td>
+              <td>confirm-card</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Lens 2: Surface -->
+      <div class="doc-section">
+        <h3>Lens 2: Surface (the skin)</h3>
+        <table class="lens-table">
+          <thead>
+            <tr><th class="col-name">Surface</th><th class="col-when">Pick when</th><th>Specs</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="lens-name">Default</div><div class="lens-desc">white bg, 1px gray border, no shadow</div></td>
+              <td>Neutral data, no semantic loaded</td>
+              <td><code>bg-primary</code> + <code>1px border-secondary</code></td>
+            </tr>
+            <tr>
+              <td><div class="lens-name">Bordered semantic</div><div class="lens-desc">white bg, 1px colored border</div></td>
+              <td>The card carries meaning (action, trust, warning) but isn't critical</td>
+              <td><code>bg-primary</code> + <code>1px brand-400 / amber-400 / teal-400 / etc</code></td>
+            </tr>
+            <tr>
+              <td><div class="lens-name">Bordered strong</div><div class="lens-desc">white bg, 2px colored border</div></td>
+              <td>Critical: destructive, requires explicit consent</td>
+              <td><code>bg-primary</code> + <code>2px red-500 / amber-400</code></td>
+            </tr>
+            <tr>
+              <td><div class="lens-name">Tonal</div><div class="lens-desc">tinted bg + matching color border</div></td>
+              <td>Celebratory, soft success, warm context</td>
+              <td><code>green-50 / amber-50 / sprout-25</code> + <code>1px matching color-300</code></td>
+            </tr>
+            <tr>
+              <td><div class="lens-name">Dashed</div><div class="lens-desc">white bg, dashed amber border</div></td>
+              <td>Knowledge entity (a thing Sprout has learned)</td>
+              <td><code>bg-primary</code> + <code>2px dashed amber-400</code> &middot; one-off, candidate for promotion</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Lens 3: Intent -->
+      <div class="doc-section">
+        <h3>Lens 3: Intent (the mood)</h3>
+        <table class="lens-table">
+          <thead>
+            <tr><th class="col-name">Intent</th><th class="col-when">Pick when</th><th>Color anchor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><div class="lens-name">Neutral</div></td><td>Just data. No loaded color.</td><td>gray</td></tr>
+            <tr><td><div class="lens-name">Action</div></td><td>Outbound or interactive. Sprout is doing something.</td><td>brand-blue</td></tr>
+            <tr><td><div class="lens-name">Knowledge</div></td><td>Something learned, taught, or graduated.</td><td>sprout-green</td></tr>
+            <tr><td><div class="lens-name">Trust</div></td><td>Audit, protocol, the boundary between Sprout and outside services.</td><td>teal</td></tr>
+            <tr><td><div class="lens-name">Warning</div></td><td>Awaiting attention, soft alert.</td><td>amber</td></tr>
+            <tr><td><div class="lens-name">Success</div></td><td>Done, sent, milestone reached.</td><td>green</td></tr>
+            <tr><td><div class="lens-name">Destructive</div></td><td>Erasing, revoking, irreversible.</td><td>red</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Inventory -->
+      <div class="doc-section">
+        <h2>Card inventory: what's in the catalog today</h2>
+        <p>Every card mapped to its three lenses. If you can't fit a new card into one of these triples, that's a signal to either invent a real new pattern or rethink the card.</p>
+
+        <table class="inv-table">
+          <thead>
+            <tr><th class="col-comp">Component</th><th>Structure</th><th>Surface</th><th>Intent</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="col-comp"><div class="comp-name">struct-card</div><span class="comp-class">.struct-card</span></td><td><span class="lens-tag list">List</span></td><td><span class="lens-tag default">Default</span></td><td><span class="lens-tag">Neutral</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">skill-attach</div><span class="comp-class">.skill-attach</span></td><td><span class="lens-tag list">List</span></td><td><span class="lens-tag dashed">Dashed</span></td><td><span class="lens-tag">Knowledge</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">result-attach</div><span class="comp-class">.result-attach</span></td><td><span class="lens-tag bannered">Bannered</span></td><td><span class="lens-tag bsemantic">Bordered semantic</span></td><td><span class="lens-tag">Success</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">grad-attach</div><span class="comp-class">.grad-attach</span></td><td><span class="lens-tag stat">Stat</span></td><td><span class="lens-tag tonal">Tonal</span></td><td><span class="lens-tag">Knowledge</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">saved-attach</div><span class="comp-class">.saved-attach</span></td><td><span class="lens-tag row">Row</span></td><td><span class="lens-tag bsemantic">Bordered semantic</span></td><td><span class="lens-tag">Neutral + status pill</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">doc-attach</div><span class="comp-class">.doc-attach</span></td><td><span class="lens-tag row">Row</span></td><td><span class="lens-tag tonal">Tonal</span></td><td><span class="lens-tag">Neutral</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">track-card</div><span class="comp-class">.track-card</span></td><td><span class="lens-tag list">List</span></td><td><span class="lens-tag default">Default</span></td><td><span class="lens-tag">Neutral</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">draft-card</div><span class="comp-class">.draft-card</span></td><td><span class="lens-tag stat">Stat</span></td><td><span class="lens-tag bsemantic">Bordered semantic</span></td><td><span class="lens-tag">Action</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">sent-card</div><span class="comp-class">.sent-card</span></td><td><span class="lens-tag row">Row</span></td><td><span class="lens-tag tonal">Tonal</span></td><td><span class="lens-tag">Success</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">reply-card</div><span class="comp-class">.reply-card</span></td><td><span class="lens-tag stat">Stat</span></td><td><span class="lens-tag bsemantic">Bordered semantic</span></td><td><span class="lens-tag">Action</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">contact-card</div><span class="comp-class">.contact-card</span></td><td><span class="lens-tag row">Row</span></td><td><span class="lens-tag default">Default</span></td><td><span class="lens-tag">Neutral</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">trigger-card</div><span class="comp-class">.trigger-card</span></td><td><span class="lens-tag list">List</span></td><td><span class="lens-tag bsemantic">Bordered semantic</span></td><td><span class="lens-tag">Warning</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">notif-banner</div><span class="comp-class">.notif-banner</span></td><td><span class="lens-tag row">Row</span></td><td><span class="lens-tag tonal">Tonal</span></td><td><span class="lens-tag">Info / Success / Alert</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">completion-card</div><span class="comp-class">.completion-card</span></td><td><span class="lens-tag stat">Stat</span></td><td><span class="lens-tag tonal">Tonal</span></td><td><span class="lens-tag">Success</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">coppa-card</div><span class="comp-class">.coppa-card</span></td><td><span class="lens-tag stat">Stat</span></td><td><span class="lens-tag bstrong">Bordered strong</span></td><td><span class="lens-tag">Warning</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">export-card</div><span class="comp-class">.export-card</span></td><td><span class="lens-tag list">List</span></td><td><span class="lens-tag default">Default</span></td><td><span class="lens-tag">Trust</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">protocol-card</div><span class="comp-class">.protocol-card</span></td><td><span class="lens-tag stat">Stat</span></td><td><span class="lens-tag bsemantic">Bordered semantic</span></td><td><span class="lens-tag">Trust</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">share-card</div><span class="comp-class">.share-card</span></td><td><span class="lens-tag bannered">Bannered</span></td><td><span class="lens-tag bsemantic">Bordered semantic</span></td><td><span class="lens-tag">Action</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">confirm-card</div><span class="comp-class">.confirm-card</span></td><td><span class="lens-tag action">Action</span></td><td><span class="lens-tag bstrong">Bordered strong</span></td><td><span class="lens-tag">Destructive / Grant</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">retry-block</div><span class="comp-class">.retry-block</span></td><td><span class="lens-tag stat">Stat</span></td><td><span class="lens-tag tonal">Tonal</span></td><td><span class="lens-tag">Warning / Success / Destructive</span></td></tr>
+            <!-- error-recovery is now a conversational pattern using sprout-message + optional cards/buttons, not a standalone card -->
+            <tr><td class="col-comp"><div class="comp-name">reasoning-transcript</div><span class="comp-class">.reasoning-transcript</span></td><td><span class="lens-tag stat">Stat (expandable)</span></td><td><span class="lens-tag default">Default</span></td><td><span class="lens-tag">Knowledge</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">planning-tree</div><span class="comp-class">.planning-tree</span></td><td><span class="lens-tag list">List (timeline)</span></td><td><span class="lens-tag tonal">Tonal</span></td><td><span class="lens-tag">Knowledge</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">tool-select-card</div><span class="comp-class">.tool-select-card</span></td><td><span class="lens-tag stat">Stat + footer list</span></td><td><span class="lens-tag bsemantic">Bordered semantic</span></td><td><span class="lens-tag">Action</span></td></tr>
+            <tr><td class="col-comp"><div class="comp-name">progress-timeline</div><span class="comp-class">.progress-timeline</span></td><td><span class="lens-tag list">List (timeline)</span></td><td><span class="lens-tag default">Default</span></td><td><span class="lens-tag">Neutral</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recipes -->
+      <div class="doc-section">
+        <h2>Recipes: the most common combos</h2>
+        <p>Out of 5 × 5 × 7 possible triples, only ~10 actually appear in the catalog. They tend to cluster. These are the "recipes" worth standardizing.</p>
+        <div class="recipe-grid">
+          <div class="recipe-card">
+            <div class="recipe-card-label">Recipe 1</div>
+            <div class="recipe-card-title">The status row</div>
+            <div class="recipe-card-formula">Row + Default + Neutral + status pill</div>
+            <div class="recipe-card-body">Surface a thing with one piece of state. Saved skills, contacts, documents, sent confirmations.</div>
+          </div>
+          <div class="recipe-card">
+            <div class="recipe-card-label">Recipe 2</div>
+            <div class="recipe-card-title">The data list</div>
+            <div class="recipe-card-formula">List + Default + Neutral</div>
+            <div class="recipe-card-body">Structured key-value rows. Schedules, exports, tracking logs.</div>
+          </div>
+          <div class="recipe-card">
+            <div class="recipe-card-label">Recipe 3</div>
+            <div class="recipe-card-title">The celebration</div>
+            <div class="recipe-card-formula">Stat + Tonal + Success or Knowledge</div>
+            <div class="recipe-card-body">Quiet wins. Milestones, completions, sent confirmations.</div>
+          </div>
+          <div class="recipe-card">
+            <div class="recipe-card-label">Recipe 4</div>
+            <div class="recipe-card-title">The result banner</div>
+            <div class="recipe-card-formula">Bannered + Bordered semantic + Success or Destructive</div>
+            <div class="recipe-card-body">Search hit, share preview, error explanation. Header band sets the topic, body delivers details.</div>
+          </div>
+          <div class="recipe-card">
+            <div class="recipe-card-label">Recipe 5</div>
+            <div class="recipe-card-title">The decision card</div>
+            <div class="recipe-card-formula">Action + Bordered strong + Warning or Destructive</div>
+            <div class="recipe-card-body">Anything that needs an explicit yes/no. Confirm cards for destructive or permission-granting actions.</div>
+          </div>
+          <div class="recipe-card">
+            <div class="recipe-card-label">Recipe 6</div>
+            <div class="recipe-card-title">The outbound message</div>
+            <div class="recipe-card-formula">Stat + Bordered semantic + Action (brand)</div>
+            <div class="recipe-card-body">Drafts and replies. Anything Sprout is sending or receiving on behalf of the parent.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live demos for the recipes -->
+      <div class="doc-section">
+        <h3>Recipes in the wild</h3>
+        <p>Live examples from the catalog showing each recipe.</p>
+
+        <h3 style="font-size:13px;color:var(--text-tertiary);margin-top:24px">Recipe 1: status row</h3>
+        <div class="mini-demo-row">
+          <div class="saved-attach"><div class="sv-icon">📚</div><div style="flex:1"><div class="sv-name">Reading tracker</div><div class="sv-meta">Active · 2h ago</div></div><span class="pill active">Active</span></div>
+          <div class="contact-card"><div class="cc-avatar">👩‍🏫</div><div style="flex:1"><div class="cc-name">Mrs. Park</div><div class="cc-detail">2nd grade</div></div></div>
+        </div>
+
+        <h3 style="font-size:13px;color:var(--text-tertiary);margin-top:24px">Recipe 2: data list</h3>
+        <div class="mini-demo-row">
+          <div class="struct-card" style="max-width:240px"><div class="sc-head">📅 This week</div><div class="sc-row"><span class="label">Mon</span><span class="value">Reading 7:30</span></div><div class="sc-row"><span class="label">Tue</span><span class="value">Piano 5pm</span></div><div class="sc-row corrected"><span class="label">Wed</span><span class="value">No reading</span></div></div>
+        </div>
+
+        <h3 style="font-size:13px;color:var(--text-tertiary);margin-top:24px">Recipe 3: celebration</h3>
+        <div class="mini-demo-row">
+          <div class="grad-attach" style="max-width:240px"><div class="ga-title">🎓 First chapter book</div><div class="ga-sub">Charlotte's Web, cover to cover.</div></div>
+          <div class="completion-card" style="max-width:240px"><div class="cpc-emoji">🎉</div><div class="cpc-text">Week setup complete</div><div class="cpc-detail">Reminder, recap, teacher loop, all wired.</div></div>
+        </div>
+
+        <h3 style="font-size:13px;color:var(--text-tertiary);margin-top:24px">Recipe 4: result banner</h3>
+        <div class="mini-demo-row">
+          <div class="result-attach" style="max-width:240px"><div class="ra-banner"><div class="emoji">🔎</div><div><div class="title">3 books at her level</div><div class="sub">Library catalog</div></div></div><div class="ra-body"><div class="src">Recommendation</div><div class="hed">The Mysterious Benedict Society</div><div class="detail">Grade 2.5 · Available · Mystery, friendship.</div></div></div>
+        </div>
+
+        <h3 style="font-size:13px;color:var(--text-tertiary);margin-top:24px">Recipe 5: decision card</h3>
+        <div class="mini-demo-row">
+          <div class="confirm-card" style="max-width:240px"><div class="cfc-title">🗑 Delete data</div><div class="cfc-item">Reading log (90 days)</div><div class="cfc-item">Quest history</div></div>
+        </div>
+
+        <h3 style="font-size:13px;color:var(--text-tertiary);margin-top:24px">Recipe 6: outbound message</h3>
+        <div class="mini-demo-row">
+          <div class="draft-card" style="max-width:240px"><div class="dc-label">Draft</div><div class="dc-to">To: Mrs. Park</div><div class="dc-via">Via: Email</div><div class="dc-body">Hi Mrs. Park, hoping to learn more about Emma's Friday reading group...</div></div>
+        </div>
+      </div>
+
+      <!-- Decision flow -->
+      <div class="doc-section">
+        <h2>Picking a card: the decision flow</h2>
+        <ol style="margin:0 0 16px;padding-left:20px">
+          <li style="margin-bottom:8px;font-size:var(--font-size-text-md,16px);color:var(--text-tertiary);line-height:24px"><strong style="color:var(--text-primary)">What's the card for?</strong> Inform (default), prompt action (action), celebrate (tonal), warn (semantic), confirm something irreversible (strong).</li>
+          <li style="margin-bottom:8px;font-size:var(--font-size-text-md,16px);color:var(--text-tertiary);line-height:24px"><strong style="color:var(--text-primary)">How much info?</strong> One row → Row. Title + blurb → Stat. Many comparable rows → List. Big visual moment → Bannered. Decision required → Action.</li>
+          <li style="margin-bottom:8px;font-size:var(--font-size-text-md,16px);color:var(--text-tertiary);line-height:24px"><strong style="color:var(--text-primary)">What intent does it carry?</strong> Pick one of the seven colors (neutral / action / knowledge / trust / warning / success / destructive). The intent decides the surface color.</li>
+          <li style="margin-bottom:8px;font-size:var(--font-size-text-md,16px);color:var(--text-tertiary);line-height:24px"><strong style="color:var(--text-primary)">How urgent is it?</strong> Default for neutral. Bordered semantic when the intent matters but the action isn't critical. Bordered strong only when the parent must explicitly consent or the action can't be undone. Tonal when celebrating or softening a warning.</li>
+        </ol>
+        <p>If you can't make those four choices easily, the card probably doesn't need to exist as a separate component. Reach for a simpler primitive (a message bubble + a paragraph, an action button row, a notif-banner).</p>
+      </div>
+
+      <!-- Drift -->
+      <div class="doc-section">
+        <h2>Drift to flag</h2>
+        <div class="drift-box">
+          <div class="drift-box-title">Open questions</div>
+          <ul>
+            <li><strong>Border weights are inconsistent.</strong> Most cards use 1px. <code>coppa-card</code> and <code>confirm-card</code> use 2px. The 2px choice signals "critical" but isn't tokenized. Candidate: <code>--border-strong-width</code>.</li>
+            <li><strong>Tonal background colors don't agree.</strong> <code>grad-attach</code> uses <code>sprout-25</code>, <code>completion-card</code> and <code>sent-card</code> use <code>green-50</code>, <code>retry-block.succeeded</code> uses <code>green-50</code>. Knowledge tonal vs success tonal is the right split, but it's not labeled.</li>
+            <li><strong>Dashed border is a one-off.</strong> Only <code>skill-attach</code> uses it (knowledge entity). Either promote "Dashed" to a real surface family or migrate skill-attach to bordered semantic + the knowledge-tag pill.</li>
+            <li><strong>Bannered cards re-implement the same pattern.</strong> <code>result-attach</code>, <code>share-card</code>, <code>export-card</code> each declare their own header band CSS. Candidate: shared <code>.card-banner</code> primitive.</li>
+            <li><strong>Body font sizes drift.</strong> 10, 11, 12, 13px all appear inside cards. The detail tier (13px) is also called out in <a href="/parent-design-system/foundations/type.html">type</a>.</li>
+            <li><strong>Action button styling forks.</strong> <code>confirm-card</code>'s <code>.confirm-card-btn</code> and the standalone <code>.msg-btn</code> do roughly the same thing with different class names. Candidate: unify on <code>.btn-stack</code>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">24 cards across 5 structures, 5 surfaces, 7 intents. Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

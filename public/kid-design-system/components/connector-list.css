@@ -1,0 +1,116 @@
+/* ══════════════════════════════════════════
+   Connector List
+   Card listing connected API services with
+   status, action button, and overflow menu.
+   ══════════════════════════════════════════ */
+
+.connector-list {
+  background: var(--bg-primary, #fff);
+  border: none;
+  border-radius: var(--radius-3xl, 20px);
+  box-shadow: 0 0 4px 0 rgba(0,0,0,.04);
+  width: 330px;
+  align-self: flex-start;
+  margin-top: var(--spacing-xs, 4px);
+  overflow: hidden;
+}
+
+.connector-list-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px);
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.connector-list-header svg {
+  width: 24px;
+  height: 24px;
+  color: var(--text-quaternary, #717680);
+  flex-shrink: 0;
+}
+.connector-list-header span {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-quaternary, #717680);
+  line-height: var(--line-height-text-md, 24px);
+}
+
+/* ── Row (shared by list and card) ── */
+
+.connector-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px);
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.connector-row:last-child { border-bottom: none; }
+
+/* ── Icon ── */
+
+.connector-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md, 8px);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.connector-icon img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md, 8px);
+}
+.connector-icon.connector-icon-inset img {
+  inset: auto;
+  left: 0;
+  top: 12.43%;
+  width: 100%;
+  height: 74.9%;
+  object-fit: contain;
+  border-radius: 0;
+}
+.connector-icon svg { width: 100%; height: 100%; }
+
+/* ── Body (name + status) ── */
+
+.connector-body { flex: 1; min-width: 0; }
+
+.connector-name {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #181d27);
+}
+
+.connector-status {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-secondary, #414651);
+  margin-top: 1px;
+  line-height: var(--line-height-text-xs, 16px);
+}
+
+/* Action button styles in button.css */
+
+/* ── Overflow dots ── */
+
+.connector-overflow {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-quaternary, #717680);
+  background: none;
+  border: none;
+  flex-shrink: 0;
+  padding: 0;
+  transition: color .15s;
+}
+.connector-overflow:hover { color: var(--text-secondary, #414651); }

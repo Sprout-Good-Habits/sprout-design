@@ -73,7 +73,7 @@
 .msg-avatar-user{display:none}
 .msg-avatar-sprout{background:#e0f2fe}
 
-.msg-col{display:flex;flex-direction:column;gap:2px;min-width:0}
+.msg-col{display:flex;flex-direction:column;gap:8px;min-width:0}
 .msg-sender{font-family:var(--font-family-body,'Inter',sans-serif);font-size:10px;font-weight:400;color:#6b7280;letter-spacing:0;padding-left:51px;margin-bottom:0}
 
 .msg-bubble{font-family:var(--font-family-body,'Inter',sans-serif);font-size:17px;line-height:22px;padding:12px 16px;word-break:break-word;white-space:pre-wrap;border-radius:20px;min-width:90px;transition:transform .2s ease}
@@ -111,11 +111,11 @@
 .option-chip.faded{opacity:.4;pointer-events:none}
 
 /* ── Action buttons ── */
-.action-btns{display:flex;gap:8px;padding:8px 0;align-self:flex-start}
-.action-btn{padding:12px 24px;border-radius:11px;font-family:var(--font-family-body,'Inter',sans-serif);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:flex;align-items:center;gap:6px}
-.action-btn-primary{background:#16a34a;color:#fff}
-.action-btn-primary:hover{background:#15803d}
-.action-btn-secondary{background:#fff;border:1px solid #d5d7da;color:#6b7280}
+.action-btns{display:flex;flex-direction:column;gap:8px;width:100%}
+.action-btn{padding:8px 12px;border-radius:8px;font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;line-height:24px;font-weight:500;cursor:pointer;border:none;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;width:100%}
+.action-btn-primary{background:#0ba5ec;color:#fff}
+.action-btn-primary:hover{background:#0086c9}
+.action-btn-secondary{background:#fff;border:1px solid #e9eaeb;color:#000}
 .action-btn-secondary:hover{background:#f9fafb}
 .action-btn.loading{pointer-events:none}
 .action-btn.done{background:#ecfdf3;border:1px solid #16a34a;color:#16a34a;pointer-events:none}
@@ -1178,7 +1178,16 @@
 
     row.appendChild(approveBtn);
     row.appendChild(rejectBtn);
-    chatThread.appendChild(row);
+
+    // Append inside the last msg-group's msg-col so the avatar
+    // bottom-aligns with the full column (bubble + buttons) per Figma.
+    var lastGroup = chatThread.querySelector('.msg-group.msg-incoming:last-child');
+    var col = lastGroup && lastGroup.querySelector('.msg-col');
+    if (col) {
+      col.appendChild(row);
+    } else {
+      chatThread.appendChild(row);
+    }
     scrollThread();
   }
 
@@ -1306,8 +1315,12 @@
       var textSpan = document.createElement('div');
       bubble.appendChild(textSpan);
 
+      var col = document.createElement('div');
+      col.className = 'msg-col';
+      col.appendChild(bubble);
+
       row.appendChild(avatar);
-      row.appendChild(bubble);
+      row.appendChild(col);
 
       group.appendChild(sender);
       group.appendChild(row);
@@ -1566,8 +1579,12 @@
     ts.className = 'msg-time-inline';
     ts.textContent = fmtTime();
     bubble.appendChild(ts);
+    var col = document.createElement('div');
+    col.className = 'msg-col';
+    col.appendChild(bubble);
+
     row.appendChild(avatar);
-    row.appendChild(bubble);
+    row.appendChild(col);
     group.appendChild(sender);
     group.appendChild(row);
     chatThread.appendChild(group);

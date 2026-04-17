@@ -41,6 +41,7 @@
 }
 
 .toolbar-pill .chat-header-avatars { padding-right: var(--spacing-md, 8px); }
+.toolbar-pill > .chat-header-avatars:only-child { padding: 0 var(--spacing-xs, 4px); }
 
 .toolbar-icon-btn {
   width: 36px; height: 36px;

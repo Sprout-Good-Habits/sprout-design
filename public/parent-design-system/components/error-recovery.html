@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System - Error Recovery</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-messages.css">
+<link rel="stylesheet" href="/kid-design-system/components/avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/button.css">
+<link rel="stylesheet" href="/kid-design-system/components/card.css">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-tag{display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 6px;border-radius:var(--radius-xs,4px);font-weight:var(--font-weight-semibold,600);font-size:10px;letter-spacing:0.04em}
+.doc-tag.cn{background:#ede9fe;color:#5b21b6}
+.doc-tag.ac{background:#fef3c7;color:#92400e}
+.doc-tag.ts{background:#fee2e2;color:#991b1b}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section h3{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:24px 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px}
+.doc-do-dont{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:720px;margin:16px 0}
+.doc-do,.doc-dont{border-radius:var(--radius-2xl,16px);padding:16px 20px;font-family:var(--font-family-body);font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px)}
+.doc-do{background:#f0fdf4;border:1px solid #bbf7d0;color:var(--text-primary)}
+.doc-dont{background:#fef2f2;border:1px solid #fecaca;color:var(--text-primary)}
+.doc-do strong,.doc-dont strong{display:block;margin-bottom:8px;font-weight:var(--font-weight-semibold,600);font-size:var(--font-size-text-xs,12px);letter-spacing:0.04em;text-transform:uppercase}
+.doc-do strong{color:#16a34a}
+.doc-dont strong{color:#dc2626}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Error Recovery</h1>
+        <p class="doc-desc">Errors are something Sprout says, not a system alert. Every error is a conversational message that explains what happened and, when the parent needs to act, pulls in the right card or buttons.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label">Catalog ref</div>
+          <div class="doc-meta-value"><span class="doc-badge">.msg-bubble-in</span><span class="doc-tag cn">CN</span><span class="doc-tag ac">AC</span><span class="doc-tag ts">TS</span></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label">Composes</div>
+          <div class="doc-meta-value"><span class="doc-badge">sprout-message</span><span class="doc-badge">btn-stack</span><span class="doc-badge">card</span><span class="doc-badge">confirm-card</span></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Thu Apr 17, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Design principle</h2>
+        <p>Error recovery is not a component. It is a <strong>conversational pattern</strong>: Sprout tells the parent what happened in natural language, as though they are having a conversation. The parent should never feel like they hit a dead-end system error. They should feel like Sprout noticed something, explained it, and is helping them through it.</p>
+        <ul>
+          <li><strong>Contextual, not generic</strong>: Sprout names the specific thing that failed ("I couldn't reach Google Calendar") rather than a vague label ("Something went wrong").</li>
+          <li><strong>Natural language</strong>: Written in first person, the way Sprout talks. Calm, specific, and helpful.</li>
+          <li><strong>Action via cards and buttons</strong>: When the parent needs to do something, Sprout attaches the relevant card (connector card, confirm card) or button stack below the message. No action required? Just the message bubble, nothing extra.</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>When to use</h2>
+        <ul>
+          <li><strong>Transient failures</strong>: A service is temporarily down, a request timed out. Sprout explains and may offer to retry or let the parent send manually. No card needed, just the message.</li>
+          <li><strong>Action required</strong>: The parent needs to re-authenticate, update a password, grant a permission, or reconnect a service. Sprout explains why and attaches the relevant card or buttons.</li>
+          <li><strong>Permission denied</strong>: Missing scope or consent. Sprout names the missing permission and provides a button or card to fix it.</li>
+          <li><strong>Data mismatch</strong>: What Sprout received does not match what it expected. Sprout explains the discrepancy and suggests next steps.</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <p>Error recovery uses the standard <a href="sprout-message.html">Sprout Message</a> anatomy. There is no special error wrapper or error-specific component.</p>
+        <ul>
+          <li><strong>Sprout avatar + bubble</strong>: The error explanation lives in a regular <code>.msg-bubble-in</code>. Sprout's tone is calm and specific.</li>
+          <li><strong>Card (optional)</strong>: When the parent needs to reconnect a service, a <a href="card.html">Card</a> is attached as a sibling inside <code>.msg-col</code>.</li>
+          <li><strong>Button stack (optional)</strong>: When the parent needs to choose an action (e.g. "Update password" / "Log out"), a <code>.btn-stack</code> is attached below the bubble.</li>
+          <li><strong>Message actions</strong>: Standard copy and feedback buttons remain.</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Examples</h2>
+
+        <h3>Temporarily unavailable (no action required)</h3>
+        <p>The service is down but Sprout will handle it. The parent just needs to know.</p>
+        <div class="doc-demo">
+          <div class="msg-group msg-incoming" style="max-width:400px;width:100%">
+            <div class="sender-indicator">
+              <div class="sender-indicator-name">Sprout</div>
+            </div>
+            <div class="msg-row msg-incoming">
+              <div class="msg-avatar"><div class="avatar avatar-sm"><canvas class="rive-sprout" width="86" height="124"></canvas></div></div>
+              <div class="msg-col">
+                <div class="msg-bubble msg-bubble-in"><div>ClassDojo is a little slow right now, so I wasn't able to pull Emma's latest report. I'll try again in a few minutes and let you know when it's ready.</div></div>
+              </div>
+            </div>
+            <div class="msg-actions">
+              <button class="msg-actions-btn" aria-label="Copy"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.06812 15 3.60218 15 3.23463 14.8478C2.74458 14.6448 2.35523 14.2554 2.15224 13.7654C2 13.3978 2 12.9319 2 12V5.2C2 4.0799 2 3.51984 2.21799 3.09202C2.40974 2.7157 2.7157 2.40974 3.09202 2.21799C3.51984 2 4.0799 2 5.2 2H12C12.9319 2 13.3978 2 13.7654 2.15224C14.2554 2.35523 14.6448 2.74458 14.8478 3.23463C15 3.60218 15 4.06812 15 5M12.2 22H18.8C19.9201 22 20.4802 22 20.908 21.782C21.2843 21.5903 21.5903 21.2843 21.782 20.908C22 20.4802 22 19.9201 22 18.8V12.2C22 11.0799 22 10.5198 21.782 10.092C21.5903 9.7157 21.2843 9.40974 20.908 9.21799C20.4802 9 19.9201 9 18.8 9H12.2C11.0799 9 10.5198 9 10.092 9.21799C9.7157 9.40974 9.40974 9.7157 9.21799 10.092C9 10.5198 9 11.0799 9 12.2V18.8C9 19.9201 9 20.4802 9.21799 20.908C9.40974 21.2843 9.7157 21.5903 10.092 21.782C10.5198 22 11.0799 22 12.2 22Z"/></svg></button>
+              <button class="msg-actions-btn" aria-label="Thumbs up"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 22V11M2 13V20C2 21.1046 2.89543 22 4 22H17.4262C18.907 22 20.1662 20.9197 20.3914 19.4562L21.4683 12.4562C21.7479 10.6389 20.3418 9 18.5032 9H15C14.4477 9 14 8.55228 14 8V4.46584C14 3.10399 12.896 2 11.5342 2C11.2093 2 10.915 2.1913 10.7831 2.48812L7.26394 10.4061C7.10344 10.7673 6.74532 11 6.35013 11H4C2.89543 11 2 11.8954 2 13Z"/></svg></button>
+              <button class="msg-actions-btn" aria-label="Thumbs down"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2V13M22 11V4C22 2.89543 21.1046 2 20 2H6.57383C5.09301 2 3.83382 3.08034 3.60862 4.54379L2.53168 11.5438C2.25212 13.3611 3.65822 15 5.49688 15H9C9.55228 15 10 15.4477 10 16V19.5342C10 20.896 11.104 22 12.4658 22C12.7907 22 13.085 21.8087 13.2169 21.5119L16.7361 13.5939C16.8966 13.2327 17.2547 13 17.6499 13H20C21.1046 13 22 12.1046 22 11Z"/></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <h3>New password needed (action required with buttons)</h3>
+        <p>The parent's saved credentials expired. Sprout explains and provides action buttons.</p>
+        <div class="doc-demo">
+          <div class="msg-group msg-incoming" style="max-width:400px;width:100%">
+            <div class="sender-indicator">
+              <div class="sender-indicator-name">Sprout</div>
+            </div>
+            <div class="msg-row msg-incoming">
+              <div class="msg-avatar"><div class="avatar avatar-sm"><canvas class="rive-sprout" width="86" height="124"></canvas></div></div>
+              <div class="msg-col">
+                <div class="msg-bubble msg-bubble-in"><div>It looks like your school portal password was changed recently, so I can't log in anymore. You'll need to update it so I can keep pulling Noah's assignments.</div></div>
+                <div class="btn-stack">
+                  <button class="btn btn-primary">Update password</button>
+                  <button class="btn">Remind me later</button>
+                </div>
+              </div>
+            </div>
+            <div class="msg-actions">
+              <button class="msg-actions-btn" aria-label="Copy"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.06812 15 3.60218 15 3.23463 14.8478C2.74458 14.6448 2.35523 14.2554 2.15224 13.7654C2 13.3978 2 12.9319 2 12V5.2C2 4.0799 2 3.51984 2.21799 3.09202C2.40974 2.7157 2.7157 2.40974 3.09202 2.21799C3.51984 2 4.0799 2 5.2 2H12C12.9319 2 13.3978 2 13.7654 2.15224C14.2554 2.35523 14.6448 2.74458 14.8478 3.23463C15 3.60218 15 4.06812 15 5M12.2 22H18.8C19.9201 22 20.4802 22 20.908 21.782C21.2843 21.5903 21.5903 21.2843 21.782 20.908C22 20.4802 22 19.9201 22 18.8V12.2C22 11.0799 22 10.5198 21.782 10.092C21.5903 9.7157 21.2843 9.40974 20.908 9.21799C20.4802 9 19.9201 9 18.8 9H12.2C11.0799 9 10.5198 9 10.092 9.21799C9.7157 9.40974 9.40974 9.7157 9.21799 10.092C9 10.5198 9 11.0799 9 12.2V18.8C9 19.9201 9 20.4802 9.21799 20.908C9.40974 21.2843 9.7157 21.5903 10.092 21.782C10.5198 22 11.0799 22 12.2 22Z"/></svg></button>
+              <button class="msg-actions-btn" aria-label="Thumbs up"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 22V11M2 13V20C2 21.1046 2.89543 22 4 22H17.4262C18.907 22 20.1662 20.9197 20.3914 19.4562L21.4683 12.4562C21.7479 10.6389 20.3418 9 18.5032 9H15C14.4477 9 14 8.55228 14 8V4.46584C14 3.10399 12.896 2 11.5342 2C11.2093 2 10.915 2.1913 10.7831 2.48812L7.26394 10.4061C7.10344 10.7673 6.74532 11 6.35013 11H4C2.89543 11 2 11.8954 2 13Z"/></svg></button>
+              <button class="msg-actions-btn" aria-label="Thumbs down"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2V13M22 11V4C22 2.89543 21.1046 2 20 2H6.57383C5.09301 2 3.83382 3.08034 3.60862 4.54379L2.53168 11.5438C2.25212 13.3611 3.65822 15 5.49688 15H9C9.55228 15 10 15.4477 10 16V19.5342C10 20.896 11.104 22 12.4658 22C12.7907 22 13.085 21.8087 13.2169 21.5119L16.7361 13.5939C16.8966 13.2327 17.2547 13 17.6499 13H20C21.1046 13 22 12.1046 22 11Z"/></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <h3>Permission denied (action required with connector card)</h3>
+        <p>Sprout needs a scope the parent hasn't granted. The connector card lets them fix it in one tap.</p>
+        <div class="doc-demo">
+          <div class="msg-group msg-incoming" style="max-width:400px;width:100%">
+            <div class="sender-indicator">
+              <div class="sender-indicator-name">Sprout</div>
+            </div>
+            <div class="msg-row msg-incoming">
+              <div class="msg-avatar"><div class="avatar avatar-sm"><canvas class="rive-sprout" width="86" height="124"></canvas></div></div>
+              <div class="msg-col">
+                <div class="msg-bubble msg-bubble-in"><div>I don't have permission to read your Google Calendar yet. If you connect it, I'll be able to check for scheduling conflicts before suggesting activity times.</div></div>
+                <div class="card">
+                  <div class="card-icon"><img src="/product-explorer/assets/icon-gcal.png" alt="Google Calendar"></div>
+                  <div class="card-body">
+                    <div class="card-label">Google Calendar</div>
+                    <div class="card-desc">Read your schedule</div>
+                  </div>
+                  <button class="btn">Connect</button>
+                </div>
+              </div>
+            </div>
+            <div class="msg-actions">
+              <button class="msg-actions-btn" aria-label="Copy"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.06812 15 3.60218 15 3.23463 14.8478C2.74458 14.6448 2.35523 14.2554 2.15224 13.7654C2 13.3978 2 12.9319 2 12V5.2C2 4.0799 2 3.51984 2.21799 3.09202C2.40974 2.7157 2.7157 2.40974 3.09202 2.21799C3.51984 2 4.0799 2 5.2 2H12C12.9319 2 13.3978 2 13.7654 2.15224C14.2554 2.35523 14.6448 2.74458 14.8478 3.23463C15 3.60218 15 4.06812 15 5M12.2 22H18.8C19.9201 22 20.4802 22 20.908 21.782C21.2843 21.5903 21.5903 21.2843 21.782 20.908C22 20.4802 22 19.9201 22 18.8V12.2C22 11.0799 22 10.5198 21.782 10.092C21.5903 9.7157 21.2843 9.40974 20.908 9.21799C20.4802 9 19.9201 9 18.8 9H12.2C11.0799 9 10.5198 9 10.092 9.21799C9.7157 9.40974 9.40974 9.7157 9.21799 10.092C9 10.5198 9 11.0799 9 12.2V18.8C9 19.9201 9 20.4802 9.21799 20.908C9.40974 21.2843 9.7157 21.5903 10.092 21.782C10.5198 22 11.0799 22 12.2 22Z"/></svg></button>
+              <button class="msg-actions-btn" aria-label="Thumbs up"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 22V11M2 13V20C2 21.1046 2.89543 22 4 22H17.4262C18.907 22 20.1662 20.9197 20.3914 19.4562L21.4683 12.4562C21.7479 10.6389 20.3418 9 18.5032 9H15C14.4477 9 14 8.55228 14 8V4.46584C14 3.10399 12.896 2 11.5342 2C11.2093 2 10.915 2.1913 10.7831 2.48812L7.26394 10.4061C7.10344 10.7673 6.74532 11 6.35013 11H4C2.89543 11 2 11.8954 2 13Z"/></svg></button>
+              <button class="msg-actions-btn" aria-label="Thumbs down"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2V13M22 11V4C22 2.89543 21.1046 2 20 2H6.57383C5.09301 2 3.83382 3.08034 3.60862 4.54379L2.53168 11.5438C2.25212 13.3611 3.65822 15 5.49688 15H9C9.55228 15 10 15.4477 10 16V19.5342C10 20.896 11.104 22 12.4658 22C12.7907 22 13.085 21.8087 13.2169 21.5119L16.7361 13.5939C16.8966 13.2327 17.2547 13 17.6499 13H20C21.1046 13 22 12.1046 22 11Z"/></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <h3>Reconnection needed (action required with connector card)</h3>
+        <p>A previously connected service lost its connection. Sprout explains why and surfaces the reconnect card.</p>
+        <div class="doc-demo">
+          <div class="msg-group msg-incoming" style="max-width:400px;width:100%">
+            <div class="sender-indicator">
+              <div class="sender-indicator-name">Sprout</div>
+            </div>
+            <div class="msg-row msg-incoming">
+              <div class="msg-avatar"><div class="avatar avatar-sm"><canvas class="rive-sprout" width="86" height="124"></canvas></div></div>
+              <div class="msg-col">
+                <div class="msg-bubble msg-bubble-in"><div>Your school portal connection expired. This happens every 90 days for security. Once you reconnect, I'll catch up on any missed assignments.</div></div>
+                <div class="card">
+                  <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10l10-6 10 6-10 6-10-6z"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg></div>
+                  <div class="card-body">
+                    <div class="card-label">School Portal</div>
+                    <div class="card-desc">Session expired</div>
+                  </div>
+                  <button class="btn">Reconnect</button>
+                  <button class="card-overflow"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg></button>
+                </div>
+              </div>
+            </div>
+            <div class="msg-actions">
+              <button class="msg-actions-btn" aria-label="Copy"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.06812 15 3.60218 15 3.23463 14.8478C2.74458 14.6448 2.35523 14.2554 2.15224 13.7654C2 13.3978 2 12.9319 2 12V5.2C2 4.0799 2 3.51984 2.21799 3.09202C2.40974 2.7157 2.7157 2.40974 3.09202 2.21799C3.51984 2 4.0799 2 5.2 2H12C12.9319 2 13.3978 2 13.7654 2.15224C14.2554 2.35523 14.6448 2.74458 14.8478 3.23463C15 3.60218 15 4.06812 15 5M12.2 22H18.8C19.9201 22 20.4802 22 20.908 21.782C21.2843 21.5903 21.5903 21.2843 21.782 20.908C22 20.4802 22 19.9201 22 18.8V12.2C22 11.0799 22 10.5198 21.782 10.092C21.5903 9.7157 21.2843 9.40974 20.908 9.21799C20.4802 9 19.9201 9 18.8 9H12.2C11.0799 9 10.5198 9 10.092 9.21799C9.7157 9.40974 9.40974 9.7157 9.21799 10.092C9 10.5198 9 11.0799 9 12.2V18.8C9 19.9201 9 20.4802 9.21799 20.908C9.40974 21.2843 9.7157 21.5903 10.092 21.782C10.5198 22 11.0799 22 12.2 22Z"/></svg></button>
+              <button class="msg-actions-btn" aria-label="Thumbs up"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 22V11M2 13V20C2 21.1046 2.89543 22 4 22H17.4262C18.907 22 20.1662 20.9197 20.3914 19.4562L21.4683 12.4562C21.7479 10.6389 20.3418 9 18.5032 9H15C14.4477 9 14 8.55228 14 8V4.46584C14 3.10399 12.896 2 11.5342 2C11.2093 2 10.915 2.1913 10.7831 2.48812L7.26394 10.4061C7.10344 10.7673 6.74532 11 6.35013 11H4C2.89543 11 2 11.8954 2 13Z"/></svg></button>
+              <button class="msg-actions-btn" aria-label="Thumbs down"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2V13M22 11V4C22 2.89543 21.1046 2 20 2H6.57383C5.09301 2 3.83382 3.08034 3.60862 4.54379L2.53168 11.5438C2.25212 13.3611 3.65822 15 5.49688 15H9C9.55228 15 10 15.4477 10 16V19.5342C10 20.896 11.104 22 12.4658 22C12.7907 22 13.085 21.8087 13.2169 21.5119L16.7361 13.5939C16.8966 13.2327 17.2547 13 17.6499 13H20C21.1046 13 22 12.1046 22 11Z"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Content guidelines</h2>
+        <div class="doc-do-dont">
+          <div class="doc-do">
+            <strong>Do</strong>
+            "ClassDojo is a little slow right now. I'll try again in a few minutes."<br><br>
+            "Your school portal password was changed, so I can't log in anymore."<br><br>
+            "I don't have permission to read your Google Calendar yet."
+          </div>
+          <div class="doc-dont">
+            <strong>Don't</strong>
+            "Error: Service unavailable (503)"<br><br>
+            "Authentication failed. Please re-enter credentials."<br><br>
+            "Permission denied. Missing scope: calendar.readonly"
+          </div>
+        </div>
+        <ul>
+          <li><strong>Name the service</strong>: Say "Google Calendar" not "the service."</li>
+          <li><strong>Explain the impact</strong>: Tell the parent what this means for them ("I can't pull Noah's assignments").</li>
+          <li><strong>Offer the fix</strong>: If the parent can do something, surface the right card or button. If not, tell them what Sprout will do ("I'll try again in a few minutes").</li>
+          <li><strong>No codes or jargon</strong>: Never show HTTP status codes, technical error names, or developer language.</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Decision tree</h2>
+        <ul>
+          <li><strong>Can Sprout fix it automatically?</strong> Message only, no buttons. ("I'll retry in a few minutes.")</li>
+          <li><strong>Does the parent need to reconnect a service?</strong> Message + connector card with Reconnect/Connect button.</li>
+          <li><strong>Does the parent need to take a non-connector action?</strong> Message + button stack (e.g. "Update password" / "Remind me later").</li>
+          <li><strong>Is the error after exhausted retries?</strong> Follows a <a href="retry-block.html">Retry Block</a>, then this message surfaces next steps.</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="sprout-message.html">Sprout Message</a>: The base message component used for all error recovery.</li>
+          <li><a href="retry-block.html">Retry Block</a>: Shows retry attempts before error recovery surfaces.</li>
+          <li><a href="card.html">Card</a>: Attached when the parent needs to reconnect a service.</li>
+          <li><a href="confirm-card.html">Confirm Card</a>: Attached when the parent needs to confirm a destructive or sensitive action.</li>
+        </ul>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+<script>
+(function() {
+  var SM = 'State Machine 1';
+  var SPROUT_SRC = '/kid-design-system/sprot2.97_.riv';
+  var SPROUT_STATE = { hairID: 1 };
+
+  function initRive(canvas, opts) {
+    var w = parseInt(canvas.getAttribute('width'), 10) || 86;
+    var h = parseInt(canvas.getAttribute('height'), 10) || 124;
+    canvas.width = w; canvas.height = h;
+    var config = {
+      src: opts.src, canvas: canvas, autoplay: true,
+      stateMachines: SM, fit: rive.Fit.Contain, alignment: rive.Alignment.Center,
+      onLoad: function() {
+        if (!r) return;
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM);
+          if (inputs && opts.state) inputs.forEach(function(inp) {
+            if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+          });
+        } catch(e) {}
+      }
+    };
+    if (opts.artboard) config.artboard = opts.artboard;
+    var r; try { r = new rive.Rive(config); } catch(e) {}
+  }
+
+  document.querySelectorAll('canvas.rive-sprout').forEach(function(c) {
+    initRive(c, { src: SPROUT_SRC, state: SPROUT_STATE });
+  });
+})();
+</script>
+</body>
+</html>

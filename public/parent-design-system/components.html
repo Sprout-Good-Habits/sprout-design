@@ -3,23 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Parent Design System — Components</title>
+<title>Sprout Parent Design System / Components</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <style>
-@font-face{font-family:'TossFace';src:url('https://static.toss.im/tossface-font/TossFaceFontWeb.otf') format('opentype')}
-.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;max-width:720px}
-@media(max-width:800px){.gallery-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.gallery-grid{grid-template-columns:1fr}}
-.gallery-card{display:block;background:var(--bg-primary);border-radius:var(--radius-xl,12px);text-decoration:none;color:inherit;overflow:hidden;transition:box-shadow .15s,border-color .15s;border:1px solid var(--border-secondary)}
-.gallery-card:hover{border-color:var(--gray-300);box-shadow:0 4px 16px rgba(0,0,0,.06);text-decoration:none}
-.gallery-thumb{height:120px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;overflow:hidden;font-family:'TossFace','Apple Color Emoji','Segoe UI Emoji',sans-serif;font-size:40px}
-.gallery-body{padding:12px 16px}
-.gallery-title{font-size:12px;font-weight:var(--font-weight-semibold,600);color:var(--text-primary);line-height:18px}
-.gallery-desc{font-size:12px;color:var(--text-tertiary);line-height:18px;margin-top:2px}
 .page-hero{max-width:720px;padding:96px 0 0}
 .page-hero-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
-.page-hero-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0}
+.page-hero-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+
+/* Domain legend */
+.domain-legend{display:flex;flex-wrap:wrap;gap:8px;max-width:720px;margin:0 0 32px}
+.domain-legend-item{display:inline-flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border-secondary);border-radius:var(--radius-full);padding:6px 12px 6px 8px;font-size:12px;line-height:16px;color:var(--text-secondary)}
+.domain-legend-item .tag{display:inline-flex;align-items:center;justify-content:center;width:24px;height:18px;border-radius:var(--radius-xs,4px);font-weight:var(--font-weight-semibold,600);font-size:10px;letter-spacing:0.04em;color:var(--text-primary)}
+.domain-legend-item .tag.kn{background:#e0f2fe;color:#026aa2}
+.domain-legend-item .tag.cn{background:#ede9fe;color:#5b21b6}
+.domain-legend-item .tag.ac{background:#fef3c7;color:#92400e}
+.domain-legend-item .tag.ts{background:#fee2e2;color:#991b1b}
+.domain-legend-item .tag.ki{background:#dcfce7;color:#166534}
+
+/* Section */
+.catalog-section{max-width:720px;margin:48px auto 0}
+.catalog-section-header{display:flex;align-items:center;gap:12px;margin:0 0 8px}
+.catalog-section-header .section-dot{width:10px;height:10px;border-radius:var(--radius-full,9999px);flex-shrink:0}
+.catalog-section-header h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0}
+.catalog-section-header .count{font-size:12px;color:var(--text-quaternary);font-weight:var(--font-weight-regular,400)}
+.catalog-section-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px;padding-left:22px}
+
+/* Catalog cards */
+.catalog-card-list{display:flex;flex-direction:column;gap:12px}
+.catalog-card{display:block;background:var(--bg-primary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl,16px);padding:20px;text-decoration:none;color:inherit;transition:border-color .15s,box-shadow .15s}
+.catalog-card:hover{border-color:var(--gray-300,#d5d7da);box-shadow:0 4px 16px rgba(0,0,0,0.06);text-decoration:none}
+.catalog-card-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.catalog-card-title{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0;flex-shrink:0}
+.catalog-card-class{font-family:'SF Mono','Fira Code',monospace;font-size:11px;line-height:18px;background:var(--gray-50,#fafafa);border:1px solid var(--gray-200,#e9eaeb);border-radius:var(--radius-xs,4px);padding:1px 6px;color:var(--text-secondary)}
+.catalog-card-tags{margin-left:auto;display:flex;gap:4px;flex-shrink:0}
+.catalog-card-tags .tag{display:inline-flex;align-items:center;justify-content:center;width:24px;height:18px;border-radius:var(--radius-xs,4px);font-weight:var(--font-weight-semibold,600);font-size:10px;letter-spacing:0.04em}
+.catalog-card-tags .tag.kn{background:#e0f2fe;color:#026aa2}
+.catalog-card-tags .tag.cn{background:#ede9fe;color:#5b21b6}
+.catalog-card-tags .tag.ac{background:#fef3c7;color:#92400e}
+.catalog-card-tags .tag.ts{background:#fee2e2;color:#991b1b}
+.catalog-card-tags .tag.ki{background:#dcfce7;color:#166534}
+.catalog-card-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-tertiary);margin:0 0 14px}
+
+/* Lens strip */
+.catalog-lens-strip{background:var(--bg-secondary);border-radius:var(--radius-md,8px);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.catalog-lens{font-family:var(--font-family-body);font-size:12px;line-height:18px;color:var(--text-tertiary)}
+.catalog-lens .lens-label{display:inline-block;min-width:62px;font-weight:var(--font-weight-semibold,600);color:var(--text-secondary);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;margin-right:8px;vertical-align:baseline}
+.catalog-lens .lens-value{color:var(--text-secondary)}
+.catalog-lens .lens-value.empty{color:var(--text-quaternary)}
+
+/* Existing-page indicator */
+.catalog-card-link-out{display:inline-block;font-size:11px;color:var(--text-quaternary);margin-left:8px;font-weight:var(--font-weight-medium,500);letter-spacing:0.02em}
 </style>
 </head>
 <body>
@@ -30,25 +64,339 @@
       <div class="breadcrumb" id="breadcrumb"></div>
       <div class="page-hero">
         <h1 class="page-hero-title">Components</h1>
-        <p class="page-hero-desc">Reusable CSS components for the parent chat experience. Each component is a standalone CSS file that can be imported individually.</p>
+        <p class="page-hero-desc">The chat-relevant component catalog. Each card describes one component with four lenses (states, CSS modifiers, domain, content) and links to its full docs.</p>
+        <div class="domain-legend">
+          <span class="domain-legend-item"><span class="tag kn">KN</span>Knowledge</span>
+          <span class="domain-legend-item"><span class="tag cn">CN</span>Connections</span>
+          <span class="domain-legend-item"><span class="tag ac">AC</span>Actions</span>
+          <span class="domain-legend-item"><span class="tag ts">TS</span>Trust &amp; Safety</span>
+          <span class="domain-legend-item"><span class="tag ki">KI</span>Kid experience</span>
+        </div>
       </div>
-      <div class="gallery-grid">
-        <a class="gallery-card" href="/parent-design-system/components/device-frame.html"><div class="gallery-thumb">📱</div><div class="gallery-body"><div class="gallery-title">Device Frame</div><div class="gallery-desc">iPhone/iPad mockup wrapper</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/status-bar.html"><div class="gallery-thumb">🔋</div><div class="gallery-body"><div class="gallery-title">Status Bar</div><div class="gallery-desc">iOS status bar with time and icons</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/chat-toolbar.html"><div class="gallery-thumb">🧭</div><div class="gallery-body"><div class="gallery-title">Chat Toolbar</div><div class="gallery-desc">Header frost, pills, stacked avatars</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/chat-messages.html"><div class="gallery-thumb">💬</div><div class="gallery-body"><div class="gallery-title">Chat Messages</div><div class="gallery-desc">Bubbles, actions, quotes, typing</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/chat-composer.html"><div class="gallery-thumb">✏️</div><div class="gallery-body"><div class="gallery-title">Chat Composer</div><div class="gallery-desc">Input, toolbar, voice, mentions</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/chat-banner.html"><div class="gallery-thumb">🔔</div><div class="gallery-body"><div class="gallery-title">Chat Banner</div><div class="gallery-desc">Reconnect, delete undo, toast</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/chat-chips.html"><div class="gallery-thumb">🏷️</div><div class="gallery-body"><div class="gallery-title">Chat Chips</div><div class="gallery-desc">Option and suggestion chips</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/chat-action-buttons.html"><div class="gallery-thumb">👆</div><div class="gallery-body"><div class="gallery-title">Chat Action Buttons</div><div class="gallery-desc">Primary/secondary with states</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/confirm-card.html"><div class="gallery-thumb">✅</div><div class="gallery-body"><div class="gallery-title">Confirm Card</div><div class="gallery-desc">Key-value card with confirm/cancel</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/artifact.html"><div class="gallery-thumb">📄</div><div class="gallery-body"><div class="gallery-title">Artifact</div><div class="gallery-desc">Inline card and detail sheet</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/thought-sheet.html"><div class="gallery-thumb">🧠</div><div class="gallery-body"><div class="gallery-title">Thought Sheet</div><div class="gallery-desc">AI thought process with timeline</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/tool-usage.html"><div class="gallery-thumb">🔧</div><div class="gallery-body"><div class="gallery-title">Tool Usage</div><div class="gallery-desc">Collapsible activity feed</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/chat-context-menu.html"><div class="gallery-thumb">📋</div><div class="gallery-body"><div class="gallery-title">Chat Context Menu</div><div class="gallery-desc">Sheet base, scrim, menu items</div></div></a>
-        <a class="gallery-card" href="/parent-design-system/components/attach-panel.html"><div class="gallery-thumb">📎</div><div class="gallery-body"><div class="gallery-title">Attach Panel</div><div class="gallery-desc">Panel, plus pill, iOS keyboard</div></div></a>
+
+      <!-- ──────────── Section 1: Conversation Core ──────────── -->
+      <div class="catalog-section" id="conversation-core">
+        <div class="catalog-section-header">
+          <span class="section-dot" style="background:var(--sprout-400,#9eda50)"></span>
+          <h2>1. Conversation Core</h2>
+          <span class="count">6 components</span>
+        </div>
+        <p class="catalog-section-desc">The primary message primitives. Sprout speaks, the parent responds, the indicator waits.</p>
+        <div class="catalog-card-list">
+
+          <a class="catalog-card" id="sprout-message" href="/parent-design-system/components/sprout-message.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Sprout Message</h3>
+              <code class="catalog-card-class">.msg-bubble-in</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag cn">CN</span><span class="tag ac">AC</span><span class="tag ts">TS</span></div>
+            </div>
+            <p class="catalog-card-desc">Messages from Sprout to the parent. The primary communication primitive: questions, statements, explanations, and blocked states.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">question, statement, blocked, follow-up</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value empty">none</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">KN, CN, AC, TS</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">knowledge, action-confirm, error, attachment</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="parent-message" href="/parent-design-system/components/parent-message.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Parent Message</h3>
+              <code class="catalog-card-class">.msg.from-parent</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag cn">CN</span><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Messages from the parent to Sprout. Text, voice, photos, and file attachments.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value empty">none</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value empty">none</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">KN, CN, AC</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">short-answer, instruction, photo, file, voice</span></div>
+            </div>
+          </a>
+
+          <!-- Action buttons retired — use .btn + .btn-stack pattern (see button.html) -->
+
+          <a class="catalog-card" id="photo-upload" href="/parent-design-system/components/photo-upload.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Photo Upload</h3>
+              <code class="catalog-card-class">.attach-panel</code>
+              <div class="catalog-card-tags"><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Attachment selection panel for photos, camera, and documents. Animated bottom panel with staggered row entries.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">collapsed, open</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.open, .attach-panel-icon--photos/camera/document</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">AC</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">Photos, Camera, Document</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="media-gallery" href="/parent-design-system/components/media-gallery.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Media Gallery</h3>
+              <code class="catalog-card-class">.msg-images</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Horizontal row of photo thumbnails in messages. 108x108 tiles with scrolling for incoming, wrapped grid for outgoing.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value empty">none</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.msg-images-item, .msg-attachments-img</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">KN, AC</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">photo thumbnails</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="file-attachment" href="/parent-design-system/components/file-attachment.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">File Attachment</h3>
+              <code class="catalog-card-class">.msg-attachments-file</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Inline file card with icon, filename, and type label. Used inside outgoing message attachment grids.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value empty">none</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.msg-attachments-file-icon, .msg-attachments-file-name</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">KN, AC</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">PDF, document</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="file-attachment-list" href="/parent-design-system/components/file-attachment-list.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">File Attachment List</h3>
+              <code class="catalog-card-class">.msg-attachments</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Mixed attachment grid combining photo thumbnails and file cards above an outgoing message bubble.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value empty">none</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.msg-attachments-img, .msg-attachments-file</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">KN, AC</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">photos + files mixed</span></div>
+            </div>
+          </a>
+
+        </div>
       </div>
-      <div style="max-width:720px;margin:48px auto 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+
+      <!-- ──────────── Section 2: Agent Metacognition ──────────── -->
+      <div class="catalog-section" id="agent-metacognition">
+        <div class="catalog-section-header">
+          <span class="section-dot" style="background:var(--sprout-500,#85cb2d)"></span>
+          <h2>2. Agent Metacognition</h2>
+          <span class="count">4 components</span>
+        </div>
+        <p class="catalog-section-desc">How Sprout shows its work: thinking, planning, and tool usage.</p>
+        <div class="catalog-card-list">
+
+          <a class="catalog-card" id="reasoning-transcript" href="/parent-design-system/components/reasoning-transcript.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Reasoning Transcript</h3>
+              <code class="catalog-card-class">.reasoning-transcript</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag cn">CN</span><span class="tag ac">AC</span><span class="tag ts">TS</span></div>
+            </div>
+            <p class="catalog-card-desc">Full prose reasoning block: Sprout's internal monologue. Collapsed by default with duration, click to expand.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">streaming, collapsed, expanded</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.streaming, .expanded</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">all</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">knowledge-lookup, action-planning, safety-check</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="typing-indicator" href="/parent-design-system/components/typing-indicator.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Typing Indicator</h3>
+              <code class="catalog-card-class">.typing-state</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag cn">CN</span><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Shows Sprout is composing a response. Compact row with avatar, name, "Typing..." label, and "Answer now" CTA. Transitions to a full message on delivery.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">typing, transitioning, delivered</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.typing-state, .typing-cta, .typing-avatar</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">all</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value empty">none</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="live-action-stream" href="/parent-design-system/components/tool-usage.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Action Stream<span class="catalog-card-link-out">in tool-usage</span></h3>
+              <code class="catalog-card-class">.tool-usage</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag cn">CN</span><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Real-time feed of Sprout's tool calls, searches, and actions as they happen. Shows timestamps, tool icons, arguments, and results inline. Cycles through action names, then collapses to a count with expand toggle.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">streaming, complete, expanded</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.open, .fade-out</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">CN, AC, KN</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">tool names</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="planning-tree" href="/parent-design-system/components/planning-tree.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Planning Tree</h3>
+              <code class="catalog-card-class">.planning-tree</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag cn">CN</span><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Multi-step plan with checkbox-style progress tracking. A persistent checklist that updates in real time as Sprout executes.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">proposed, in-progress, complete, revised</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.done, .active, .pending, .fail</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">KN, CN, AC</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value empty">none</span></div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- ──────────── Section 3: Cards ──────────── -->
+      <div class="catalog-section" id="cards">
+        <div class="catalog-section-header">
+          <span class="section-dot" style="background:var(--orange-400,#fb923c)"></span>
+          <h2>3. Cards</h2>
+          <span class="count">3 components</span>
+        </div>
+        <p class="catalog-section-desc">Inline cards for structured data, confirmations, and artifacts.</p>
+        <div class="catalog-card-list">
+
+          <a class="catalog-card" id="card" href="/parent-design-system/components/card.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Card</h3>
+              <code class="catalog-card-class">.card</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag cn">CN</span><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Generic inline card: 40px icon, label + description, optional trailing (badge or button), optional overflow dots. Replaces connector-card, connector-list row, and saved-skill.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">default, connected, expired, active, paused</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.card-list, .card-row, .card-icon-tinted, .card-badge, .card-overflow</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">KN, CN, AC</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">connectors, saved skills, contacts, milestones</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="confirm-card" href="/parent-design-system/components/confirm-card.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Confirm Card</h3>
+              <code class="catalog-card-class">.confirm-card</code>
+              <div class="catalog-card-tags"><span class="tag ts">TS</span></div>
+            </div>
+            <p class="catalog-card-desc">Confirmation for destructive or permission-granting actions. Red for destructive, green for grants.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">pending, done, dismissed</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.grant, .done, .dismissed</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">TS</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">key-value rows, description</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="artifact-card" href="/parent-design-system/components/artifact.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Artifact Card</h3>
+              <code class="catalog-card-class">.artifact-card</code>
+              <div class="catalog-card-tags"><span class="tag kn">KN</span><span class="tag ac">AC</span></div>
+            </div>
+            <p class="catalog-card-desc">Inline card with icon, title, subtitle, and action link. Opens a detail sheet on click.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">default, hover</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.artifact-sheet</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">KN, AC</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">quest template, document</span></div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- ──────────── Section 4: API / Connectors ──────────── -->
+      <div class="catalog-section" style="margin-top:48px">
+        <div class="catalog-section-header">
+          <span class="section-dot" style="background:var(--brand-500,#0ba5ec)"></span>
+          <h2>4. API / Connectors</h2>
+          <span class="count">3 components</span>
+        </div>
+        <p class="catalog-section-desc">OAuth consent, permission scopes, and service configuration. Connector cards and lists now use the generic <a href="/parent-design-system/components/card.html">Card</a> component.</p>
+        <div class="catalog-card-list">
+
+          <a class="catalog-card" id="connector-button" href="/parent-design-system/components/button.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Button</h3>
+              <code class="catalog-card-class">.btn</code>
+              <div class="catalog-card-tags"><span class="tag cn">CN</span></div>
+            </div>
+            <p class="catalog-card-desc">Action button for cards and lists. Default, primary, and destructive hierarchies with loading and disabled states.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">default, hover, loading, disabled, done</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.btn-primary, .btn-destructive, .btn-md, .loading</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">CN</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">label or spinner</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="scope-sheet" href="/parent-design-system/components/scope-sheet.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Scope Sheet</h3>
+              <code class="catalog-card-class">.scope-sheet</code>
+              <div class="catalog-card-tags"><span class="tag cn">CN</span></div>
+            </div>
+            <p class="catalog-card-desc">Permission scope toggles for a connected API service. Controls what Sprout can and can't access.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">permissions, authorizing</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.scope-toggle, .authorizing</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">CN</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">permission rows</span></div>
+            </div>
+          </a>
+
+          <a class="catalog-card" id="connector-more-menu" href="/parent-design-system/components/connector-more-menu.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Connector More Menu</h3>
+              <code class="catalog-card-class">.connector-more-sheet</code>
+              <div class="catalog-card-tags"><span class="tag cn">CN</span></div>
+            </div>
+            <p class="catalog-card-desc">Bottom sheet with overflow actions: View details, Disconnect, Delete.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value empty">none</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.destructive</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">CN</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">menu items</span></div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- ──────────── Section 5: Patterns ──────────── -->
+      <div class="catalog-section" style="margin-top:48px">
+        <div class="catalog-section-header">
+          <span class="section-dot" style="background:var(--gray-400,#a4a7ae)"></span>
+          <h2>5. Patterns</h2>
+          <span class="count">1 component</span>
+        </div>
+        <p class="catalog-section-desc">Reusable UI patterns that appear across multiple contexts.</p>
+        <div class="catalog-card-list">
+
+          <a class="catalog-card" id="toast" href="/parent-design-system/components/chat-banner.html">
+            <div class="catalog-card-top">
+              <h3 class="catalog-card-title">Toast</h3>
+              <code class="catalog-card-class">.banner</code>
+              <div class="catalog-card-tags"><span class="tag ac">AC</span><span class="tag kn">KN</span><span class="tag cn">CN</span></div>
+            </div>
+            <p class="catalog-card-desc">Ephemeral notification for success confirmations, errors, and info. Non-blocking: appears and auto-dismisses.</p>
+            <div class="catalog-lens-strip">
+              <div class="catalog-lens"><span class="lens-label">States</span><span class="lens-value">show, hiding</span></div>
+              <div class="catalog-lens"><span class="lens-label">CSS</span><span class="lens-value">.banner-toast, .banner-delete, .banner-reconnect</span></div>
+              <div class="catalog-lens"><span class="lens-label">Domain</span><span class="lens-value">AC, KN, CN</span></div>
+              <div class="catalog-lens"><span class="lens-label">Content</span><span class="lens-value">success, error, copy, info, delete+undo, reconnecting</span></div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <div style="max-width:720px;margin:64px auto 0;font-size:12px;color:var(--text-quaternary)">20 components across 5 sections. Last updated: April 2026</div>
     </div>
   </div>
 </div>

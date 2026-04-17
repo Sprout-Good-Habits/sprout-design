@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sprout Parent Design System — Chat Composer</title>
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-composer.css">
+<link rel="stylesheet" href="/kid-design-system/components/avatar.css">
 <style>
 .doc-hero{max-width:720px;padding:96px 0 0}
 .doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
@@ -44,7 +46,7 @@
         </div>
         <div class="doc-meta">
           <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
-          <div class="doc-meta-value"><span class="doc-meta-text">Tue Apr 15, 2026</span></div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Thu Apr 17, 2026</span></div>
         </div>
       </div>
       <div class="doc-divider"></div>
@@ -52,23 +54,32 @@
         <h2>Overview</h2>
         <p>The composer is the primary input surface. It adapts between default (mic icon), active (send icon when text present), recording (waveform), and transcribing (spinner) states. The plus button triggers attachment flows. The @mention button opens a participant picker.</p>
       </div>
+      <div class="doc-divider"></div>
+
       <div class="doc-section">
         <h2>Anatomy</h2>
         <ul>
           <li><strong>.composer-area</strong> - Absolute positioned container</li>
           <li><strong>.composer-pill</strong> - White rounded card</li>
-          <li><strong>.composer-input</strong> - Contenteditable</li>
-          <li><strong>.composer-toolbar</strong> - Icon row</li>
-          <li><strong>.btn-mic</strong> - Tri-state: mic/send/stop</li>
+          <li><strong>.composer-input</strong> - Contenteditable field</li>
+          <li><strong>.composer-toolbar</strong> - Icon row (plus, @mention, mic/send)</li>
+          <li><strong>.btn-mic</strong> - Tri-state: mic / send / stop</li>
           <li><strong>.attach-strip</strong> - Thumbnail previews</li>
           <li><strong>.reply-pill</strong> - Quoted reply in composer</li>
           <li><strong>.voice-recording-toolbar / .voice-transcribing-row</strong> - Voice states</li>
-          <li><strong>.mention-popup</strong> - Dropdown</li>
+          <li><strong>.mention-popup</strong> - Floating picker for people and projects</li>
+          <li><strong>.mention-item</strong> - Row inside popup (avatar/icon + name + subtitle)</li>
+          <li><strong>.mention-tag</strong> - Inline non-editable tag inserted after selection</li>
         </ul>
       </div>
+      <div class="doc-divider"></div>
+
       <div class="doc-section">
         <h2>Usage</h2>
-        <p>Position inside .device-screen at the bottom. The composer area uses a ResizeObserver pattern to adjust the chat thread's bottom offset dynamically.</p>
+        <p>Position inside <code>.device-screen</code> at the bottom. The composer area uses a ResizeObserver pattern to adjust the chat thread's bottom offset dynamically.</p>
+
+        <p><strong>Default state</strong></p>
+        <p>Empty input with placeholder text, plus button, @mention button, and mic icon.</p>
         <div class="doc-demo"><div style="width:370px">
   <div class="composer-pill">
     <div class="composer-input" style="min-height:24px;cursor:default" data-placeholder="Ask anything"></div>
@@ -78,17 +89,250 @@
         <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0V12a10 10 0 1 0-4 8"/></svg></button>
       </div>
       <div class="composer-toolbar-right">
-        <button class="btn-mic" data-mode="mic" style="cursor:default"><svg class="icon-mic" style="display:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="21" x2="12" y2="17"/></svg></button>
+        <button class="btn-mic" data-mode="mic" style="cursor:default"><svg class="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="21" x2="12" y2="17"/></svg><svg class="icon-send" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="icon-stop" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+        <p><strong>Active state (text entered)</strong></p>
+        <p>When text is present the mic icon switches to a send arrow.</p>
+        <div class="doc-demo"><div style="width:370px">
+  <div class="composer-pill">
+    <div class="composer-input" style="min-height:24px;cursor:default">How are the kids' habits today?</div>
+    <div class="composer-toolbar">
+      <div class="composer-toolbar-left">
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0V12a10 10 0 1 0-4 8"/></svg></button>
+      </div>
+      <div class="composer-toolbar-right">
+        <button class="btn-mic" data-mode="send" style="cursor:default"><svg class="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="21" x2="12" y2="17"/></svg><svg class="icon-send" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="icon-stop" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+        <p><strong>With inline mention tag</strong></p>
+        <p>After selecting a person or project from the popup, a non-editable <code>.mention-tag</code> is inserted inline. The tag uses <code>contentEditable="false"</code> so it behaves as an atomic unit.</p>
+        <div class="doc-demo"><div style="width:370px">
+  <div class="composer-pill">
+    <div class="composer-input" style="min-height:24px;cursor:default">Can you update <span class="mention-tag">@Sprout</span> on the morning routine?</div>
+    <div class="composer-toolbar">
+      <div class="composer-toolbar-left">
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0V12a10 10 0 1 0-4 8"/></svg></button>
+      </div>
+      <div class="composer-toolbar-right">
+        <button class="btn-mic" data-mode="send" style="cursor:default"><svg class="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="21" x2="12" y2="17"/></svg><svg class="icon-send" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="icon-stop" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
       </div>
     </div>
   </div>
 </div></div>
       </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>@Mention popup</h2>
+        <p>Triggered by typing <code>@</code> in the composer or tapping the @ toolbar button. The popup floats above the composer and lists people (co-parent, Sprout AI) and projects. Typing after @ filters results by name or subtitle. Selecting a row inserts a <code>.mention-tag</code> and closes the popup.</p>
+
+        <p><strong>Popup anatomy</strong></p>
+        <ul>
+          <li><strong>.mention-popup</strong> - Positioned absolute, bottom: 100%, white card with radius-3xl and subtle shadow</li>
+          <li><strong>.mention-item</strong> - Flex row with 8px/12px padding, hover highlight</li>
+          <li><strong>.mention-item-avatar-wrap</strong> - Rive-animated avatar (<code>.avatar.avatar-xs</code>) for people</li>
+          <li><strong>.mention-item-icon</strong> - 24x24 icon slot for projects (folder icon)</li>
+          <li><strong>.mention-item-info</strong> - Name + subtitle, inline for people, stacked (<code>.stacked</code>) for projects</li>
+          <li><strong>.mention-item-name</strong> - 14px medium weight</li>
+          <li><strong>.mention-item-sub</strong> - 12px regular, text-secondary</li>
+        </ul>
+
+        <p><strong>Full popup (people + projects)</strong></p>
+        <p>Shows all mentionable entities: family members with avatar and role, plus projects with folder icon and "Project" subtitle.</p>
+        <div class="doc-demo"><div style="width:370px;display:flex;flex-direction:column;gap:8px">
+  <div class="mention-popup" style="display:flex;position:static;margin-bottom:0">
+    <div class="mention-item">
+      <div class="mention-item-avatar-wrap"><div class="avatar avatar-xs avatar-bg-blue"><canvas class="rive-user" width="35" height="50"></canvas></div></div>
+      <div class="mention-item-info">
+        <div class="mention-item-name">Randall</div>
+        <div class="mention-item-sub">co-parent</div>
+      </div>
+    </div>
+    <div class="mention-item">
+      <div class="mention-item-avatar-wrap"><div class="avatar avatar-xs"><canvas class="rive-sprout" width="64" height="92"></canvas></div></div>
+      <div class="mention-item-info">
+        <div class="mention-item-name">Sprout</div>
+        <div class="mention-item-sub">family AI</div>
+      </div>
+    </div>
+    <div class="mention-item">
+      <div class="mention-item-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H12L10 5H5C3.89543 5 3 5.89543 3 7Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="mention-item-info stacked">
+        <div class="mention-item-name">Morning Routine Quest</div>
+        <div class="mention-item-sub">Project</div>
+      </div>
+    </div>
+    <div class="mention-item">
+      <div class="mention-item-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H12L10 5H5C3.89543 5 3 5.89543 3 7Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="mention-item-info stacked">
+        <div class="mention-item-name">Reading Challenge</div>
+        <div class="mention-item-sub">Project</div>
+      </div>
+    </div>
+  </div>
+  <div class="composer-pill">
+    <div class="composer-input" style="min-height:24px;cursor:default">@</div>
+    <div class="composer-toolbar">
+      <div class="composer-toolbar-left">
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0V12a10 10 0 1 0-4 8"/></svg></button>
+      </div>
+      <div class="composer-toolbar-right">
+        <button class="btn-mic" data-mode="send" style="cursor:default"><svg class="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="21" x2="12" y2="17"/></svg><svg class="icon-send" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="icon-stop" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+        <p><strong>Filtered popup (typing to search)</strong></p>
+        <p>As the user types after @, results filter by name or subtitle. Here, typing "mor" narrows to the matching project.</p>
+        <div class="doc-demo"><div style="width:370px;display:flex;flex-direction:column;gap:8px">
+  <div class="mention-popup" style="display:flex;position:static;margin-bottom:0">
+    <div class="mention-item">
+      <div class="mention-item-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H12L10 5H5C3.89543 5 3 5.89543 3 7Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="mention-item-info stacked">
+        <div class="mention-item-name">Morning Routine Quest</div>
+        <div class="mention-item-sub">Project</div>
+      </div>
+    </div>
+  </div>
+  <div class="composer-pill">
+    <div class="composer-input" style="min-height:24px;cursor:default">@mor</div>
+    <div class="composer-toolbar">
+      <div class="composer-toolbar-left">
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0V12a10 10 0 1 0-4 8"/></svg></button>
+      </div>
+      <div class="composer-toolbar-right">
+        <button class="btn-mic" data-mode="send" style="cursor:default"><svg class="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="21" x2="12" y2="17"/></svg><svg class="icon-send" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="icon-stop" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+        <p><strong>People only</strong></p>
+        <p>When filtering matches only people, rows show Rive-animated avatars with name and role inline.</p>
+        <div class="doc-demo"><div style="width:370px;display:flex;flex-direction:column;gap:8px">
+  <div class="mention-popup" style="display:flex;position:static;margin-bottom:0">
+    <div class="mention-item">
+      <div class="mention-item-avatar-wrap"><div class="avatar avatar-xs avatar-bg-blue"><canvas class="rive-user" width="35" height="50"></canvas></div></div>
+      <div class="mention-item-info">
+        <div class="mention-item-name">Randall</div>
+        <div class="mention-item-sub">co-parent</div>
+      </div>
+    </div>
+    <div class="mention-item">
+      <div class="mention-item-avatar-wrap"><div class="avatar avatar-xs"><canvas class="rive-sprout" width="64" height="92"></canvas></div></div>
+      <div class="mention-item-info">
+        <div class="mention-item-name">Sprout</div>
+        <div class="mention-item-sub">family AI</div>
+      </div>
+    </div>
+  </div>
+  <div class="composer-pill">
+    <div class="composer-input" style="min-height:24px;cursor:default">@</div>
+    <div class="composer-toolbar">
+      <div class="composer-toolbar-left">
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button class="composer-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0V12a10 10 0 1 0-4 8"/></svg></button>
+      </div>
+      <div class="composer-toolbar-right">
+        <button class="btn-mic" data-mode="send" style="cursor:default"><svg class="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="21" x2="12" y2="17"/></svg><svg class="icon-send" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="icon-stop" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div></div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Behavior</h2>
+        <ul>
+          <li>Popup opens when user types <code>@</code> (preceded by space or start of input) or taps the @ toolbar button</li>
+          <li>Results filter in real time as the user types after @</li>
+          <li>Tapping a row inserts <code>&lt;span class="mention-tag"&gt;@Name&lt;/span&gt;</code> as a non-editable inline element</li>
+          <li>Popup closes on selection, blur (150ms delay), or when the query contains a space</li>
+          <li>The popup hides suggestion chips while open (adds <code>.faded</code> to chip container)</li>
+          <li>Mic button switches to send mode as soon as the @ character is entered</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Member types</h2>
+        <p>The mention popup supports two entity types, each with distinct visual treatment:</p>
+        <ul>
+          <li><strong>Person</strong> - Rive-animated avatar (<code>.avatar.avatar-xs</code>), name + role subtitle displayed inline. Uses <code>isSprout</code> flag to select Rive source</li>
+          <li><strong>Project</strong> - Folder icon (24px), name + "Project" subtitle displayed stacked (<code>.mention-item-info.stacked</code>)</li>
+        </ul>
+        <p>Data shape per member:</p>
+        <pre style="background:var(--bg-secondary);border:1px solid var(--border-secondary);border-radius:var(--radius-xl,12px);padding:16px;font-size:13px;line-height:20px;overflow-x:auto;margin:0 0 16px"><code>{ type: 'person',  name: 'Sprout',  sub: 'family AI',  isSprout: true }
+{ type: 'person',  name: 'Randall', sub: 'co-parent',  avatarBg: 'avatar-bg-blue', avatarState: COPARENT_STATE }
+{ type: 'project', name: 'Morning Routine Quest', sub: 'Project' }</code></pre>
+      </div>
+
       <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
     </div>
   </div>
 </div>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
+<script>
+(function() {
+  var RIVE_SPROUT_SRC = '/kid-design-system/sprot2.97_.riv';
+  var RIVE_USER_SRC  = '/kid-design-system/character2.91.riv';
+  var SM_NAME  = 'State Machine 1';
+  var ARTBOARD = 'Village-character';
+  var SPROUT_STATE   = { hairID: 1 };
+  var COPARENT_STATE = { skinID: 5, hairID: 4, hairshadeID: 8, beardID: 2, beardshadeID: 8, clothingID: 3, clothingcolourID: 5, eyeshadeID: 3 };
+
+  function initRiveAvatar(canvas, opts) {
+    var w = parseInt(canvas.getAttribute('width'), 10) || 86;
+    var h = parseInt(canvas.getAttribute('height'), 10) || 124;
+    canvas.width = w;
+    canvas.height = h;
+    var config = {
+      src: opts.src,
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: SM_NAME,
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.Center,
+      onLoad: function() {
+        if (!r) return;
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs(SM_NAME);
+          if (inputs && opts.state) {
+            inputs.forEach(function(inp) {
+              if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+            });
+          }
+        } catch(e) {}
+      }
+    };
+    if (opts.artboard) config.artboard = opts.artboard;
+    var r;
+    try { r = new rive.Rive(config); } catch(e) { console.warn('Rive init failed', e); }
+    return r;
+  }
+
+  document.querySelectorAll('canvas.rive-sprout').forEach(function(c) {
+    initRiveAvatar(c, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+  });
+  document.querySelectorAll('canvas.rive-user').forEach(function(c) {
+    initRiveAvatar(c, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: COPARENT_STATE });
+  });
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,23 @@
+/* ══════════════════════════════════════════
+   Connector Card
+   Standalone card for a single API connection
+   shown inline in a chat message.
+   ══════════════════════════════════════════ */
+
+/* Allow wider cards inside message rows */
+.msg-row:has(.connector-card),
+.msg-row:has(.connector-list) { max-width: 92%; }
+
+.connector-card {
+  background: var(--bg-primary, #fff);
+  border: none;
+  border-radius: var(--radius-4xl, 24px);
+  padding: var(--spacing-lg, 12px);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  width: 330px;
+  margin-top: 0;
+}
+
+/* ── Loading spinner moved to button.css as .btn-spinner ── */

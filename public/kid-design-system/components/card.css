@@ -1,0 +1,169 @@
+/* ══════════════════════════════════════════
+   Card
+   Generic inline card used across the chat.
+   40px icon | label + description | trailing
+   (badge, button, or none) | optional dots.
+   ══════════════════════════════════════════ */
+
+/* Allow wider cards inside message rows */
+.msg-row:has(.card),
+.msg-row:has(.card-list) { max-width: 92%; }
+
+/* ── Single card ── */
+
+.card {
+  background: var(--bg-primary, #fff);
+  border: none;
+  border-radius: var(--radius-3xl, 20px);
+  padding: var(--spacing-lg, 12px);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  width: 330px;
+}
+
+/* ── Card list (multiple cards in a container) ── */
+
+.card-list {
+  background: var(--bg-primary, #fff);
+  border: none;
+  border-radius: var(--radius-3xl, 20px);
+  box-shadow: 0 0 4px 0 rgba(0,0,0,.04);
+  width: 330px;
+  align-self: flex-start;
+  margin-top: var(--spacing-xs, 4px);
+  overflow: hidden;
+}
+
+.card-list-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px);
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.card-list-header svg {
+  width: 24px;
+  height: 24px;
+  color: var(--text-quaternary, #717680);
+  flex-shrink: 0;
+}
+.card-list-header span {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-quaternary, #717680);
+  line-height: var(--line-height-text-md, 24px);
+}
+
+/* ── Row (card inside a list) ── */
+
+.card-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px);
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.card-row:last-child { border-bottom: none; }
+
+/* ── Icon (leading) ── */
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md, 8px);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-icon img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md, 8px);
+}
+.card-icon.card-icon-inset img {
+  inset: auto;
+  left: 0;
+  top: 12.43%;
+  width: 100%;
+  height: 74.9%;
+  object-fit: contain;
+  border-radius: 0;
+}
+.card-icon svg { width: 100%; height: 100%; }
+
+/* Tinted icon background for emoji icons (always TossFace) */
+.card-icon.card-icon-tinted {
+  background: var(--brand-100, #b9e6fe);
+  font-family: 'TossFace', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  padding: var(--spacing-md, 8px);
+}
+
+/* ── Body (label + description) ── */
+
+.card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+
+.card-label {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #181d27);
+  line-height: var(--line-height-text-sm, 20px);
+}
+
+.card-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-secondary, #414651);
+  margin-top: 1px;
+  line-height: var(--line-height-text-xs, 16px);
+}
+
+/* ── Badge (trailing pill) ── */
+
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  padding: var(--spacing-xs, 4px) var(--spacing-md, 8px);
+  border-radius: 9999px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-text-xs, 16px);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.card-badge.badge-info     { background: var(--brand-50, #f0f9ff);   color: var(--brand-600, #0086c9); }
+.card-badge.badge-success  { background: var(--green-50, #ecfdf3);   color: var(--green-600, #079455); }
+.card-badge.badge-warning  { background: var(--amber-50, #fffaeb);   color: var(--amber-600, #dc6803); }
+.card-badge.badge-neutral  { background: var(--gray-100, #f0f1f1);   color: var(--gray-600, #535862); }
+
+/* ── Overflow dots ── */
+
+.card-overflow {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-quaternary, #717680);
+  background: none;
+  border: none;
+  flex-shrink: 0;
+  padding: 0;
+  transition: color .15s;
+}
+.card-overflow:hover { color: var(--text-secondary, #414651); }
+
+/* Action button styles in button.css */

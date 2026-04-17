@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System — Reasoning Transcript</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/reasoning-transcript.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px}
+.doc-download{display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);text-decoration:none;transition:color .15s}
+.doc-download:hover{color:var(--text-primary)}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px}
+.doc-demo-col{display:flex;flex-direction:column;gap:24px;width:100%}
+/* inline reasoning-transcript for demos */
+.rt{background:white;border:1px solid var(--gray-200,#e4e7ec);border-radius:12px;max-width:300px;overflow:hidden}
+.rt .rt-header{display:flex;align-items:center;gap:6px;padding:8px 11px;cursor:pointer;user-select:none}
+.rt .rt-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.rt .rt-icon-kn{background:var(--sprout-100,#e0f2fe);color:var(--sprout-600,#0284c7)}
+.rt .rt-icon-cn{background:var(--amber-100,#fef3c7);color:var(--amber-600,#d97706)}
+.rt .rt-icon-sc{background:var(--red-100,#fee2e2);color:var(--red-600,#dc2626)}
+.rt .rt-label{flex:1;font-size:11px;color:var(--text-tertiary,#535862);font-weight:500}
+.rt .rt-meta{font-size:9px;color:var(--text-quaternary,#717680);font-variant-numeric:tabular-nums}
+.rt .rt-chevron{font-size:9px;color:var(--gray-400,#98a2b3);transition:transform 0.2s}
+.rt.expanded .rt-chevron{transform:rotate(180deg)}
+.rt .rt-body{display:none;padding:0 11px 10px;border-top:1px solid var(--gray-100,#f2f4f7)}
+.rt.expanded .rt-body{display:block;padding-top:8px}
+.rt .rt-prose{font-size:10px;color:var(--text-tertiary,#535862);line-height:1.55;font-style:italic}
+.rt .rt-prose .rt-highlight{background:var(--amber-50,#fffbeb);color:var(--amber-600,#d97706);font-style:normal;font-weight:600;padding:0 3px;border-radius:2px}
+.rt .rt-prose .rt-decision{display:block;margin-top:6px;padding-top:6px;border-top:1px solid var(--gray-100,#f2f4f7);font-style:normal;font-weight:600;color:var(--text-secondary,#414651)}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Reasoning Transcript</h1>
+        <p class="doc-desc">Collapsible block showing Sprout's internal reasoning. Collapsed by default with duration, click to expand and read the full reasoning prose. Opened via "Show thinking" on a Sprout message.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>CSS file</div>
+          <div class="doc-meta-value"><span class="doc-badge">reasoning-transcript.css</span><a class="doc-download" href="/kid-design-system/components/reasoning-transcript.css" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Thu Apr 17, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Overview</h2>
+        <p>The reasoning transcript surfaces Sprout's internal monologue so parents can understand why Sprout said what it said. It appears as a collapsible block: collapsed by default showing duration and token count, expanded to reveal the full reasoning prose with highlights and a final decision line.</p>
+        <p><strong>States:</strong> streaming, collapsed, expanded, with-highlights.</p>
+        <p><strong>CSS modifiers:</strong> <code>.streaming</code>, <code>.expanded</code>.</p>
+        <p><strong>Content variants:</strong> knowledge-lookup, connection-debug, action-planning, safety-check.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <ul>
+          <li><strong>.reasoning-transcript</strong> - Outer container (white card, 12px radius, 1px border)</li>
+          <li><strong>.rt-header</strong> - Clickable row: icon + label + meta + chevron</li>
+          <li><strong>.rt-icon</strong> - 18px circle, colored by content variant</li>
+          <li><strong>.rt-label</strong> - "Thought for Ns" or variant-specific label</li>
+          <li><strong>.rt-meta</strong> - Token count or additional metadata</li>
+          <li><strong>.rt-chevron</strong> - Expand/collapse indicator, rotates 180deg when open</li>
+          <li><strong>.rt-body</strong> - Hidden by default, revealed on expand</li>
+          <li><strong>.rt-prose</strong> - Italic reasoning text</li>
+          <li><strong>.rt-highlight</strong> - Amber-highlighted key terms within prose</li>
+          <li><strong>.rt-decision</strong> - Bold final decision line, separated by border-top</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Sheet variant</h2>
+        <p>When triggered from the "Show thinking" button on a Sprout message, the reasoning transcript opens as a bottom sheet with a timeline of discrete steps. Place <code>.reasoning-transcript-scrim</code> and <code>.reasoning-transcript-sheet</code> inside <code>.device-screen</code>. Toggle <code>.open</code> on both to show.</p>
+        <ul>
+          <li><strong>.reasoning-transcript-scrim</strong> - Semi-transparent overlay behind the sheet</li>
+          <li><strong>.reasoning-transcript-sheet</strong> - Slide-up sheet container</li>
+          <li><strong>.reasoning-transcript-header</strong> - Header with label and total time</li>
+          <li><strong>.reasoning-transcript-body</strong> - Scrollable body area for steps</li>
+          <li><strong>.reasoning-step</strong> - Individual step container</li>
+          <li><strong>.reasoning-step-timeline</strong> - Visual container for dot and line</li>
+          <li><strong>.reasoning-step-dot</strong> - Circle dot on the timeline</li>
+          <li><strong>.reasoning-step-line</strong> - Vertical connecting line between steps</li>
+          <li><strong>.reasoning-step-content</strong> - Title and description text area</li>
+          <li><strong>.reasoning-step-time</strong> - Elapsed time for the step</li>
+        </ul>
+        <div class="doc-demo"><div style="width:340px;background:var(--bg-primary);border-radius:24px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+  <div class="reasoning-transcript-header">
+    <span class="reasoning-transcript-header-label">Reasoning Transcript</span>
+    <span class="reasoning-transcript-header-time">6s</span>
+  </div>
+  <div style="padding:0 16px">
+    <div class="reasoning-step">
+      <div class="reasoning-step-timeline"><div class="reasoning-step-dot"></div><div class="reasoning-step-line"></div></div>
+      <div class="reasoning-step-content"><div class="reasoning-step-title">Checking family profile</div><div class="reasoning-step-desc">Retrieved Emma's age and preferences</div></div>
+      <div class="reasoning-step-time">2s</div>
+    </div>
+    <div class="reasoning-step">
+      <div class="reasoning-step-timeline"><div class="reasoning-step-dot"></div><div class="reasoning-step-line"></div></div>
+      <div class="reasoning-step-content"><div class="reasoning-step-title">Reviewing schedule</div><div class="reasoning-step-desc">Found 3 available evening slots</div></div>
+      <div class="reasoning-step-time">4s</div>
+    </div>
+    <div class="reasoning-step">
+      <div class="reasoning-step-timeline"><div class="reasoning-step-dot"></div></div>
+      <div class="reasoning-step-content"><div class="reasoning-step-title">Generating routine</div><div class="reasoning-step-desc">Created personalized bedtime plan</div></div>
+      <div class="reasoning-step-time">6s</div>
+    </div>
+  </div>
+</div></div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section" id="content-variants">
+        <h2>Content variants</h2>
+        <p>The reasoning transcript adapts its icon color and prose content based on what Sprout is reasoning about. Each variant uses the same anatomy but signals a different type of internal reasoning.</p>
+
+        <p><strong>Knowledge Lookup</strong></p>
+        <p>Sprout is retrieving and synthesizing information from its knowledge base to answer a parent's question.</p>
+        <div class="doc-demo">
+          <div class="doc-demo-col" style="align-items:center">
+            <div class="rt expanded">
+              <div class="rt-header">
+                <div class="rt-icon rt-icon-kn">&#x1f4a1;</div>
+                <span class="rt-label">Thought for 4s</span>
+                <span class="rt-meta">128 tokens</span>
+                <span class="rt-chevron">&#x25B2;</span>
+              </div>
+              <div class="rt-body">
+                <div class="rt-prose">The parent is asking about <span class="rt-highlight">screen time guidelines</span> for a 6-year-old. AAP recommends consistent limits and co-viewing. Emma's current setting is 45 min/day which falls within the recommended range. I should affirm their current approach and offer age-specific tips.
+                  <span class="rt-decision">Decision: Affirm current limits, suggest co-viewing activities</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p><strong>Connection Debug</strong></p>
+        <p>Sprout is diagnosing a connectivity or integration issue with a third-party service.</p>
+        <div class="doc-demo">
+          <div class="doc-demo-col" style="align-items:center">
+            <div class="rt expanded">
+              <div class="rt-header">
+                <div class="rt-icon rt-icon-cn">&#x1f50c;</div>
+                <span class="rt-label">Thought for 7s</span>
+                <span class="rt-meta">203 tokens</span>
+                <span class="rt-chevron">&#x25B2;</span>
+              </div>
+              <div class="rt-body">
+                <div class="rt-prose">The Google Calendar connector returned a <span class="rt-highlight">403 Forbidden</span> on the events.list scope. The OAuth token was issued 2024-12-01 and the parent has not re-authenticated since the scope change on 2025-03-15. The token is valid but missing the <span class="rt-highlight">calendar.readonly</span> scope. I need to prompt re-authorization rather than showing a generic error.
+                  <span class="rt-decision">Decision: Prompt parent to reconnect Google Calendar with updated permissions</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p><strong>Safety Check</strong></p>
+        <p>Sprout is evaluating whether content or a request is appropriate for the child's age and family settings.</p>
+        <div class="doc-demo">
+          <div class="doc-demo-col" style="align-items:center">
+            <div class="rt expanded">
+              <div class="rt-header">
+                <div class="rt-icon rt-icon-sc">&#x1f6e1;</div>
+                <span class="rt-label">Thought for 2s</span>
+                <span class="rt-meta">87 tokens</span>
+                <span class="rt-chevron">&#x25B2;</span>
+              </div>
+              <div class="rt-body">
+                <div class="rt-prose">Noah (age 8) asked about a topic flagged under the family's <span class="rt-highlight">sensitive topics</span> filter. The parent has this category set to "redirect to parent." The question itself is age-appropriate curiosity, not harmful. I should give a brief, honest answer and notify the parent.
+                  <span class="rt-decision">Decision: Answer age-appropriately, send parent notification</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

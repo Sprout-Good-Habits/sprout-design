@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System - Result Card</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/result-card.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.doc-download{display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);text-decoration:none;transition:color .15s}
+.doc-download:hover{color:var(--text-primary)}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-tag{display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 6px;border-radius:var(--radius-xs,4px);font-weight:var(--font-weight-semibold,600);font-size:10px;letter-spacing:0.04em}
+.doc-tag.kn{background:#e0f2fe;color:#026aa2}
+.doc-tag.ac{background:#fef3c7;color:#92400e}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section h3{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:24px 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px;flex-direction:column;gap:16px}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Result Card</h1>
+        <p class="doc-desc">Inline card for research results, web results, and recommendations that Sprout surfaces during a conversation. Shows a category tag, title, and description with an expand button to view the full source.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>CSS file</div>
+          <div class="doc-meta-value"><span class="doc-badge">result-card.css</span><a class="doc-download" href="/kid-design-system/components/result-card.css" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Thu Apr 17, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Overview</h2>
+        <p>When Sprout searches the web, references research, or generates a recommendation, it surfaces the result inline as a result card. The card gives the parent a quick preview with enough context to decide whether to expand the full source.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <ul>
+          <li><strong>.result-card</strong> - Card container (330px, radius-3xl, white bg, subtle shadow)</li>
+          <li><strong>.result-card-header</strong> - Type row: icon + type label + expand button</li>
+          <li><strong>.result-card-type</strong> - Source type ("Web result", "Research result", "Recommendation")</li>
+          <li><strong>.result-card-expand</strong> - Expand button to open full content in a sheet</li>
+          <li><strong>.result-card-body</strong> - Content area with category, title, and description</li>
+          <li><strong>.result-card-category</strong> - Optional source callout (12px, tertiary). Keep concise: a URL, source name, or short label. Omit when the source is obvious from context.</li>
+          <li><strong>.result-card-title</strong> - Result title (16px, semibold)</li>
+          <li><strong>.result-card-desc</strong> - Summary text (14px, regular)</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Variants</h2>
+
+        <h3>Research result</h3>
+        <div class="doc-demo">
+          <div class="result-card">
+            <div class="result-card-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+              <span class="result-card-type">Research result</span>
+              <button class="result-card-expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>
+            </div>
+            <div class="result-card-body">
+              <div class="result-card-category">aap.org</div>
+              <div class="result-card-title">Sleep Guidelines for Children Ages 6-12</div>
+              <div class="result-card-desc">Recommended 9-12 hours per night. Consistent bedtime routines improve both sleep quality and next-day behavior.</div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Web result</h3>
+        <div class="doc-demo">
+          <div class="result-card">
+            <div class="result-card-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              <span class="result-card-type">Web result</span>
+              <button class="result-card-expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>
+            </div>
+            <div class="result-card-body">
+              <div class="result-card-category">citylib.org</div>
+              <div class="result-card-title">Summer Reading Challenge 2026</div>
+              <div class="result-card-desc">Ages 5-12. Runs June 1 - August 15. Read 20 books to earn a pizza party ticket. Register at any branch.</div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Recommendation</h3>
+        <div class="doc-demo">
+          <div class="result-card">
+            <div class="result-card-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 01-1 1h-6a1 1 0 01-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/></svg>
+              <span class="result-card-type">Recommendation</span>
+              <button class="result-card-expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>
+            </div>
+            <div class="result-card-body">
+              <div class="result-card-title">Consider Moving Soccer to Wednesday</div>
+              <div class="result-card-desc">Ben's Thursday has a 27-min conflict between piano and soccer. Wednesday is open 3:00-6:00 PM.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="comm-card.html">Communication Card</a> - Similar header pattern for email/message drafts.</li>
+          <li><a href="card.html">Card</a> - Generic inline card for single-entity rows.</li>
+          <li><a href="skill-sheet.html">Skill Sheet</a> - Detail sheet opened by the expand button.</li>
+        </ul>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

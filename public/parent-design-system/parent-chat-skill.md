@@ -56,7 +56,7 @@ Import these from `/kid-design-system/components/`:
 | `chat-action-buttons.css` | Primary/secondary buttons with loading/done states (needs `chat-banner.css` for spinner) |
 | `confirm-card.css` | Structured confirm/cancel card |
 | `artifact.css` | Inline artifact card and detail sheet |
-| `thought-sheet.css` | AI thought process timeline sheet |
+| `reasoning-transcript.css` | AI reasoning process timeline sheet |
 | `tool-usage.css` | Collapsible tool activity indicator |
 | `chat-context-menu.css` | Sheet base (scrim, handle, list) and context menu |
 | `attach-panel.css` | Attachment panel, plus pill (inline expand), iOS keyboard |
@@ -231,7 +231,7 @@ When attachments are added, they appear in `.attach-strip` inside the composer p
 
 ### Thought process
 - "Thought for Ns >" toggle on incoming messages
-- Opens `.thought-sheet` with timeline: dot, line, step title, description, elapsed time
+- Opens `.reasoning-transcript-sheet` with timeline: dot, line, step title, description, elapsed time
 
 ### Tool usage
 - Inline indicator: "Sprout is loading family overview..."
@@ -248,6 +248,200 @@ When attachments are added, they appear in `.attach-strip` inside the composer p
 - **Delete**: "Message deleted" + "Undo" link
 - **Toast**: "Copied to clipboard" (auto-dismiss)
 - All use `.banner.show` / `.banner.hiding` for enter/exit
+
+## Rive characters
+
+All avatars use Rive for animated characters. Load the Rive runtime first:
+```html
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+```
+
+### Files and artboards
+
+| Character | Rive file | Artboard | State Machine |
+|-----------|----------|----------|---------------|
+| Sprout (AI mascot) | `/kid-design-system/sprot2.97_.riv` | *(default, omit artboard)* | `State Machine 1` |
+| User / Co-parent | `/kid-design-system/character2.91.riv` | `Village-character` | `State Machine 1` |
+
+### Customization states
+
+Each character is customized by setting number inputs on the state machine after load:
+
+```javascript
+// Sprout - just needs a hair style
+var SPROUT_STATE = { hairID: 1 };
+
+// Parent (user) - skin, hair, clothing, eyes
+var USER_STATE = {
+  skinID: 3,
+  hairID: 2,
+  hairshadeID: 4,
+  clothingID: 1,
+  clothingcolourID: 2,
+  eyeshadeID: 1
+};
+
+// Co-parent - different appearance with beard
+var COPARENT_STATE = {
+  skinID: 5,
+  hairID: 4,
+  hairshadeID: 8,
+  beardID: 2,
+  beardshadeID: 8,
+  clothingID: 3,
+  clothingcolourID: 5,
+  eyeshadeID: 3
+};
+```
+
+### initRiveAvatar helper
+
+```javascript
+function initRiveAvatar(canvas, opts) {
+  var w = parseInt(canvas.getAttribute('width'), 10) || 86;
+  var h = parseInt(canvas.getAttribute('height'), 10) || 124;
+  canvas.width = w;
+  canvas.height = h;
+  var config = {
+    src: opts.src,
+    canvas: canvas,
+    autoplay: true,
+    stateMachines: 'State Machine 1',
+    fit: rive.Fit.Contain,
+    alignment: rive.Alignment.Center,
+    onLoad: function() {
+      if (!r) return;
+      r.resizeDrawingSurfaceToCanvas();
+      try {
+        var inputs = r.stateMachineInputs('State Machine 1');
+        if (inputs && opts.state) {
+          inputs.forEach(function(inp) {
+            if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+          });
+        }
+      } catch(e) {}
+    }
+  };
+  if (opts.artboard) config.artboard = opts.artboard;
+  var r;
+  try { r = new rive.Rive(config); } catch(e) { console.warn('Rive init failed', e); }
+  return r;
+}
+```
+
+### Creating avatar elements
+
+**Sprout avatar** (for incoming messages):
+```javascript
+function createSproutAvatar() {
+  var wrap = document.createElement('div');
+  wrap.className = 'msg-avatar';
+  var av = document.createElement('div');
+  av.className = 'avatar avatar-sm';
+  var canvas = document.createElement('canvas');
+  canvas.className = 'rive-sprout';
+  canvas.setAttribute('width', '86');
+  canvas.setAttribute('height', '124');
+  av.appendChild(canvas);
+  wrap.appendChild(av);
+  setTimeout(function() {
+    initRiveAvatar(canvas, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+  }, 0);
+  return wrap;
+}
+```
+
+**User/co-parent avatar** (for co-parent messages):
+```javascript
+function createUserAvatar(bgClass, state) {
+  var wrap = document.createElement('div');
+  wrap.className = 'msg-avatar';
+  var av = document.createElement('div');
+  av.className = 'avatar avatar-sm' + (bgClass ? ' ' + bgClass : '');
+  var canvas = document.createElement('canvas');
+  canvas.className = 'rive-user';
+  canvas.setAttribute('width', '46');
+  canvas.setAttribute('height', '66');
+  av.appendChild(canvas);
+  wrap.appendChild(av);
+  setTimeout(function() {
+    initRiveAvatar(canvas, {
+      src: RIVE_USER_SRC,
+      artboard: 'Village-character',
+      state: state || USER_STATE
+    });
+  }, 0);
+  return wrap;
+}
+```
+
+**Canvas sizes** (2x resolution for crisp rendering):
+- Sprout: `86x124` (inside 32px `.avatar-sm`)
+- Village character: `46x66` (inside 32px `.avatar-sm`)
+
+### Header toolbar avatars
+
+The toolbar shows 3 stacked avatars (user, co-parent, Sprout):
+```html
+<div class="chat-header-avatars">
+  <div class="avatar avatar-sm avatar-bordered" id="headerAvatarUser">
+    <canvas class="rive-user" width="46" height="66"></canvas>
+  </div>
+  <div class="avatar avatar-sm avatar-bg-violet avatar-bordered" id="headerAvatarCoparent">
+    <canvas class="rive-user" width="46" height="66"></canvas>
+  </div>
+  <div class="avatar avatar-sm avatar-bordered" id="sproutAvatar">
+    <canvas class="rive-sprout" width="86" height="124"></canvas>
+  </div>
+</div>
+```
+
+Initialize after DOM ready:
+```javascript
+var sproutCanvas = document.querySelector('#sproutAvatar canvas.rive-sprout');
+initRiveAvatar(sproutCanvas, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+
+var userCanvas = document.querySelector('#headerAvatarUser canvas.rive-user');
+initRiveAvatar(userCanvas, { src: RIVE_USER_SRC, artboard: 'Village-character', state: USER_STATE });
+
+var coparentCanvas = document.querySelector('#headerAvatarCoparent canvas.rive-user');
+initRiveAvatar(coparentCanvas, { src: RIVE_USER_SRC, artboard: 'Village-character', state: COPARENT_STATE });
+```
+
+### Sprout character inputs (sprot2.97.riv)
+
+| Input | Type | Range | Notes |
+|-------|------|-------|-------|
+| `skinID` | Number | 0-9 | Skin color (0=green, 1=coral, 2=pink...) |
+| `hairID` | Number | 0-8 | Hair style (0=none, 1=short, 2=curly...) |
+| `looking` | Number | 0-3 | Eye direction |
+| `smile` | Trigger | - | Smiling expression |
+| `laugh` | Trigger | - | Laughing expression |
+| `surprise` | Trigger | - | Surprised expression |
+| `thinking` | Trigger | - | Thinking expression (note: trailing space in name) |
+| `celebration` | Trigger | - | Full celebration animation |
+| `characterwave` | Trigger | - | Wave hand animation |
+
+### Village character inputs (character2.91.riv)
+
+| Input | Type | Range | Notes |
+|-------|------|-------|-------|
+| `skinID` | Number | 0-15 | Skin tone |
+| `hairID` | Number | 0-15 | Hair style |
+| `hairshadeID` | Number | 0-12 | Hair color |
+| `clothingID` | Number | 0-11 | Clothing type |
+| `clothingcolourID` | Number | 0-10 | Clothing color |
+| `beardID` | Number | 0-7 | Beard type (0=none) |
+| `beardshadeID` | Number | 0-12 | Beard color |
+| `glassID` | Number | 0-5 | Glasses type (0=none) |
+| `glassshadeID` | Number | 0-10 | Glasses color |
+| `eyeshadeID` | Number | 0-7 | Eye color |
+| `earringID` | Number | 0-6 | Earring type (0=none) |
+| `facedetailID` | Number | 0-3 | Face detail (0=none, 1=blush, 2=wrinkle, 3=freckle) |
+| `headwearID` | Number | 0-4 | Headwear type (0=none) |
+| `laugh` | Trigger | - | Laughing expression |
+| `surprise` | Trigger | - | Surprise expression |
+| `sad` | Trigger | - | Sad expression |
 
 ## Layout rules
 
@@ -311,7 +505,7 @@ The prototype uses these data structures:
 | Attachment A | Tap + | `.plus-pill.expanded` | Spring 350ms |
 | Attachment B | Tap + | `.attach-panel.open` | Stagger reveal |
 | Context menu | Long press | `.sheet.open` + `.sheet-scrim.open` | Spring slide-up |
-| Thought sheet | Tap "Thought for Ns" | `.thought-sheet.open` | Spring slide-up |
+| Reasoning transcript | Tap "Thought for Ns" | `.reasoning-transcript-sheet.open` | Spring slide-up |
 | Artifact sheet | Tap artifact card | `.artifact-sheet.open` | Spring slide-up |
 | Delete message | Context menu > Delete | `.banner.show` | Fade in |
 | Reconnection | Network loss | `.banner-reconnect` | Auto-dismiss 3s |

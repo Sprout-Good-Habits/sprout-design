@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-toolbar.css">
 <link rel="stylesheet" href="/kid-design-system/components/avatar.css">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
 <style>
 .doc-hero{max-width:720px;padding:96px 0 0}
 .doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
@@ -78,9 +79,9 @@
       <div class="toolbar-pill">
         <button class="toolbar-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
         <div class="chat-header-avatars">
-          <div style="width:32px;height:32px;border-radius:9999px;background:var(--bg-sky);border:2px solid white;flex-shrink:0"></div>
-          <div style="width:32px;height:32px;border-radius:9999px;background:#ede9fe;border:2px solid white;flex-shrink:0;margin-left:-8px"></div>
-          <div style="width:32px;height:32px;border-radius:9999px;background:var(--bg-sky);border:2px solid white;flex-shrink:0;margin-left:-8px"></div>
+          <div class="avatar avatar-sm avatar-bordered"><canvas class="rive-sprout" width="86" height="124"></canvas></div>
+          <div class="avatar avatar-sm avatar-bg-violet avatar-bordered" style="margin-left:-8px"><canvas class="rive-user" width="46" height="66" data-rive-state="coparent"></canvas></div>
+          <div class="avatar avatar-sm avatar-bordered" style="margin-left:-8px"><canvas class="rive-user" width="46" height="66"></canvas></div>
         </div>
       </div>
     </div>
@@ -93,5 +94,6 @@
 </div>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
+<script src="/parent-design-system/rive-avatars.js"></script>
 </body>
 </html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System - Communication Card</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/comm-card.css">
+<link rel="stylesheet" href="/kid-design-system/components/button.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.doc-download{display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);text-decoration:none;transition:color .15s}
+.doc-download:hover{color:var(--text-primary)}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-tag{display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 6px;border-radius:var(--radius-xs,4px);font-weight:var(--font-weight-semibold,600);font-size:10px;letter-spacing:0.04em}
+.doc-tag.ac{background:#fef3c7;color:#92400e}
+.doc-tag.cn{background:#ede9fe;color:#5b21b6}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section h3{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:24px 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Communication Card</h1>
+        <p class="doc-desc">Inline preview of a drafted email or message that Sprout composed on behalf of the parent. Shows the channel, recipients, subject, and full body so the parent can review before sending.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>CSS file</div>
+          <div class="doc-meta-value"><span class="doc-badge">comm-card.css</span><a class="doc-download" href="/kid-design-system/components/comm-card.css" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Thu Apr 17, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Overview</h2>
+        <p>When Sprout drafts an email or message for the parent, the communication card previews the full content inline in the chat. The parent can read the draft, then approve or edit it via the accompanying button stack.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <ul>
+          <li><strong>.comm-card</strong> - Card container (330px, radius-3xl, white bg, subtle shadow)</li>
+          <li><strong>.comm-card-header</strong> - Channel row: icon (mail, message) + type label + expand button</li>
+          <li><strong>.comm-card-type</strong> - Channel name ("Email", "Message")</li>
+          <li><strong>.comm-card-expand</strong> - Expand button to open full preview</li>
+          <li><strong>.comm-card-field</strong> - Metadata row (To, Subject, Via, etc.)</li>
+          <li><strong>.comm-card-field-label</strong> - Bold field name</li>
+          <li><strong>.comm-card-field-value</strong> - Field content</li>
+          <li><strong>.comm-card-body</strong> - Free-form message body</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Demo</h2>
+
+        <h3>Email draft</h3>
+        <div class="doc-demo">
+          <div class="comm-card">
+            <div class="comm-card-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg>
+              <span class="comm-card-type">Email</span>
+              <button class="comm-card-expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>
+            </div>
+            <div class="comm-card-field">
+              <span class="comm-card-field-label">To</span>
+              <span class="comm-card-field-value">Mrs. Park</span>
+            </div>
+            <div class="comm-card-field">
+              <span class="comm-card-field-label">Subject</span>
+              <span class="comm-card-field-value">Friday reading group, Noah</span>
+            </div>
+            <div class="comm-card-body">
+              <p>Hi Mrs. Park,</p>
+              <p>I wanted to check in about Noah's progress in the Friday reading group. He's been really enjoying the books you've been assigning and we'd love to know if there's anything we can do at home to support him.</p>
+              <p>Best,<br>Leticia</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>Message draft</h3>
+        <div class="doc-demo">
+          <div class="comm-card">
+            <div class="comm-card-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              <span class="comm-card-type">Message</span>
+              <button class="comm-card-expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>
+            </div>
+            <div class="comm-card-field">
+              <span class="comm-card-field-label">To</span>
+              <span class="comm-card-field-value">Randall</span>
+            </div>
+            <div class="comm-card-body">
+              <p>Hey, Noah finished his reading goal for the week. 5 days in a row! Thought you'd want to know.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Usage</h2>
+        <p>Always pair with a <strong>button stack</strong> below the card so the parent can approve or edit the draft. The card sits inside <code>.msg-col</code> as a sibling to the text bubble, followed by the button stack.</p>
+        <ul>
+          <li><strong>Primary button</strong>: "Send" or "Send email"</li>
+          <li><strong>Secondary button</strong>: "Edit" or "Cancel"</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Content variants</h2>
+        <ul>
+          <li><strong>Email</strong>: Mail icon, To + Subject fields, full body with greeting and sign-off</li>
+          <li><strong>Message</strong>: Chat icon, To field only (no subject), shorter body</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="card.html">Card</a> - Generic inline card for single-entity rows.</li>
+          <li><a href="button.html">Button</a> - Action buttons used in the accompanying button stack.</li>
+          <li><a href="error-recovery.html">Error Recovery</a> - If sending fails, Sprout explains conversationally.</li>
+        </ul>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>
