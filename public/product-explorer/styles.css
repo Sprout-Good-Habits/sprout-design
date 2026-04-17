@@ -199,7 +199,7 @@ code {
 .card-grid { display: grid; gap: var(--spacing-xl, 16px); margin-bottom: var(--spacing-4xl, 32px); }
 .card-grid-2 { grid-template-columns: 1fr 1fr; }
 .card-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-.card {
+.card-grid .card {
   background: var(--bg-primary, #ffffff);
   border: 1px solid var(--gray-200, #e9eaeb);
   border-radius: var(--radius-xl, 12px);
@@ -209,24 +209,24 @@ code {
   color: inherit;
   display: block;
 }
-.card:hover {
+.card-grid .card:hover {
   border-color: var(--gray-300, #d5d7da);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   text-decoration: none;
 }
-.card h3 {
+.card-grid .card h3 {
   font-size: var(--font-size-text-sm, 14px);
   font-weight: var(--font-weight-semibold, 600);
   margin-bottom: var(--spacing-xs, 4px);
   line-height: var(--line-height-text-sm, 20px);
   color: var(--text-primary, #181d27);
 }
-.card p {
+.card-grid .card p {
   font-size: 13px;
   color: var(--text-tertiary, #535862);
   line-height: 20px;
 }
-.card-icon {
+.card-grid .card-icon {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md, 8px);
