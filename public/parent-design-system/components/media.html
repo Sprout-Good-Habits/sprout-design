@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System — Media</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/parent-design-system/components/media.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px}
+.doc-download{display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);text-decoration:none;transition:color .15s}
+.doc-download:hover{color:var(--text-primary)}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section h3{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:16px 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px}
+.demo-grid{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.demo-col{display:flex;flex-direction:column;gap:8px;align-items:center}
+.demo-label{font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);color:var(--text-quaternary);text-align:center}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Media</h1>
+        <p class="doc-desc">Unified component for images and file attachments in chat. Covers both the in-message attachment view and the composer preview strip, with default and loading states.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>CSS file</div>
+          <div class="doc-meta-value"><span class="doc-badge">media.css</span><a class="doc-download" href="/parent-design-system/components/media.css" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Thu Apr 17, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Overview</h2>
+        <p>The Media component handles every visual representation of user-attached content in chat: photo thumbnails, file cards, and their composer previews. Each variant supports a loading state with a spinner overlay or icon swap.</p>
+        <p>This component consolidates styles previously split across <code>chat-messages.css</code> and <code>chat-composer.css</code>. The composition patterns (grids, lists) are documented separately in <a href="media-gallery.html">Media Gallery</a>, <a href="file-attachment.html">File Attachment</a>, and <a href="file-attachment-list.html">File Attachment List</a>.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+
+        <h3>Attachment context (in-message)</h3>
+        <ul>
+          <li><strong>.media-img</strong> - Image thumbnail (108x108, radius 20px)</li>
+          <li><strong>.media-file</strong> - File card (flex row, white bg, border, radius 16px)</li>
+          <li><strong>.media-file-icon</strong> - Icon container (36x36, brand-500 bg, white icon)</li>
+          <li><strong>.media-file-info</strong> - Text column (flex 1)</li>
+          <li><strong>.media-file-name</strong> - Filename (14px, semibold, truncated)</li>
+          <li><strong>.media-file-meta</strong> - File type label (14px, text-tertiary)</li>
+        </ul>
+
+        <h3>Composer context (preview)</h3>
+        <ul>
+          <li><strong>.media-thumb</strong> - Base thumbnail (120x120, radius 20px)</li>
+          <li><strong>.media-thumb--image</strong> - Image preview modifier</li>
+          <li><strong>.media-thumb--file</strong> - File preview card (white bg, border)</li>
+          <li><strong>.media-thumb-file-label</strong> - File type text ("PDF")</li>
+          <li><strong>.media-thumb-file-name</strong> - Filename (3-line clamp)</li>
+          <li><strong>.media-thumb-x</strong> - Close button (36x36 circle, top-right)</li>
+        </ul>
+
+        <h3>Loading utilities</h3>
+        <ul>
+          <li><strong>.media-spinner</strong> - 20px CSS spinner (border animation)</li>
+          <li><strong>.media-spinner--lg</strong> - 24px variant for file icon replacement</li>
+          <li><strong>.media-spinner--muted</strong> - Gray variant for light backgrounds</li>
+          <li><strong>.media-overlay</strong> - Semi-transparent overlay (rgba(0,0,0,0.2))</li>
+          <li><strong>.is-loading</strong> - State class to activate loading visuals</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Image variants</h2>
+        <p>Image thumbnails in the attachment context (108x108) and composer context (120x120). Add <code>.is-loading</code> to show a dark overlay with a centered spinner.</p>
+        <div class="doc-demo">
+          <div class="demo-grid">
+            <div class="demo-col">
+              <div class="demo-label">Attachment / Default</div>
+              <div class="media-img" style="background:var(--brand-200)"></div>
+            </div>
+            <div class="demo-col">
+              <div class="demo-label">Attachment / Loading</div>
+              <div class="media-img is-loading" style="background:var(--brand-200)">
+                <div class="media-overlay"><div class="media-spinner"></div></div>
+              </div>
+            </div>
+            <div class="demo-col">
+              <div class="demo-label">Composer / Default</div>
+              <div class="media-thumb media-thumb--image" style="background:var(--brand-200)">
+                <button class="media-thumb-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+              </div>
+            </div>
+            <div class="demo-col">
+              <div class="demo-label">Composer / Loading</div>
+              <div class="media-thumb media-thumb--image is-loading" style="background:var(--brand-200)">
+                <button class="media-thumb-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <div class="media-overlay"><div class="media-spinner"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>File variants</h2>
+        <p>File attachment cards in the attachment context (full-width card) and composer context (120x120 preview). Loading swaps the file icon for a spinner (attachment) or adds an overlay (composer).</p>
+        <div class="doc-demo">
+          <div style="display:flex;flex-direction:column;gap:24px;width:100%;max-width:400px">
+            <div>
+              <div class="demo-label" style="text-align:left;margin-bottom:8px">Attachment / Default</div>
+              <div class="media-file">
+                <div class="media-file-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                <div class="media-file-info">
+                  <div class="media-file-name">Emma's Report Card Q3.pdf</div>
+                  <div class="media-file-meta">PDF</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="demo-label" style="text-align:left;margin-bottom:8px">Attachment / Loading</div>
+              <div class="media-file is-loading">
+                <div class="media-file-icon">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <div class="media-spinner media-spinner--lg"></div>
+                </div>
+                <div class="media-file-info">
+                  <div class="media-file-name">Vaccination Records.pdf</div>
+                  <div class="media-file-meta">PDF</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="demo-label" style="text-align:left;margin-bottom:8px">Composer previews</div>
+              <div style="display:flex;gap:8px">
+                <div class="media-thumb media-thumb--file">
+                  <div class="media-thumb-file-top"><span class="media-thumb-file-label">PDF</span></div>
+                  <div class="media-thumb-file-name">The name of the PDF file can expand</div>
+                  <button class="media-thumb-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="media-thumb media-thumb--file is-loading">
+                  <div class="media-thumb-file-top"><span class="media-thumb-file-label">PDF</span></div>
+                  <div class="media-thumb-file-name">The name of the PDF file can expand</div>
+                  <button class="media-thumb-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                  <div class="media-overlay"><div class="media-spinner"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Loading states</h2>
+        <p>Add the <code>.is-loading</code> class to any media element to activate its loading state:</p>
+        <ul>
+          <li><strong>Images</strong> (attachment and composer): Include a <code>.media-overlay</code> with a nested <code>.media-spinner</code>. The overlay covers the thumbnail with a dark scrim.</li>
+          <li><strong>Files (attachment)</strong>: Include a <code>.media-spinner.media-spinner--lg</code> inside <code>.media-file-icon</code>. The spinner replaces the SVG icon (hidden via CSS).</li>
+          <li><strong>Files (composer)</strong>: Include a <code>.media-overlay</code> with a nested <code>.media-spinner</code>, same as images.</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Spec</h2>
+        <ul>
+          <li><strong>Image attachment</strong>: 108x108, radius 20px, object-fit cover</li>
+          <li><strong>Image composer</strong>: 120x120, radius 20px, object-fit cover</li>
+          <li><strong>File card</strong>: width 100%, padding 12px, radius 20px, white bg, no border, overflow clip</li>
+          <li><strong>File icon</strong>: 36x36, radius 4px, brand-500 bg, white 24px icon</li>
+          <li><strong>File text</strong>: name 14px/20px semibold text-primary, meta 14px/20px regular text-tertiary</li>
+          <li><strong>Composer thumb</strong>: 120x120, radius 20px</li>
+          <li><strong>Close button</strong>: 36x36 circle, bg-tertiary, top-right inset 8px</li>
+          <li><strong>Spinner</strong>: 20px (default) / 24px (lg), 2px border, 0.6s rotation</li>
+          <li><strong>Overlay</strong>: rgba(0,0,0,0.2)</li>
+        </ul>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

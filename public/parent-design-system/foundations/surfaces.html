@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System / Surfaces</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section h3{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:24px 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-section a{color:var(--brand-700,#026aa2)}
+
+/* Surface family table */
+.surface-table{width:720px;border-collapse:collapse;font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);margin:16px 0 24px;table-layout:fixed}
+.surface-table th{text-align:left;padding:12px 12px;border-bottom:2px solid var(--border-primary);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);font-size:var(--font-size-text-xs,12px);text-transform:uppercase;letter-spacing:0.04em;color:var(--text-tertiary)}
+.surface-table td{padding:14px 12px;border-bottom:1px solid var(--border-secondary);color:var(--text-secondary);vertical-align:top}
+.surface-table th.col-family,.surface-table td.col-family{width:140px}
+.surface-table th.col-preview,.surface-table td.col-preview{width:120px}
+.surface-table .family-name{font-weight:var(--font-weight-semibold,600);color:var(--text-primary);font-size:var(--font-size-text-sm,14px);margin-bottom:4px}
+.surface-table .family-examples{font-size:var(--font-size-text-xs,12px);color:var(--text-tertiary);line-height:16px}
+.surface-table .specs{font-family:'SF Mono','Fira Code',monospace;font-size:11px;line-height:18px;color:var(--text-tertiary)}
+.surface-table .specs strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600);font-family:var(--font-family-body)}
+
+/* Surface previews (mini swatches) */
+.surface-preview{width:96px;height:64px;border-radius:8px;background:var(--brand-25);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.surface-preview-canvas{width:96px;height:64px;border-radius:8px;background:#f5fbff}
+.surface-preview-floating{width:72px;height:32px;border-radius:16px;background:#fff;box-shadow:0 0 8px rgba(0,0,0,0.08)}
+.surface-preview-inline{width:72px;height:40px;border-radius:10px;background:#fff;border:1px solid var(--border-secondary)}
+.surface-preview-bubble{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.surface-preview-bubble .b1{width:48px;height:18px;border-radius:10px;background:#b9e6fe}
+.surface-preview-bubble .b2{width:60px;height:18px;border-radius:10px;background:#fff;align-self:flex-start}
+.surface-preview-sheet{width:84px;height:44px;border-top-left-radius:14px;border-top-right-radius:14px;background:#fff;align-self:flex-end;margin-bottom:-10px}
+.surface-preview-pill{display:flex;gap:4px}
+.surface-preview-pill .p1{padding:6px 10px;border-radius:14px;background:#e0f2fe;font-size:9px;color:#026aa2;font-weight:600;line-height:1}
+.surface-preview-pill .p2{padding:6px 10px;border-radius:14px;background:#f5f5f5;font-size:9px;color:#535862;font-weight:600;line-height:1}
+.surface-preview-scrim{width:96px;height:64px;background:rgba(10,13,18,0.2)}
+
+/* Decision callout */
+.decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 24px}
+.decision-card{background:var(--bg-secondary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl,16px);padding:20px}
+.decision-card-label{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:var(--brand-700,#026aa2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.decision-card-title{font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.decision-card-body{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-tertiary)}
+
+/* Drift callout box */
+.drift-box{background:#fffbeb;border:1px solid #fde68a;border-left:3px solid #f59e0b;border-radius:var(--radius-2xl,16px);padding:20px 24px;margin:16px 0 24px}
+.drift-box-title{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:#b45309;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.drift-box ul{margin:0;padding-left:20px}
+.drift-box li{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-secondary);margin-bottom:6px}
+.drift-box li code{font-size:12px}
+
+/* Sheet anatomy mini diagram */
+.sheet-anatomy{background:var(--brand-25);border-radius:var(--radius-2xl,16px);padding:32px;margin:16px 0 8px;display:flex;justify-content:center}
+.sheet-anatomy-frame{width:240px;height:200px;background:rgba(10,13,18,0.2);border-radius:12px;position:relative;overflow:hidden}
+.sheet-anatomy-sheet{position:absolute;left:0;right:0;bottom:0;height:130px;background:#fff;border-top-left-radius:24px;border-top-right-radius:24px;padding:12px 16px 32px;display:flex;flex-direction:column;gap:8px}
+.sheet-anatomy-handle{width:36px;height:4px;border-radius:2px;background:#d5d7da;align-self:center;margin-bottom:6px}
+.sheet-anatomy-row{height:10px;border-radius:5px;background:#f5f5f5}
+.sheet-anatomy-row.short{width:60%}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Surfaces</h1>
+        <p class="doc-desc">How we think about the visible boxes in parent chat. Six surface families, distinguished by where they sit in the z-stack and how they elevate off the canvas.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>The six families</h2>
+        <p>Every surface in <a href="/product-explorer/parent-chat-3.html">parent-chat-3</a> belongs to one of these. Pick the family that matches the role first, then borrow its specs. New surfaces should fit an existing family before inventing a new one.</p>
+
+        <table class="surface-table">
+          <thead>
+            <tr>
+              <th class="col-family">Family</th>
+              <th class="col-preview">Preview</th>
+              <th>Specs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-family">
+                <div class="family-name">Canvas</div>
+                <div class="family-examples">device-screen background</div>
+              </td>
+              <td class="col-preview"><div class="surface-preview"><div class="surface-preview-canvas"></div></div></td>
+              <td>
+                <div class="specs">
+                  <strong>bg</strong> <code>--brand-25</code> (#f5fbff)<br>
+                  <strong>radius</strong> none<br>
+                  <strong>border</strong> none<br>
+                  <strong>shadow</strong> none
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-family">
+                <div class="family-name">Floating card</div>
+                <div class="family-examples">composer pill, toolbar pill, banners</div>
+              </td>
+              <td class="col-preview"><div class="surface-preview"><div class="surface-preview-floating"></div></div></td>
+              <td>
+                <div class="specs">
+                  <strong>bg</strong> <code>--bg-primary</code> (#fff)<br>
+                  <strong>radius</strong> 16 to 24px, or 296px (pill)<br>
+                  <strong>border</strong> none<br>
+                  <strong>shadow</strong> soft, low-alpha (0.04 to 0.08)
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-family">
+                <div class="family-name">Inline card</div>
+                <div class="family-examples">confirm-card, artifact-card</div>
+              </td>
+              <td class="col-preview"><div class="surface-preview"><div class="surface-preview-inline"></div></div></td>
+              <td>
+                <div class="specs">
+                  <strong>bg</strong> <code>--bg-primary</code><br>
+                  <strong>radius</strong> <code>--radius-2xl</code> (16px)<br>
+                  <strong>border</strong> 1px <code>--border-secondary</code><br>
+                  <strong>shadow</strong> none
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-family">
+                <div class="family-name">Bubble</div>
+                <div class="family-examples">msg-bubble (in / out / co-parent)</div>
+              </td>
+              <td class="col-preview"><div class="surface-preview"><div class="surface-preview-bubble"><div class="b1"></div><div class="b2"></div></div></div></td>
+              <td>
+                <div class="specs">
+                  <strong>bg</strong> <code>--bg-primary</code> (in), <code>--brand-200</code> (out), <code>--bg-sky</code> (co-parent)<br>
+                  <strong>radius</strong> 20px<br>
+                  <strong>border</strong> none<br>
+                  <strong>shadow</strong> none
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-family">
+                <div class="family-name">Sheet</div>
+                <div class="family-examples">reasoning-transcript, artifact-sheet, context-menu</div>
+              </td>
+              <td class="col-preview"><div class="surface-preview"><div class="surface-preview-sheet"></div></div></td>
+              <td>
+                <div class="specs">
+                  <strong>bg</strong> <code>--bg-primary</code><br>
+                  <strong>radius</strong> <code>--radius-4xl</code> (24px) top corners only<br>
+                  <strong>border</strong> none<br>
+                  <strong>shadow</strong> none (the scrim provides the separation)
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-family">
+                <div class="family-name">Pill / chip</div>
+                <div class="family-examples">suggestion chip, option chip, plus-pill</div>
+              </td>
+              <td class="col-preview"><div class="surface-preview"><div class="surface-preview-pill"><div class="p1">Tag</div><div class="p2">+</div></div></div></td>
+              <td>
+                <div class="specs">
+                  <strong>bg</strong> <code>--brand-100</code> (option/suggestion), <code>--bg-tertiary</code> (plus-pill)<br>
+                  <strong>radius</strong> <code>--radius-4xl</code> (24px) or 999px<br>
+                  <strong>border</strong> none<br>
+                  <strong>shadow</strong> none
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-family">
+                <div class="family-name">Scrim</div>
+                <div class="family-examples">behind any sheet</div>
+              </td>
+              <td class="col-preview"><div class="surface-preview"><div class="surface-preview-scrim"></div></div></td>
+              <td>
+                <div class="specs">
+                  <strong>bg</strong> <code>--bg-overlay</code> (rgba(10,13,18,0.2))<br>
+                  <strong>radius</strong> none (covers full canvas)<br>
+                  <strong>border</strong> none<br>
+                  <strong>shadow</strong> none
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="doc-section">
+        <h2>Floating vs inline: when to pick which</h2>
+        <p>Floating and inline cards both use the white primary background, but they signal different things. The choice is about whether the surface is part of the conversation or sits above it.</p>
+        <div class="decision-grid">
+          <div class="decision-card">
+            <div class="decision-card-label">Floating</div>
+            <div class="decision-card-title">Lifted off canvas</div>
+            <div class="decision-card-body">Soft shadow, no border. Use when the surface needs to feel separate from the thread (composer, toolbar, banners). It belongs to the chrome, not the conversation.</div>
+          </div>
+          <div class="decision-card">
+            <div class="decision-card-label">Inline</div>
+            <div class="decision-card-title">Sits in flow</div>
+            <div class="decision-card-body">1px border, no shadow. Use when the surface is part of the conversation (confirm-card, artifact-card). It scrolls with the messages.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <h2>Sheets are a pattern, not a primitive</h2>
+        <p>The three bottom sheets (<a href="/parent-design-system/components/reasoning-transcript.html">reasoning</a>, <a href="/parent-design-system/components/artifact.html">artifact</a>, <a href="/parent-design-system/components/chat-context-menu.html">context-menu</a>) all share the same anatomy. Treat this as one pattern when adding a new sheet, not three independent components.</p>
+        <div class="sheet-anatomy">
+          <div class="sheet-anatomy-frame">
+            <div class="sheet-anatomy-sheet">
+              <div class="sheet-anatomy-handle"></div>
+              <div class="sheet-anatomy-row"></div>
+              <div class="sheet-anatomy-row short"></div>
+              <div class="sheet-anatomy-row"></div>
+            </div>
+          </div>
+        </div>
+        <ul>
+          <li><strong>Anchored bottom</strong>, transforms in from <code>translateY(100%)</code></li>
+          <li><strong>Top corners only</strong>: 24px radius (the bottom is flush with the screen edge)</li>
+          <li><strong>Scrim behind</strong>: <code>--bg-overlay</code> at z-index just below the sheet</li>
+          <li><strong>Horizontal padding</strong>: 16px (<code>--spacing-xl</code>) on header, body, and footer</li>
+          <li><strong>Bottom padding</strong>: at least 32px (<code>--spacing-4xl</code>), 40px (<code>--spacing-5xl</code>) when the last child is interactive (safe-area for the home indicator)</li>
+          <li><strong>Drag handle</strong> (optional): 36 by 4px, <code>--gray-300</code>, centered above the content</li>
+        </ul>
+      </div>
+
+      <div class="doc-section">
+        <h2>What about radius and shadow?</h2>
+        <p>Radius values pull from the canonical scale at <a href="/kid-design-system/foundations/radius.html">kid-design-system / radius</a>. Most surfaces here use <code>--radius-2xl</code> (16px), <code>--radius-3xl</code> (20px), or <code>--radius-4xl</code> (24px). Pills go straight to <code>--radius-full</code> (9999px) or large explicit values like 296px.</p>
+        <p>Shadows are not yet tokenized. Floating cards reach for low-alpha inline values like <code>0 0 8px rgba(0,0,0,.04)</code> on the toolbar pill or <code>0 1px 8px rgba(0,0,0,.06)</code> on banners. Sheets do not use a box-shadow at all (they sit on the scrim, which provides the visual separation). See drift below.</p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Drift to flag</h2>
+        <p>What's in the code today that does not yet fit the system. Documenting these so we can tighten them later, not blocking shipping on them.</p>
+        <div class="drift-box">
+          <div class="drift-box-title">Open questions</div>
+          <ul>
+            <li><strong>Floating-card shadows are inline.</strong> <code>chat-toolbar</code>, <code>chat-banner</code>, and <code>chat-composer</code> each declare their own low-alpha box-shadow. Three values, no shared token. Candidate for a small shadow scale (e.g. <code>--shadow-floating</code>).</li>
+            <li><strong>Toolbar pill radius is 296px.</strong> A magic number that doesn't match the radius scale. Either accept it as an intentionally-very-rounded one-off or snap to <code>--radius-full</code>.</li>
+            <li><strong>Sheet padding-bottom fallback is wrong.</strong> Sheets declare <code>padding-bottom: var(--spacing-4xl, 40px)</code>, but <code>--spacing-4xl</code> resolves to 32px (the 40 fallback was probably copy-pasted from <code>--spacing-5xl</code>). Resolved value is correct; fallback is misleading.</li>
+            <li><strong>"Card" means three things</strong> (floating, inline, sheet). The CSS classes do not encode that distinction. New code should pick the family by name, not by the word "card".</li>
+            <li><strong>Plus-pill background</strong> uses <code>--bg-tertiary</code> (gray) while suggestion/option chips use <code>--brand-100</code> (light blue). Intentional split (plus-pill is utility, chips are content), worth documenting somewhere visible.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

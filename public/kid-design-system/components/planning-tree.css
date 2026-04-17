@@ -1,0 +1,121 @@
+/* ═══════════════════════════════════════════════════
+   Sprout Design System — Planning Tree Component CSS
+   Multi-step plan with checkbox-style progress tracking.
+   Figma 20971:59564
+   States: .pending, .active, .done, .revised, .fail
+   Domain: KN, CN, AC
+   ═══════════════════════════════════════════════════ */
+
+/* ── Card container ── */
+.planning-tree {
+  background: var(--bg-primary, #fff);
+  border-radius: var(--radius-3xl, 20px);
+  box-shadow: 0 0 4px 0 rgba(0,0,0,.04);
+  overflow: hidden;
+  width: 100%;
+  max-width: 330px;
+}
+
+/* ── Header row ── */
+.planning-tree-header {
+  display: flex; align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px);
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.planning-tree-header-icon {
+  width: 24px; height: 24px; flex-shrink: 0;
+  color: var(--text-quaternary, #717680);
+}
+.planning-tree-header-icon svg { width: 100%; height: 100%; }
+.planning-tree-title {
+  flex: 1; min-width: 0;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-quaternary, #717680);
+}
+
+/* ── Body (step list) ── */
+.planning-tree-body {
+  display: flex; flex-direction: column;
+  gap: 0;
+  padding: 0;
+}
+
+/* ── Individual step ── */
+.planning-item {
+  display: flex; align-items: flex-start;
+  gap: var(--spacing-lg, 12px);
+  padding: var(--spacing-lg, 12px);
+}
+
+/* ── Step status icon ── */
+.planning-item-icon {
+  width: 24px; height: 24px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* .pending — outlined circle (proposed) */
+.planning-item.pending .planning-item-icon { color: var(--fg-disabled, #d5d7da); }
+.planning-item.pending .planning-item-icon svg { width: 24px; height: 24px; }
+
+/* .active — spinning arc (in progress) */
+.planning-item.active .planning-item-icon { position: relative; }
+.planning-item.active .planning-item-icon svg {
+  width: 20px; height: 20px;
+  animation: planning-spin 1s linear infinite;
+}
+@keyframes planning-spin { to { transform: rotate(360deg); } }
+
+/* .done — green circle + check (complete) */
+.planning-item.done .planning-item-icon {
+  background: var(--green-200, #abefc6);
+  border-radius: var(--radius-full, 9999px);
+  padding: 2px;
+}
+.planning-item.done .planning-item-icon svg { width: 12px; height: 12px; color: var(--green-700, #067647); }
+
+/* .revised — yellow circle + dot (revised) */
+.planning-item.revised .planning-item-icon {
+  background: var(--yellow-200, #feee95);
+  border-radius: var(--radius-full, 9999px);
+  padding: 2px;
+}
+.planning-item.revised .planning-item-icon svg { width: 12px; height: 12px; color: var(--yellow-700, #a15c07); }
+
+/* .fail — red circle + x (abandoned) */
+.planning-item.fail .planning-item-icon {
+  background: var(--red-200, #fecdca);
+  border-radius: var(--radius-full, 9999px);
+  padding: 2px;
+}
+.planning-item.fail .planning-item-icon svg { width: 12px; height: 12px; color: var(--red-700, #b42318); }
+
+/* ── Step text ── */
+.planning-item-content {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+}
+.planning-item-title {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-primary, #181d27);
+}
+.planning-item-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-secondary, #414651);
+}
+
+/* ── Chat-message context ──
+ * Inside an incoming message group the card sits below the bubble.
+ * Indent 40px (32 avatar + 8 gap) so it aligns with the bubble. */
+.msg-group.msg-incoming > .planning-tree {
+  margin-left: 40px;
+}

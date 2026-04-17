@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System - Card</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/card.css">
+<link rel="stylesheet" href="/kid-design-system/components/button.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.doc-download{display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);text-decoration:none;transition:color .15s}
+.doc-download:hover{color:var(--text-primary)}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-tag{display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 6px;border-radius:var(--radius-xs,4px);font-weight:var(--font-weight-semibold,600);font-size:10px;letter-spacing:0.04em}
+.doc-tag.cn{background:#ede9fe;color:#5b21b6}
+.doc-tag.kn{background:#e0f2fe;color:#026aa2}
+.doc-tag.ac{background:#fef3c7;color:#92400e}
+.doc-tag.ts{background:#fee2e2;color:#991b1b}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section h3{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:24px 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Card</h1>
+        <p class="doc-desc">The generic inline card. 40px icon, label and description, with an optional trailing element (badge, button, or nothing) and optional overflow dots. Used for connectors, saved skills, contacts, and any single-entity row.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>CSS file</div>
+          <div class="doc-meta-value"><span class="doc-badge">card.css</span><a class="doc-download" href="/kid-design-system/components/card.css" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Thu Apr 17, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Overview</h2>
+        <p>The Card is the universal row component for representing a single entity inline in chat or in management views. Connectors, saved skills, contacts, milestones all use this one pattern.</p>
+        <p>Every card shares the same anatomy. The only thing that changes is what goes in each slot: what icon, what text, what trailing element.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <ul>
+          <li><strong>.card</strong> / <strong>.card-row</strong> - Container. Use <code>.card</code> standalone, <code>.card-row</code> inside a <code>.card-list</code>.</li>
+          <li><strong>.card-icon</strong> - 40x40 leading icon. Image, emoji on tinted bg (<code>.card-icon-tinted</code>), SVG, or avatar.</li>
+          <li><strong>.card-body</strong> - Flex column with <code>.card-label</code> (14px medium) and optional <code>.card-desc</code> (12px regular).</li>
+          <li><strong>.card-badge</strong> - Optional trailing pill. Variants: <code>.badge-info</code>, <code>.badge-success</code>, <code>.badge-warning</code>, <code>.badge-neutral</code>.</li>
+          <li><strong>.btn</strong> - Optional trailing action button (from button.css). Connect, Configure, Reconnect, etc.</li>
+          <li><strong>.card-overflow</strong> - Optional vertical dots for overflow menu (Rename, Delete, Disconnect, etc.).</li>
+        </ul>
+        <p>Trailing elements are mutually exclusive in simple cases, but Button + Dots can appear together (e.g. Configure + overflow on a connected service).</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Trailing variants</h2>
+
+        <h3>Default (no trailing)</h3>
+        <p>Just icon, label, and description. Used for informational display.</p>
+        <div class="doc-demo">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="card">
+              <div class="card-icon card-icon-tinted">🎓</div>
+              <div class="card-body">
+                <div class="card-label">First chapter book</div>
+                <div class="card-desc">Charlotte's Web, cover to cover</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Badge</h3>
+        <p>Status pill on the right. Used for saved skills, active/paused/expired states.</p>
+        <div class="doc-demo">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="card">
+              <div class="card-icon card-icon-tinted">📚</div>
+              <div class="card-body">
+                <div class="card-label">Reading tracker</div>
+                <div class="card-desc">5 rules · Last ran 2h ago</div>
+              </div>
+              <span class="card-badge badge-success">Active</span>
+              <button class="card-overflow"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg></button>
+            </div>
+            <div class="card">
+              <div class="card-icon card-icon-tinted">📨</div>
+              <div class="card-body">
+                <div class="card-label">Teacher email</div>
+                <div class="card-desc">Paused by parent</div>
+              </div>
+              <span class="card-badge badge-neutral">Paused</span>
+              <button class="card-overflow"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg></button>
+            </div>
+            <div class="card">
+              <div class="card-icon card-icon-tinted">🔌</div>
+              <div class="card-body">
+                <div class="card-label">School portal</div>
+                <div class="card-desc">Needs renewed consent</div>
+              </div>
+              <span class="card-badge badge-warning">Consent</span>
+              <button class="card-overflow"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <h3>Button</h3>
+        <p>Action button on the right. Used for connectors (Connect, Reconnect, Configure).</p>
+        <div class="doc-demo">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="card">
+              <div class="card-icon"><img src="/product-explorer/assets/icon-gcal.png" alt="Google Calendar"></div>
+              <div class="card-body">
+                <div class="card-label">Google Calendar</div>
+                <div class="card-desc">Manage your schedule</div>
+              </div>
+              <button class="btn">Connect</button>
+            </div>
+            <div class="card">
+              <div class="card-icon"><img src="/product-explorer/assets/icon-gmail.png" alt="Gmail"></div>
+              <div class="card-body">
+                <div class="card-label">Gmail</div>
+                <div class="card-desc" style="color:var(--green-500)">Connected</div>
+              </div>
+              <button class="btn">Configure</button>
+              <button class="card-overflow"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg></button>
+            </div>
+            <div class="card">
+              <div class="card-icon"><img src="/product-explorer/assets/icon-slack.png" alt="Slack"></div>
+              <div class="card-body">
+                <div class="card-label">Slack</div>
+                <div class="card-desc">Token expired</div>
+              </div>
+              <button class="btn">Reconnect</button>
+              <button class="card-overflow"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Card list</h2>
+        <p>Multiple cards in a grouped container with an optional header. Rows use <code>.card-row</code> instead of <code>.card</code> for border separators between items.</p>
+        <div class="doc-demo">
+          <div class="card-list">
+            <div class="card-list-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              <span>Connectors</span>
+            </div>
+            <div class="card-row">
+              <div class="card-icon"><img src="/product-explorer/assets/icon-gcal.png" alt="Google Calendar"></div>
+              <div class="card-body">
+                <div class="card-label">Google Calendar</div>
+                <div class="card-desc" style="color:var(--green-500)">Connected</div>
+              </div>
+              <button class="btn">Configure</button>
+              <button class="card-overflow"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg></button>
+            </div>
+            <div class="card-row">
+              <div class="card-icon card-icon-inset"><img src="/product-explorer/assets/icon-gmail.png" alt="Gmail"></div>
+              <div class="card-body">
+                <div class="card-label">Gmail</div>
+                <div class="card-desc" style="color:var(--green-500)">Connected</div>
+              </div>
+              <button class="btn">Configure</button>
+              <button class="card-overflow"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg></button>
+            </div>
+            <div class="card-row">
+              <div class="card-icon"><img src="/product-explorer/assets/icon-slack.png" alt="Slack"></div>
+              <div class="card-body">
+                <div class="card-label">Slack</div>
+                <div class="card-desc" style="color:var(--amber-500)">Paused</div>
+              </div>
+              <button class="btn">Connect</button>
+              <button class="card-overflow"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Icon variants</h2>
+        <ul>
+          <li><strong>Image</strong>: Service logo (<code>.card-icon</code> with <code>&lt;img&gt;</code>). Use <code>.card-icon-inset</code> for logos that need padding (e.g. Gmail).</li>
+          <li><strong>Emoji on tinted bg</strong>: <code>.card-icon.card-icon-tinted</code>. An emoji character centered on a colored background. Good for skills, milestones.</li>
+          <li><strong>SVG</strong>: Inline SVG inside <code>.card-icon</code>. For generic or system icons.</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Usage in chat</h2>
+        <p>Cards are inserted as siblings to the bubble inside <code>.msg-col</code>, just like the old connector card pattern. They sit below the text and can be wider than the bubble (330px vs 264px).</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="button.html">Button</a>: Action buttons used as trailing elements.</li>
+          <li><a href="connector-more-menu.html">Connector More Menu</a>: Bottom sheet triggered by the overflow dots.</li>
+          <li><a href="scope-sheet.html">Scope Sheet</a>: Permission toggles opened from Configure.</li>
+        </ul>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

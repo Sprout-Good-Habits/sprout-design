@@ -3,22 +3,24 @@
    Primary/secondary action buttons with loading, done, faded states.
    ═══════════════════════════════════════════════════ */
 
-.action-btns { display: flex; gap: var(--spacing-md, 8px); padding: var(--spacing-md, 8px) 0; align-self: flex-start; }
+.action-btns { display: flex; flex-direction: column; gap: var(--spacing-md, 8px); width: 100%; }
 
 .action-btn {
-  padding: var(--spacing-lg, 12px) var(--spacing-3xl, 24px);
-  border-radius: 11px;
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-radius: var(--radius-md, 8px);
   font-family: var(--font-family-body, 'Inter', sans-serif);
-  font-size: var(--font-size-text-sm, 14px);
-  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: var(--font-weight-medium, 500);
   cursor: pointer; border: none;
   transition: all .2s;
-  display: flex; align-items: center; gap: var(--spacing-sm, 6px);
+  display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm, 6px);
+  width: 100%;
 }
 
-.action-btn-primary   { background: var(--green-500, #17b26a); color: var(--text-white, #fff); }
-.action-btn-primary:hover { background: var(--green-700, #067647); }
-.action-btn-secondary { background: var(--bg-primary, #fff); border: 1px solid var(--border-primary, #d5d7da); color: var(--text-quaternary, #717680); }
+.action-btn-primary   { background: var(--brand-500, #0ba5ec); color: var(--text-white, #fff); }
+.action-btn-primary:hover { background: var(--brand-600, #0086c9); }
+.action-btn-secondary { background: var(--bg-primary, #fff); border: 1px solid var(--border-secondary, #e9eaeb); color: var(--base-black, #000); }
 .action-btn-secondary:hover { background: var(--bg-secondary, #fafafa); }
 
 .action-btn.loading { pointer-events: none; }

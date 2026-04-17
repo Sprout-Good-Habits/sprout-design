@@ -14,7 +14,7 @@ window.DS_NAV = [
       { label: 'Chat', icon: 'message-chat', badge: 'Tier 3', href: '/product-explorer/task/chat-tier-3.html' },
       { label: 'Chat Tiles', icon: 'message-chat', badge: 'Tier 2', href: '/product-explorer/task/chat-tier-2-tiles.html' },
       { label: 'Chat Tiles', icon: 'message-chat', badge: 'Tier 3', href: '/product-explorer/task/chat-tier-3-tiles.html' },
-      { label: 'Parent Chat', icon: 'message-chat', badge: 'Parent', href: '/product-explorer/parent-chat-3.html' },
+      { label: 'Parent Chat', icon: 'message-chat', badge: 'v3', href: '/product-explorer/parent-chat-3.html' },
       { label: 'Customize sprout', icon: 'stars-01', href: '/product-explorer/customize-sprout.html' },
       { label: 'Customize avatar', icon: 'stars-02', href: '/product-explorer/customize-avatar.html' },
       { label: 'Video verification', icon: 'video-recorder', href: '/product-explorer/video-verification-explorer.html' },
@@ -47,23 +47,39 @@ window.DS_NAV = [
     collapsible: true,
     children: [
       {
-        label: 'Components',
+        label: 'Foundations',
         collapsible: true,
         children: [
-          { label: 'Attach Panel', href: '/parent-design-system/components/attach-panel.html' },
+          { label: 'Surfaces', href: '/parent-design-system/foundations/surfaces.html' },
+          { label: 'Type', href: '/parent-design-system/foundations/type.html' },
+          { label: 'Spacing', href: '/parent-design-system/foundations/spacing.html' },
+          { label: 'Cards', href: '/parent-design-system/foundations/cards.html' }
+        ]
+      },
+      { label: 'Catalog index', href: '/parent-design-system/components.html' },
+      {
+        label: 'Components',
+        collapsible: true,
+        defaultOpen: true,
+        children: [
           { label: 'Artifact', href: '/parent-design-system/components/artifact.html' },
-          { label: 'Action Buttons', href: '/parent-design-system/components/chat-action-buttons.html' },
-          { label: 'Banner', href: '/parent-design-system/components/chat-banner.html' },
+          { label: 'Attach Panel', href: '/parent-design-system/components/attach-panel.html' },
+          { label: 'Toast', href: '/parent-design-system/components/toast.html' },
+          { label: 'Card', href: '/parent-design-system/components/card.html' },
+          { label: 'Communication Card', href: '/parent-design-system/components/comm-card.html' },
+          { label: 'Result Card', href: '/parent-design-system/components/result-card.html' },
+          { label: 'Skill Sheet', href: '/parent-design-system/components/skill-sheet.html' },
           { label: 'Chips', href: '/parent-design-system/components/chat-chips.html' },
           { label: 'Composer', href: '/parent-design-system/components/chat-composer.html' },
+          { label: 'Co-parent Message', href: '/parent-design-system/components/coparent-message.html' },
           { label: 'Context Menu', href: '/parent-design-system/components/chat-context-menu.html' },
-          { label: 'Messages', href: '/parent-design-system/components/chat-messages.html' },
-          { label: 'Toolbar', href: '/parent-design-system/components/chat-toolbar.html' },
-          { label: 'Confirm Card', href: '/parent-design-system/components/confirm-card.html' },
-          { label: 'Device Frame', href: '/parent-design-system/components/device-frame.html' },
+          { label: 'Error Recovery', href: '/parent-design-system/components/error-recovery.html' },
+          { label: 'Notification Toast', href: '/parent-design-system/components/toast.html#notification-banner' },
+          { label: 'Planning Tree', href: '/parent-design-system/components/planning-tree.html' },
+          { label: 'Reasoning Transcript', href: '/parent-design-system/components/reasoning-transcript.html' },
           { label: 'Status Bar', href: '/parent-design-system/components/status-bar.html' },
-          { label: 'Thought Sheet', href: '/parent-design-system/components/thought-sheet.html' },
-          { label: 'Tool Usage', href: '/parent-design-system/components/tool-usage.html' }
+          { label: 'Toolbar', href: '/parent-design-system/components/chat-toolbar.html' },
+          { label: 'Typing Indicator', href: '/parent-design-system/components/typing-indicator.html' }
         ]
       }
     ]

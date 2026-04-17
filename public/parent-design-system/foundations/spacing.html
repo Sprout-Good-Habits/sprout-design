@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System / Spacing</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section h3{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:24px 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-section a{color:var(--brand-700,#026aa2)}
+
+/* Role table */
+.role-table{width:720px;border-collapse:collapse;font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);margin:16px 0 24px;table-layout:fixed}
+.role-table th{text-align:left;padding:12px 12px;border-bottom:2px solid var(--border-primary);font-weight:var(--font-weight-semibold,600);font-size:var(--font-size-text-xs,12px);text-transform:uppercase;letter-spacing:0.04em;color:var(--text-tertiary)}
+.role-table td{padding:16px 12px;border-bottom:1px solid var(--border-secondary);color:var(--text-secondary);vertical-align:top}
+.role-table th.col-role,.role-table td.col-role{width:160px}
+.role-table th.col-tokens,.role-table td.col-tokens{width:200px}
+.role-name{font-weight:var(--font-weight-semibold,600);color:var(--text-primary);font-size:var(--font-size-text-sm,14px);margin-bottom:4px}
+.role-px{font-family:'SF Mono','Fira Code',monospace;font-size:11px;color:var(--text-tertiary)}
+.role-tokens code{font-size:11px;display:block;margin-bottom:4px}
+.role-uses{font-size:var(--font-size-text-xs,12px);line-height:16px;color:var(--text-tertiary)}
+
+/* Choice cards */
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 24px}
+.choice-card{background:var(--bg-secondary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl,16px);padding:20px}
+.choice-card-label{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:var(--brand-700,#026aa2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.choice-card-title{font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.choice-card-body{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-tertiary)}
+.choice-card-px{font-family:'SF Mono','Fira Code',monospace;font-size:11px;color:var(--text-quaternary);margin-top:8px}
+
+/* Drift box */
+.drift-box{background:#fffbeb;border:1px solid #fde68a;border-left:3px solid #f59e0b;border-radius:var(--radius-2xl,16px);padding:20px 24px;margin:16px 0 24px}
+.drift-box-title{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:#b45309;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.drift-box ul{margin:0;padding-left:20px}
+.drift-box li{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-secondary);margin-bottom:6px}
+.drift-box li code{font-size:12px}
+
+/* Note box */
+.note-box{background:var(--bg-secondary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl,16px);padding:20px 24px;margin:16px 0 24px}
+.note-box-title{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.note-box p{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-secondary);margin:0 0 8px}
+.note-box p:last-child{margin-bottom:0}
+.note-box code{font-size:12px}
+
+/* Inside-card padding visual */
+.padding-demo-row{display:flex;gap:16px;margin:16px 0 24px;flex-wrap:wrap}
+.padding-demo-card{background:var(--bg-secondary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl,16px);padding:20px;flex:1 1 300px}
+.padding-demo-label{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:var(--brand-700,#026aa2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.padding-demo-title{font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 12px}
+.padding-demo-body{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-tertiary);margin-bottom:12px}
+.padding-demo-bubble-wrap{background:var(--brand-25);border-radius:12px;padding:20px;display:flex;justify-content:center}
+.padding-demo-bubble{background:#fff;border-radius:20px;color:var(--text-primary);font-size:14px}
+.padding-demo-bubble.tight{padding:12px 16px}
+.padding-demo-bubble.default{padding:16px 16px}
+.padding-demo-px{font-family:'SF Mono','Fira Code',monospace;font-size:11px;color:var(--text-quaternary);margin-top:8px;text-align:center}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Spacing</h1>
+        <p class="doc-desc">Padding and gaps in parent chat fall into five composition roles. Pick the role first, then the token. The full token scale lives at <a href="/kid-design-system/foundations/spacing.html">kid-design-system / spacing</a>; this page narrows it to chat usage.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>The five roles</h2>
+        <p>Anchored on what's actually used in <a href="/product-explorer/parent-chat-3.html">parent-chat-3</a> today.</p>
+
+        <table class="role-table">
+          <thead>
+            <tr>
+              <th class="col-role">Role</th>
+              <th class="col-tokens">Tokens</th>
+              <th>Where it shows up</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">Tight stack</div>
+                <div class="role-px">2 to 4px</div>
+              </td>
+              <td class="role-tokens">
+                <code>--spacing-xxs</code> (2)<br>
+                <code>--spacing-xs</code> (4)
+              </td>
+              <td class="role-uses">gap between bubbles in a message group; suggestion chip title to subtitle gap; thought timeline dot stack</td>
+            </tr>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">Inline row</div>
+                <div class="role-px">6 to 8px</div>
+              </td>
+              <td class="role-tokens">
+                <code>--spacing-sm</code> (6)<br>
+                <code>--spacing-md</code> (8)
+              </td>
+              <td class="role-uses">toolbar icon gaps; message-row avatar to bubble; context menu icon to label; status bar icon stack</td>
+            </tr>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">Inside a card</div>
+                <div class="role-px">12 or 16px</div>
+              </td>
+              <td class="role-tokens">
+                <code>--spacing-lg</code> (12)<br>
+                <code>--spacing-xl</code> (16)
+              </td>
+              <td class="role-uses">bubble padding (12 v / 16 h); composer pill (16); confirm-card (16); banner (12 v / 16 h); inline cards (12 to 16)</td>
+            </tr>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">Sheet padding</div>
+                <div class="role-px">16h + 32 to 40b</div>
+              </td>
+              <td class="role-tokens">
+                <code>--spacing-xl</code> (16)<br>
+                <code>--spacing-4xl</code> (32)<br>
+                <code>--spacing-5xl</code> (40)
+              </td>
+              <td class="role-uses">thought, artifact, and context-menu sheets: 16 horizontal, 32 to 40 bottom for the home indicator</td>
+            </tr>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">Layout offsets</div>
+                <div class="role-px">62 / 128 / 160</div>
+              </td>
+              <td class="role-tokens">one-off scaffolding</td>
+              <td class="role-uses">status bar height (62); chat-thread top padding (128) and bottom offset (160); not part of the spacing scale, document as scaffolding</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="doc-section">
+        <h2>Inside a card: 12 or 16</h2>
+        <p>Two options for padding inside a card surface. Pick by content density.</p>
+        <div class="padding-demo-row">
+          <div class="padding-demo-card">
+            <div class="padding-demo-label">12px (tight)</div>
+            <div class="padding-demo-title">Use for high-density</div>
+            <div class="padding-demo-body">Banner content, message bubble (vertical), action button (vertical). When the surface contains a single line or is itself small.</div>
+            <div class="padding-demo-bubble-wrap"><div class="padding-demo-bubble tight">Hi there</div></div>
+            <div class="padding-demo-px">--spacing-lg</div>
+          </div>
+          <div class="padding-demo-card">
+            <div class="padding-demo-label">16px (default)</div>
+            <div class="padding-demo-title">Use for everything else</div>
+            <div class="padding-demo-body">Composer pill, confirm-card, sheet body, artifact card. The default. Reach for this unless you have a reason not to.</div>
+            <div class="padding-demo-bubble-wrap"><div class="padding-demo-bubble default">Hi there</div></div>
+            <div class="padding-demo-px">--spacing-xl</div>
+          </div>
+        </div>
+        <p>For bubbles specifically: 12 vertical, 16 horizontal. The asymmetry keeps the bubble compact while leaving readable side margins for the text.</p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Sheet bottom padding</h2>
+        <div class="note-box">
+          <div class="note-box-title">Safe area rule</div>
+          <p>Every bottom sheet needs at least <code>--spacing-4xl</code> (32px) at the bottom to clear the iOS home indicator. Use <code>--spacing-5xl</code> (40px) when the last child is interactive (a button, a list item) so taps don't land on the indicator.</p>
+          <p>Top padding inside a sheet is variable: reasoning-transcript uses 0 (header sits flush at the top), artifact-sheet uses 0, context-menu uses 16. The bottom is the constant, not the top.</p>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <h2>What about gap?</h2>
+        <p>The same tokens are used for <code>gap</code> as for <code>padding</code>. The five roles map cleanly:</p>
+        <ul>
+          <li><strong>Tight stack</strong> (2 to 4): gap inside a typographic stack (title above subtitle).</li>
+          <li><strong>Inline row</strong> (6 to 8): gap between an icon and its label, or between two icon buttons.</li>
+          <li><strong>Inside a card</strong> (12 to 16): gap between rows in a card (confirm-card rows, sheet header to body).</li>
+        </ul>
+        <p>Sheets use 16 (<code>--spacing-xl</code>) as their internal gap between header, body, and footer. Composer pill stacks its children at 16 too.</p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Drift to flag</h2>
+        <div class="drift-box">
+          <div class="drift-box-title">Open questions</div>
+          <ul>
+            <li><strong>56px hardcoded alignment</strong> on <code>.msg-sender</code> and <code>.msg-actions</code> (<code>padding-left: 56px</code>) is not magic: it's 32px avatar + 8px gap + 16px bubble inset = 56. Document it as derived, not as a token.</li>
+            <li><strong>10px gaps</strong> on <code>chat-banner</code> (spinner to text) and reply-pill don't fit the scale. Likely should snap to 8 (<code>--spacing-md</code>) or 12 (<code>--spacing-lg</code>).</li>
+            <li><strong>7px feature item padding</strong> in the parent-chat-3 page-level styles. Should snap to 6 (<code>--spacing-sm</code>) or 8 (<code>--spacing-md</code>).</li>
+            <li><strong>Layout offsets (62 / 128 / 160)</strong> are scaffolding, not spacing. They depend on status bar + header heights. Keep them out of the spacing scale.</li>
+            <li><strong>Composer area bottom</strong> (<code>bottom: 20px</code>) uses <code>--spacing-2xl</code> in some places and a raw 20px in others. Worth aligning.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

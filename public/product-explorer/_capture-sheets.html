@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sheet Captures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/kid-design-system/tokens.css">
+<link rel="stylesheet" href="/kid-design-system/components/device-frame.css">
+<link rel="stylesheet" href="/kid-design-system/components/status-bar.css">
+<link rel="stylesheet" href="/kid-design-system/components/artifact.css">
+<link rel="stylesheet" href="/kid-design-system/components/skill-sheet.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f0f0f0; padding: 40px; display: flex; gap: 40px; flex-wrap: wrap; font-family: 'Inter', sans-serif; }
+
+  /* Force sheets visible */
+  .artifact-sheet-scrim.open { opacity: 1; pointer-events: auto; }
+  .artifact-sheet.open { transform: translateY(0); }
+  .skill-sheet.open { height: 93%; max-height: 93%; }
+
+  .sheet-handle {
+    width: 36px; height: 5px;
+    border-radius: 100px;
+    background: var(--gray-200, #e9eaeb);
+    margin-bottom: 8px;
+  }
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+
+<!-- ═══ Sheet 1: Email - Noah's reading progress ═══ -->
+<div class="device-wrapper">
+  <div class="device-inner-shadow">
+    <div class="device-mockup">
+      <div class="device-screen" style="background: var(--bg-secondary, #fafafa);">
+        <div class="status-bar">
+          <span class="status-bar-time">9:41</span>
+          <div class="status-bar-icons">
+            <svg width="18" height="12" fill="none"><path d="M1 4.2C2.67 2.4 5.17 1.2 8 1.2s5.33 1.2 7 3M3.5 7c1.17-1.2 2.83-2 4.5-2s3.33.8 4.5 2M6 9.8c.58-.6 1.33-1 2-1s1.42.4 2 1M8 12h.01" stroke="#181D27" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="17" height="12" fill="none"><rect x="1" y="1" width="3" height="10" rx="0.5" fill="#181D27"/><rect x="5" y="3" width="3" height="8" rx="0.5" fill="#181D27"/><rect x="9" y="5" width="3" height="6" rx="0.5" fill="#181D27"/><rect x="13" y="7" width="3" height="4" rx="0.5" fill="#181D27"/></svg>
+            <svg width="27" height="13" fill="none"><rect x="0.5" y="0.833" width="22" height="11.333" rx="2" stroke="#181D27" stroke-opacity=".35"/><path d="M23.5 4.5v4a2.17 2.17 0 000-4z" fill="#181D27" opacity=".4"/><rect x="2" y="2.333" width="19" height="8.333" rx="1" fill="#181D27"/></svg>
+          </div>
+        </div>
+        <div class="artifact-sheet-scrim open"></div>
+        <div class="artifact-sheet skill-sheet open">
+          <div class="sheet-top">
+            <div class="artifact-sheet-header">
+              <button class="skill-sheet-back"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div class="skill-sheet-title">
+                <div class="skill-sheet-title-text">Noah's reading progress</div>
+                <div class="skill-sheet-subtitle">To: Mrs. Park</div>
+              </div>
+              <div class="skill-sheet-spacer"></div>
+            </div>
+          </div>
+          <div class="artifact-sheet-body">
+            <p>Hi Mrs. Park,</p>
+            <p>I wanted to check in about Noah's progress in the Friday reading group. He's been really enjoying the books you've been assigning and we'd love to know if there are ways we can support him at home.</p>
+            <p>Thank you for everything you do.</p>
+            <p>Best,<br>Leticia</p>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Sheet 2: Insight - Consider Moving Soccer ═══ -->
+<div class="device-wrapper">
+  <div class="device-inner-shadow">
+    <div class="device-mockup">
+      <div class="device-screen" style="background: var(--bg-secondary, #fafafa);">
+        <div class="status-bar">
+          <span class="status-bar-time">9:41</span>
+          <div class="status-bar-icons">
+            <svg width="18" height="12" fill="none"><path d="M1 4.2C2.67 2.4 5.17 1.2 8 1.2s5.33 1.2 7 3M3.5 7c1.17-1.2 2.83-2 4.5-2s3.33.8 4.5 2M6 9.8c.58-.6 1.33-1 2-1s1.42.4 2 1M8 12h.01" stroke="#181D27" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="17" height="12" fill="none"><rect x="1" y="1" width="3" height="10" rx="0.5" fill="#181D27"/><rect x="5" y="3" width="3" height="8" rx="0.5" fill="#181D27"/><rect x="9" y="5" width="3" height="6" rx="0.5" fill="#181D27"/><rect x="13" y="7" width="3" height="4" rx="0.5" fill="#181D27"/></svg>
+            <svg width="27" height="13" fill="none"><rect x="0.5" y="0.833" width="22" height="11.333" rx="2" stroke="#181D27" stroke-opacity=".35"/><path d="M23.5 4.5v4a2.17 2.17 0 000-4z" fill="#181D27" opacity=".4"/><rect x="2" y="2.333" width="19" height="8.333" rx="1" fill="#181D27"/></svg>
+          </div>
+        </div>
+        <div class="artifact-sheet-scrim open"></div>
+        <div class="artifact-sheet skill-sheet open">
+          <div class="sheet-top">
+            <div class="artifact-sheet-header">
+              <button class="skill-sheet-back"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div class="skill-sheet-title">
+                <div class="skill-sheet-title-text">Consider Moving Soccer to Wednesday</div>
+                <div class="skill-sheet-subtitle">Last updated today</div>
+              </div>
+              <div class="skill-sheet-spacer"></div>
+            </div>
+          </div>
+          <div class="artifact-sheet-body">
+            <p>Noah's current Thursday schedule has piano from 3:30-4:15 PM and soccer from 3:45-5:00 PM, creating a 27-minute overlap. Wednesday afternoons are completely open from 3:00-6:00 PM. Moving soccer to Wednesday would eliminate the conflict and give him a 15-minute buffer between school pickup and practice.</p>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Sheet 3: Profile - Mrs. Park ═══ -->
+<div class="device-wrapper">
+  <div class="device-inner-shadow">
+    <div class="device-mockup">
+      <div class="device-screen" style="background: var(--bg-secondary, #fafafa);">
+        <div class="status-bar">
+          <span class="status-bar-time">9:41</span>
+          <div class="status-bar-icons">
+            <svg width="18" height="12" fill="none"><path d="M1 4.2C2.67 2.4 5.17 1.2 8 1.2s5.33 1.2 7 3M3.5 7c1.17-1.2 2.83-2 4.5-2s3.33.8 4.5 2M6 9.8c.58-.6 1.33-1 2-1s1.42.4 2 1M8 12h.01" stroke="#181D27" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="17" height="12" fill="none"><rect x="1" y="1" width="3" height="10" rx="0.5" fill="#181D27"/><rect x="5" y="3" width="3" height="8" rx="0.5" fill="#181D27"/><rect x="9" y="5" width="3" height="6" rx="0.5" fill="#181D27"/><rect x="13" y="7" width="3" height="4" rx="0.5" fill="#181D27"/></svg>
+            <svg width="27" height="13" fill="none"><rect x="0.5" y="0.833" width="22" height="11.333" rx="2" stroke="#181D27" stroke-opacity=".35"/><path d="M23.5 4.5v4a2.17 2.17 0 000-4z" fill="#181D27" opacity=".4"/><rect x="2" y="2.333" width="19" height="8.333" rx="1" fill="#181D27"/></svg>
+          </div>
+        </div>
+        <div class="artifact-sheet-scrim open"></div>
+        <div class="artifact-sheet skill-sheet open">
+          <div class="sheet-top">
+            <div class="artifact-sheet-header">
+              <button class="skill-sheet-back"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div class="skill-sheet-title">
+                <div class="skill-sheet-title-text">Mrs. Park</div>
+                <div class="skill-sheet-subtitle">Teacher</div>
+              </div>
+              <div class="skill-sheet-spacer"></div>
+            </div>
+          </div>
+          <div class="artifact-sheet-body">
+            <p>Mrs. Park sends weekly reading reports and assignment updates. She can see Noah's reading habits but not other family data.</p>
+            <div class="skill-sheet-field"><div class="skill-sheet-field-label">Role</div><div class="skill-sheet-field-value">Teacher</div></div>
+            <div class="skill-sheet-field"><div class="skill-sheet-field-label">Joined</div><div class="skill-sheet-field-value">September 2025</div></div>
+            <div class="skill-sheet-field"><div class="skill-sheet-field-label">Permissions</div><div class="skill-sheet-field-value">School updates only</div></div>
+            <div class="skill-sheet-field"><div class="skill-sheet-field-label">Email</div><div class="skill-sheet-field-value">park@school.edu</div></div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Sheet 4: Skill - Bedtime routine ═══ -->
+<div class="device-wrapper">
+  <div class="device-inner-shadow">
+    <div class="device-mockup">
+      <div class="device-screen" style="background: var(--bg-secondary, #fafafa);">
+        <div class="status-bar">
+          <span class="status-bar-time">9:41</span>
+          <div class="status-bar-icons">
+            <svg width="18" height="12" fill="none"><path d="M1 4.2C2.67 2.4 5.17 1.2 8 1.2s5.33 1.2 7 3M3.5 7c1.17-1.2 2.83-2 4.5-2s3.33.8 4.5 2M6 9.8c.58-.6 1.33-1 2-1s1.42.4 2 1M8 12h.01" stroke="#181D27" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="17" height="12" fill="none"><rect x="1" y="1" width="3" height="10" rx="0.5" fill="#181D27"/><rect x="5" y="3" width="3" height="8" rx="0.5" fill="#181D27"/><rect x="9" y="5" width="3" height="6" rx="0.5" fill="#181D27"/><rect x="13" y="7" width="3" height="4" rx="0.5" fill="#181D27"/></svg>
+            <svg width="27" height="13" fill="none"><rect x="0.5" y="0.833" width="22" height="11.333" rx="2" stroke="#181D27" stroke-opacity=".35"/><path d="M23.5 4.5v4a2.17 2.17 0 000-4z" fill="#181D27" opacity=".4"/><rect x="2" y="2.333" width="19" height="8.333" rx="1" fill="#181D27"/></svg>
+          </div>
+        </div>
+        <div class="artifact-sheet-scrim open"></div>
+        <div class="artifact-sheet skill-sheet open">
+          <div class="sheet-top">
+            <div class="artifact-sheet-header">
+              <button class="skill-sheet-back"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div class="skill-sheet-title">
+                <div class="skill-sheet-title-text">Bedtime routine</div>
+                <div class="skill-sheet-subtitle">Last updated just now</div>
+              </div>
+              <div class="skill-sheet-spacer"></div>
+            </div>
+          </div>
+          <div class="artifact-sheet-body">
+            <p>Noah's bedtime routine skill. Sprout reminds him every night to start winding down.</p>
+            <div class="skill-sheet-field"><div class="skill-sheet-field-label">Type</div><div class="skill-sheet-field-value">Routine</div></div>
+            <div class="skill-sheet-field"><div class="skill-sheet-field-label">Weeknight</div><div class="skill-sheet-field-value">8:30 PM</div></div>
+            <div class="skill-sheet-field"><div class="skill-sheet-field-label">Weekend</div><div class="skill-sheet-field-value">9:30 PM</div></div>
+            <ul>
+              <li>Brush teeth for 2 minutes</li>
+              <li>Put on pajamas</li>
+              <li>Pick one book to read</li>
+              <li>Lights out</li>
+              <li>No screens after 8 PM</li>
+            </ul>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System — Typing Indicator</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-messages.css">
+<link rel="stylesheet" href="/kid-design-system/components/avatar.css">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px}
+.doc-download{display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);text-decoration:none;transition:color .15s}
+.doc-download:hover{color:var(--text-primary)}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px}
+
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Typing Indicator</h1>
+        <p class="doc-desc">Shows that Sprout is composing a response. Single-row layout with avatar, sender name, "Typing..." label, and optional "Answer now" button. Includes an optional Live Action Stream that surfaces real-time tool calls and processing steps.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>CSS file</div>
+          <div class="doc-meta-value"><span class="doc-badge">chat-messages.css</span><a class="doc-download" href="/kid-design-system/components/chat-messages.css" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Thu Apr 17, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Overview</h2>
+        <p>The typing indicator appears while Sprout or a co-parent is composing a response. It uses a compact single-row layout (avatar + name + subline + CTA). For <strong>Sprout</strong>, the subline is a Live Action Stream that cycles through real-time steps ("Thinking...", "Checking family preferences...", "Typing...") with iOS-style slide transitions. When an action fails, the stream shows the failure and retry in real time. For <strong>co-parent</strong>, the subline is a static "Typing..." with no action stream and no "Answer now" CTA. When the response is ready, the indicator transitions to a full message with a crossfade animation.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <ul>
+          <li><strong>.msg-group.msg-incoming.typing-state</strong> . Horizontal row layout</li>
+          <li><strong>.msg-avatar.typing-avatar</strong> . Avatar as direct child for row alignment</li>
+          <li><strong>.sender-indicator.typing-sender</strong> . Name label</li>
+          <li><strong>.sender-indicator-typing</strong> - Subline text (12px, text-secondary). For Sprout, cycles through action steps with iOS-style slide transitions. For co-parent, static "Typing..."</li>
+          <li><strong>.typing-cta</strong> - "Answer now" button (14px, medium weight, Sprout only)</li>
+          <li><strong>.msg-row.msg-incoming</strong> - Hidden row (display:none), populated with avatar + bubble on delivery</li>
+        </ul>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Usage</h2>
+        <p>Display the typing indicator whenever Sprout begins generating a response. Remove it and replace with the full message once the response is ready.</p>
+
+        <p><strong>Sprout typing (live)</strong></p>
+        <p>The subline cycles through action steps with iOS-style slide transitions. This demo loops continuously.</p>
+        <div class="doc-demo">
+          <div style="max-width:400px;width:100%">
+            <div class="msg-group msg-incoming typing-state">
+              <div class="msg-avatar typing-avatar">
+                <div class="avatar avatar-sm">
+                  <canvas class="rive-sprout" id="demo-sprout-1" width="86" height="124"></canvas>
+                </div>
+              </div>
+              <div class="sender-indicator typing-sender">
+                <div class="sender-indicator-name">Sprout</div>
+                <div class="sender-indicator-typing" id="demo-live-label">Thinking...</div>
+              </div>
+              <button class="typing-cta" type="button">Answer now</button>
+            </div>
+          </div>
+        </div>
+
+        <p><strong>Co-parent typing</strong></p>
+        <p>Co-parent variant omits the "Answer now" CTA.</p>
+        <div class="doc-demo">
+          <div style="max-width:400px;width:100%">
+            <div class="msg-group msg-incoming typing-state">
+              <div class="msg-avatar typing-avatar">
+                <div class="avatar avatar-sm avatar-bg-violet">
+                  <canvas class="rive-user" id="demo-coparent-1" width="46" height="66"></canvas>
+                </div>
+              </div>
+              <div class="sender-indicator typing-sender">
+                <div class="sender-indicator-name">Randall</div>
+                <div class="sender-indicator-typing">Typing...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section" id="live-action-stream">
+        <h2>Live Action Stream</h2>
+        <p>The Live Action Stream is not a separate component. It is the Sprout typing indicator's subline (<code>.sender-indicator-typing</code>) cycling through real-time action steps as Sprout processes a request. Each step slides in with an iOS-style transition (slide up out, slide up in from below). This is <strong>Sprout-only</strong>; co-parent typing indicators always show static "Typing...".</p>
+        <p>The typical sequence is:</p>
+        <ul>
+          <li><strong>Thinking...</strong> - initial state while Sprout begins processing</li>
+          <li><strong>[Action]...</strong> - tool-specific steps (e.g. "Checking family preferences...", "Searching habit catalog...", "Opening Google Calendar...")</li>
+          <li><strong>Typing...</strong> - final step as Sprout composes the response</li>
+        </ul>
+        <p>Each transition uses <code>cubic-bezier(.32,.72,0,1)</code> for a natural spring-like feel. Steps cycle every ~900ms. On delivery, the action stream transitions smoothly to the reasoning indicator ("Show thinking").</p>
+
+        <p><strong>Thinking (initial)</strong></p>
+        <div class="doc-demo">
+          <div style="max-width:400px;width:100%">
+            <div class="msg-group msg-incoming typing-state">
+              <div class="msg-avatar typing-avatar">
+                <div class="avatar avatar-sm">
+                  <canvas class="rive-sprout" id="demo-sprout-2" width="86" height="124"></canvas>
+                </div>
+              </div>
+              <div class="sender-indicator typing-sender">
+                <div class="sender-indicator-name">Sprout</div>
+                <div class="sender-indicator-typing">Thinking...</div>
+              </div>
+              <button class="typing-cta" type="button">Answer now</button>
+            </div>
+          </div>
+        </div>
+
+        <p><strong>Tool action (mid-stream)</strong></p>
+        <div class="doc-demo">
+          <div style="max-width:400px;width:100%">
+            <div class="msg-group msg-incoming typing-state">
+              <div class="msg-avatar typing-avatar">
+                <div class="avatar avatar-sm">
+                  <canvas class="rive-sprout" id="demo-sprout-3" width="86" height="124"></canvas>
+                </div>
+              </div>
+              <div class="sender-indicator typing-sender">
+                <div class="sender-indicator-name">Sprout</div>
+                <div class="sender-indicator-typing">Checking family preferences...</div>
+              </div>
+              <button class="typing-cta" type="button">Answer now</button>
+            </div>
+          </div>
+        </div>
+
+        <p><strong>Final step before delivery</strong></p>
+        <div class="doc-demo">
+          <div style="max-width:400px;width:100%">
+            <div class="msg-group msg-incoming typing-state">
+              <div class="msg-avatar typing-avatar">
+                <div class="avatar avatar-sm">
+                  <canvas class="rive-sprout" id="demo-sprout-4" width="86" height="124"></canvas>
+                </div>
+              </div>
+              <div class="sender-indicator typing-sender">
+                <div class="sender-indicator-name">Sprout</div>
+                <div class="sender-indicator-typing">Typing...</div>
+              </div>
+              <button class="typing-cta" type="button">Answer now</button>
+            </div>
+          </div>
+        </div>
+
+        <p><strong>Error recovery (retry)</strong></p>
+        <p>When Sprout retries a failed action, the stream makes the loop visible so the parent watches recovery in real time instead of seeing a generic "trying again" message. The failure reason appears briefly before the retry step slides in.</p>
+        <div class="doc-demo">
+          <div style="max-width:400px;width:100%">
+            <div class="msg-group msg-incoming typing-state">
+              <div class="msg-avatar typing-avatar">
+                <div class="avatar avatar-sm">
+                  <canvas class="rive-sprout" id="demo-sprout-5" width="86" height="124"></canvas>
+                </div>
+              </div>
+              <div class="sender-indicator typing-sender">
+                <div class="sender-indicator-name">Sprout</div>
+                <div class="sender-indicator-typing">Failed: calendar unavailable</div>
+              </div>
+              <button class="typing-cta" type="button">Answer now</button>
+            </div>
+          </div>
+        </div>
+        <div class="doc-demo" style="margin-top:8px">
+          <div style="max-width:400px;width:100%">
+            <div class="msg-group msg-incoming typing-state">
+              <div class="msg-avatar typing-avatar">
+                <div class="avatar avatar-sm">
+                  <canvas class="rive-sprout" id="demo-sprout-6" width="86" height="124"></canvas>
+                </div>
+              </div>
+              <div class="sender-indicator typing-sender">
+                <div class="sender-indicator-name">Sprout</div>
+                <div class="sender-indicator-typing">Retry: checking schedule...</div>
+              </div>
+              <button class="typing-cta" type="button">Answer now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>Spec</h2>
+        <p><code>.typing-state</code> with domain tags KN, CN, AC. Transitions: typing to message (crossfade), avatar repositions from row to column layout.</p>
+        <ul>
+          <li><strong>CSS file:</strong> <code>chat-messages.css</code></li>
+          <li><strong>Typing to message:</strong> <code>.sender-indicator-typing</code> and <code>.typing-cta</code> fade out, then <code>.typing-state</code> is removed so the group reverts to column layout. Avatar moves from group-level into <code>.msg-row</code>.</li>
+          <li><strong>Live Action Stream:</strong> Sprout-only. The <code>.sender-indicator-typing</code> subline cycles through action steps with slide transitions (translateY -6px out, +6px in). Steps cycle every ~900ms. Co-parent always shows static "Typing...".</li>
+          <li><strong>Error recovery:</strong> When Sprout retries a failed action, the stream shows the failure reason and retry attempt (e.g. "Retry: checking schedule..." after "Failed: calendar unavailable").</li>
+        </ul>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  var RIVE_SPROUT_SRC = '/kid-design-system/sprot2.97_.riv';
+  var RIVE_USER_SRC = '/kid-design-system/character2.91.riv';
+  var SM_NAME = 'State Machine 1';
+  var ARTBOARD = 'Village-character';
+  var SPROUT_STATE = { hairID: 1 };
+  var COPARENT_STATE = { skinID: 5, hairID: 4, hairshadeID: 8, beardID: 2, beardshadeID: 8, clothingID: 3, clothingcolourID: 5, eyeshadeID: 3 };
+
+  function initRiveAvatar(canvas, opts) {
+    var w = parseInt(canvas.getAttribute('width'), 10) || 86;
+    var h = parseInt(canvas.getAttribute('height'), 10) || 124;
+    canvas.width = w;
+    canvas.height = h;
+    var r;
+    try {
+      r = new rive.Rive({
+        src: opts.src,
+        canvas: canvas,
+        autoplay: true,
+        stateMachines: SM_NAME,
+        artboard: opts.artboard || undefined,
+        fit: rive.Fit.Contain,
+        alignment: rive.Alignment.Center,
+        onLoad: function() {
+          if (!r) return;
+          r.resizeDrawingSurfaceToCanvas();
+          try {
+            var inputs = r.stateMachineInputs(SM_NAME);
+            if (inputs && opts.state) {
+              inputs.forEach(function(inp) {
+                if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+              });
+            }
+          } catch(e) {}
+        }
+      });
+    } catch(e) { console.warn('Rive init failed', e); }
+  }
+
+  // Init all demo canvases
+  setTimeout(function() {
+    var s1 = document.getElementById('demo-sprout-1');
+    var s2 = document.getElementById('demo-sprout-2');
+    var cp = document.getElementById('demo-coparent-1');
+    var s3 = document.getElementById('demo-sprout-3');
+    var s4 = document.getElementById('demo-sprout-4');
+    var s5 = document.getElementById('demo-sprout-5');
+    var s6 = document.getElementById('demo-sprout-6');
+    if (s1) initRiveAvatar(s1, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+    if (s2) initRiveAvatar(s2, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+    if (s3) initRiveAvatar(s3, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+    if (s4) initRiveAvatar(s4, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+    if (s5) initRiveAvatar(s5, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+    if (s6) initRiveAvatar(s6, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+    if (cp) initRiveAvatar(cp, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: COPARENT_STATE });
+  }, 0);
+
+  // Live action stream demo — cycles through steps with iOS slide transitions
+  var liveLabel = document.getElementById('demo-live-label');
+  if (liveLabel) {
+    var steps = ['Thinking', 'Checking family preferences', 'Searching habit catalog', 'Typing'];
+    var idx = 0;
+    setInterval(function() {
+      idx = (idx + 1) % steps.length;
+      var next = steps[idx] + '...';
+      liveLabel.style.transition = 'opacity .18s ease, transform .18s ease';
+      liveLabel.style.opacity = '0';
+      liveLabel.style.transform = 'translateY(-6px)';
+      setTimeout(function() {
+        liveLabel.textContent = next;
+        liveLabel.style.transition = 'none';
+        liveLabel.style.opacity = '0';
+        liveLabel.style.transform = 'translateY(6px)';
+        liveLabel.offsetHeight;
+        liveLabel.style.transition = 'opacity .22s cubic-bezier(.32,.72,0,1), transform .22s cubic-bezier(.32,.72,0,1)';
+        liveLabel.style.opacity = '1';
+        liveLabel.style.transform = 'translateY(0)';
+      }, 180);
+    }, 1200);
+  }
+})();
+</script>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

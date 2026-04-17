@@ -1,0 +1,170 @@
+/* ══════════════════════════════════════════
+   Button
+   Figma 21000:64400
+   3 hierarchies: secondary (default), primary, destructive
+   2 sizes: sm (default), md
+   5 states: default, hover, loading, disabled, done
+   ══════════════════════════════════════════ */
+
+/* ── Base (secondary hierarchy, sm size) ── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm, 6px) var(--spacing-lg, 12px);
+  border-radius: var(--radius-sm, 6px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-text-sm, 20px);
+  cursor: pointer;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  background: var(--bg-primary, #fff);
+  color: var(--base-black, #000);
+  white-space: nowrap;
+  transition: background .15s;
+}
+
+/* ── Sizes ── */
+
+.btn-sm {
+  padding: var(--spacing-sm, 6px) var(--spacing-lg, 12px);
+  border-radius: var(--radius-sm, 6px);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+}
+
+.btn-md {
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  border-radius: var(--radius-md, 8px);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+}
+
+/* ── Secondary hierarchy (white bg, border) ── */
+
+.btn:hover { background: var(--bg-primary-hover, #fafafa); }
+
+/* ── Primary hierarchy (brand solid) ── */
+
+.btn-primary {
+  background: var(--bg-brand-solid, #0ba5ec);
+  border-color: transparent;
+  color: var(--text-white, #fff);
+}
+.btn-primary:hover {
+  background: var(--bg-brand-solid-hover, #36bffa);
+  border-color: transparent;
+}
+
+/* ── Destructive hierarchy (red solid) ── */
+
+.btn-destructive {
+  background: var(--bg-error-solid, #f04438);
+  border-color: transparent;
+  color: var(--text-white, #fff);
+}
+.btn-destructive:hover {
+  background: var(--bg-error-solid-hover, #f97066);
+  border-color: transparent;
+}
+
+/* ── Disabled state (all hierarchies) ── */
+
+.btn:disabled,
+.btn-primary:disabled,
+.btn-destructive:disabled {
+  background: var(--fg-disabled-subtle, #d5d7da);
+  border-color: transparent;
+  color: var(--text-disabled, #717680);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── Loading state ── */
+
+.btn.loading {
+  pointer-events: none;
+  width: 68px;
+}
+.btn-md.loading { width: 74px; }
+
+/* Spinner inside secondary button: brand color */
+.btn.loading .btn-spinner {
+  border-color: var(--gray-200, #e9eaeb);
+  border-top-color: var(--brand-500, #0ba5ec);
+}
+
+/* Spinner inside primary/destructive button: muted white */
+.btn-primary.loading .btn-spinner,
+.btn-destructive.loading .btn-spinner {
+  border-color: rgba(255,255,255,.3);
+  border-top-color: #fff;
+}
+
+/* ── Done state ── */
+
+.btn.done {
+  background: var(--bg-primary, #fff);
+  border-color: var(--gray-500, #717680);
+  color: var(--gray-500, #717680);
+  pointer-events: none;
+}
+
+.btn-primary.done {
+  background: var(--bg-brand-primary, #f0f9ff);
+  border-color: var(--brand-500, #0ba5ec);
+  color: var(--brand-500, #0ba5ec);
+  pointer-events: none;
+}
+
+.btn-destructive.done {
+  background: var(--bg-error-primary, #fef3f2);
+  border-color: var(--utility-error-500, #f04438);
+  color: var(--utility-error-500, #f04438);
+  pointer-events: none;
+}
+
+/* ── Button stack (pattern) ──
+ * Vertical group of buttons with 8px gap.
+ * Use inside message groups for action pairs (Approve/Reject, etc.).
+ * Buttons stretch to match card width (max-width 330px) and use md size. */
+
+.btn-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 8px);
+}
+
+/* Buttons in a stack stretch full-width and default to md sizing */
+.btn-stack .btn {
+  width: 100%;
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+}
+.btn-stack .btn.loading { width: 100%; }
+
+/* Inside a msg-col the stack stretches to match the bubble width */
+.msg-col > .btn-stack {
+  align-self: stretch;
+}
+
+/* When the chosen button enters .done, fade the sibling */
+.btn-stack .btn.faded {
+  opacity: .5;
+  pointer-events: none;
+}
+
+/* ── Spinner ── */
+
+.btn-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid var(--gray-200, #e9eaeb);
+  border-top-color: var(--brand-500, #0ba5ec);
+  border-radius: 50%;
+  animation: btn-spin 1s linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }

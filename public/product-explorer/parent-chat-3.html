@@ -14,18 +14,35 @@
 <link rel="stylesheet" href="/kid-design-system/components/chat-toolbar.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-banner.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-messages.css">
-<link rel="stylesheet" href="/kid-design-system/components/thought-sheet.css">
+<link rel="stylesheet" href="/parent-design-system/components/media.css">
+<link rel="stylesheet" href="/kid-design-system/components/reasoning-transcript.css">
 <link rel="stylesheet" href="/kid-design-system/components/tool-usage.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-chips.css">
-<link rel="stylesheet" href="/kid-design-system/components/chat-action-buttons.css">
 <link rel="stylesheet" href="/kid-design-system/components/confirm-card.css">
 <link rel="stylesheet" href="/kid-design-system/components/artifact.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-composer.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-context-menu.css">
 <link rel="stylesheet" href="/kid-design-system/components/attach-panel.css">
+<link rel="stylesheet" href="/kid-design-system/components/planning-tree.css">
+<script src="/kid-design-system/components/planning-tree.js"></script>
+<link rel="stylesheet" href="/kid-design-system/components/card.css">
+<link rel="stylesheet" href="/kid-design-system/components/button.css">
+<link rel="stylesheet" href="/kid-design-system/components/scope-sheet.css">
+<link rel="stylesheet" href="/kid-design-system/components/skill-sheet.css">
+<link rel="stylesheet" href="/kid-design-system/components/comm-card.css">
+<link rel="stylesheet" href="/kid-design-system/components/result-card.css">
+<link rel="stylesheet" href="/kid-design-system/components/connector-more-menu.css">
 <style>
 /* ── Page-specific overrides ── */
 .device-screen{background:var(--brand-25)}
+
+/* ── Composer frost (mirrors .header-frost above) ──
+ * Soft fade from transparent up into solid brand-25 at the composer,
+ * so the chat thread dissolves into the chip/composer area instead of
+ * hitting a hard edge.
+ */
+.composer-area{background:var(--brand-25)}
+.composer-area::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:48px;background:linear-gradient(to top,var(--brand-25,#f5fbff) 0%,rgba(245,251,255,0) 100%);pointer-events:none}
 
 /* ── Feature list in metadata ── */
 .pc-features{margin-top:var(--spacing-md)}
@@ -33,6 +50,9 @@
 .pc-feature-item{display:flex;align-items:center;gap:var(--spacing-md);padding:7px var(--spacing-lg);font-size:13px;color:var(--text-tertiary);cursor:pointer;border-left:2px solid transparent;border-radius:0 var(--radius-sm) var(--radius-sm) 0;transition:all .1s;user-select:none}
 .pc-feature-item:hover{background:var(--bg-tertiary);color:var(--text-primary)}
 .pc-feature-item.active{background:var(--brand-50);color:var(--brand-600);border-left-color:var(--brand-500);font-weight:var(--font-weight-semibold)}
+
+/* Connector component styles loaded via <link> tags */
+
 </style>
 </head>
 <body>
@@ -333,17 +353,84 @@
   </div>
 </div>
 
+<!-- Scope sheet (Connectors / OAuth) -->
+<div class="artifact-sheet-scrim" id="scopeSheetScrim"></div>
+<div class="artifact-sheet scope-sheet" id="scopeSheet">
+  <div class="sheet-top"><div class="sheet-handle"></div></div>
+  <div class="artifact-sheet-header">
+    <button class="scope-sheet-back" id="scopeSheetBack" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="artifact-sheet-title" id="scopeSheetTitle">Google Calendar</div>
+    <button class="scope-sheet-close" id="scopeSheetClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="artifact-sheet-body" id="scopeSheetBody"></div>
+  <div class="artifact-sheet-footer">
+    <button class="artifact-sheet-assign" id="scopeSaveBtn">Save</button>
+  </div>
+</div>
+
+<!-- Connector more menu sheet -->
+<div class="sheet-scrim" id="connectorMoreScrim"></div>
+<div class="sheet connector-more-sheet" id="connectorMoreSheet">
+  <div class="sheet-top"><div class="sheet-handle"></div></div>
+  <button class="connector-more-item" id="connMoreDetails">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <span>View details</span>
+  </button>
+  <button class="connector-more-item destructive" id="connMoreDisconnect">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2h5M15.17 8.83l5.66-5.66M18.37 5.63a9 9 0 11-12.73 0M8.83 8.83L3.17 3.17"/></svg>
+    <span>Disconnect</span>
+  </button>
+  <button class="connector-more-item destructive" id="connMoreDelete">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.08 16 3.52 15.782 3.092C15.59 2.716 15.284 2.41 14.908 2.218C14.48 2 13.92 2 12.8 2H11.2C10.08 2 9.52 2 9.092 2.218C8.716 2.41 8.41 2.716 8.218 3.092C8 3.52 8 4.08 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.88 19 19.72 18.673 20.362C18.385 20.927 17.927 21.385 17.362 21.673C16.72 22 15.88 22 14.2 22H9.8C8.12 22 7.28 22 6.638 21.673C6.074 21.385 5.615 20.927 5.327 20.362C5 19.72 5 18.88 5 17.2V6"/></svg>
+    <span>Delete</span>
+  </button>
+</div>
+
+<!-- Skill sheet -->
+<div class="artifact-sheet-scrim" id="skillSheetScrim"></div>
+<div class="artifact-sheet skill-sheet" id="skillSheet">
+  <div class="sheet-top">
+    <div class="artifact-sheet-header">
+      <button class="skill-sheet-back" id="skillSheetBack"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="skill-sheet-title">
+        <div class="skill-sheet-title-text" id="skillSheetTitle">Skill</div>
+        <div class="skill-sheet-subtitle" id="skillSheetSubtitle">Last updated today</div>
+      </div>
+      <div class="skill-sheet-spacer"></div>
+    </div>
+  </div>
+  <div class="artifact-sheet-body" id="skillSheetBody"></div>
+</div>
+
+<!-- Skill more menu sheet -->
+<div class="sheet-scrim" id="skillMoreScrim"></div>
+<div class="sheet connector-more-sheet" id="skillMoreSheet">
+  <div class="sheet-top"><div class="sheet-handle"></div></div>
+  <button class="connector-more-item" id="skillMoreRename">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+    <span>Rename</span>
+  </button>
+  <button class="connector-more-item destructive" id="skillMoreDelete">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.08 16 3.52 15.782 3.092C15.59 2.716 15.284 2.41 14.908 2.218C14.48 2 13.92 2 12.8 2H11.2C10.08 2 9.52 2 9.092 2.218C8.716 2.41 8.41 2.716 8.218 3.092C8 3.52 8 4.08 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.88 19 19.72 18.673 20.362C18.385 20.927 17.927 21.385 17.362 21.673C16.72 22 15.88 22 14.2 22H9.8C8.12 22 7.28 22 6.638 21.673C6.074 21.385 5.615 20.927 5.327 20.362C5 19.72 5 18.88 5 17.2V6"/></svg>
+    <span>Delete</span>
+  </button>
+</div>
+
 <!-- Thought process sheet -->
-<div class="thought-sheet-scrim" id="thoughtSheetScrim"></div>
-<div class="thought-sheet" id="thoughtSheet">
+<div class="reasoning-transcript-scrim" id="thoughtSheetScrim"></div>
+<div class="reasoning-transcript-sheet" id="thoughtSheet">
   <div class="sheet-top">
     <div class="sheet-handle"></div>
   </div>
-  <div class="thought-sheet-header">
-    <span class="thought-sheet-header-label" id="thoughtSheetLabel">Thinking...</span>
-    <span class="thought-sheet-header-time" id="thoughtSheetTime">6s</span>
+  <div class="reasoning-transcript-header">
+    <span class="reasoning-transcript-header-label" id="thoughtSheetLabel">Reasoning Transcript</span>
+    <span class="reasoning-transcript-header-time" id="thoughtSheetTime">6s</span>
   </div>
-  <div class="thought-sheet-body" id="thoughtSheetBody"></div>
+  <div class="reasoning-transcript-body" id="thoughtSheetBody"></div>
 </div>
 
 
@@ -383,6 +470,14 @@
   var artifactSheetScrim = document.getElementById('artifactSheetScrim');
   var artifactSheet = document.getElementById('artifactSheet');
   var reconnectBanner = document.getElementById('reconnectBanner');
+  var connectorMoreScrim = document.getElementById('connectorMoreScrim');
+  var connectorMoreSheet = document.getElementById('connectorMoreSheet');
+  var scopeSheetScrim = document.getElementById('scopeSheetScrim');
+  var scopeSheet = document.getElementById('scopeSheet');
+  var scopeSheetBody = document.getElementById('scopeSheetBody');
+  var scopeSheetTitle = document.getElementById('scopeSheetTitle');
+  var scopeSaveBtn = document.getElementById('scopeSaveBtn');
+  var scopeSheetBack = document.getElementById('scopeSheetBack');
   var attachPanel = document.getElementById('attachPanel');
   var iosKeyboard = document.getElementById('iosKeyboard');
 
@@ -470,23 +565,49 @@
   var ICON_THUMBS_DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2V13M22 11V4C22 2.89543 21.1046 2 20 2H6.57383C5.09301 2 3.83382 3.08034 3.60862 4.54379L2.53168 11.5438C2.25212 13.3611 3.65822 15 5.49688 15H9C9.55228 15 10 15.4477 10 16V19.5342C10 20.896 11.104 22 12.4658 22C12.7907 22 13.085 21.8087 13.2169 21.5119L16.7361 13.5939C16.8966 13.2327 17.2547 13 17.6499 13H20C21.1046 13 22 12.1046 22 11Z"/></svg>';
   var ICON_REPLY_ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>';
 
+  /**
+   * Build the message Actions row (Figma 20971:59425) — copy, thumbs-up, thumbs-down.
+   * Thumbs are mutually-exclusive toggles; clicking the active one clears the rating.
+   */
   function createMsgActions(groupEl) {
     var actionsEl = document.createElement('div');
     actionsEl.className = 'msg-actions';
+
     var copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
     copyBtn.className = 'msg-actions-btn';
+    copyBtn.setAttribute('aria-label', 'Copy');
     copyBtn.innerHTML = ICON_COPY;
     copyBtn.addEventListener('click', function() {
       var text = getTextContent(groupEl);
       if (navigator.clipboard) navigator.clipboard.writeText(text);
       showToast('Copied!');
     });
+
     var thumbUpBtn = document.createElement('button');
+    thumbUpBtn.type = 'button';
     thumbUpBtn.className = 'msg-actions-btn';
+    thumbUpBtn.setAttribute('aria-label', 'Thumbs up');
+    thumbUpBtn.setAttribute('aria-pressed', 'false');
     thumbUpBtn.innerHTML = ICON_THUMBS_UP;
+
     var thumbDownBtn = document.createElement('button');
+    thumbDownBtn.type = 'button';
     thumbDownBtn.className = 'msg-actions-btn';
+    thumbDownBtn.setAttribute('aria-label', 'Thumbs down');
+    thumbDownBtn.setAttribute('aria-pressed', 'false');
     thumbDownBtn.innerHTML = ICON_THUMBS_DOWN;
+
+    function toggleRating(activeBtn, otherBtn) {
+      var nowActive = !activeBtn.classList.contains('is-active');
+      activeBtn.classList.toggle('is-active', nowActive);
+      activeBtn.setAttribute('aria-pressed', nowActive ? 'true' : 'false');
+      otherBtn.classList.remove('is-active');
+      otherBtn.setAttribute('aria-pressed', 'false');
+    }
+    thumbUpBtn.addEventListener('click', function() { toggleRating(thumbUpBtn, thumbDownBtn); });
+    thumbDownBtn.addEventListener('click', function() { toggleRating(thumbDownBtn, thumbUpBtn); });
+
     actionsEl.appendChild(copyBtn);
     actionsEl.appendChild(thumbUpBtn);
     actionsEl.appendChild(thumbDownBtn);
@@ -528,19 +649,19 @@
 
   var toolActivities = [
     [],
-    ['family preferences', 'habit catalog'],
-    ['quest builder', 'rewards engine'],
-    ['habit tracker', 'completion data'],
-    ['scheduler', 'notification service'],
-    ['memory read', 'family data'],
-    ['habit tracker'],
-    ['behavioral insights']
+    ['Checking family preferences', 'Searching habit catalog'],
+    ['Building quest template', 'Setting up rewards'],
+    ['Looking up habit tracker', 'Reviewing completions'],
+    ['Checking schedule', 'Preparing update'],
+    ['Reading family data', 'Analyzing patterns'],
+    ['Checking habit tracker'],
+    ['Reviewing behavioral insights']
   ];
 
   // ── Mention members & projects ──
   var FOLDER_SVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H12L10 5H5C3.89543 5 3 5.89543 3 7Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var members = [
-    { type: 'person', name: "Ze'ev Rosenstein", sub: 'thafman', avatarBg: 'avatar-bg-blue', avatarState: COPARENT_STATE },
+    { type: 'person', name: 'Randall', sub: 'co-parent', avatarBg: 'avatar-bg-blue', avatarState: COPARENT_STATE },
     { type: 'person', name: 'Sprout', sub: 'family AI', isSprout: true },
     { type: 'project', name: 'Morning Routine Quest', sub: 'Project' },
     { type: 'project', name: 'Reading Challenge', sub: 'Project' }
@@ -552,6 +673,7 @@
   function fitThreadToComposer() {
     var h = composerArea.offsetHeight + 20; /* 20 = composer bottom offset */
     chatThread.style.bottom = h + 'px';
+    chatThread.scrollTop = chatThread.scrollHeight;
   }
   if (window.ResizeObserver) {
     new ResizeObserver(fitThreadToComposer).observe(composerArea);
@@ -975,15 +1097,7 @@
     var bubble = document.createElement('div');
     bubble.className = 'msg-bubble msg-bubble-out';
 
-    // If replying, show quoted reply (above the bubble, not inside it)
-    if (activeReply) {
-      var quotedRow = document.createElement('div');
-      quotedRow.className = 'msg-quoted';
-      quotedRow.innerHTML = '<div class="msg-quoted-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg></div><div class="msg-quoted-text">' + (activeReply.text.length > 40 ? activeReply.text.substring(0, 40) + '...' : activeReply.text) + '</div>';
-      group.appendChild(quotedRow);
-    }
-
-    // If attachments, render grid above bubble (Figma spec)
+    // If attachments, render grid above bubble
     if (attachments.length > 0) {
       var grid = document.createElement('div');
       grid.className = 'msg-attachments';
@@ -994,14 +1108,14 @@
       sorted.forEach(function(a) {
         if (a.type === 'photo') {
           var tile = document.createElement('div');
-          tile.className = 'msg-attachments-img';
+          tile.className = 'media-img';
           tile.style.background = a.color;
           grid.appendChild(tile);
         } else if (a.type === 'file') {
           var pill = document.createElement('div');
-          pill.className = 'msg-attachments-file';
-          pill.innerHTML = '<div class="msg-attachments-file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>'
-            + '<div class="msg-attachments-file-info"><div class="msg-attachments-file-name">' + (a.name || 'Document') + '</div><div class="msg-attachments-file-meta">' + (a.ext || 'PDF') + '</div></div>';
+          pill.className = 'media-file';
+          pill.innerHTML = '<div class="media-file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>'
+            + '<div class="media-file-info"><div class="media-file-name">' + (a.name || 'Document') + '</div><div class="media-file-meta">' + (a.ext || 'PDF') + '</div></div>';
           grid.appendChild(pill);
         }
       });
@@ -1010,6 +1124,11 @@
     }
 
     if (text) {
+      // If replying, show mention quote inside the bubble
+      if (activeReply) {
+        bubble.appendChild(createBubbleMention(activeReply.text.length > 40 ? activeReply.text.substring(0, 40) + '...' : activeReply.text));
+      }
+
       var textDiv = document.createElement('div');
       textDiv.innerHTML = richHTML ? richHTML.replace(/\n/g, '<br>') : text.replace(/\n/g, '<br>');
       bubble.appendChild(textDiv);
@@ -1044,40 +1163,34 @@
      CO-PARENT MESSAGE
      ════════════════════════════════ */
   function addCoparentMessage(text, name, initials, color) {
-    name = name || 'Ze\'ev Rosenstein';
-    initials = initials || 'ZR';
+    name = name || 'Randall';
+    initials = initials || 'R';
     color = color || '#7C3AED';
     isProcessing = true;
-    showTypingIndicator({ name: name, verb: 'is typing', avatarType: 'coparent', avatarBg: 'avatar-bg-violet', avatarState: COPARENT_STATE });
+    showTypingIndicator({ avatarType: 'coparent', avatarBg: 'avatar-bg-violet', avatarState: COPARENT_STATE });
 
     setTimeout(function() {
-      removeTypingIndicator();
-      var group = document.createElement('div');
-      group.className = 'msg-group msg-incoming';
-      var sender = document.createElement('div');
-      sender.className = 'msg-sender';
-      sender.textContent = name;
-      group.appendChild(sender);
-      var row = document.createElement('div');
-      row.className = 'msg-row msg-incoming';
-      var avatarEl = createUserAvatar('avatar-bg-violet', COPARENT_STATE);
-      row.appendChild(avatarEl);
-      var bubble = document.createElement('div');
-      bubble.className = 'msg-bubble msg-bubble-coparent';
-      var textDiv = document.createElement('div');
-      textDiv.innerHTML = text.replace(/\n/g, '<br>').replace(/@(\w+)/g, '<span class="mention-tag">@$1</span>');
-      bubble.appendChild(textDiv);
-      var ts = document.createElement('div');
-      ts.className = 'msg-time-inline';
-      ts.textContent = fmtTime();
-      bubble.appendChild(ts);
-      row.appendChild(bubble);
-      group.appendChild(row);
-      chatThread.appendChild(group);
-      if (typeof setupSwipe === 'function') setupSwipe(row, group);
-      if (typeof setupLongPress === 'function') setupLongPress(row, group);
-      scrollThread();
-      isProcessing = false;
+      transitionTypingToMessage(function(group, senderInd, row) {
+        // — Bubble (replaces empty slot in the row) —
+        var bubble = document.createElement('div');
+        bubble.className = 'msg-bubble msg-bubble-coparent';
+        var textDiv = document.createElement('div');
+        textDiv.innerHTML = text.replace(/\n/g, '<br>').replace(/@(\w+)/g, '<span class="mention-tag">@$1</span>');
+        bubble.appendChild(textDiv);
+        if (row) { row.appendChild(bubble); } else {
+          var newRow = document.createElement('div');
+          newRow.className = 'msg-row msg-incoming';
+          newRow.appendChild(createUserAvatar('avatar-bg-violet', COPARENT_STATE));
+          newRow.appendChild(bubble);
+          group.appendChild(newRow);
+          row = newRow;
+        }
+        enterTransition(bubble);
+
+        if (typeof setupSwipe === 'function') setupSwipe(row, group);
+        if (typeof setupLongPress === 'function') setupLongPress(row, group);
+        isProcessing = false;
+      });
     }, 1200);
     return null;
   }
@@ -1188,37 +1301,51 @@
   /* ════════════════════════════════
      ACTION BUTTONS (#5)
      ════════════════════════════════ */
-  function addActionButtons() {
-    var row = document.createElement('div');
-    row.className = 'action-btns';
+  /**
+   * Build a .btn-stack and insert it into a message group (before actions).
+   * Returns the stack element so the caller can position it.
+   */
+  function createButtonStack(primaryLabel, secondaryLabel, group) {
+    var stack = document.createElement('div');
+    stack.className = 'btn-stack';
 
-    var approveBtn = document.createElement('button');
-    approveBtn.className = 'action-btn action-btn-primary';
-    approveBtn.textContent = 'Approve';
+    var primaryBtn = document.createElement('button');
+    primaryBtn.className = 'btn btn-primary';
+    primaryBtn.textContent = primaryLabel;
 
-    var rejectBtn = document.createElement('button');
-    rejectBtn.className = 'action-btn action-btn-secondary';
-    rejectBtn.textContent = 'Reject';
+    var secondaryBtn = document.createElement('button');
+    secondaryBtn.className = 'btn';
+    secondaryBtn.textContent = secondaryLabel;
 
     function handleAction(btn, otherBtn) {
       btn.classList.add('loading');
-      btn.innerHTML = '<span class="spinner"></span>';
+      btn.innerHTML = '<div class="btn-spinner"></div>';
       otherBtn.classList.add('faded');
       setTimeout(function() {
         btn.classList.remove('loading');
         btn.classList.add('done');
-        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Done';
-        otherBtn.classList.add('faded');
+        btn.textContent = 'Done';
       }, 1000);
     }
 
-    approveBtn.addEventListener('click', function() { handleAction(approveBtn, rejectBtn); });
-    rejectBtn.addEventListener('click', function() { handleAction(rejectBtn, approveBtn); });
+    primaryBtn.addEventListener('click', function() { handleAction(primaryBtn, secondaryBtn); });
+    secondaryBtn.addEventListener('click', function() { handleAction(secondaryBtn, primaryBtn); });
 
-    row.appendChild(approveBtn);
-    row.appendChild(rejectBtn);
-    chatThread.appendChild(row);
-    scrollThread();
+    stack.appendChild(primaryBtn);
+    stack.appendChild(secondaryBtn);
+
+    if (group) {
+      // Insert into the msg-col so avatar bottom-aligns with buttons per Figma
+      var col = group.querySelector('.msg-col');
+      if (col) {
+        col.appendChild(stack);
+      } else {
+        var actions = group.querySelector('.msg-actions');
+        if (actions) { group.insertBefore(stack, actions); }
+        else { group.appendChild(stack); }
+      }
+    }
+    return stack;
   }
 
   /* ════════════════════════════════
@@ -1306,58 +1433,99 @@
   /* ════════════════════════════════
      TYPING + INCOMING MESSAGE
      ════════════════════════════════ */
+  /**
+   * Build the Typing Indicator (Figma 20971:59249).
+   * Uses the msg-group + sender-indicator + msg-row structure so the avatar
+   * and name PERSIST when transitioning to the delivered message.
+   *
+   *   showTypingIndicator({ name: 'Sprout',  avatarType: 'sprout' })
+   *   showTypingIndicator({ name: 'Randall', avatarType: 'coparent', avatarBg, avatarState })
+   */
+  /**
+   * Show typing indicator with live action stream.
+   * opts.tools — array of action labels to cycle through (e.g. ['Thinking', 'Searching habits'])
+   * Each step slides up with an iOS-style transition before showing the next.
+   */
   function showTypingIndicator(opts) {
     opts = opts || {};
-    var senderName = opts.name || 'Sprout';
-    var verb = opts.verb || 'is thinking';
-    var el = document.createElement('div');
-    el.className = 'typing-indicator';
-    el.id = 'typingIndicator';
+    var isCoparent = opts.avatarType === 'coparent';
+    var senderName = opts.name || (isCoparent ? 'Randall' : 'Sprout');
+    var tools = opts.tools || [];
 
-    // Avatar
-    var avatarEl;
-    if (opts.avatarType === 'coparent') {
-      avatarEl = createUserAvatar(opts.avatarBg || 'avatar-bg-violet', opts.avatarState || COPARENT_STATE);
+    // Build the steps: co-parent only shows "Typing", Sprout gets the full action stream
+    var steps;
+    if (isCoparent) {
+      steps = ['Typing'];
     } else {
-      avatarEl = createSproutAvatar();
-    }
-    el.appendChild(avatarEl);
-
-    // Label: "Name is thinking/typing..."
-    var label = document.createElement('span');
-    label.className = 'typing-indicator-label';
-    label.innerHTML = '<strong>' + senderName + '</strong> ' + verb + '...';
-    el.appendChild(label);
-
-    // Stop circle icon (Sprout only)
-    if (opts.avatarType !== 'coparent') {
-      var stopBtn = document.createElement('span');
-      stopBtn.className = 'typing-indicator-stop';
-      stopBtn.innerHTML = '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><rect x="5.75" y="5.75" width="4.5" height="4.5" rx="0.75" fill="currentColor"/></svg>';
-      stopBtn.addEventListener('click', function() { stopGeneration(); });
-      el.appendChild(stopBtn);
+      steps = ['Thinking'];
+      tools.forEach(function(t) { steps.push(t); });
+      steps.push('Typing');
     }
 
-    chatThread.appendChild(el);
+    var group = document.createElement('div');
+    group.className = 'msg-group msg-incoming typing-state';
+    group.id = 'typingIndicator';
+
+    // Avatar as direct child (for row layout during typing)
+    var avatarEl = isCoparent
+      ? createUserAvatar(opts.avatarBg || 'avatar-bg-violet', opts.avatarState || COPARENT_STATE)
+      : createSproutAvatar();
+    avatarEl.classList.add('typing-avatar');
+    group.appendChild(avatarEl);
+
+    // Sender indicator with action stream label in the reasoning slot
+    var senderInd = createSenderIndicator(senderName);
+    senderInd.el.classList.add('typing-sender');
+    var typingLabel = document.createElement('div');
+    typingLabel.className = 'sender-indicator-typing';
+    typingLabel.textContent = steps[0] + '...';
+    senderInd.el.appendChild(typingLabel);
+    group.appendChild(senderInd.el);
+
+    // "Answer now" CTA — Sprout only
+    if (!isCoparent) {
+      var cta = document.createElement('button');
+      cta.className = 'typing-cta';
+      cta.type = 'button';
+      cta.textContent = 'Answer now';
+      cta.addEventListener('click', function() { stopGeneration(); });
+      group.appendChild(cta);
+    }
+
+    // Hidden msg-row — will hold avatar + bubble on delivery
+    var row = document.createElement('div');
+    row.className = 'msg-row msg-incoming';
+    row.style.display = 'none';
+    group.appendChild(row);
+
+    chatThread.appendChild(group);
     scrollThread();
-  }
 
-  /**
-   * Rotate the typing indicator verb with a crossfade.
-   * @param {string} newVerb - e.g. 'is checking schedule'
-   */
-  function updateTypingVerb(newVerb) {
-    var el = document.getElementById('typingIndicator');
-    if (!el) return;
-    var label = el.querySelector('.typing-indicator-label');
-    if (!label) return;
-    var name = label.querySelector('strong');
-    var senderName = name ? name.textContent : 'Sprout';
-    label.classList.add('fade-out');
-    setTimeout(function() {
-      label.innerHTML = '<strong>' + senderName + '</strong> ' + newVerb + '...';
-      label.classList.remove('fade-out');
-    }, 300);
+    // Cycle through action steps with iOS-style slide-up transition
+    var stepIdx = 1;
+    if (steps.length > 1) {
+      _activeRotateInterval = setInterval(function() {
+        if (stepIdx >= steps.length) { clearInterval(_activeRotateInterval); _activeRotateInterval = null; return; }
+        // Slide out current label
+        typingLabel.style.transition = 'opacity .18s ease, transform .18s ease';
+        typingLabel.style.opacity = '0';
+        typingLabel.style.transform = 'translateY(-6px)';
+        var nextStep = steps[stepIdx];
+        stepIdx++;
+        setTimeout(function() {
+          typingLabel.textContent = nextStep + '...';
+          // Position below for slide-in
+          typingLabel.style.transition = 'none';
+          typingLabel.style.opacity = '0';
+          typingLabel.style.transform = 'translateY(6px)';
+          typingLabel.offsetHeight; // force reflow
+          // Slide in from below
+          typingLabel.style.transition = 'opacity .22s cubic-bezier(.32,.72,0,1), transform .22s cubic-bezier(.32,.72,0,1)';
+          typingLabel.style.opacity = '1';
+          typingLabel.style.transform = 'translateY(0)';
+        }, 180);
+      }, 900);
+    }
   }
 
   function removeTypingIndicator() {
@@ -1365,81 +1533,189 @@
     if (el) el.remove();
   }
 
-  // Activity feed verbs that rotate before the message appears
-  var activityVerbs = ['is thinking', 'is loading family overview', 'is checking schedule', 'is typing'];
-  var _activeRotateInterval = null;
+  /**
+   * Create a reasoning indicator element (for adding after typing→message swap).
+   * Returns the <button> element.
+   */
+  function createReasoningButton(secs) {
+    var reasoning = document.createElement('button');
+    reasoning.className = 'reasoning-indicator';
+    reasoning.type = 'button';
+    var label = document.createElement('span');
+    label.className = 'reasoning-indicator-label';
+    label.textContent = 'Show thinking';
+    var chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chevron.setAttribute('viewBox', '0 0 16 16');
+    chevron.setAttribute('class', 'reasoning-indicator-chevron');
+    chevron.setAttribute('fill', 'none');
+    chevron.innerHTML = '<polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
+    reasoning.appendChild(label);
+    reasoning.appendChild(chevron);
+    var capturedSecs = secs || 0;
+    reasoning.addEventListener('click', function() {
+      chevron.classList.add('open');
+      openThoughtSheet(capturedSecs, thoughtStepDefs);
+    });
+    return reasoning;
+  }
+
+  /**
+   * Smooth shared-element transition from typing indicator → delivered message.
+   * The msg-group, sender-indicator (with name), msg-row, and avatar all STAY
+   * in place. Only the leaf children swap:
+   *   "Typing..." → reasoning indicator (crossfade in sender-indicator slot)
+   *   CTA → bubble (crossfade in msg-row slot)
+   *   actions fade in below
+   *
+   * buildMessage(group, senderInd, row) should populate the group with the
+   * remaining message parts (bubble, images, actions).
+   */
+  function transitionTypingToMessage(buildMessage) {
+    var el = document.getElementById('typingIndicator');
+
+    // Fallback: no typing indicator visible — mount fresh message
+    if (!el) {
+      var group = document.createElement('div');
+      group.className = 'msg-group msg-incoming is-entering';
+      chatThread.appendChild(group);
+      buildMessage(group, null, null);
+      group.offsetHeight;
+      group.classList.remove('is-entering');
+      scrollThread();
+      return;
+    }
+
+    el.id = '';
+
+    var senderInd = el.querySelector('.sender-indicator');
+    var row = el.querySelector('.msg-row');
+    var typingLabel = el.querySelector('.sender-indicator-typing');
+    var typingAvatar = el.querySelector('.typing-avatar');
+    var cta = el.querySelector('.typing-cta');
+
+    // 1. Fade out "Typing..." and CTA
+    if (typingLabel) typingLabel.classList.add('is-leaving');
+    if (cta) cta.classList.add('is-leaving');
+
+    // 2. After fade-out, flip layout from row → column and swap content
+    setTimeout(function() {
+      // Remove typing ephemera
+      if (typingLabel && typingLabel.parentNode) typingLabel.remove();
+      if (cta && cta.parentNode) cta.remove();
+
+      // Flip layout: row → column (normal msg-group)
+      el.classList.remove('typing-state');
+
+      // Move avatar from group level into the msg-row
+      if (typingAvatar && row) {
+        typingAvatar.classList.remove('typing-avatar');
+        row.insertBefore(typingAvatar, row.firstChild);
+        row.style.display = '';
+      }
+
+      // Restore sender-indicator padding
+      if (senderInd) senderInd.classList.remove('typing-sender');
+
+      buildMessage(el, senderInd, row);
+      scrollThread();
+    }, 200);
+  }
+
+  /** Animate an element in by briefly adding .is-entering then removing it. */
+  function enterTransition(el) {
+    if (!el) return;
+    el.classList.add('is-entering');
+    el.offsetHeight; // force layout
+    el.classList.remove('is-entering');
+  }
+
   var _activeDeliverTimeout = null;
+  var _activeRotateInterval = null;
 
   function stopGeneration() {
-    if (_activeRotateInterval) { clearInterval(_activeRotateInterval); _activeRotateInterval = null; }
     if (_activeDeliverTimeout) { clearTimeout(_activeDeliverTimeout); _activeDeliverTimeout = null; }
+    if (_activeRotateInterval) { clearInterval(_activeRotateInterval); _activeRotateInterval = null; }
     removeTypingIndicator();
     isProcessing = false;
     scrollThread();
   }
 
-  function addIncomingMessage(replyData, callback) {
+  function addIncomingMessage(replyData, callback, tools) {
     var text = typeof replyData === 'string' ? replyData : replyData.text;
     isProcessing = true;
     var thinkStart = Date.now();
-    showTypingIndicator({ name: 'Sprout', verb: activityVerbs[0], avatarType: 'sprout' });
+    showTypingIndicator({ name: 'Sprout', avatarType: 'sprout', tools: tools || [] });
 
-    // Rotate through activity verbs then deliver message
-    var step = 1;
-    _activeRotateInterval = setInterval(function() {
-      if (step < activityVerbs.length) {
-        updateTypingVerb(activityVerbs[step]);
-        step++;
-      } else {
-        clearInterval(_activeRotateInterval);
-        _activeRotateInterval = null;
-        // Short pause on final "is typing..." then show message
-        _activeDeliverTimeout = setTimeout(function() {
-          _activeDeliverTimeout = null;
-          var thinkSecs = Math.round((Date.now() - thinkStart) / 1000);
-          removeTypingIndicator();
+    // Hold the typing indicator briefly, then deliver via shared-element swap.
+    _activeDeliverTimeout = setTimeout(function() {
+      _activeDeliverTimeout = null;
+      var thinkSecs = Math.round((Date.now() - thinkStart) / 1000);
 
-          var group = document.createElement('div');
-          group.className = 'msg-group msg-incoming';
+      transitionTypingToMessage(function(group, senderInd, row) {
+        // — Reasoning indicator (replaces "Typing..." in sender-indicator) —
+        if (senderInd) {
+          var reasoning = createReasoningButton(thinkSecs);
+          senderInd.appendChild(reasoning);
+          enterTransition(reasoning);
+        }
 
-          var sender = document.createElement('div');
-          sender.className = 'msg-sender';
-          sender.textContent = 'Sprout';
+        // — Images (optional, before bubble row) —
+        if (typeof replyData === 'object' && replyData && replyData.images && replyData.images.length) {
+          var imgRow = createBubbleImages(replyData.images);
+          if (row) { group.insertBefore(imgRow, row); } else { group.appendChild(imgRow); }
+          enterTransition(imgRow);
+        }
 
-          // "Thought for Xs" collapsible row
-          var thoughtRow = createThoughtRow(thinkSecs, activityVerbs);
+        // — Bubble (replaces CTA in the row) —
+        var bubble = document.createElement('div');
+        bubble.className = 'msg-bubble msg-bubble-in';
+        if (typeof replyData === 'object' && replyData && replyData.mention) {
+          bubble.appendChild(createBubbleMention(replyData.mention));
+        }
+        var textDiv = document.createElement('div');
+        textDiv.textContent = text;
+        bubble.appendChild(textDiv);
+        if (row) {
+          // Wrap bubble in msg-col if one doesn't exist yet
+          var col = row.querySelector('.msg-col');
+          if (!col) {
+            col = document.createElement('div');
+            col.className = 'msg-col';
+            row.appendChild(col);
+          }
+          col.appendChild(bubble);
+        } else {
+          var newRow = document.createElement('div');
+          newRow.className = 'msg-row msg-incoming';
+          newRow.appendChild(createSproutAvatar());
+          var col = document.createElement('div');
+          col.className = 'msg-col';
+          col.appendChild(bubble);
+          newRow.appendChild(col);
+          group.appendChild(newRow);
+          row = newRow;
+        }
+        enterTransition(bubble);
 
-          var row = document.createElement('div');
-          row.className = 'msg-row msg-incoming';
-          var avatarEl = createSproutAvatar();
-          var bubble = document.createElement('div');
-          bubble.className = 'msg-bubble msg-bubble-in';
-          var textDiv = document.createElement('div');
-          textDiv.textContent = text;
-          bubble.appendChild(textDiv);
-          var ts = document.createElement('div');
-          ts.className = 'msg-time-inline';
-          ts.textContent = fmtTime();
-          bubble.appendChild(ts);
+        // — Planning Tree card (optional, below the bubble row) —
+        if (typeof replyData === 'object' && replyData && replyData.type === 'planning_tree') {
+          var planCard = createPlanningTree(replyData.planTitle || 'Plan', replyData.planSteps || []);
+          group.appendChild(planCard);
+          enterTransition(planCard);
+        }
 
-          row.appendChild(avatarEl);
-          row.appendChild(bubble);
+        // — Actions (new, below the row) —
+        var actions = createMsgActions(group);
+        group.appendChild(actions);
+        enterTransition(actions);
 
-          group.appendChild(sender);
-          group.appendChild(thoughtRow.toggle);
-          group.appendChild(row);
-          chatThread.appendChild(group);
+        setupSwipe(row, group);
+        setupLongPress(row, group);
 
-          setupSwipe(row, group);
-          setupLongPress(row, group);
-          group.appendChild(createMsgActions(group));
-
-          isProcessing = false;
-          scrollThread();
-          if (callback) callback();
-        }, 800);
-      }
-    }, 1200);
+        isProcessing = false;
+        if (callback) callback();
+      });
+    }, 2400);
   }
 
   /**
@@ -1469,41 +1745,41 @@
   }
 
   function openThoughtSheet(secs, steps) {
-    thoughtSheetLabel.textContent = 'Thinking...';
+    thoughtSheetLabel.textContent = 'Reasoning Transcript';
     thoughtSheetTime.textContent = secs + 's';
     thoughtSheetBody.innerHTML = '';
 
     for (var i = 0; i < steps.length; i++) {
       var s = steps[i];
       var stepEl = document.createElement('div');
-      stepEl.className = 'thought-step';
+      stepEl.className = 'reasoning-step';
 
       // Timeline: dot + dashed line (no line on last step)
       var timeline = document.createElement('div');
-      timeline.className = 'thought-step-timeline';
+      timeline.className = 'reasoning-step-timeline';
       var dot = document.createElement('div');
-      dot.className = 'thought-step-dot';
+      dot.className = 'reasoning-step-dot';
       timeline.appendChild(dot);
       if (i < steps.length - 1) {
         var line = document.createElement('div');
-        line.className = 'thought-step-line';
+        line.className = 'reasoning-step-line';
         timeline.appendChild(line);
       }
 
       var content = document.createElement('div');
-      content.className = 'thought-step-content';
+      content.className = 'reasoning-step-content';
       var title = document.createElement('div');
-      title.className = 'thought-step-title';
+      title.className = 'reasoning-step-title';
       title.textContent = s.title;
       var desc = document.createElement('div');
-      desc.className = 'thought-step-desc';
+      desc.className = 'reasoning-step-desc';
       desc.textContent = s.desc;
       content.appendChild(title);
       content.appendChild(desc);
 
       // Per-step timestamp
       var time = document.createElement('div');
-      time.className = 'thought-step-time';
+      time.className = 'reasoning-step-time';
       time.textContent = formatStepTime(secs, i, steps.length);
 
       stepEl.appendChild(timeline);
@@ -1519,10 +1795,107 @@
   function closeThoughtSheet() {
     thoughtSheetScrim.classList.remove('open');
     thoughtSheet.classList.remove('open');
+    // Reset any open reasoning chevrons in the thread
+    var openChevrons = document.querySelectorAll('.reasoning-indicator-chevron.open');
+    for (var i = 0; i < openChevrons.length; i++) openChevrons[i].classList.remove('open');
   }
 
   thoughtSheetScrim.addEventListener('click', closeThoughtSheet);
 
+  /**
+   * Build the Images row (Figma 20971:59353) — horizontal strip of 108×108 thumbnails
+   * placed above the bubble in an incoming message.
+   *   images: array of strings (URL), { src, alt }, or { color } objects
+   */
+  function createBubbleImages(images) {
+    var row = document.createElement('div');
+    row.className = 'msg-images';
+    images.forEach(function(img) {
+      var item = document.createElement('div');
+      item.className = 'media-img';
+      if (typeof img === 'string') {
+        var imgEl = document.createElement('img');
+        imgEl.src = img; imgEl.alt = '';
+        item.appendChild(imgEl);
+      } else if (img && img.src) {
+        var imgEl2 = document.createElement('img');
+        imgEl2.src = img.src; imgEl2.alt = img.alt || '';
+        item.appendChild(imgEl2);
+      } else if (img && img.color) {
+        item.style.background = img.color;
+      }
+      row.appendChild(item);
+    });
+    return row;
+  }
+
+  /**
+   * Build an in-bubble mention quote (Figma 20971:59481).
+   * Render at the top of any bubble (incoming or outgoing) to reference the message being replied to.
+   */
+  function createBubbleMention(quotedText) {
+    var mention = document.createElement('div');
+    mention.className = 'msg-bubble-mention';
+    var icon = document.createElement('div');
+    icon.className = 'msg-bubble-mention-icon';
+    icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>';
+    var textEl = document.createElement('div');
+    textEl.className = 'msg-bubble-mention-text';
+    textEl.textContent = quotedText;
+    mention.appendChild(icon);
+    mention.appendChild(textEl);
+    return mention;
+  }
+
+  // ── Planning Tree: uses shared component ──
+  // SVG icons + createPlanningTree() loaded from planning-tree.js
+
+  /**
+   * Build the Sender Indicator (Figma 20971:59301) — name + optional reasoning toggle.
+   *   createSenderIndicator('Sprout', { reasoning: true, secs: 4 })
+   *   createSenderIndicator('Randall')
+   * Returns { el, reasoningEl, chevronEl } so the caller can sync open state.
+   */
+  function createSenderIndicator(name, opts) {
+    opts = opts || {};
+    var el = document.createElement('div');
+    el.className = 'sender-indicator';
+
+    var nameEl = document.createElement('div');
+    nameEl.className = 'sender-indicator-name';
+    nameEl.textContent = name;
+    el.appendChild(nameEl);
+
+    if (!opts.reasoning) return { el: el };
+
+    var reasoning = document.createElement('button');
+    reasoning.className = 'reasoning-indicator';
+    reasoning.type = 'button';
+
+    var label = document.createElement('span');
+    label.className = 'reasoning-indicator-label';
+    label.textContent = 'Show thinking';
+
+    var chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chevron.setAttribute('viewBox', '0 0 16 16');
+    chevron.setAttribute('class', 'reasoning-indicator-chevron');
+    chevron.setAttribute('fill', 'none');
+    chevron.innerHTML = '<polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
+
+    reasoning.appendChild(label);
+    reasoning.appendChild(chevron);
+    el.appendChild(reasoning);
+
+    var capturedSecs = opts.secs || 0;
+    reasoning.addEventListener('click', function() {
+      chevron.classList.add('open');
+      openThoughtSheet(capturedSecs, thoughtStepDefs);
+    });
+
+    return { el: el, reasoningEl: reasoning, chevronEl: chevron };
+  }
+
+  // Legacy thought row — kept for backward compat with any older callers.
   function createThoughtRow(secs, verbs) {
     var toggle = document.createElement('div');
     toggle.className = 'msg-thought';
@@ -1558,12 +1931,10 @@
     var tools = toolActivities[idx] || toolActivities[toolActivities.length - 1];
 
     addIncomingMessage(data, function() {
-      if (tools && tools.length > 0) addToolUsage(tools);
       if (data.type === 'chips') addOptionChips(data.chips);
       if (data.type === 'artifact') addArtifactBlock();
-      if (data.type === 'action_btns') addActionButtons();
       if (data.type === 'confirm_card') addConfirmationCard();
-    });
+    }, tools);
   }
 
   /* ════════════════════════════════
@@ -1785,6 +2156,7 @@
   composerInput.addEventListener('focus', function() {
     if (!attachPanel.classList.contains('open')) {
       showKeyboard();
+      scrollThread();
     }
   });
 
@@ -1926,32 +2298,30 @@
     attachStrip.classList.add('visible');
     attachments.forEach(function(a, idx) {
       var thumb = document.createElement('div');
-      thumb.className = 'attach-thumb' + (a.type === 'photo' ? ' attach-thumb--image' : ' attach-thumb--file');
+      thumb.className = 'media-thumb' + (a.type === 'photo' ? ' media-thumb--image' : ' media-thumb--file');
 
       if (a.type === 'photo') {
         var img = document.createElement('div');
-        img.className = 'attach-thumb-img';
+        img.style.width = '100%'; img.style.height = '100%';
         img.style.background = a.color;
+        img.style.borderRadius = 'inherit';
         thumb.appendChild(img);
       } else {
-        var fileDiv = document.createElement('div');
-        fileDiv.className = 'attach-thumb-file';
         var topRow = document.createElement('div');
-        topRow.className = 'attach-thumb-file-top';
+        topRow.className = 'media-thumb-file-top';
         var label = document.createElement('span');
-        label.className = 'attach-thumb-file-label';
+        label.className = 'media-thumb-file-label';
         label.textContent = 'PDF';
         topRow.appendChild(label);
-        fileDiv.appendChild(topRow);
+        thumb.appendChild(topRow);
         var nameEl = document.createElement('div');
-        nameEl.className = 'attach-thumb-file-name';
+        nameEl.className = 'media-thumb-file-name';
         nameEl.textContent = a.name;
-        fileDiv.appendChild(nameEl);
-        thumb.appendChild(fileDiv);
+        thumb.appendChild(nameEl);
       }
 
       var xBtn = document.createElement('button');
-      xBtn.className = 'attach-thumb-x';
+      xBtn.className = 'media-thumb-x';
       xBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
       xBtn.addEventListener('click', function() {
         attachments.splice(idx, 1);
@@ -1973,19 +2343,18 @@
   /* ════════════════════════════════
      INSTANT MESSAGE HELPER (no typing animation)
      ════════════════════════════════ */
-  function addIncomingInstant(text) {
+  function addIncomingInstant(text, opts) {
+    opts = opts || {};
     var group = document.createElement('div');
     group.className = 'msg-group msg-incoming';
-    var sender = document.createElement('div');
-    sender.className = 'msg-sender';
-    sender.textContent = 'Sprout';
     var fakeSecs = Math.floor(Math.random() * 5) + 3;
-    var thoughtRow = createThoughtRow(fakeSecs, activityVerbs);
+    var senderInd = createSenderIndicator('Sprout', { reasoning: true, secs: fakeSecs });
     var row = document.createElement('div');
     row.className = 'msg-row msg-incoming';
     var avatarEl = createSproutAvatar();
     var bubble = document.createElement('div');
     bubble.className = 'msg-bubble msg-bubble-in';
+    if (opts.mention) bubble.appendChild(createBubbleMention(opts.mention));
     var textSpan = document.createElement('div');
     textSpan.textContent = text;
     bubble.appendChild(textSpan);
@@ -1993,10 +2362,14 @@
     ts.className = 'msg-time-inline';
     ts.textContent = fmtTime();
     bubble.appendChild(ts);
+    var col = document.createElement('div');
+    col.className = 'msg-col';
+    col.appendChild(bubble);
+
     row.appendChild(avatarEl);
-    row.appendChild(bubble);
-    group.appendChild(sender);
-    group.appendChild(thoughtRow.toggle);
+    row.appendChild(col);
+    group.appendChild(senderInd.el);
+    if (opts.images && opts.images.length) group.appendChild(createBubbleImages(opts.images));
     group.appendChild(row);
     group.appendChild(createMsgActions(group));
     chatThread.appendChild(group);
@@ -2012,6 +2385,8 @@
   function resetChat() {
     // Stop any in-progress state
     isProcessing = false;
+    if (_activeRotateInterval) { clearInterval(_activeRotateInterval); _activeRotateInterval = null; }
+    if (_activeDeliverTimeout) { clearTimeout(_activeDeliverTimeout); _activeDeliverTimeout = null; }
     if (listening) cancelVoice();
     activeReply = null;
     replyBar.classList.remove('visible');
@@ -2026,6 +2401,8 @@
     hideKeyboard();
     deleteBanner.classList.remove('show');
     artifactSheetScrim.classList.remove('open'); artifactSheet.classList.remove('open');
+    scopeSheetScrim.classList.remove('open'); scopeSheet.classList.remove('open');
+    connectorMoreScrim.classList.remove('open'); connectorMoreSheet.classList.remove('open');
     composerInput.innerHTML = '';
     btnMic.setAttribute('data-mode', 'mic');
     replyIdx = 0;
@@ -2045,9 +2422,12 @@
 
     addOutgoingInstant("Nice job Emma! Can we add a reminder for Noah about the bed?");
 
-    addIncomingInstant("Done! I've scheduled a gentle nudge for Noah at 7:15 am each morning. He'll get a fun notification with his character cheering him on.");
+    // Sprout reply that mentions the parent's previous message
+    addIncomingInstant("Done! I've scheduled a gentle nudge for Noah at 7:15 am each morning. He'll get a fun notification with his character cheering him on.", {
+      mention: 'Can we add a reminder for Noah about the bed?'
+    });
 
-    addCoparentInstant("I told Noah he can earn extra stars if he does the full routine. That ok?", "Ze'ev Rosenstein", "ZR", "#7C3AED");
+    addCoparentInstant("I told Noah he can earn extra stars if he does the full routine. That ok?", "Randall", "R", "#7C3AED");
 
     addOutgoingInstant("Love that idea. @Sprout can you set up bonus stars for completing all 3 morning tasks?");
 
@@ -2057,9 +2437,17 @@
 
     addSystemMessage('Tue 8:30 am');
 
-    addIncomingInstant("Update: Noah made his bed today! First time this week. He's 1 day into a new streak.");
+    // Sprout reply with photo evidence of the bed-making streak
+    addIncomingInstant("Update: Noah made his bed today! First time this week. He's 1 day into a new streak.", {
+      images: [
+        { color: '#fbbf24' },
+        { color: '#34d399' },
+        { color: '#60a5fa' },
+        { color: '#a78bfa' }
+      ]
+    });
 
-    addCoparentInstant("The bonus stars are working!", "Ze'ev Rosenstein", "ZR", "#7C3AED");
+    addCoparentInstant("The bonus stars are working!", "Randall", "R", "#7C3AED");
 
     addOutgoingInstant("Amazing! Let's keep it going");
 
@@ -2069,11 +2457,19 @@
 
     addIncomingInstant("Created! 'Piano Practice' quest: 15 min/day, 5 days a week. Emma will see it in her habit list now.");
 
+    // Co-parent share with photos
+    addCoparentInstant("Look! Emma practicing already 🎹", "Randall", "R", "#7C3AED", {
+      images: [
+        { color: '#a78bfa' },
+        { color: '#f87171' }
+      ]
+    });
+
     addSystemMessage('Today at ' + fmtTime());
 
     // Then continue with the live animated part
     setTimeout(function() {
-      addCoparentMessage("Did you see Emma's reading streak? 5 days in a row!", "Ze'ev Rosenstein", "ZR", "#7C3AED");
+      addCoparentMessage("Did you see Emma's reading streak? 5 days in a row!", "Randall", "R", "#7C3AED");
       setTimeout(function() {
         addOutgoingMessage("Yes!! She's so proud of herself");
         setTimeout(function() {
@@ -2103,15 +2499,14 @@
     return group;
   }
 
-  function addCoparentInstant(text, name, initials, color) {
-    name = name || "Ze'ev Rosenstein";
-    initials = initials || 'ZR';
+  function addCoparentInstant(text, name, initials, color, opts) {
+    name = name || "Randall";
+    initials = initials || 'R';
     color = color || '#7C3AED';
+    opts = opts || {};
     var group = document.createElement('div');
     group.className = 'msg-group msg-incoming';
-    var sender = document.createElement('div');
-    sender.className = 'msg-sender';
-    sender.textContent = name;
+    var senderInd = createSenderIndicator(name);
     var row = document.createElement('div');
     row.className = 'msg-row msg-incoming';
     var avatarEl = createUserAvatar('avatar-bg-violet', COPARENT_STATE);
@@ -2119,11 +2514,15 @@
     col.className = 'msg-col';
     var bubble = document.createElement('div');
     bubble.className = 'msg-bubble msg-bubble-coparent';
-    bubble.textContent = text;
+    if (opts.mention) bubble.appendChild(createBubbleMention(opts.mention));
+    var textDiv = document.createElement('div');
+    textDiv.textContent = text;
+    bubble.appendChild(textDiv);
     col.appendChild(bubble);
     row.appendChild(avatarEl);
     row.appendChild(col);
-    group.appendChild(sender);
+    group.appendChild(senderInd.el);
+    if (opts.images && opts.images.length) group.appendChild(createBubbleImages(opts.images));
     group.appendChild(row);
     chatThread.appendChild(group);
     setupSwipe(row, group);
@@ -2173,10 +2572,12 @@
     addOptionChips(aiReplies[1].chips);
   }
 
-  function demoActionButtons() {
+  function demoButtonStack() {
     addSystemMessage('Today at ' + fmtTime());
-    addIncomingInstant(aiReplies[3].text);
-    addActionButtons();
+    addOutgoingInstant('Did Noah finish his habits today?');
+    var group = addIncomingInstant("Noah completed 2 pending habits: brushing teeth and reading. Would you like to approve them?");
+    createButtonStack('Approve', 'Reject', group);
+    scrollThread();
   }
 
   function demoConfirmationCard() {
@@ -2225,8 +2626,7 @@
 
   function demoToolUsage() {
     addSystemMessage('Today at ' + fmtTime());
-    addIncomingInstant(aiReplies[5].text);
-    addToolUsage(toolActivities[1]);
+    addIncomingMessage(aiReplies[5], null, toolActivities[1]);
   }
 
   function demoCopy() {
@@ -2264,6 +2664,1046 @@
     }
   }
 
+  function demoTypingIndicator() {
+    addSystemMessage('Today at ' + fmtTime());
+    addOutgoingMessage('How is Emma doing today?');
+    // Show Sprout's typing indicator without ever delivering, so it stays visible
+    // for inspection. After a beat, also surface the co-parent variant.
+    isProcessing = true;
+    showTypingIndicator({ name: 'Sprout', avatarType: 'sprout' });
+    setTimeout(function() {
+      addCoparentMessage('Let me jump in here too.', 'Randall', 'R', '#7C3AED');
+    }, 3500);
+  }
+
+  function demoPlanningTree() {
+    addSystemMessage('Today at ' + fmtTime());
+    addOutgoingInstant('Can you set up a morning routine for Noah?');
+
+    // Show the message + planning tree instantly for inspection
+    var group = addIncomingInstant("Here's my plan for Noah's morning routine. I'll work through each step:");
+    var planCard = createPlanningTree('Set up morning routine', [
+      { title: 'Check existing habits', status: 'done' },
+      { title: 'Review family schedule', status: 'done' },
+      { title: 'Draft routine sequence', status: 'revised', desc: 'Adjusted order based on school start time' },
+      { title: 'Set up reminders', status: 'active' },
+      { title: 'Create reward milestones', status: 'pending' }
+    ]);
+    // Insert before the actions row (last child)
+    var actions = group.querySelector('.msg-actions');
+    if (actions) {
+      group.insertBefore(planCard, actions);
+    } else {
+      group.appendChild(planCard);
+    }
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     CONNECTORS / OAUTH HELPERS
+     ════════════════════════════════ */
+
+  // SVG icons for services
+  var ICON_GCAL = '<img src="/product-explorer/assets/icon-gcal.png" alt="Google Calendar">';
+  var ICON_GMAIL = '<img src="/product-explorer/assets/icon-gmail.png" alt="Gmail">';
+  var ICON_SLACK = '<img src="/product-explorer/assets/icon-slack.png" alt="Slack">';
+  var ICON_GRID = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg>';
+  var ICON_DOTS = '<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.5" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/></svg>';
+
+  var STATUS_COLORS = {
+    'Connected': 'var(--green-500,#17b26a)',
+    'Paused': 'var(--yellow-600,#ca8504)',
+    'Expired': 'var(--red-500,#f04438)',
+    'Token expired': 'var(--red-500,#f04438)',
+    'Redirecting...': 'var(--text-quaternary,#717680)',
+    'Limited access': 'var(--yellow-600,#ca8504)',
+    'Connection failed': 'var(--red-500,#f04438)'
+  };
+
+  function createConnectorList(services) {
+    var card = document.createElement('div');
+    card.className = 'card-list';
+
+    var header = document.createElement('div');
+    header.className = 'card-list-header';
+    header.innerHTML = ICON_GRID + '<span>Connectors</span>';
+    card.appendChild(header);
+
+    services.forEach(function(svc) {
+      var row = document.createElement('div');
+      row.className = 'card-row';
+
+      var icon = document.createElement('div');
+      icon.className = 'card-icon' + (svc.iconInset ? ' card-icon-inset' : '');
+      icon.innerHTML = svc.iconSvg;
+      row.appendChild(icon);
+
+      var body = document.createElement('div');
+      body.className = 'card-body';
+      var name = document.createElement('div');
+      name.className = 'card-label';
+      name.textContent = svc.name;
+      var status = document.createElement('div');
+      status.className = 'card-desc';
+      status.textContent = svc.status;
+      status.style.color = STATUS_COLORS[svc.status] || 'var(--text-quaternary)';
+      body.appendChild(name);
+      body.appendChild(status);
+      row.appendChild(body);
+
+      var btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.textContent = svc.btnLabel;
+      if (svc.onBtnClick) btn.addEventListener('click', function() { svc.onBtnClick(row); });
+      row.appendChild(btn);
+
+      if (svc.showOverflow) {
+        var dots = document.createElement('button');
+        dots.className = 'card-overflow';
+        dots.innerHTML = ICON_DOTS;
+        dots.addEventListener('click', openConnectorMore);
+        row.appendChild(dots);
+      }
+
+      card.appendChild(row);
+    });
+
+    return card;
+  }
+
+  function createConnectorCard(opts) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.setAttribute('data-state', opts.state || '');
+
+    var icon = document.createElement('div');
+    icon.className = 'card-icon' + (opts.iconInset ? ' card-icon-inset' : '');
+    icon.innerHTML = opts.iconSvg || ICON_GMAIL;
+    card.appendChild(icon);
+
+    var body = document.createElement('div');
+    body.className = 'card-body';
+    var name = document.createElement('div');
+    name.className = 'card-label';
+    name.textContent = opts.name;
+    var status = document.createElement('div');
+    status.className = 'card-desc';
+    status.textContent = opts.status;
+    body.appendChild(name);
+    body.appendChild(status);
+    card.appendChild(body);
+
+    if (opts.state === 'loading') {
+      var spinner = document.createElement('div');
+      spinner.className = 'btn-spinner';
+      card.appendChild(spinner);
+    } else {
+      var btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.textContent = opts.btnLabel || 'Connect';
+      if (opts.onBtnClick) btn.addEventListener('click', function() { opts.onBtnClick(card); });
+      card.appendChild(btn);
+
+      if (opts.showOverflow) {
+        var dots = document.createElement('button');
+        dots.className = 'card-overflow';
+        dots.innerHTML = ICON_DOTS;
+        dots.addEventListener('click', openConnectorMore);
+        card.appendChild(dots);
+      }
+    }
+
+    return card;
+  }
+
+  function updateConnectorCardState(cardEl, state, statusText, btnLabel, onBtnClick) {
+    var statusEl = cardEl.querySelector('.card-desc');
+    statusEl.textContent = statusText;
+    cardEl.setAttribute('data-state', state);
+
+    // Remove old trailing elements (btn, spinner, overflow) after body
+    var body = cardEl.querySelector('.card-body');
+    while (body.nextSibling) cardEl.removeChild(body.nextSibling);
+
+    if (state === 'loading') {
+      var spinner = document.createElement('div');
+      spinner.className = 'btn-spinner';
+      cardEl.appendChild(spinner);
+    } else {
+      var btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.textContent = btnLabel || 'Configure';
+      if (onBtnClick) btn.addEventListener('click', function() { onBtnClick(cardEl); });
+      cardEl.appendChild(btn);
+
+      if (btnLabel === 'Configure') {
+        var dots = document.createElement('button');
+        dots.className = 'card-overflow';
+        dots.innerHTML = ICON_DOTS;
+        dots.addEventListener('click', openConnectorMore);
+        cardEl.appendChild(dots);
+      }
+    }
+  }
+
+  /**
+   * Insert a card into a message group so it sits inside the msg-row column,
+   * directly below the bubble (matching Figma layout: avatar | [sender, bubble, card]).
+   * Wraps the bubble + card in a flex column if not already wrapped.
+   */
+  function insertCardInMessage(group, cardEl) {
+    var row = group.querySelector('.msg-row');
+    if (!row) return;
+    var bubble = row.querySelector('.msg-bubble');
+    if (!bubble) return;
+
+    // Check if bubble is already wrapped in a msg-col
+    var col = bubble.parentElement;
+    if (!col.classList.contains('msg-col')) {
+      // Wrap: create column, move sender indicator + bubble into it
+      col = document.createElement('div');
+      col.className = 'msg-col';
+      col.style.cssText = 'display:flex;flex-direction:column;gap:var(--spacing-md,8px);min-width:0;flex:1';
+      // Move sender indicator into column if it exists in the row
+      var sender = row.querySelector('.sender-indicator');
+      if (sender) col.appendChild(sender);
+      row.insertBefore(col, bubble);
+      col.appendChild(bubble);
+    }
+
+    col.appendChild(cardEl);
+  }
+
+  // Scope sheet callbacks
+  var _scopeSaveCb = null;
+
+  function openScopeSheet(serviceName, scopes, onSave) {
+    scopeSheetTitle.textContent = serviceName;
+    scopeSheetBody.innerHTML = '';
+    _scopeSaveCb = onSave || null;
+
+    // Master "All tools" toggle
+    var masterRow = document.createElement('div');
+    masterRow.className = 'scope-row scope-row-master';
+    var masterText = document.createElement('div');
+    masterText.className = 'scope-row-text';
+    var masterName = document.createElement('div');
+    masterName.className = 'scope-row-name';
+    masterName.textContent = 'All tools';
+    masterText.appendChild(masterName);
+    masterRow.appendChild(masterText);
+
+    var masterToggle = document.createElement('label');
+    masterToggle.className = 'scope-toggle';
+    var masterInput = document.createElement('input');
+    masterInput.type = 'checkbox';
+    masterInput.checked = true;
+    var masterSlider = document.createElement('span');
+    masterSlider.className = 'scope-slider';
+    masterToggle.appendChild(masterInput);
+    masterToggle.appendChild(masterSlider);
+    masterRow.appendChild(masterToggle);
+    scopeSheetBody.appendChild(masterRow);
+
+    var inputs = [];
+    scopes.forEach(function(scope) {
+      var row = document.createElement('div');
+      row.className = 'scope-row';
+      var text = document.createElement('div');
+      text.className = 'scope-row-text';
+      var n = document.createElement('div');
+      n.className = 'scope-row-name';
+      n.textContent = scope.name;
+      text.appendChild(n);
+      if (scope.desc) {
+        var d = document.createElement('div');
+        d.className = 'scope-row-desc';
+        d.innerHTML = scope.desc.replace(/\n/g, '<br>');
+        text.appendChild(d);
+      }
+      row.appendChild(text);
+
+      var toggle = document.createElement('label');
+      toggle.className = 'scope-toggle';
+      var inp = document.createElement('input');
+      inp.type = 'checkbox';
+      inp.checked = scope.enabled !== false;
+      var slider = document.createElement('span');
+      slider.className = 'scope-slider';
+      toggle.appendChild(inp);
+      toggle.appendChild(slider);
+      row.appendChild(toggle);
+      scopeSheetBody.appendChild(row);
+      inputs.push(inp);
+
+      inp.addEventListener('change', function() {
+        masterInput.checked = inputs.every(function(i) { return i.checked; });
+      });
+    });
+
+    masterInput.addEventListener('change', function() {
+      inputs.forEach(function(i) { i.checked = masterInput.checked; });
+    });
+
+    scopeSheetScrim.classList.add('open');
+    scopeSheet.classList.add('open');
+  }
+
+  function closeScopeSheet() {
+    scopeSheetScrim.classList.remove('open');
+    scopeSheet.classList.remove('open');
+    scopeSheet.classList.remove('authorizing');
+  }
+
+  var scopeSheetClose = document.getElementById('scopeSheetClose');
+
+  scopeSheetBack.addEventListener('click', function() {
+    closeScopeSheet();
+    if (_authTimer) { clearTimeout(_authTimer); _authTimer = null; }
+    if (_authCancelCb) { _authCancelCb(); }
+  });
+  scopeSheetClose.addEventListener('click', function() {
+    closeScopeSheet();
+    scopeSheet.classList.remove('authorizing');
+    // Cancel any pending auth flow and restore button state
+    if (_authTimer) { clearTimeout(_authTimer); _authTimer = null; }
+    if (_authCancelCb) { _authCancelCb(); }
+  });
+  scopeSheetScrim.addEventListener('click', function() {
+    closeScopeSheet();
+    if (_authTimer) { clearTimeout(_authTimer); _authTimer = null; }
+    if (_authCancelCb) { _authCancelCb(); }
+  });
+  scopeSaveBtn.addEventListener('click', function() {
+    closeScopeSheet();
+    if (_scopeSaveCb) { _scopeSaveCb(); _scopeSaveCb = null; }
+  });
+
+  // Connector more menu
+  function openConnectorMore() {
+    connectorMoreScrim.classList.add('open');
+    connectorMoreSheet.classList.add('open');
+  }
+  function closeConnectorMore() {
+    connectorMoreScrim.classList.remove('open');
+    connectorMoreSheet.classList.remove('open');
+  }
+  connectorMoreScrim.addEventListener('click', closeConnectorMore);
+  document.getElementById('connMoreDetails').addEventListener('click', closeConnectorMore);
+  document.getElementById('connMoreDisconnect').addEventListener('click', closeConnectorMore);
+  document.getElementById('connMoreDelete').addEventListener('click', closeConnectorMore);
+
+  // Skill sheet
+  var skillSheet = document.getElementById('skillSheet');
+  var skillSheetScrim = document.getElementById('skillSheetScrim');
+  var skillSheetTitle = document.getElementById('skillSheetTitle');
+  var skillSheetSubtitle = document.getElementById('skillSheetSubtitle');
+  var skillSheetBody = document.getElementById('skillSheetBody');
+  var skillSheetBack = document.getElementById('skillSheetBack');
+
+  function openSkillSheet(title, subtitle, bodyHTML) {
+    skillSheetTitle.textContent = title;
+    skillSheetSubtitle.textContent = subtitle || 'Last updated today';
+    skillSheetBody.innerHTML = bodyHTML || '';
+    skillSheetScrim.classList.add('open');
+    skillSheet.classList.add('open');
+  }
+  function closeSkillSheet() {
+    skillSheetScrim.classList.remove('open');
+    skillSheet.classList.remove('open');
+  }
+  skillSheetBack.addEventListener('click', closeSkillSheet);
+  skillSheetScrim.addEventListener('click', closeSkillSheet);
+
+  // Skill more menu (Rename + Delete)
+  var skillMoreSheet = document.getElementById('skillMoreSheet');
+  var skillMoreScrim = document.getElementById('skillMoreScrim');
+
+  function openSkillMore() {
+    skillMoreScrim.classList.add('open');
+    skillMoreSheet.classList.add('open');
+  }
+  function closeSkillMore() {
+    skillMoreScrim.classList.remove('open');
+    skillMoreSheet.classList.remove('open');
+  }
+  skillMoreScrim.addEventListener('click', closeSkillMore);
+  document.getElementById('skillMoreRename').addEventListener('click', closeSkillMore);
+  document.getElementById('skillMoreDelete').addEventListener('click', closeSkillMore);
+
+  /* ════════════════════════════════
+     CONNECT OAUTH FLOW
+     ════════════════════════════════ */
+
+  var GCAL_SCOPES = [
+    { name: 'Creates a calendar event.', desc: 'Use this tool for queries like: \nCreate an event on my calendar for tomo...', enabled: true },
+    { name: 'Deletes a calendar event', desc: 'Use this tool for queries like: \nDelete the meeting with Pam...', enabled: true },
+    { name: 'Returns a single event on the specified calendar', desc: 'Use this tool for queries like: \nAt what time do I have the meeting with Pam...', enabled: true },
+    { name: 'Returns the calendars on the user\'s calendar list', desc: 'Use this tool for queries like: \nWhat meetings do I have today?', enabled: true },
+    { name: 'Lists calendar events in a given calendar', desc: 'Use this tool for queries like: \nWhat events are on the shared calendar?', enabled: true },
+    { name: 'Responds to an event', desc: 'Use this tool for queries like:\nWho is going to the meeting...', enabled: true },
+    { name: 'Suggest time periods across one or more calendars', desc: 'Suggest time periods across one or more calendars', enabled: true },
+    { name: 'Updates on a calendar event', desc: 'Use this tool for queries like: \nWhat time is the meeting...', enabled: true }
+  ];
+
+  /**
+   * OAuth flow: open empty sheet 5s, then spinner, then Configure.
+   * Works on both card and card-row elements.
+   */
+  var _authTimer = null;
+  var _authCancelCb = null;
+
+  function doConnectFlow(el) {
+    // 1. Open empty "Authorizing..." sheet
+    scopeSheetTitle.textContent = 'Authorizing...';
+    scopeSheetBody.innerHTML = '';
+    scopeSheet.classList.add('authorizing');
+    scopeSheetScrim.classList.add('open');
+    scopeSheet.classList.add('open');
+
+    // Show spinner in button immediately
+    var btn = el.querySelector('.btn');
+    var statusEl = el.querySelector('.card-desc');
+    var origBtnText = btn ? btn.textContent : '';
+    var origBtnWidth = btn ? btn.style.width : '';
+    var origStatusText = statusEl ? statusEl.textContent : '';
+    var origStatusColor = statusEl ? statusEl.style.color : '';
+
+    // Register cancel callback to restore button state
+    _authCancelCb = function() {
+      if (btn) {
+        btn.textContent = origBtnText;
+        btn.style.width = origBtnWidth;
+        btn.disabled = false;
+      }
+      if (statusEl) {
+        statusEl.textContent = origStatusText;
+        statusEl.style.color = origStatusColor;
+      }
+      _authCancelCb = null;
+    };
+
+    if (btn) {
+      btn.textContent = '';
+      btn.style.width = '68px';
+      btn.disabled = true;
+      var spinner = document.createElement('div');
+      spinner.className = 'btn-spinner';
+      btn.appendChild(spinner);
+    }
+    if (statusEl) {
+      statusEl.textContent = 'Redirecting...';
+      statusEl.style.color = STATUS_COLORS['Redirecting...'];
+    }
+
+    // 2. After 5s, transition authorizing sheet to permissions sheet
+    _authTimer = setTimeout(function() {
+      _authTimer = null;
+      _authCancelCb = null; // Auth succeeded, no need to restore
+      scopeSheet.classList.remove('authorizing');
+
+      // Populate scope sheet with permissions
+      openScopeSheet('Google Calendar', GCAL_SCOPES, function onSave() {
+        // On save: update card to Connected + Configure
+        if (btn) { btn.remove(); }
+        if (statusEl) {
+          statusEl.textContent = 'Connected';
+          statusEl.style.color = STATUS_COLORS['Connected'];
+        }
+
+        var cfgBtn = document.createElement('button');
+        cfgBtn.className = 'btn';
+        cfgBtn.textContent = 'Configure';
+        cfgBtn.addEventListener('click', function() { openScopeSheet('Google Calendar', GCAL_SCOPES); });
+        el.appendChild(cfgBtn);
+
+        var newDots = document.createElement('button');
+        newDots.className = 'card-overflow';
+        newDots.innerHTML = ICON_DOTS;
+        newDots.addEventListener('click', openConnectorMore);
+        el.appendChild(newDots);
+
+        scrollThread();
+      });
+    }, 5000);
+  }
+
+  /* ════════════════════════════════
+     CONNECTORS DEMO
+     ════════════════════════════════ */
+
+  function demoConnectors() {
+    addSystemMessage('Today at ' + fmtTime());
+
+    // 1. User asks about connections
+    addOutgoingInstant('Show me my connected services');
+
+    // 2. Sprout replies with connector list
+    var listGroup = addIncomingInstant('Here are your current connections:');
+    var listCard = createConnectorList([
+      { iconSvg: ICON_GCAL, name: 'Google Calendar', status: 'Connected', btnLabel: 'Configure', showOverflow: true, onBtnClick: function() { openScopeSheet('Google Calendar', GCAL_SCOPES); } },
+      { iconSvg: ICON_GMAIL, name: 'Gmail', status: 'Paused', btnLabel: 'Connect', showOverflow: false, onBtnClick: doConnectFlow, iconInset: true },
+      { iconSvg: ICON_SLACK, name: 'Slack', status: 'Expired', btnLabel: 'Connect', showOverflow: false, onBtnClick: doConnectFlow }
+    ]);
+    insertCardInMessage(listGroup, listCard);
+
+    // 3. User asks to connect Gmail
+    addOutgoingInstant('Connect my Gmail');
+
+    // 4. Sprout shows connector card
+    var redirectGroup = addIncomingInstant('Sure! Here is the Gmail connector.');
+    var redirectCard = createConnectorCard({
+      iconSvg: ICON_GMAIL, name: 'Google calendar', status: 'Manage your schedule', state: 'initial', btnLabel: 'Connect', showOverflow: false, onBtnClick: doConnectFlow, iconInset: true
+    });
+    insertCardInMessage(redirectGroup, redirectCard);
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     SAVED SKILL DEMO
+     ════════════════════════════════ */
+  function demoSavedSkill() {
+    addSystemMessage('Today at ' + fmtTime());
+
+    // 1. Parent asks to create a skill
+    addOutgoingInstant('Create a bedtime routine reminder for Noah at 8:30 PM');
+
+    // 2. Sprout confirms
+    var confirmGroup = addIncomingInstant('Done! I\'ve set up a bedtime routine skill for Noah. It will remind him every night at 8:30 PM to start winding down.');
+
+    // 3. Show the saved skill card with badge + overflow dots
+    var skillCard = document.createElement('div');
+    skillCard.className = 'card';
+
+    var icon = document.createElement('div');
+    icon.className = 'card-icon card-icon-tinted';
+    icon.textContent = '\uD83C\uDF19'; // crescent moon
+    skillCard.appendChild(icon);
+
+    var body = document.createElement('div');
+    body.className = 'card-body';
+    var label = document.createElement('div');
+    label.className = 'card-label';
+    label.textContent = 'Bedtime routine';
+    var desc = document.createElement('div');
+    desc.className = 'card-desc';
+    desc.textContent = '5 rules \u00B7 just now';
+    body.appendChild(label);
+    body.appendChild(desc);
+    skillCard.appendChild(body);
+
+    var badge = document.createElement('span');
+    badge.className = 'card-badge badge-success';
+    badge.textContent = 'Active';
+    skillCard.appendChild(badge);
+
+    var dots = document.createElement('button');
+    dots.className = 'card-overflow';
+    dots.innerHTML = ICON_DOTS;
+    dots.addEventListener('click', function(e) { e.stopPropagation(); openSkillMore(); });
+    skillCard.appendChild(dots);
+
+    // Tapping the card body opens the skill sheet
+    skillCard.style.cursor = 'pointer';
+    skillCard.addEventListener('click', function() {
+      openSkillSheet('Bedtime routine', 'Last updated just now',
+        '<p>Noah\'s bedtime routine skill. Sprout reminds him every night to start winding down and checks off each step as he goes.</p>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Type</div><div class="skill-sheet-field-value">Routine</div></div>' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Weeknight</div><div class="skill-sheet-field-value">8:30 PM</div></div>' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Weekend</div><div class="skill-sheet-field-value">9:30 PM</div></div>' +
+        '</div>' +
+        '<ul><li>Brush teeth for 2 minutes</li><li>Put on pajamas</li><li>Pick one book to read</li><li>Lights out</li><li>No screens after 8 PM</li></ul>'
+      );
+    });
+
+    insertCardInMessage(confirmGroup, skillCard);
+
+    // 4. Parent asks about active skills
+    addOutgoingInstant('What skills are active for Noah?');
+
+    // 5. Sprout shows a skill list
+    var listGroup = addIncomingInstant('Noah has 3 active skills:');
+    var list = document.createElement('div');
+    list.className = 'card-list';
+
+    var listHeader = document.createElement('div');
+    listHeader.className = 'card-list-header';
+    listHeader.innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span>Skills</span>';
+    list.appendChild(listHeader);
+
+    var skills = [
+      { emoji: '\uD83C\uDF19', name: 'Bedtime routine', meta: '5 rules \u00B7 just now', status: 'Active', statusClass: 'badge-success' },
+      { emoji: '\uD83D\uDCDA', name: 'Reading tracker', meta: '3 rules \u00B7 2h ago', status: 'Active', statusClass: 'badge-success' },
+      { emoji: '\uD83C\uDFB9', name: 'Piano practice', meta: '2 rules \u00B7 1d ago', status: 'Paused', statusClass: 'badge-neutral' }
+    ];
+
+    var skillSheetContent = {
+      '\uD83C\uDF19': { title: 'Bedtime routine', subtitle: 'Last updated just now', body: '<p>Noah\'s bedtime routine skill. Sprout reminds him every night to start winding down.</p><div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"><div class="skill-sheet-field"><div class="skill-sheet-field-label">Type</div><div class="skill-sheet-field-value">Routine</div></div><div class="skill-sheet-field"><div class="skill-sheet-field-label">Weeknight</div><div class="skill-sheet-field-value">8:30 PM</div></div><div class="skill-sheet-field"><div class="skill-sheet-field-label">Weekend</div><div class="skill-sheet-field-value">9:30 PM</div></div></div><ul><li>Brush teeth for 2 minutes</li><li>Put on pajamas</li><li>Pick one book to read</li><li>Lights out</li><li>No screens after 8 PM</li></ul>' },
+      '\uD83D\uDCDA': { title: 'Reading tracker', subtitle: 'Last updated 2h ago', body: '<p>Tracks Noah\'s daily reading progress and logs minutes read.</p><div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"><div class="skill-sheet-field"><div class="skill-sheet-field-label">Type</div><div class="skill-sheet-field-value">Tracker</div></div><div class="skill-sheet-field"><div class="skill-sheet-field-label">Goal</div><div class="skill-sheet-field-value">20 min/day</div></div></div><ul><li>Log reading time after each session</li><li>Track book titles and pages</li><li>Weekly summary on Sundays</li></ul>' },
+      '\uD83C\uDFB9': { title: 'Piano practice', subtitle: 'Last updated 1d ago', body: '<p>Reminds Noah to practice piano and tracks session length.</p><div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"><div class="skill-sheet-field"><div class="skill-sheet-field-label">Type</div><div class="skill-sheet-field-value">Practice</div></div><div class="skill-sheet-field"><div class="skill-sheet-field-label">Schedule</div><div class="skill-sheet-field-value">Mon, Wed, Fri</div></div></div><ul><li>15 minutes minimum per session</li><li>Practice assigned piece first</li></ul>' }
+    };
+
+    skills.forEach(function(s) {
+      var row = document.createElement('div');
+      row.className = 'card-row';
+      row.style.cursor = 'pointer';
+
+      var rIcon = document.createElement('div');
+      rIcon.className = 'card-icon card-icon-tinted';
+      rIcon.textContent = s.emoji;
+      row.appendChild(rIcon);
+
+      var rBody = document.createElement('div');
+      rBody.className = 'card-body';
+      var rLabel = document.createElement('div');
+      rLabel.className = 'card-label';
+      rLabel.textContent = s.name;
+      var rDesc = document.createElement('div');
+      rDesc.className = 'card-desc';
+      rDesc.textContent = s.meta;
+      rBody.appendChild(rLabel);
+      rBody.appendChild(rDesc);
+      row.appendChild(rBody);
+
+      var rBadge = document.createElement('span');
+      rBadge.className = 'card-badge ' + s.statusClass;
+      rBadge.textContent = s.status;
+      row.appendChild(rBadge);
+
+      var rDots = document.createElement('button');
+      rDots.className = 'card-overflow';
+      rDots.innerHTML = ICON_DOTS;
+      rDots.addEventListener('click', function(e) { e.stopPropagation(); openSkillMore(); });
+      row.appendChild(rDots);
+
+      // Tap row to open skill sheet
+      var content = skillSheetContent[s.emoji];
+      row.addEventListener('click', function() {
+        openSkillSheet(content.title, content.subtitle, content.body);
+      });
+
+      list.appendChild(row);
+    });
+
+    insertCardInMessage(listGroup, list);
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     GRADUATION CARD DEMO
+     ════════════════════════════════ */
+  function demoGraduationCard() {
+    addSystemMessage('Today at ' + fmtTime());
+
+    // 1. Sprout celebrates a milestone
+    var group = addIncomingInstant('Big news! Noah just finished his first chapter book all by himself.');
+
+    var card = document.createElement('div');
+    card.className = 'card';
+
+    var icon = document.createElement('div');
+    icon.className = 'card-icon card-icon-tinted';
+    icon.style.background = 'var(--green-100, #dcfce7)';
+    icon.textContent = '\uD83C\uDF93'; // graduation cap
+    card.appendChild(icon);
+
+    var body = document.createElement('div');
+    body.className = 'card-body';
+    var label = document.createElement('div');
+    label.className = 'card-label';
+    label.textContent = 'First chapter book';
+    var desc = document.createElement('div');
+    desc.className = 'card-desc';
+    desc.textContent = 'Charlotte\'s Web, cover to cover';
+    body.appendChild(label);
+    body.appendChild(desc);
+    card.appendChild(body);
+
+    insertCardInMessage(group, card);
+
+    // 2. Parent responds
+    addOutgoingInstant('That\'s amazing! We should celebrate');
+
+    // 3. Sprout suggests
+    var suggestGroup = addIncomingInstant('He\'s been working on it for 3 weeks. Want me to create a certificate he can print?');
+    createButtonStack('Create certificate', 'Maybe later', suggestGroup);
+
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     COMMUNICATION CARD DEMO
+     ════════════════════════════════ */
+  var ICON_MAIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg>';
+  var ICON_EXPAND = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>';
+
+  function createCommCard(opts) {
+    var card = document.createElement('div');
+    card.className = 'comm-card';
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'comm-card-header';
+    var headerIcon = document.createElement('span');
+    headerIcon.innerHTML = opts.icon || ICON_MAIL;
+    headerIcon.querySelector('svg').style.cssText = 'width:20px;height:20px;color:var(--text-quaternary,#717680)';
+    header.appendChild(headerIcon);
+    var typeLabel = document.createElement('span');
+    typeLabel.className = 'comm-card-type';
+    typeLabel.textContent = opts.type || 'Email';
+    header.appendChild(typeLabel);
+    var expandBtn = document.createElement('button');
+    expandBtn.className = 'comm-card-expand';
+    expandBtn.innerHTML = ICON_EXPAND;
+    expandBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      openSkillSheet(
+        opts.subject || opts.type || 'Draft',
+        'To: ' + (opts.to || ''),
+        '<p>' + (opts.body || '').replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>') + '</p>'
+      );
+    });
+    header.appendChild(expandBtn);
+    card.appendChild(header);
+
+    // Fields
+    if (opts.to) {
+      var toRow = document.createElement('div');
+      toRow.className = 'comm-card-field';
+      toRow.innerHTML = '<span class="comm-card-field-label">To</span><span class="comm-card-field-value">' + opts.to + '</span>';
+      card.appendChild(toRow);
+    }
+    if (opts.subject) {
+      var subRow = document.createElement('div');
+      subRow.className = 'comm-card-field';
+      subRow.innerHTML = '<span class="comm-card-field-label">Subject</span><span class="comm-card-field-value">' + opts.subject + '</span>';
+      card.appendChild(subRow);
+    }
+
+    // Body
+    var body = document.createElement('div');
+    body.className = 'comm-card-body';
+    body.innerHTML = '<p>' + (opts.body || '').replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+    card.appendChild(body);
+
+    return card;
+  }
+
+  function demoCommCard() {
+    addSystemMessage('Today at ' + fmtTime());
+
+    // 1. Parent asks Sprout to draft
+    addOutgoingInstant('Can you draft an email to Mrs. Park asking about Noah\'s reading progress?');
+
+    // 2. Sprout shows the draft
+    var draftGroup = addIncomingInstant('Here\'s a draft for you to review:');
+
+    var emailCard = createCommCard({
+      type: 'Email',
+      icon: ICON_MAIL,
+      to: 'Mrs. Park',
+      subject: 'Noah\'s reading progress',
+      body: 'Hi Mrs. Park,\n\nI wanted to check in about Noah\'s progress in the Friday reading group. He\'s been really enjoying the books you\'ve been assigning and we\'d love to know if there are ways we can support him at home.\n\nThank you for everything you do.\n\nBest,\nLeticia'
+    });
+
+    insertCardInMessage(draftGroup, emailCard);
+    createButtonStack('Send email', 'Edit', draftGroup);
+
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     RESULT CARD DEMO
+     ════════════════════════════════ */
+  var ICON_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>';
+  var ICON_GLOBE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>';
+  var ICON_LIGHTBULB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 01-1 1h-6a1 1 0 01-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/></svg>';
+
+  function createResultCard(opts) {
+    var card = document.createElement('div');
+    card.className = 'result-card';
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'result-card-header';
+    var headerIcon = document.createElement('span');
+    headerIcon.innerHTML = opts.icon || ICON_GLOBE;
+    headerIcon.querySelector('svg').style.cssText = 'width:20px;height:20px;color:var(--text-quaternary,#717680)';
+    header.appendChild(headerIcon);
+    var typeLabel = document.createElement('span');
+    typeLabel.className = 'result-card-type';
+    typeLabel.textContent = opts.type || 'Web result';
+    header.appendChild(typeLabel);
+    var expandBtn = document.createElement('button');
+    expandBtn.className = 'result-card-expand';
+    expandBtn.innerHTML = ICON_EXPAND;
+    expandBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      openSkillSheet(
+        opts.title || opts.type,
+        opts.category || '',
+        '<p>' + (opts.fullText || opts.desc || '') + '</p>'
+      );
+    });
+    header.appendChild(expandBtn);
+    card.appendChild(header);
+
+    // Body
+    var body = document.createElement('div');
+    body.className = 'result-card-body';
+    if (opts.category) {
+      var cat = document.createElement('div');
+      cat.className = 'result-card-category';
+      cat.textContent = opts.category;
+      body.appendChild(cat);
+    }
+    var title = document.createElement('div');
+    title.className = 'result-card-title';
+    title.textContent = opts.title;
+    body.appendChild(title);
+    if (opts.desc) {
+      var desc = document.createElement('div');
+      desc.className = 'result-card-desc';
+      desc.textContent = opts.desc;
+      body.appendChild(desc);
+    }
+    card.appendChild(body);
+
+    return card;
+  }
+
+  function demoResultCard() {
+    addSystemMessage('Today at ' + fmtTime());
+
+    // 1. Parent asks a question
+    addOutgoingInstant('What time should a 7-year-old go to bed?');
+
+    // 2. Sprout responds with a research result
+    var researchGroup = addIncomingInstant('Based on pediatric sleep guidelines, here\'s what I found:');
+    var researchCard = createResultCard({
+      type: 'Research result',
+      icon: ICON_BOOK,
+      category: 'aap.org',
+      title: 'Sleep Guidelines for Children Ages 6-12',
+      desc: 'Recommended 9-12 hours per night. Consistent bedtime routines improve both sleep quality and next-day behavior.',
+      fullText: 'The American Academy of Pediatrics recommends that children aged 6-12 get 9 to 12 hours of sleep per night. Consistent bedtime routines improve both sleep quality and next-day behavior. Key factors include limiting screen time before bed, maintaining a consistent schedule even on weekends, and creating a calm sleep environment.'
+    });
+    insertCardInMessage(researchGroup, researchCard);
+
+    // 3. Parent asks about summer activities
+    addOutgoingInstant('Any fun reading programs this summer?');
+
+    // 4. Sprout shows a web result
+    var webGroup = addIncomingInstant('I found one nearby:');
+    var webCard = createResultCard({
+      type: 'Web result',
+      icon: ICON_GLOBE,
+      category: 'citylib.org',
+      title: 'Summer Reading Challenge 2026',
+      desc: 'Ages 5-12. Runs June 1 - August 15. Read 20 books to earn a pizza party ticket. Register at any branch.',
+      fullText: 'The 2026 Summer Reading Challenge is open to children ages 5-12. It runs from June 1 through August 15. Kids who read 20 books earn a pizza party ticket. Registration is available at any library branch or online at citylib.org/summer2026. Books can be any format: print, audiobook, or e-book. Parents can log progress through the library app.'
+    });
+    insertCardInMessage(webGroup, webCard);
+
+    // 5. Sprout also surfaces a recommendation
+    var recoGroup = addIncomingInstant('Also, I noticed something about Noah\'s schedule:');
+    var recoCard = createResultCard({
+      type: 'Recommendation',
+      icon: ICON_LIGHTBULB,
+      title: 'Consider Moving Soccer to Wednesday',
+      desc: 'Noah\'s Thursday has a 27-min conflict between piano and soccer. Wednesday is open 3:00-6:00 PM.',
+      fullText: 'Noah\'s current Thursday schedule has piano from 3:30-4:15 PM and soccer from 3:45-5:00 PM, creating a 27-minute overlap. Wednesday afternoons are completely open from 3:00-6:00 PM. Moving soccer to Wednesday would eliminate the conflict and give him a 15-minute buffer between school pickup and practice.'
+    });
+    insertCardInMessage(recoGroup, recoCard);
+
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     PROFILE CARD DEMO
+     ════════════════════════════════ */
+  function demoProfileCard() {
+    addSystemMessage('Today at ' + fmtTime());
+
+    // 1. Parent asks about village
+    addOutgoingInstant('Who is in Noah\'s village?');
+
+    // 2. Sprout shows village members as a card list
+    var listGroup = addIncomingInstant('Here are the people in Noah\'s village:');
+    var list = document.createElement('div');
+    list.className = 'card-list';
+
+    var listHeader = document.createElement('div');
+    listHeader.className = 'card-list-header';
+    listHeader.innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg><span>Village</span>';
+    list.appendChild(listHeader);
+
+    var villageMembers = [
+      {
+        name: 'Randall',
+        role: 'Co-parent',
+        bgClass: 'avatar-bg-violet',
+        state: COPARENT_STATE,
+        profile: {
+          relation: 'Co-parent',
+          joined: 'January 2025',
+          permissions: 'Full access',
+          email: 'randall@email.com',
+          notes: 'Randall is Noah\'s dad. He has full co-parenting access and can manage skills, approve habits, and see all of Noah\'s progress.'
+        }
+      },
+      {
+        name: 'Mrs. Park',
+        role: '2nd grade teacher',
+        bgClass: 'avatar-bg-pink',
+        state: { skinID: 7, hairID: 5, hairshadeID: 2, clothingID: 6, clothingcolourID: 3, eyeshadeID: 2 },
+        profile: {
+          relation: 'Teacher',
+          joined: 'September 2025',
+          permissions: 'School updates only',
+          email: 'park@school.edu',
+          notes: 'Mrs. Park sends weekly reading reports and assignment updates. She can see Noah\'s reading habits but not other family data.'
+        }
+      },
+      {
+        name: 'Grandma Rose',
+        role: 'Grandparent',
+        bgClass: 'avatar-bg-orange',
+        state: { skinID: 4, hairID: 3, hairshadeID: 10, clothingID: 8, clothingcolourID: 7, eyeshadeID: 5, glassID: 2, glassshadeID: 1 },
+        profile: {
+          relation: 'Grandparent',
+          joined: 'March 2025',
+          permissions: 'View progress',
+          email: 'rose@email.com',
+          notes: 'Grandma Rose can see Noah\'s milestones and habit streaks. She gets a weekly digest every Sunday.'
+        }
+      }
+    ];
+
+    villageMembers.forEach(function(member) {
+      var row = document.createElement('div');
+      row.className = 'card-row';
+      row.style.cursor = 'pointer';
+
+      // Village character avatar as the card icon
+      var iconWrap = document.createElement('div');
+      iconWrap.className = 'card-icon';
+      iconWrap.style.borderRadius = '9999px';
+      iconWrap.style.overflow = 'hidden';
+      iconWrap.style.position = 'relative';
+
+      var avatarInner = document.createElement('div');
+      avatarInner.className = 'avatar avatar-md ' + member.bgClass;
+      avatarInner.style.width = '40px';
+      avatarInner.style.height = '40px';
+      var canvas = document.createElement('canvas');
+      canvas.className = 'rive-user';
+      canvas.setAttribute('width', '58');
+      canvas.setAttribute('height', '83');
+      avatarInner.appendChild(canvas);
+      iconWrap.appendChild(avatarInner);
+      row.appendChild(iconWrap);
+
+      setTimeout(function() {
+        initRiveAvatar(canvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: member.state });
+      }, 0);
+
+      var rBody = document.createElement('div');
+      rBody.className = 'card-body';
+      var rLabel = document.createElement('div');
+      rLabel.className = 'card-label';
+      rLabel.textContent = member.name;
+      var rDesc = document.createElement('div');
+      rDesc.className = 'card-desc';
+      rDesc.textContent = member.role;
+      rBody.appendChild(rLabel);
+      rBody.appendChild(rDesc);
+      row.appendChild(rBody);
+
+      // Tap row to open profile sheet
+      row.addEventListener('click', function() {
+        var p = member.profile;
+        openSkillSheet(member.name, p.relation,
+          '<p>' + p.notes + '</p>' +
+          '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
+            '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Role</div><div class="skill-sheet-field-value">' + p.relation + '</div></div>' +
+            '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Joined</div><div class="skill-sheet-field-value">' + p.joined + '</div></div>' +
+            '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Permissions</div><div class="skill-sheet-field-value">' + p.permissions + '</div></div>' +
+            '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Email</div><div class="skill-sheet-field-value">' + p.email + '</div></div>' +
+          '</div>'
+        );
+      });
+
+      list.appendChild(row);
+    });
+
+    insertCardInMessage(listGroup, list);
+
+    // 3. Parent taps to learn more
+    addOutgoingInstant('What can Mrs. Park see?');
+
+    // 4. Sprout explains with a single profile card
+    var profileGroup = addIncomingInstant('Mrs. Park has "School updates only" access. She can send reading reports and assignment updates, but can\'t see family habits or other personal data.');
+
+    var profileCard = document.createElement('div');
+    profileCard.className = 'card';
+    profileCard.style.cursor = 'pointer';
+
+    var pIconWrap = document.createElement('div');
+    pIconWrap.className = 'card-icon';
+    pIconWrap.style.borderRadius = '9999px';
+    pIconWrap.style.overflow = 'hidden';
+    pIconWrap.style.position = 'relative';
+    var pAvatarInner = document.createElement('div');
+    pAvatarInner.className = 'avatar avatar-md avatar-bg-pink';
+    pAvatarInner.style.width = '40px';
+    pAvatarInner.style.height = '40px';
+    var pCanvas = document.createElement('canvas');
+    pCanvas.className = 'rive-user';
+    pCanvas.setAttribute('width', '58');
+    pCanvas.setAttribute('height', '83');
+    pAvatarInner.appendChild(pCanvas);
+    pIconWrap.appendChild(pAvatarInner);
+    profileCard.appendChild(pIconWrap);
+    setTimeout(function() {
+      initRiveAvatar(pCanvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: villageMembers[1].state });
+    }, 0);
+
+    var pBody = document.createElement('div');
+    pBody.className = 'card-body';
+    var pLabel = document.createElement('div');
+    pLabel.className = 'card-label';
+    pLabel.textContent = 'Mrs. Park';
+    var pDesc = document.createElement('div');
+    pDesc.className = 'card-desc';
+    pDesc.textContent = '2nd grade teacher';
+    pBody.appendChild(pLabel);
+    pBody.appendChild(pDesc);
+    profileCard.appendChild(pBody);
+
+    var pBadge = document.createElement('span');
+    pBadge.className = 'card-badge badge-info';
+    pBadge.textContent = 'School';
+    profileCard.appendChild(pBadge);
+
+    profileCard.addEventListener('click', function() {
+      var p = villageMembers[1].profile;
+      openSkillSheet('Mrs. Park', p.relation,
+        '<p>' + p.notes + '</p>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Role</div><div class="skill-sheet-field-value">' + p.relation + '</div></div>' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Joined</div><div class="skill-sheet-field-value">' + p.joined + '</div></div>' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Permissions</div><div class="skill-sheet-field-value">' + p.permissions + '</div></div>' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Email</div><div class="skill-sheet-field-value">' + p.email + '</div></div>' +
+        '</div>'
+      );
+    });
+
+    insertCardInMessage(profileGroup, profileCard);
+    scrollThread();
+  }
+
   /* ════════════════════════════════
      SCREEN CHANGE HANDLER
      ════════════════════════════════ */
@@ -2282,6 +3722,15 @@
       case 9: demoAttachmentsSheet(); break;
       case 10: demoAttachmentsPanel(); break;
       case 11: demoToolUsage(); break;
+      case 12: demoTypingIndicator(); break;
+      case 13: demoPlanningTree(); break;
+      case 14: demoConnectors(); break;
+      case 15: demoButtonStack(); break;
+      case 16: demoSavedSkill(); break;
+      case 17: demoGraduationCard(); break;
+      case 18: demoProfileCard(); break;
+      case 19: demoCommCard(); break;
+      case 20: demoResultCard(); break;
     }
   };
 
@@ -2300,7 +3749,7 @@
 })();
 </script>
 
-<script>window.DS_META={title:'Parent Chat v3',desc:'Text-first AI chat for parents with Sprout. Uses DS tokens for colors and spacing.',owner:'Leti Schimmel',status:'Draft',device:['Phone','Tablet'],notes:'<div class="pc-features"><div class="pc-features-title">Features</div><div class="pc-feature-item active" data-feature="0">Default Flow</div><div class="pc-feature-item" data-feature="1">Voice Dictation</div><div class="pc-feature-item" data-feature="2">@Mentions</div><div class="pc-feature-item" data-feature="3">Suggestion Chips</div><div class="pc-feature-item" data-feature="4">Option Chips</div><div class="pc-feature-item" data-feature="5">Reply Threading</div><div class="pc-feature-item" data-feature="6">Copy</div><div class="pc-feature-item" data-feature="7">Context Menu</div><div class="pc-feature-item" data-feature="8">Reconnection Banner</div><div class="pc-feature-item" data-feature="9">Attachment A</div><div class="pc-feature-item" data-feature="10">Attachment B</div><div class="pc-feature-item" data-feature="11">Tool Usage</div></div>'};</script>
+<script>window.DS_META={title:'Parent Chat v3',desc:'Text-first AI chat for parents with Sprout. Uses DS tokens for colors and spacing.',owner:'Leti Schimmel',status:'Draft',device:['Phone','Tablet'],notes:'<div class="pc-features"><div class="pc-features-title">Features</div><div class="pc-feature-item active" data-feature="0">Default Flow</div><div class="pc-feature-item" data-feature="1">Voice Dictation</div><div class="pc-feature-item" data-feature="2">@Mentions</div><div class="pc-feature-item" data-feature="3">Suggestion Chips</div><div class="pc-feature-item" data-feature="4">Option Chips</div><div class="pc-feature-item" data-feature="5">Reply Threading</div><div class="pc-feature-item" data-feature="6">Copy</div><div class="pc-feature-item" data-feature="7">Context Menu</div><div class="pc-feature-item" data-feature="8">Reconnection Banner</div><div class="pc-feature-item" data-feature="9">Attachment A</div><div class="pc-feature-item" data-feature="10">Attachment B</div><div class="pc-feature-item" data-feature="11">Reasoning transcript</div><div class="pc-feature-item" data-feature="12">Typing Indicator</div><div class="pc-feature-item" data-feature="13">Planning Tree</div><div class="pc-feature-item" data-feature="14">Connectors / OAuth</div><div class="pc-feature-item" data-feature="15">Button Stack</div><div class="pc-feature-item" data-feature="16">Saved Skill</div><div class="pc-feature-item" data-feature="17">Graduation Card</div><div class="pc-feature-item" data-feature="18">Profile Card</div><div class="pc-feature-item" data-feature="19">Communication Card</div><div class="pc-feature-item" data-feature="20">Result Card</div></div>'};</script>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 <script>

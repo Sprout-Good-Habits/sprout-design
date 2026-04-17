@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System / Type</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-section a{color:var(--brand-700,#026aa2)}
+
+/* Role table */
+.role-table{width:720px;border-collapse:collapse;font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);margin:16px 0 24px;table-layout:fixed}
+.role-table th{text-align:left;padding:12px 12px;border-bottom:2px solid var(--border-primary);font-weight:var(--font-weight-semibold,600);font-size:var(--font-size-text-xs,12px);text-transform:uppercase;letter-spacing:0.04em;color:var(--text-tertiary)}
+.role-table td{padding:16px 12px;border-bottom:1px solid var(--border-secondary);color:var(--text-secondary);vertical-align:top}
+.role-table th.col-role,.role-table td.col-role{width:140px}
+.role-table th.col-sample,.role-table td.col-sample{width:200px}
+.role-table th.col-token,.role-table td.col-token{width:160px}
+.role-name{font-weight:var(--font-weight-semibold,600);color:var(--text-primary);font-size:var(--font-size-text-sm,14px);margin-bottom:4px}
+.role-px{font-family:'SF Mono','Fira Code',monospace;font-size:11px;color:var(--text-tertiary)}
+.role-token code{font-size:11px}
+.role-uses{font-size:var(--font-size-text-xs,12px);line-height:16px;color:var(--text-tertiary)}
+.role-sample{color:var(--text-primary);font-family:var(--font-family-body)}
+
+/* Drift box */
+.drift-box{background:#fffbeb;border:1px solid #fde68a;border-left:3px solid #f59e0b;border-radius:var(--radius-2xl,16px);padding:20px 24px;margin:16px 0 24px}
+.drift-box-title{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:#b45309;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.drift-box ul{margin:0;padding-left:20px}
+.drift-box li{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-secondary);margin-bottom:6px}
+.drift-box li code{font-size:12px}
+
+/* Choice cards */
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 24px}
+.choice-card{background:var(--bg-secondary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl,16px);padding:20px}
+.choice-card-label{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:var(--brand-700,#026aa2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.choice-card-title{font-size:var(--font-size-text-md,16px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.choice-card-body{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-tertiary)}
+
+/* Note box (neutral) */
+.note-box{background:var(--bg-secondary);border:1px solid var(--border-secondary);border-radius:var(--radius-2xl,16px);padding:20px 24px;margin:16px 0 24px}
+.note-box-title{font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-semibold,600);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.note-box p{font-size:var(--font-size-text-sm,14px);line-height:var(--line-height-text-sm,20px);color:var(--text-secondary);margin:0}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Type</h1>
+        <p class="doc-desc">Five typographic roles cover everything in parent chat. Pick the role first (body, label, detail, caption, sheet title), then the role tells you the size.</p>
+      </div>
+      <div class="doc-divider"></div>
+
+      <div class="doc-section">
+        <h2>The five roles</h2>
+        <p>Anchored on what's actually used in <a href="/product-explorer/parent-chat-3.html">parent-chat-3</a> today. The full Sprout type scale is documented at <a href="/kid-design-system/foundations/typography.html">kid-design-system / typography</a>; this page narrows it to chat usage.</p>
+
+        <table class="role-table">
+          <thead>
+            <tr>
+              <th class="col-role">Role</th>
+              <th class="col-sample">Sample</th>
+              <th class="col-token">Token</th>
+              <th>Used by</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">Body / input</div>
+                <div class="role-px">16 / 24</div>
+              </td>
+              <td class="col-sample"><span class="role-sample" style="font-size:16px;line-height:24px">Hey Sprout</span></td>
+              <td class="role-token"><code>--font-size-text-md</code></td>
+              <td class="role-uses">message bubbles, composer input, option chips, suggestion chip title</td>
+            </tr>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">UI label</div>
+                <div class="role-px">14 / 20</div>
+              </td>
+              <td class="col-sample"><span class="role-sample" style="font-size:14px;line-height:20px;font-weight:600">Confirm</span></td>
+              <td class="role-token"><code>--font-size-text-sm</code></td>
+              <td class="role-uses">action buttons, context menu items, sheet body copy, artifact card name</td>
+            </tr>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">Detail</div>
+                <div class="role-px">13 / 20</div>
+              </td>
+              <td class="col-sample"><span class="role-sample" style="font-size:13px;line-height:20px;color:var(--text-tertiary)">5 days/week</span></td>
+              <td class="role-token"><code>13px</code> (no token)</td>
+              <td class="role-uses">confirm-card label/value/description, tool-usage label, feature item rows</td>
+            </tr>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">Caption</div>
+                <div class="role-px">12 / 16</div>
+              </td>
+              <td class="col-sample"><span class="role-sample" style="font-size:12px;line-height:16px;font-weight:600;color:var(--text-tertiary)">Sprout</span></td>
+              <td class="role-token"><code>--font-size-text-xs</code></td>
+              <td class="role-uses">sender label, timestamps, thought timeline step, mention popup subtext</td>
+            </tr>
+            <tr>
+              <td class="col-role">
+                <div class="role-name">Sheet title</div>
+                <div class="role-px">15 to 16, bold</div>
+              </td>
+              <td class="col-sample"><span class="role-sample" style="font-size:16px;line-height:24px;font-weight:700">Thought process</span></td>
+              <td class="role-token"><code>--font-size-text-md</code><br>or hardcoded 15px</td>
+              <td class="role-uses">sheet headers (thought, artifact, context-menu), confirm-card title</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="doc-section">
+        <h2>The 13px tier is the elephant</h2>
+        <p>The "Detail" role is real: confirm-card rows, tool-usage labels, and feature item lists all reach for 13px. It sits between caption (12) and label (14), and there is no token for it. Two ways forward.</p>
+        <div class="choice-grid">
+          <div class="choice-card">
+            <div class="choice-card-label">Option A</div>
+            <div class="choice-card-title">Legitimize 13px</div>
+            <div class="choice-card-body">Add <code>--font-size-text-detail</code> at 13px to the scale. Components that already use 13px stay where they are. Pro: matches reality. Con: adds a step to a scale that otherwise doubles cleanly.</div>
+          </div>
+          <div class="choice-card">
+            <div class="choice-card-label">Option B</div>
+            <div class="choice-card-title">Migrate to 14px</div>
+            <div class="choice-card-body">Treat 13px as drift. Push these slots up to <code>--font-size-text-sm</code>. Pro: keeps the scale clean. Con: row density tightens; needs a visual review.</div>
+          </div>
+        </div>
+        <p>This page does not pick. New work should default to 14px (label) or 12px (caption); reach for 13px only when matching an existing component.</p>
+      </div>
+
+      <div class="doc-section">
+        <h2>What we don't use in chat</h2>
+        <p>The full token scale goes from 12px up to display-2xl at 72px. Parent chat caps at 16px body. Anything larger only shows up in the design system docs themselves (page titles, hero copy).</p>
+        <ul>
+          <li><strong>No display-* sizes</strong> in chat. If a chat surface needs to feel like a "headline", it should still cap at 16px bold and use the 24px <code>--radius-4xl</code> sheet to set the stage.</li>
+          <li><strong>No text-xl (20) or text-lg (18)</strong>. There is currently no slot for these in chat. If a future feature needs one, treat that as a deliberate decision worth flagging.</li>
+        </ul>
+      </div>
+
+      <div class="doc-section">
+        <h2>Special cases</h2>
+        <div class="note-box">
+          <div class="note-box-title">Status bar (17px)</div>
+          <p>The iOS status bar uses 17px semibold for the time. This is platform-grade, not a content type. Leave it hardcoded inside <code>status-bar.css</code> and don't reach for it elsewhere.</p>
+        </div>
+        <div class="note-box">
+          <div class="note-box-title">Artifact version badge (10px)</div>
+          <p>The version pill on <code>artifact-card</code> is 10px. This is a one-off badge, not a typographic role. If a second use case appears, it's a candidate for a shared "badge" pattern rather than a new font-size token.</p>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <h2>Always pair with line-height and weight</h2>
+        <p>Every size on this page has a matching line-height token. Never mix. The pairings are documented in full at <a href="/kid-design-system/foundations/typography.html">kid-design-system / typography</a>. The chat-relevant ones:</p>
+        <ul>
+          <li><code>--font-size-text-md</code> (16) goes with <code>--line-height-text-md</code> (24)</li>
+          <li><code>--font-size-text-sm</code> (14) goes with <code>--line-height-text-sm</code> (20)</li>
+          <li><code>--font-size-text-xs</code> (12) goes with <code>--line-height-text-xs</code> (16)</li>
+          <li>Sender labels and chip titles use <code>--font-weight-semibold</code> (600). Sheet titles and confirm-card titles use <code>--font-weight-bold</code> (700). Body and input use <code>--font-weight-regular</code> (400).</li>
+        </ul>
+      </div>
+
+      <div class="doc-section">
+        <h2>Drift to flag</h2>
+        <div class="drift-box">
+          <div class="drift-box-title">Open questions</div>
+          <ul>
+            <li><strong>13px appears in 4+ places</strong> with no shared token. See "the elephant" above.</li>
+            <li><strong>15px bold</strong> on <code>confirm-card-title</code> sits oddly between 14 and 16. Likely should round to 16 (text-md bold) to match the sheet titles.</li>
+            <li><strong>Tool usage details and reasoning-step time</strong> use 12px hardcoded rather than the <code>--font-size-text-xs</code> token. Same value, missing reference.</li>
+            <li><strong>Hardcoded line-heights</strong> (e.g. 18 / 20px) appear in tool-usage and reasoning-transcript. Consume the <code>--line-height-text-*</code> tokens instead.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>

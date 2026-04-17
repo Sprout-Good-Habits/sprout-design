@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Parent Design System — Toast</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-banner.css">
+<style>
+.doc-hero{max-width:720px;padding:96px 0 0}
+.doc-title{font-family:var(--font-family-display);font-size:var(--font-size-display-md,36px);line-height:var(--line-height-display-md,44px);font-weight:var(--font-weight-bold,700);color:var(--text-primary);letter-spacing:-0.72px;margin:0 0 16px}
+.doc-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 24px}
+.doc-meta{display:flex;gap:24px;align-items:center;max-width:720px}.doc-meta+.doc-meta{margin-top:4px}
+.doc-meta-label{width:140px;display:flex;align-items:center;gap:4px;font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);color:var(--text-tertiary)}
+.doc-meta-label svg{width:24px;height:24px;flex-shrink:0;color:var(--text-tertiary)}
+.doc-meta-value{flex:1;display:flex;align-items:center;gap:4px}
+.doc-download{display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);text-decoration:none;transition:color .15s}
+.doc-download:hover{color:var(--text-primary)}
+.doc-meta-text{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary)}
+.doc-badge{background:var(--bg-secondary);border:1px solid var(--border-secondary);padding:2px 8px;border-radius:var(--radius-full);font-family:var(--font-family-body);font-size:var(--font-size-text-xs,12px);font-weight:var(--font-weight-medium,500);color:var(--text-secondary)}
+.doc-divider{width:720px;height:1px;background:var(--border-secondary);margin:32px 0}
+.doc-section{max-width:720px}
+.doc-section h2{font-family:var(--font-family-body);font-size:var(--font-size-text-lg,18px);line-height:var(--line-height-text-lg,28px);font-weight:var(--font-weight-semibold,600);color:var(--text-primary);margin:0 0 8px}
+.doc-section p{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin:0 0 16px}
+.doc-section ul{margin:0 0 16px;padding-left:20px}
+.doc-section li{font-family:var(--font-family-body);font-size:var(--font-size-text-md,16px);line-height:var(--line-height-text-md,24px);color:var(--text-tertiary);margin-bottom:4px}
+.doc-section li strong{color:var(--text-primary);font-weight:var(--font-weight-semibold,600)}
+.doc-demo{width:720px;min-height:200px;background:var(--brand-25,#f5fbff);border-radius:var(--radius-4xl,24px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;box-sizing:border-box;margin-top:16px;gap:16px}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="doc-hero">
+        <h1 class="doc-title">Toast</h1>
+        <p class="doc-desc">Ephemeral notification for success confirmations, errors, and info. Non-blocking: appears and auto-dismisses.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>CSS file</div>
+          <div class="doc-meta-value"><span class="doc-badge">chat-banner.css</span><a class="doc-download" href="/kid-design-system/components/chat-banner.css" download><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-meta-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last update</div>
+          <div class="doc-meta-value"><span class="doc-meta-text">Thu Apr 17, 2026</span></div>
+        </div>
+      </div>
+      <div class="doc-divider"></div>
+      <div class="doc-section">
+        <h2>Overview</h2>
+        <p>Toasts are floating notifications that appear above the chat content. They fade in, display briefly, then auto-dismiss with a fade-out and upward slide. Use them for confirmations ("Email sent"), errors ("Failed to send"), clipboard actions ("Copied"), and time-sensitive alerts ("Session expires in 2h"). They are non-blocking and require no user interaction to dismiss.</p>
+      </div>
+      <div class="doc-section">
+        <h2>Anatomy</h2>
+        <ul>
+          <li><strong>.banner</strong> - Base container with fade transition, floating card surface (white bg, soft shadow, 16px radius)</li>
+          <li><strong>.banner.show</strong> - Visible state (opacity 1, pointer-events auto)</li>
+          <li><strong>.banner.hiding</strong> - Exit animation (opacity 0, translateY -20px)</li>
+          <li><strong>.banner-icon</strong> - 20px leading icon (success, error, info)</li>
+          <li><strong>.banner-text</strong> - Message text (14px semibold, text-secondary)</li>
+          <li><strong>.banner-undo</strong> - Optional action link (brand-500, no border)</li>
+          <li><strong>.banner-reconnect</strong> - Variant with spinner for connection states</li>
+          <li><strong>.reconnect-spinner</strong> - 20px animated spinner (brand border)</li>
+          <li><strong>.banner-toast</strong> - Generic toast positioning</li>
+          <li><strong>.banner-delete</strong> - Delete confirmation with undo action</li>
+        </ul>
+      </div>
+      <div class="doc-section">
+        <h2>Usage</h2>
+        <p>Place inside .device-screen with absolute positioning. Toggle .show to display. Add .hiding before removing .show for the exit animation. Auto-dismiss after 3-5 seconds depending on content.</p>
+        <div class="doc-demo">
+          <!-- Success toast -->
+          <div class="banner show" style="position:relative;left:0;right:0;width:340px">
+            <div class="banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <span class="banner-text">Email sent to Ms. Johnson</span>
+          </div>
+
+          <!-- Error toast -->
+          <div class="banner show" style="position:relative;left:0;right:0;width:340px">
+            <div class="banner-icon" style="color:var(--red-500)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div>
+            <span class="banner-text">Failed to send email</span>
+          </div>
+
+          <!-- Copy toast -->
+          <div class="banner show" style="position:relative;left:0;right:0;width:340px">
+            <div class="banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.06812 15 3.60218 15 3.23463 14.8478C2.74458 14.6448 2.35523 14.2554 2.15224 13.7654C2 13.3978 2 12.9319 2 12V5.2C2 4.0799 2 3.51984 2.21799 3.09202C2.40974 2.7157 2.7157 2.40974 3.09202 2.21799C3.51984 2 4.0799 2 5.2 2H12C12.9319 2 13.3978 2 13.7654 2.15224C14.2554 2.35523 14.6448 2.74458 14.8478 3.23463C15 3.60218 15 4.06812 15 5M12.2 22H18.8C19.9201 22 20.4802 22 20.908 21.782C21.2843 21.5903 21.5903 21.2843 21.782 20.908C22 20.4802 22 19.9201 22 18.8V12.2C22 11.0799 22 10.5198 21.782 10.092C21.5903 9.7157 21.2843 9.40974 20.908 9.21799C20.4802 9 19.9201 9 18.8 9H12.2C11.0799 9 10.5198 9 10.092 9.21799C9.7157 9.40974 9.40974 9.7157 9.21799 10.092C9 10.5198 9 11.0799 9 12.2V18.8C9 19.9201 9 20.4802 9.21799 20.908C9.40974 21.2843 9.7157 21.5903 10.092 21.782C10.5198 22 11.0799 22 12.2 22Z"/></svg></div>
+            <span class="banner-text">Copied</span>
+          </div>
+
+          <!-- Info/warning toast -->
+          <div class="banner show" style="position:relative;left:0;right:0;width:340px">
+            <div class="banner-icon" style="color:var(--yellow-600)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+            <span class="banner-text">School portal session expires in 2h</span>
+          </div>
+
+          <!-- Delete with undo -->
+          <div class="banner show" style="position:relative;left:0;right:0;width:340px">
+            <div class="banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.08 16 3.52 15.782 3.092C15.59 2.716 15.284 2.41 14.908 2.218C14.48 2 13.92 2 12.8 2H11.2C10.08 2 9.52 2 9.092 2.218C8.716 2.41 8.41 2.716 8.218 3.092C8 3.52 8 4.08 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.88 19 19.72 18.673 20.362C18.385 20.927 17.927 21.385 17.362 21.673C16.72 22 15.88 22 14.2 22H9.8C8.12 22 7.28 22 6.638 21.673C6.074 21.385 5.615 20.927 5.327 20.362C5 19.72 5 18.88 5 17.2V6"/></svg></div>
+            <span class="banner-text">Message deleted</span>
+            <button class="banner-undo">Undo</button>
+          </div>
+
+          <!-- Reconnecting with spinner -->
+          <div class="banner show" style="position:relative;left:0;right:0;width:340px">
+            <div class="reconnect-spinner"></div>
+            <span class="banner-text">Reconnecting...</span>
+          </div>
+        </div>
+      </div>
+      <div class="doc-section">
+        <h2>Spec: Toast</h2>
+        <p><code>.banner</code> &middot; AC, KN, CN</p>
+        <p><strong>Variants:</strong> success (check icon), error (x icon, red), info (info icon, yellow), copy (copy icon), delete (trash icon + undo link), reconnecting (spinner).</p>
+        <p><strong>Behavior:</strong> Fade in on .show, auto-dismiss after 3-5s, fade out + slide up on .hiding. Non-blocking, no user action required to dismiss.</p>
+        <p><strong>Surface:</strong> White bg, 16px radius, soft shadow (0 1px 8px rgba(0,0,0,.06)). Positioned absolutely inside device screen.</p>
+      </div>
+      <div style="max-width:720px;margin:48px 0 0;font-size:12px;color:var(--text-quaternary)">Last updated: April 2026</div>
+    </div>
+  </div>
+</div>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+</body>
+</html>
