@@ -730,7 +730,7 @@
      ════════════════════════════════ */
   function setupSwipe(row, groupEl) {
     var startX = 0, currentX = 0, isDragging = false;
-    var bubble = row.querySelector('.msg-bubble');
+    var dragTargets = []; // children to translate (everything except sender-indicator)
 
     // Create swipe reply icon
     var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -739,15 +739,46 @@
     icon.innerHTML = '<polyline points="9 17 4 12 9 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 18v-2a4 4 0 0 0-4-4H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
     row.appendChild(icon);
 
+    // Classes that should NOT move during swipe
+    var skipClasses = ['sender-indicator', 'swipe-reply-icon'];
+
+    // Collect draggable elements: msg-col children (except sender) + group-level
+    // siblings of the row (planning tree, actions, attachments, images)
+    function resolveDragTargets() {
+      dragTargets = [];
+      // 1. Inside the row: msg-col children (skip sender-indicator)
+      var col = row.querySelector('.msg-col');
+      if (col) {
+        for (var i = 0; i < col.children.length; i++) {
+          var ch = col.children[i];
+          if (!ch.classList.contains('sender-indicator')) dragTargets.push(ch);
+        }
+      } else {
+        var bubble = row.querySelector('.msg-bubble');
+        if (bubble) dragTargets.push(bubble);
+      }
+      // 2. Group-level siblings of the row (planning tree, actions, attachments, etc.)
+      for (var j = 0; j < groupEl.children.length; j++) {
+        var child = groupEl.children[j];
+        if (child === row) continue; // already handled above
+        var dominated = false;
+        for (var k = 0; k < skipClasses.length; k++) {
+          if (child.classList.contains(skipClasses[k])) { dominated = true; break; }
+        }
+        if (!dominated) dragTargets.push(child);
+      }
+    }
+
     function onStart(e) {
       var clientX = e.touches ? e.touches[0].clientX : e.clientX;
       startX = clientX;
       currentX = 0;
       isDragging = true;
-      bubble.style.transition = 'none';
+      resolveDragTargets();
+      dragTargets.forEach(function(t) { t.style.transition = 'none'; });
     }
     function onMove(e) {
-      if (!isDragging) return;
+      if (!isDragging || !dragTargets.length) return;
       var clientX = e.touches ? e.touches[0].clientX : e.clientX;
       var dx = clientX - startX;
       if (dx < 0) dx = 0;
@@ -755,15 +786,17 @@
       currentX = dx;
       // Cancel long-press when swiping horizontally
       if (dx > 5 && longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
-      bubble.style.transform = 'translateX(' + dx + 'px)';
+      dragTargets.forEach(function(t) { t.style.transform = 'translateX(' + dx + 'px)'; });
       icon.style.opacity = Math.min(dx / 60, 1);
       icon.style.left = (dx - 36) + 'px';
     }
     function onEnd() {
       if (!isDragging) return;
       isDragging = false;
-      bubble.style.transition = 'transform .2s ease';
-      bubble.style.transform = '';
+      dragTargets.forEach(function(t) {
+        t.style.transition = 'transform .2s ease';
+        t.style.transform = '';
+      });
       icon.style.opacity = '0';
       if (currentX >= 60) {
         triggerReplyTo(groupEl);
@@ -1683,6 +1716,10 @@
             col.className = 'msg-col';
             row.appendChild(col);
           }
+          // Move sender-indicator into msg-col so avatar bottom-aligns with full column
+          if (senderInd && senderInd.parentNode !== col) {
+            col.insertBefore(senderInd, col.firstChild);
+          }
           col.appendChild(bubble);
         } else {
           var newRow = document.createElement('div');
@@ -1697,14 +1734,15 @@
         }
         enterTransition(bubble);
 
-        // — Planning Tree card (optional, below the bubble row) —
+        // — Planning Tree card (optional, inside the msg-col below the bubble) —
         if (typeof replyData === 'object' && replyData && replyData.type === 'planning_tree') {
           var planCard = createPlanningTree(replyData.planTitle || 'Plan', replyData.planSteps || []);
-          group.appendChild(planCard);
+          var planCol = row.querySelector('.msg-col');
+          if (planCol) { planCol.appendChild(planCard); } else { group.appendChild(planCard); }
           enterTransition(planCard);
         }
 
-        // — Actions (new, below the row) —
+        // — Actions (below the row, with left padding via CSS) —
         var actions = createMsgActions(group);
         group.appendChild(actions);
         enterTransition(actions);
@@ -2364,11 +2402,11 @@
     bubble.appendChild(ts);
     var col = document.createElement('div');
     col.className = 'msg-col';
+    col.appendChild(senderInd.el);
     col.appendChild(bubble);
 
     row.appendChild(avatarEl);
     row.appendChild(col);
-    group.appendChild(senderInd.el);
     if (opts.images && opts.images.length) group.appendChild(createBubbleImages(opts.images));
     group.appendChild(row);
     group.appendChild(createMsgActions(group));
@@ -2689,10 +2727,10 @@
       { title: 'Set up reminders', status: 'active' },
       { title: 'Create reward milestones', status: 'pending' }
     ]);
-    // Insert before the actions row (last child)
-    var actions = group.querySelector('.msg-actions');
-    if (actions) {
-      group.insertBefore(planCard, actions);
+    // Insert into the msg-col so avatar bottom-aligns with the card (Figma 21000:65134)
+    var col = group.querySelector('.msg-col');
+    if (col) {
+      col.appendChild(planCard);
     } else {
       group.appendChild(planCard);
     }
