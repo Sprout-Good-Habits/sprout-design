@@ -26,6 +26,7 @@
     { "source": "/getting-started.html", "destination": "/kid-design-system/getting-started.html" },
     { "source": "/principles.html", "destination": "/kid-design-system/principles.html" },
     { "source": "/accessibility.html", "destination": "/kid-design-system/accessibility.html" },
-    { "source": "/figma-workflow.html", "destination": "/kid-design-system/figma-workflow.html" }
+    { "source": "/figma-workflow.html", "destination": "/kid-design-system/figma-workflow.html" },
+    { "source": "/export/:path*", "destination": "/kid-design-system/export/:path*" }
   ]
 }

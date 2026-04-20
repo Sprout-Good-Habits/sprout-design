@@ -1,0 +1,176 @@
+{
+  "action-prompt": {
+    "css": ["action-prompt.css"],
+    "cssDeps": ["buttons.css"],
+    "js": [],
+    "rive": []
+  },
+  "alert": {
+    "css": ["alert.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "artifact": {
+    "css": ["artifact.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "attach-panel": {
+    "css": ["attach-panel.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "avatar": {
+    "css": ["avatar.css"],
+    "cssDeps": [],
+    "js": ["rive-avatars.js"],
+    "rive": ["character2.91.riv", "sprot2.97_.riv"]
+  },
+  "avatar-group": {
+    "css": ["avatar-group.css"],
+    "cssDeps": ["avatar.css"],
+    "js": ["rive-avatars.js"],
+    "rive": ["character2.91.riv", "sprot2.97_.riv"]
+  },
+  "avatar-group-card": {
+    "css": ["avatar-group-card.css"],
+    "cssDeps": ["avatar.css", "avatar-group.css"],
+    "js": ["rive-avatars.js"],
+    "rive": ["character2.91.riv"]
+  },
+  "avatar-portrait": {
+    "css": ["avatar-portrait.css"],
+    "cssDeps": [],
+    "js": ["rive-avatars.js"],
+    "rive": ["character2.91.riv", "sprot2.97_.riv"]
+  },
+  "avatar-profile": {
+    "css": ["avatar-profile.css"],
+    "cssDeps": [],
+    "js": ["rive-avatars.js"],
+    "rive": ["character2.91.riv", "sprot2.97_.riv"]
+  },
+  "avatar-row": {
+    "css": ["avatar-row.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "badges": {
+    "css": ["badges.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "button": {
+    "css": ["button.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "buttons": {
+    "css": ["buttons.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "card": {
+    "css": ["card.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "chat-action-buttons": {
+    "css": ["chat-action-buttons.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "chat-banner": {
+    "css": ["chat-banner.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "chat-chips": {
+    "css": ["chat-chips.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "chat-composer": {
+    "css": ["chat-composer.css"],
+    "cssDeps": [],
+    "js": ["chat-composer.js"],
+    "rive": []
+  },
+  "chat-context-menu": {
+    "css": ["chat-context-menu.css"],
+    "cssDeps": ["sheet.css"],
+    "js": [],
+    "rive": []
+  },
+  "chat-messages": {
+    "css": ["chat-messages.css"],
+    "cssDeps": [],
+    "js": ["chat-messages.js"],
+    "rive": []
+  },
+  "chat-toolbar": {
+    "css": ["chat-toolbar.css"],
+    "cssDeps": ["avatar.css"],
+    "js": [],
+    "rive": ["character2.91.riv", "sprot2.97_.riv"]
+  },
+  "message-bubble": {
+    "css": ["message-bubble.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "planning-tree": {
+    "css": ["planning-tree.css"],
+    "cssDeps": ["chat-messages.css"],
+    "js": ["planning-tree.js"],
+    "rive": []
+  },
+  "reasoning-transcript": {
+    "css": ["reasoning-transcript.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  },
+  "result-card": {
+    "css": ["result-card.css"],
+    "cssDeps": ["chat-messages.css"],
+    "js": [],
+    "rive": []
+  },
+  "scope-sheet": {
+    "css": ["scope-sheet.css"],
+    "cssDeps": ["artifact.css"],
+    "js": [],
+    "rive": []
+  },
+  "sheet": {
+    "css": ["sheet.css"],
+    "cssDeps": ["buttons.css"],
+    "js": [],
+    "rive": []
+  },
+  "skill-sheet": {
+    "css": ["skill-sheet.css"],
+    "cssDeps": ["artifact.css"],
+    "js": [],
+    "rive": []
+  },
+  "toast": {
+    "css": ["toast.css"],
+    "cssDeps": [],
+    "js": [],
+    "rive": []
+  }
+}
