@@ -536,6 +536,17 @@
       html += '</div></div>';
     }
 
+    // Sound
+    if (meta.sound) {
+      html += '<div class="meta-row">';
+      html += '<div class="meta-icon">' + META_ICONS.file + '</div>';
+      html += '<div class="meta-label">Sound</div>';
+      html += '<div class="meta-value">';
+      html += '<span class="badge badge-gray">' + meta.sound + '</span>';
+      html += '<a class="btn-download" href="/product-explorer/assets/' + meta.sound + '" download>' + META_ICONS.download + '</a>';
+      html += '</div></div>';
+    }
+
     // Device
     if (meta.device) {
       html += '<div class="meta-row">';
