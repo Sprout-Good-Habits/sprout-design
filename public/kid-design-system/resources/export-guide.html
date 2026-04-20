@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout Kid Design System — Export Guide</title>
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+.export-card {
+  background: var(--bg-secondary, #fafafa);
+  border: 1px solid var(--gray-200, #e9eaeb);
+  border-radius: var(--radius-xl, 12px);
+  padding: var(--spacing-3xl, 24px);
+  margin-top: var(--spacing-3xl, 24px);
+}
+.export-card h3 {
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs, 4px);
+}
+.export-card p {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-secondary);
+  line-height: var(--line-height-text-sm, 20px);
+  margin-bottom: var(--spacing-xl, 16px);
+}
+pre {
+  background: var(--gray-50, #f9fafb);
+  border: 1px solid var(--gray-200, #e9eaeb);
+  border-radius: var(--radius-md, 8px);
+  padding: var(--spacing-xl, 16px);
+  font-size: var(--font-size-text-sm, 14px);
+  overflow-x: auto;
+  margin: var(--spacing-xl, 16px) 0;
+}
+code { font-family: 'SF Mono', 'Fira Code', monospace; }
+.component-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-md, 8px);
+  margin: var(--spacing-xl, 16px) 0;
+}
+.component-list a {
+  display: block;
+  padding: var(--spacing-md, 8px) var(--spacing-lg, 12px);
+  background: white;
+  border: 1px solid var(--gray-200, #e9eaeb);
+  border-radius: var(--radius-sm, 6px);
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.component-list a:hover {
+  border-color: var(--brand-500, #0ba5ec);
+  background: var(--brand-50, #f0f9ff);
+}
+</style>
+</head>
+<body>
+<script src="/shell.js"></script>
+
+<h1>Component Export</h1>
+<p>Grab any Sprout component as a self-contained CSS bundle. No build system, no framework dependencies.</p>
+
+<div class="export-card">
+<h3>How it works</h3>
+<p>Each bundle includes design tokens + all CSS dependencies concatenated into a single file. Every CSS variable has an inline fallback, so bundles render correctly without any other Sprout infrastructure.</p>
+</div>
+
+<h2>Option 1: Hotlink from Vercel</h2>
+<p>Link directly to a pre-built bundle:</p>
+<pre><code>&lt;link rel="stylesheet" href="https://sprout-design.vercel.app/export/chat-messages/chat-messages.bundle.css"&gt;</code></pre>
+
+<h2>Option 2: Run the export script locally</h2>
+<p>Clone the repo and run:</p>
+<pre><code>node scripts/export-component.mjs chat-messages --out ./my-export</code></pre>
+<p>This generates the CSS bundle plus any Rive assets and JS helpers the component needs.</p>
+
+<h2>Option 3: Copy from the manifest</h2>
+<p>Read <code>component-manifest.json</code> to see exactly which files a component needs, then grab them manually from <code>/kid-design-system/components/</code>.</p>
+
+<h2>Customizing tokens</h2>
+<p>Bundles use CSS custom properties with hardcoded fallbacks. To override, set the variables in your own stylesheet:</p>
+<pre><code>:root {
+  --color-brand-500: #your-brand-color;
+  --spacing-md: 12px;
+  --radius-xl: 16px;
+}</code></pre>
+
+<h2>Rive characters</h2>
+<p>Components that display the Sprout mascot or village characters need the Rive WASM runtime and the <code>.riv</code> asset files (included in the export). Add:</p>
+<pre><code>&lt;script src="https://unpkg.com/@rive-app/canvas@2.27.0"&gt;&lt;/script&gt;
+&lt;script src="rive-avatars.js"&gt;&lt;/script&gt;</code></pre>
+
+<h2>Available components</h2>
+<div class="component-list">
+  <a href="/export/action-prompt/">action-prompt</a>
+  <a href="/export/alert/">alert</a>
+  <a href="/export/artifact/">artifact</a>
+  <a href="/export/attach-panel/">attach-panel</a>
+  <a href="/export/avatar/">avatar</a>
+  <a href="/export/avatar-group/">avatar-group</a>
+  <a href="/export/avatar-group-card/">avatar-group-card</a>
+  <a href="/export/avatar-portrait/">avatar-portrait</a>
+  <a href="/export/avatar-profile/">avatar-profile</a>
+  <a href="/export/avatar-row/">avatar-row</a>
+  <a href="/export/badges/">badges</a>
+  <a href="/export/button/">button</a>
+  <a href="/export/buttons/">buttons</a>
+  <a href="/export/card/">card</a>
+  <a href="/export/chat-action-buttons/">chat-action-buttons</a>
+  <a href="/export/chat-banner/">chat-banner</a>
+  <a href="/export/chat-chips/">chat-chips</a>
+  <a href="/export/chat-composer/">chat-composer</a>
+  <a href="/export/chat-context-menu/">chat-context-menu</a>
+  <a href="/export/chat-messages/">chat-messages</a>
+  <a href="/export/chat-toolbar/">chat-toolbar</a>
+  <a href="/export/message-bubble/">message-bubble</a>
+  <a href="/export/planning-tree/">planning-tree</a>
+  <a href="/export/reasoning-transcript/">reasoning-transcript</a>
+  <a href="/export/result-card/">result-card</a>
+  <a href="/export/scope-sheet/">scope-sheet</a>
+  <a href="/export/sheet/">sheet</a>
+  <a href="/export/skill-sheet/">skill-sheet</a>
+  <a href="/export/toast/">toast</a>
+</div>
+
+<script src="/nav.js"></script>
+</body>
+</html>
