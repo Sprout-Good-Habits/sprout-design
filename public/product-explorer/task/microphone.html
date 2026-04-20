@@ -6,6 +6,7 @@
 <title>Sprout Product Explorer - Microphone</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/waveform.css">
 <style>
 /* -- Device -- */
 .device-wrapper{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:32px;padding:4px;box-shadow:0 12px 16px -4px rgba(10,13,18,.08),0 4px 6px -2px rgba(10,13,18,.03),0 2px 2px -1px rgba(10,13,18,.04)}
@@ -58,10 +59,8 @@
 .btn-util.muted:hover{background:#f97066}
 .btn-util.muted:active{box-shadow:none;transform:translateY(2px)}
 
-/* -- Waveform -- */
-.waveform-container{position:absolute;bottom:0;left:0;right:0;height:34px;z-index:3;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
-.waveform-bar{width:2px;flex-shrink:0;margin:0 1px;border-radius:1px;background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 40%, rgba(255,255,255,1) 100%);transition:height .1s ease}
-
+/* -- Waveform positioning -- */
+.waveform-container{position:absolute;bottom:0;left:0;right:0;height:34px;z-index:3}
 
 /* -- API key input -- */
 .api-key-bar{position:absolute;top:130px;left:16px;right:16px;z-index:15;display:flex;gap:8px}
@@ -72,10 +71,7 @@
 .api-key-bar button:hover{background:#36bffa}
 .api-key-bar.connected{display:none}
 
-/* -- State label -- */
-.state-label{display:none}
-
-@media(prefers-reduced-motion:reduce){.listening-dot,.waveform-bar{animation:none !important;transition:none !important}}
+@media(prefers-reduced-motion:reduce){.waveform-bar{animation:none !important;transition:none !important}}
 </style>
 </head>
 <body>
@@ -113,7 +109,7 @@
   <div class="sprout-speech-bubble" id="speechBubble"></div>
 </div>
 
-<!-- API Key bar (shown until connected) -->
+<!-- API Key bar -->
 <div class="api-key-bar" id="apiKeyBar">
   <input type="password" id="apiKeyInput" placeholder="ElevenLabs API key" />
   <button id="apiKeyBtn">Connect</button>
@@ -133,22 +129,17 @@
 <!-- Waveform bars -->
 <div class="waveform-container" id="waveformContainer"></div>
 
-<!-- Debug panel (temporary) -->
-<div id="debugPanel" style="position:absolute;top:62px;right:8px;z-index:30;background:rgba(0,0,0,.7);color:#0f0;font-family:monospace;font-size:10px;padding:4px 8px;border-radius:8px;pointer-events:none;white-space:pre"></div>
-
 <!-- Composer bar -->
 <div class="composer-bar">
   <button class="btn-util" id="btnPlus" aria-label="Add attachment">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
   <button class="btn-util" id="micBtn" aria-label="Mute microphone">
-    <!-- Mic on icon -->
     <svg class="icon-mic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
       <rect x="9" y="2" width="6" height="11" rx="3"/>
       <path d="M5 10a7 7 0 0 0 14 0"/>
       <line x1="12" y1="21" x2="12" y2="17"/>
     </svg>
-    <!-- Mic off icon (hidden by default) -->
     <svg class="icon-mic-off" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
       <path d="M15 9.4V5a3 3 0 0 0-5.68-1.33M9 9v3a3 3 0 0 0 5.12 2.12M19 10v1a7 7 0 0 1-.78 3.21M5 10v1a7 7 0 0 0 11.22 5.57M12 17v4M8 21h8M2 2l20 20"/>
     </svg>
@@ -169,267 +160,39 @@
   </div>
 </div>
 
-<!-- Rive runtime -->
+<!-- Scripts: Rive + reusable modules -->
 <script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<script src="/kid-design-system/components/mic-listener.js"></script>
+<script src="/kid-design-system/components/waveform.js"></script>
+<script src="/kid-design-system/components/sprout-voice.js"></script>
 
 <script>
 (function() {
-  // ============================================================
-  //  ELEMENTS
-  // ============================================================
+  // ── Elements ──
   var micBtn = document.getElementById('micBtn');
-  var waveformContainer = document.getElementById('waveformContainer');
   var speechBubble = document.getElementById('speechBubble');
   var apiKeyBar = document.getElementById('apiKeyBar');
   var apiKeyInput = document.getElementById('apiKeyInput');
   var apiKeyBtn = document.getElementById('apiKeyBtn');
-
-  // ============================================================
-  //  STATE
-  // ============================================================
-  var ELEVENLABS_VOICE_ID = 'XfNU2rGpBa01ckF309OY';
-  var apiKey = '';
-  var isMuted = false;
-  var audioContext = null;
-  var analyser = null;       // for mic waveform
-  var micStream = null;
-  var isSproutTalking = false;
   var iconMicOn = micBtn.querySelector('.icon-mic-on');
   var iconMicOff = micBtn.querySelector('.icon-mic-off');
 
-  // Silence detection
-  var silenceTimer = null;
-  var wasSpeaking = false;
-  var SILENCE_THRESHOLD = 0.01; // RMS below this = silence
-  var SPEECH_THRESHOLD = 0.03;  // RMS above this = speaking
-  var SILENCE_DELAY = 2000;     // 2s of silence before triggering reply
+  // ── Waveform ──
+  var waveform = SproutWaveform.create({ container: 'waveformContainer' });
 
-  // ============================================================
-  //  WAVEFORM BARS -- from Figma vectors
-  // ============================================================
-  var activeHeights = [
-    13,14,16,16,16,17,18,20,20,18,17,16,14,13,13,14,16,18,18,18,
-    20,20,20,20,18,17,16,14,13,14,16,17,18,20,21,22,24,25,26,27,
-    29,30,31,33,34,34,34,33,31,30,29,27,26,25,24,22,21,20,18,17,
-    16,14,16,17,18,20,20,20,20,20,18,16,14,13,14,16,17,18,20,20,
-    20,20,20,18,16,14,13,13,13,14,16,17,18,20,21,22,24,25,26,27,
-    29,30,31,33,34,34,34,34,33,31,30,29,27,26,25,24,22,21,20,18,
-    17,16,14,16,17,18,20,20,20,20,20,18,16,14
-  ];
-  var IDLE_HEIGHT = 16;
-  var NUM_BARS = activeHeights.length;
-  var bars = [];
+  // ── Voice controller (initialized after Rive loads) ──
+  var voice = null;
 
-  function buildWaveform() {
-    for (var i = 0; i < NUM_BARS; i++) {
-      var bar = document.createElement('div');
-      bar.className = 'waveform-bar';
-      bar.style.height = IDLE_HEIGHT + 'px';
-      waveformContainer.appendChild(bar);
-      bars.push(bar);
-    }
-  }
-  buildWaveform();
-
-  function setWaveformIdle() {
-    for (var i = 0; i < NUM_BARS; i++) {
-      bars[i].style.height = IDLE_HEIGHT + 'px';
-    }
-  }
-
-  // ============================================================
-  //  FAKE WAVEFORM (simulates Sprout voice when no real audio analyser)
-  // ============================================================
-  var fakeWaveId = null;
-
-  function startFakeWaveform() {
-    var startTime = performance.now();
-    function draw() {
-      fakeWaveId = requestAnimationFrame(draw);
-      var elapsed = (performance.now() - startTime) / 1000;
-      for (var i = 0; i < NUM_BARS; i++) {
-        // Organic wave: combine sine waves at different frequencies
-        var wave = Math.sin(elapsed * 4.5 + i * 0.15) * 0.3
-                 + Math.sin(elapsed * 7.2 + i * 0.08) * 0.2
-                 + Math.sin(elapsed * 2.1 + i * 0.25) * 0.15;
-        var energy = 0.4 + 0.3 * Math.sin(elapsed * 1.8); // pulsing energy
-        var t = Math.max(0, Math.min(1, (wave + 0.5) * energy));
-        var h = Math.round(IDLE_HEIGHT + (activeHeights[i] - IDLE_HEIGHT) * t);
-        bars[i].style.height = h + 'px';
-      }
-    }
-    draw();
-  }
-
-  function stopFakeWaveform() {
-    if (fakeWaveId) { cancelAnimationFrame(fakeWaveId); fakeWaveId = null; }
-    setWaveformIdle();
-  }
-
-  // ============================================================
-  //  WAVEFORM ANIMATION LOOP
-  // ============================================================
-  var dbg = document.getElementById('debugPanel');
-  var dbgFrames = 0;
-
-  function startWaveformLoop() {
-    function draw() {
-      requestAnimationFrame(draw);
-      dbgFrames++;
-
-      if (!analyser) {
-        if (dbgFrames % 30 === 0) dbg.textContent = 'analyser: null\nctx: ' + (audioContext ? audioContext.state : 'none') + '\nstream: ' + (micStream ? micStream.active : 'none');
-        return;
-      }
-      if (isMuted && !isSproutTalking) return;
-
-      // Use time-domain data (waveform) -- more responsive to voice than frequency
-      var dataArray = new Uint8Array(analyser.fftSize);
-      analyser.getByteTimeDomainData(dataArray);
-
-      // Compute RMS amplitude (128 = silence center)
-      var sumSq = 0;
-      for (var j = 0; j < dataArray.length; j++) {
-        var v = (dataArray[j] - 128) / 128;
-        sumSq += v * v;
-      }
-      var avg = Math.sqrt(sumSq / dataArray.length);
-
-      if (dbgFrames % 10 === 0) dbg.textContent = 'RMS: ' + avg.toFixed(4) + '\nctx: ' + audioContext.state + '\nspeak: ' + wasSpeaking + '\nmuted: ' + isMuted;
-
-      for (var i = 0; i < NUM_BARS; i++) {
-        var t = Math.min(1, avg * 8);
-        var h = Math.round(IDLE_HEIGHT + (activeHeights[i] - IDLE_HEIGHT) * t);
-        bars[i].style.height = h + 'px';
-      }
-
-      // Silence detection
-      if (!isMuted && !isSproutTalking) {
-        if (avg > SPEECH_THRESHOLD) {
-          // User is speaking -- Sprout listens
-          if (!wasSpeaking) {
-            wasSpeaking = true;
-            triggerRiveListen(true);
-          }
-          if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
-        } else if (avg < SILENCE_THRESHOLD && wasSpeaking && !silenceTimer) {
-          // User went silent, start countdown
-          silenceTimer = setTimeout(function() {
-            wasSpeaking = false;
-            silenceTimer = null;
-            onUserStoppedTalking();
-          }, SILENCE_DELAY);
-        }
-      }
-    }
-    draw();
-  }
-
-  // ============================================================
-  //  SPEECH BUBBLE
-  // ============================================================
   function showSpeech(text) {
     speechBubble.textContent = text;
     speechBubble.classList.add('visible');
   }
-
   function hideSpeech() {
     speechBubble.classList.remove('visible');
   }
 
-  // ============================================================
-  //  RIVE EXPRESSIONS
-  //  Triggers (fire once): smile, laugh, surprise, smugface, sad,
-  //                        doubtful, thinking, celebration, characterwave
-  //  Bools: talkinganimation, talkingmouth toggle
-  //  Numbers: mouthselector (0-12), looking (0-3)
-  // ============================================================
-  var mouthInterval = null;
-  var lookInterval = null;
-
-  function getRiveInputs() {
-    var ri = window._riveInstance;
-    if (!ri) return null;
-    try {
-      var inputs = ri.stateMachineInputs('State Machine 1');
-      if (!inputs) return null;
-      var map = {};
-      inputs.forEach(function(inp) { map[inp.name] = inp; });
-      return map;
-    } catch(e) { return null; }
-  }
-
-  // Fire a trigger by name
-  function fireRiveTrigger(name) {
-    var map = getRiveInputs();
-    if (map && map[name] && map[name].fire) map[name].fire();
-  }
-
-  // Sprout is talking: mouth moves, body animates
-  function triggerRiveTalk(talking) {
-    var map = getRiveInputs();
-    if (!map) { console.warn('Rive inputs not available'); return; }
-    if (talking) {
-      // Reset eyes to default (3 = forward/center)
-      if (map['looking']) map['looking'].value = 3;
-      if (lookInterval) { clearInterval(lookInterval); lookInterval = null; }
-      if (map['smile'] && map['smile'].fire) map['smile'].fire();
-      if (map['talkinganimation']) map['talkinganimation'].value = true;
-      if (map['talkingmouth toggle']) map['talkingmouth toggle'].value = true;
-      mouthInterval = setInterval(function() {
-        if (map['mouthselector']) {
-          map['mouthselector'].value = 1 + Math.floor(Math.random() * 8);
-        }
-      }, 120);
-    } else {
-      if (map['talkinganimation']) map['talkinganimation'].value = false;
-      if (map['talkingmouth toggle']) map['talkingmouth toggle'].value = false;
-      if (map['mouthselector']) map['mouthselector'].value = 0;
-      if (mouthInterval) { clearInterval(mouthInterval); mouthInterval = null; }
-    }
-  }
-
-  // Sprout is thinking: fire thinking trigger
-  function triggerRiveThinking() {
-    fireRiveTrigger('thinking');
-  }
-
-  // Sprout is listening: eyes look around attentively
-  function triggerRiveListen(listening) {
-    var map = getRiveInputs();
-    if (!map) return;
-
-    if (listening) {
-      // Gently shift eyes around to show attentiveness
-      if (map['looking']) map['looking'].value = 1; // look up-middle
-      lookInterval = setInterval(function() {
-        if (map['looking']) {
-          map['looking'].value = Math.floor(Math.random() * 3); // 0=top-left, 1=top-mid, 2=top-right
-        }
-      }, 1500);
-      // Smile to show engagement
-      fireRiveTrigger('smile');
-    } else {
-      if (lookInterval) { clearInterval(lookInterval); lookInterval = null; }
-      if (map['looking']) map['looking'].value = 3; // reset to forward
-    }
-  }
-
-  // ============================================================
-  //  CHIME + ELEVENLABS TTS
-  // ============================================================
-  var chimeAudio = document.createElement('audio');
-  chimeAudio.src = '/product-explorer/assets/sprout-chime.wav';
-  chimeAudio.volume = 0.6;
-  chimeAudio.setAttribute('playsinline', '');
-  document.body.appendChild(chimeAudio);
-
-  function playChime() {
-    chimeAudio.currentTime = 0;
-    return chimeAudio.play().catch(function(e) { console.warn('Chime blocked:', e); });
-  }
-
-  var sproutReplies = [
+  // ── Reply rotation ──
+  var replies = [
     "That's so cool! Tell me more about it!",
     "Wow, I love hearing about that!",
     "You're awesome! What else happened?",
@@ -440,238 +203,119 @@
     "You're so creative! What did you do next?"
   ];
   var replyIdx = 0;
+  function getReply() { return replies[replyIdx++ % replies.length]; }
 
-  function getReply() {
-    var reply = sproutReplies[replyIdx % sproutReplies.length];
-    replyIdx++;
-    return reply;
-  }
+  // ── Mic listener ──
+  var mic = null;
 
-  function onUserStoppedTalking() {
-    if (isSproutTalking) return;
-    // Stop listening animation
-    triggerRiveListen(false);
-    // Sprout thinks while chime plays
-    triggerRiveThinking();
-    playChime();
-
-    if (apiKey) {
-      // Use ElevenLabs TTS
-      var reply = getReply();
-      setTimeout(function() {
-        speakWithElevenLabs(reply);
-      }, 800);
-    } else {
-      // No API key: fake talking animation after 2s of thinking
-      var reply = getReply();
-      setTimeout(function() {
-        isSproutTalking = true;
-        showSpeech(reply);
-        triggerRiveTalk(true);
-        startFakeWaveform();
-        // Stop after a few seconds
-        setTimeout(function() {
-          isSproutTalking = false;
-          triggerRiveTalk(false);
-          stopFakeWaveform();
-          setTimeout(hideSpeech, 1500);
-        }, 3000);
-      }, 2000);
-    }
-  }
-
-  // Pre-create a reusable audio element and unlock it on first user gesture (Safari fix)
-  var ttsAudio = document.createElement('audio');
-  ttsAudio.setAttribute('playsinline', '');
-  document.body.appendChild(ttsAudio);
-
-  document.addEventListener('click', function unlockAudio() {
-    ttsAudio.play().then(function() { ttsAudio.pause(); }).catch(function() {});
-    chimeAudio.play().then(function() { chimeAudio.pause(); chimeAudio.currentTime = 0; }).catch(function() {});
-    document.removeEventListener('click', unlockAudio);
-  });
-
-  function speakWithElevenLabs(text) {
-    isSproutTalking = true;
-    // Safety: force reset after 15s in case audio events never fire
-    setTimeout(function() {
-      if (isSproutTalking) {
-        isSproutTalking = false;
-        triggerRiveTalk(false);
-        hideSpeech();
-      }
-    }, 15000);
-
-    fetch('https://api.elevenlabs.io/v1/text-to-speech/' + ELEVENLABS_VOICE_ID, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': apiKey,
-        'Content-Type': 'application/json',
-        'Accept': 'audio/mpeg'
-      },
-      body: JSON.stringify({
-        text: text,
-        model_id: 'eleven_turbo_v2',
-        voice_settings: {
-          stability: 0.6,
-          similarity_boost: 0.75,
-          style: 0.3
+  function startMic() {
+    mic = SproutMicListener.start({
+      silenceDelay: 2000,
+      onAmplitude: function(rms) {
+        if (!voice || !voice.isTalking()) {
+          waveform.setAmplitude(rms);
         }
-      })
-    })
-    .then(function(res) {
-      if (!res.ok) throw new Error('ElevenLabs error: ' + res.status);
-      return res.blob();
-    })
-    .then(function(blob) {
-      var url = URL.createObjectURL(blob);
-      ttsAudio.src = url;
-
-      ttsAudio.onplaying = function() {
-        showSpeech(text);
-        triggerRiveTalk(true);
-        startFakeWaveform();
-      };
-
-      ttsAudio.onended = function() {
-        isSproutTalking = false;
-        triggerRiveTalk(false);
-        stopFakeWaveform();
-        setTimeout(hideSpeech, 1500);
-      };
-
-      ttsAudio.onerror = function() {
-        isSproutTalking = false;
-        triggerRiveTalk(false);
-        hideSpeech();
-      };
-
-      ttsAudio.play().catch(function(e) {
-        console.error('Audio play failed:', e);
-        isSproutTalking = false;
-      });
-    })
-    .catch(function(err) {
-      console.error('TTS error:', err);
-      isSproutTalking = false;
-      triggerRiveTalk(false);
-      setTimeout(hideSpeech, 3000);
+      },
+      onSpeechStart: function() {
+        if (voice) voice.listen();
+      },
+      onSilence: function() {
+        if (!voice) return;
+        voice.stopListening();
+        voice.think();
+        mic.pauseSilenceDetection();
+        var reply = getReply();
+        setTimeout(function() {
+          voice.speak(reply);
+        }, 800);
+      },
+      onError: function() {
+        showSpeech('Please allow microphone access');
+        setTimeout(hideSpeech, 3000);
+      }
     });
+
+    // Greet after mic ready
+    setTimeout(function() {
+      if (voice) {
+        var greeting = "Hi there! I'm Sprout! What should we do today?";
+        voice.speak(greeting);
+      }
+    }, 800);
   }
 
-  // ============================================================
-  //  MIC MUTE/UNMUTE TOGGLE
-  // ============================================================
-  function updateMicIcon() {
-    iconMicOn.style.display = isMuted ? 'none' : '';
-    iconMicOff.style.display = isMuted ? '' : 'none';
-    micBtn.classList.toggle('muted', isMuted);
+  // ── Mute toggle ──
+  function updateMicIcon(muted) {
+    iconMicOn.style.display = muted ? 'none' : '';
+    iconMicOff.style.display = muted ? '' : 'none';
+    micBtn.classList.toggle('muted', muted);
+    if (muted) waveform.setIdle();
   }
 
   micBtn.addEventListener('click', function() {
-    isMuted = !isMuted;
-    updateMicIcon();
-    if (micStream) {
-      micStream.getAudioTracks().forEach(function(t) { t.enabled = !isMuted; });
-    }
-    if (isMuted) setWaveformIdle();
+    if (!mic) return;
+    var muted = mic.toggleMute();
+    updateMicIcon(muted);
   });
 
-  // ============================================================
-  //  START LISTENING (always on)
-  // ============================================================
-  var micStarted = false;
+  // ── API key ──
+  apiKeyBtn.addEventListener('click', function() {
+    var key = apiKeyInput.value.trim();
+    if (!key) return;
+    if (voice) voice.setApiKey(key);
+    apiKeyBar.classList.add('connected');
+  });
+  apiKeyInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') apiKeyBtn.click();
+  });
 
-  function startListening() {
-    if (micStarted) return;
-    micStarted = true;
-
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Resume context (required after user gesture in most browsers)
-    audioContext.resume().then(function() {
-      console.log('AudioContext state:', audioContext.state);
-    });
-
-    navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(function(stream) {
-      micStream = stream;
-      console.log('Mic stream active:', stream.active, 'tracks:', stream.getAudioTracks().length);
-
-      var source = audioContext.createMediaStreamSource(stream);
-      analyser = audioContext.createAnalyser();
-      analyser.fftSize = 2048;
-      source.connect(analyser);
-
-      startWaveformLoop();
-
-      // Greet after mic is ready
-      setTimeout(function() {
-        speakWithElevenLabs("Hi there! I'm Sprout! What should we do today?");
-      }, 500);
-    })
-    .catch(function(err) {
-      console.error('Mic access denied:', err);
-      micStarted = false;
-      showSpeech('Please allow microphone access');
-      setTimeout(hideSpeech, 3000);
-    });
-  }
-
-  // ============================================================
-  //  INIT -- require a click to start (Chrome autoplay policy)
-  // ============================================================
-  // Show API key bar so user can update if needed
-  apiKeyInput.value = apiKey;
+  // ── Init: require click to start (Chrome autoplay policy) ──
   showSpeech("Tap anywhere to start!");
 
   function onFirstInteraction() {
     hideSpeech();
-    if (audioContext && audioContext.state === 'suspended') {
-      audioContext.resume();
-    }
-    if (!micStarted) startListening();
+    startMic();
     document.removeEventListener('click', onFirstInteraction);
     document.removeEventListener('touchstart', onFirstInteraction);
   }
   document.addEventListener('click', onFirstInteraction);
   document.addEventListener('touchstart', onFirstInteraction);
-})();
-</script>
 
-<!-- Rive initialization -->
-<script>
+  // ── Rive ──
   var SPROUT_SRC = '/kid-design-system/sprot2.97_.riv';
-  var r;
 
-  function initCharRive(src) {
+  function initRive() {
     var canvas = document.getElementById('rive-character');
-    if (canvas && window.rive) {
-      if (r) { r.cleanup(); r = null; }
-      r = new rive.Rive({
-        src: src,
-        canvas: canvas,
-        autoplay: true,
-        stateMachines: 'State Machine 1',
-        fit: rive.Fit.Contain,
-        alignment: rive.Alignment.BottomCenter,
-        onLoad: function() {
-          r.resizeDrawingSurfaceToCanvas();
-          try {
-            var inputs = r.stateMachineInputs('State Machine 1');
-            if (inputs) inputs.forEach(function(inp) {
-              if (inp.name === 'hairID') inp.value = 1;
-            });
-          } catch(e) {}
-          // Expose to main script
-          window._riveInstance = r;
-        }
-      });
-    }
+    if (!canvas || !window.rive) return;
+    var r = new rive.Rive({
+      src: SPROUT_SRC,
+      canvas: canvas,
+      autoplay: true,
+      stateMachines: 'State Machine 1',
+      fit: rive.Fit.Contain,
+      alignment: rive.Alignment.BottomCenter,
+      onLoad: function() {
+        r.resizeDrawingSurfaceToCanvas();
+        try {
+          var inputs = r.stateMachineInputs('State Machine 1');
+          if (inputs) inputs.forEach(function(inp) {
+            if (inp.name === 'hairID') inp.value = 1;
+          });
+        } catch(e) {}
+
+        // Init voice controller now that Rive is ready
+        voice = SproutVoice.init({
+          riveInstance: r,
+          waveform: waveform,
+          chimeSrc: '/product-explorer/assets/sprout-chime.wav',
+          onSpeechStart: function(text) { showSpeech(text); },
+          onSpeechEnd: function() { setTimeout(hideSpeech, 1500); }
+        });
+      }
+    });
   }
-
-  initCharRive(SPROUT_SRC);
-
+  initRive();
+})();
 </script>
 
 <script>window.DS_META={title:'Microphone',desc:'Voice conversation prototype with always-on microphone, Sprout Rive character, and ElevenLabs TTS.',owner:'Leti Schimmel',status:'WIP',rive:'sprot2.97_.riv',skill:'sprout-rive-skill.md',sound:'sprout-chime.wav',notes:'\
@@ -689,6 +333,12 @@
 <p>During speech: <strong>talking animation</strong> (body movement + mouth visemes cycling), speech bubble shows text, waveform animates.</p>\
 <h3>4. Mute button</h3>\
 <p>Tap the mic button to mute/unmute. When muted, the button turns red with a mic-off icon. The mic stream stays alive but audio tracks are disabled.</p>\
+<h3>Reusable modules</h3>\
+<ul>\
+<li><code>mic-listener.js</code> - Mic stream, silence detection, mute API</li>\
+<li><code>waveform.js</code> + <code>waveform.css</code> - Bar rendering, amplitude-driven or simulated</li>\
+<li><code>sprout-voice.js</code> - Rive expression orchestration, ElevenLabs TTS, chime</li>\
+</ul>\
 <h3>Rive states used</h3>\
 <ul>\
 <li><strong>Listening:</strong> <code>smile</code> trigger + <code>looking</code> (0-2) cycling every 1.5s</li>\
