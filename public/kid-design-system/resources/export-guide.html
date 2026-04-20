@@ -94,6 +94,26 @@ code { font-family: 'SF Mono', 'Fira Code', monospace; }
 <pre><code>&lt;script src="https://unpkg.com/@rive-app/canvas@2.27.0"&gt;&lt;/script&gt;
 &lt;script src="rive-avatars.js"&gt;&lt;/script&gt;</code></pre>
 
+<h2>Full-page prototypes</h2>
+<p>Prototypes (product-explorer pages) can also be exported as standalone HTML files with all CSS inlined and the doc shell stripped:</p>
+<pre><code>node scripts/export-prototype.mjs public/product-explorer/parent-chat-3.html --out ./my-export
+node scripts/export-prototype.mjs public/product-explorer/task/microphone.html --out ./my-export</code></pre>
+<p>The output is a single HTML file plus any Rive/audio assets. No external dependencies except the Rive CDN script (already included as a tag in the HTML).</p>
+
+<h3>Available prototypes</h3>
+<div class="component-list">
+  <a href="#">parent-chat</a>
+  <a href="#">parent-chat-2</a>
+  <a href="#">parent-chat-3</a>
+  <a href="#">microphone</a>
+  <a href="#">chat-tier-2</a>
+  <a href="#">chat-tier-3</a>
+  <a href="#">customize-avatar</a>
+  <a href="#">customize-sprout</a>
+  <a href="#">kid-home</a>
+  <a href="#">video-verification-explorer</a>
+</div>
+
 <h2>Available components</h2>
 <div class="component-list">
   <a href="/export/action-prompt/">action-prompt</a>
