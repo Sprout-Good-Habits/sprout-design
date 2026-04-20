@@ -87,6 +87,43 @@
   padding: 2px 6px;
   white-space: nowrap;
 }
+.search-bar {
+  position: relative;
+  margin-top: 24px;
+}
+.search-bar input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px 0 38px;
+  border: 1px solid #e9eaeb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #181d27;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.search-bar input:focus {
+  border-color: #0ba5ec;
+}
+.search-bar input::placeholder {
+  color: #a4a7ae;
+}
+.search-bar svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #a4a7ae;
+  pointer-events: none;
+}
+.at-row.hidden {
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -97,6 +134,10 @@
       <div class="breadcrumb" id="breadcrumb"></div>
       <div class="artifacts-index">
         <h1 class="page-title">Product explorer</h1>
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="search-input" placeholder="Search artifacts..." autocomplete="off" />
+        </div>
         <div class="artifacts-table" id="artifacts-table"></div>
       </div>
     </div>
@@ -134,6 +175,19 @@
 
   html += '</div>';
   table.innerHTML = html;
+
+  // Search filtering
+  var searchInput = document.getElementById('search-input');
+  var rows = table.querySelectorAll('.at-row');
+  searchInput.addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    for (var j = 0; j < rows.length; j++) {
+      var name = rows[j].querySelector('.at-name').textContent.toLowerCase();
+      var badge = rows[j].querySelector('.at-badge');
+      var badgeText = badge ? badge.textContent.toLowerCase() : '';
+      rows[j].classList.toggle('hidden', q !== '' && name.indexOf(q) === -1 && badgeText.indexOf(q) === -1);
+    }
+  });
 })();
 </script>
 </body>
