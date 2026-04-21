@@ -12,6 +12,7 @@
      - stopListening()  // exit listening
      - think()          // thinking trigger + chime
      - speak(text)      // Sprout speaks (TTS or fake-talk)
+     - interrupt()      // kid interrupts Sprout mid-speech (barge-in)
      - stop()           // force-stop everything
      - isTalking()      // boolean
      - setApiKey(key)   // update ElevenLabs key at runtime
@@ -57,6 +58,10 @@
 
     // Post-speech buffer (echo prevention)
     var POST_SPEECH_BUFFER = opts.postSpeechBuffer || 1500;
+
+    // Barge-in: kid can interrupt Sprout mid-speech
+    var bargeIn = opts.bargeIn || false;
+    var onInterrupt = opts.onInterrupt || function () {};
 
     // ── Audio elements ──
     // Chime
@@ -254,8 +259,8 @@
       stopThinking();
       stopMicroReactions();
 
-      // Disable mic BEFORE setState so button update sees disabled=true
-      if (mic) mic.disable();
+      // Half-duplex: disable mic unless barge-in is enabled
+      if (mic && !bargeIn) mic.disable();
       setState('thinking');
 
       // Play chime
@@ -325,8 +330,8 @@
       stopThinking();
       isTalkingFlag = true;
 
-      // Disable mic BEFORE setState so button update sees disabled=true
-      if (mic) mic.disable();
+      // Half-duplex: disable mic unless barge-in is enabled
+      if (mic && !bargeIn) mic.disable();
       setState('talking');
 
       // Safety timeout
@@ -403,6 +408,29 @@
       }
     }
 
+    // Barge-in: kid interrupts Sprout mid-speech
+    function interrupt() {
+      if (!isTalkingFlag && currentState !== 'thinking') return;
+
+      // Stop everything Sprout is doing
+      stopThinking();
+      isTalkingFlag = false;
+      setRiveTalk(false);
+      if (waveform) waveform.stopSimulation();
+      if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
+      if (fakeTalkTimer) { clearTimeout(fakeTalkTimer); fakeTalkTimer = null; }
+      if (postSpeechTimer) { clearTimeout(postSpeechTimer); postSpeechTimer = null; }
+      ttsAudio.pause();
+      ttsAudio.currentTime = 0;
+
+      // Warm yield: smile and transition to listening
+      fireTrigger('smile');
+      setState('listening');
+      startMicroReactions();
+
+      onInterrupt();
+    }
+
     function stop() {
       isTalkingFlag = false;
       setRiveTalk(false);
@@ -431,7 +459,9 @@
       stopListening: stopListening,
       think: think,
       speak: speak,
+      interrupt: interrupt,
       stop: stop,
+      isBargeInEnabled: function () { return bargeIn; },
       isTalking: function () { return isTalkingFlag; },
       getState: function () { return currentState; },
       setApiKey: function (key) { apiKey = key; },
