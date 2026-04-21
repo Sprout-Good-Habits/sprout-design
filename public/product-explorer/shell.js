@@ -75,11 +75,18 @@
     '.nav-sub-children.collapsed{display:none;}',
     '.nav-sub-children .nav-child{padding-left:28px;}',
     /* Breadcrumb hamburger */
-    '.breadcrumb-menu-btn{width:20px;height:20px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:#535862;padding:0;flex-shrink:0;}',
-    '.breadcrumb-menu-btn:hover{color:#181d27;}',
+    '.breadcrumb-menu-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:#535862;padding:0;flex-shrink:0;border-radius:6px;-webkit-tap-highlight-color:transparent;}',
+    '.breadcrumb-menu-btn:hover{color:#181d27;background:#f5f5f5;}',
     '.breadcrumb-menu-btn svg{width:20px;height:20px;}',
-    /* Responsive: hide sidebar, show hamburger */
-    '@media(max-width:768px){}',
+    /* Mobile sidebar overlay */
+    '.sidebar-scrim{display:none;position:fixed;inset:0;background:rgba(10,13,18,0.4);z-index:199;-webkit-tap-highlight-color:transparent;}',
+    '.sidebar-scrim.visible{display:block;}',
+    /* Sidebar close button */
+    '.sidebar-close{display:none;position:absolute;top:12px;right:12px;width:36px;height:36px;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:#535862;padding:0;border-radius:6px;-webkit-tap-highlight-color:transparent;}',
+    '.sidebar-close:hover{color:#181d27;background:#f0f0f0;}',
+    '.sidebar-close svg{width:20px;height:20px;}',
+    /* Responsive: mobile sidebar as full-width overlay drawer */
+    '@media(max-width:768px){.sidebar{transform:translateX(-100%);width:100%;position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;}.sidebar.collapsed{transform:translateX(-100%);}.sidebar:not(.collapsed){transform:translateX(0);}body:not(.sidebar-closed) .sidebar{transform:translateX(0);}.sidebar-close{display:flex;}.nav-item,.nav-section{height:36px;padding:8px;}.nav-child{height:36px;padding:8px 8px 8px 16px;}.nav-sub-section{height:36px;padding:8px 8px 8px 16px;}}',
     /* Search */
     '.sidebar-search{padding:0 8px 8px;}',
     '.sidebar-search input{width:100%;height:32px;padding:0 8px 0 30px;border:1px solid #e9eaeb;border-radius:6px;font-size:13px;font-family:inherit;color:#181d27;background:#fff;outline:none;box-sizing:border-box;transition:border-color .15s;}',
@@ -350,6 +357,7 @@
     if (!sidebar) return;
 
     sidebar.innerHTML =
+      '<button class="sidebar-close" aria-label="Close sidebar">' + CLOSE_X + '</button>' +
       '<div class="sidebar-header">' +
         '<img src="/kid-design-system/brand/assets/icon-primary.svg" alt="Sprout" />' +
         '<span>Sprout design</span>' +
@@ -362,17 +370,38 @@
 
     attachSectionToggles(sidebar);
     attachSidebarSearch(sidebar);
+
+    // Close button
+    var closeBtn = sidebar.querySelector('.sidebar-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () { closeSidebar(); });
+    }
   }
 
   // ── Sidebar toggle helpers ──
   var sidebarScrim = null;
+
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+
+  function getOrCreateScrim() {
+    if (!sidebarScrim) {
+      sidebarScrim = document.createElement('div');
+      sidebarScrim.className = 'sidebar-scrim';
+      document.body.appendChild(sidebarScrim);
+      sidebarScrim.addEventListener('click', function () {
+        closeSidebar();
+      });
+    }
+    return sidebarScrim;
+  }
 
   function enableTransitions() {
     var sidebar = document.getElementById('sidebar');
     var main = document.querySelector('.main');
     if (sidebar && !sidebar.classList.contains('animate')) sidebar.classList.add('animate');
     if (main && !main.classList.contains('animate')) main.classList.add('animate');
-    /* scrim removed */
   }
 
   function openSidebar() {
@@ -381,6 +410,10 @@
     if (!sidebar) return;
     sidebar.classList.remove('collapsed');
     document.body.classList.remove('sidebar-closed');
+    if (isMobile()) {
+      getOrCreateScrim().classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    }
     localStorage.setItem('sprout-sidebar', 'open');
   }
 
@@ -390,6 +423,8 @@
     if (!sidebar) return;
     sidebar.classList.add('collapsed');
     document.body.classList.add('sidebar-closed');
+    getOrCreateScrim().classList.remove('visible');
+    document.body.style.overflow = '';
     localStorage.setItem('sprout-sidebar', 'closed');
   }
 
@@ -469,11 +504,19 @@
     if (e.key === 'Escape') closeSidebar();
   });
 
+  // Close sidebar when a nav link is clicked on mobile
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('.sidebar a[href]');
+    if (link && isMobile()) {
+      closeSidebar();
+    }
+  });
+
   buildSidebar();
 
-  // Restore sidebar state after building (innerHTML doesn't clear classList)
+  // Restore sidebar state after building — always start collapsed on mobile
   var savedState = localStorage.getItem('sprout-sidebar');
-  if (savedState === 'closed') {
+  if (savedState === 'closed' || isMobile()) {
     var sidebar = document.getElementById('sidebar');
     if (sidebar) sidebar.classList.add('collapsed');
     document.body.classList.add('sidebar-closed');
