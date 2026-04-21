@@ -124,6 +124,20 @@
 .at-row.hidden {
   display: none;
 }
+@media (max-width: 768px) {
+  .artifacts-index { padding-top: 24px; }
+  .artifacts-table { margin-top: 20px; }
+  .at-header-right { width: 80px; }
+  .at-badge-col { width: 80px; }
+  .at-name, .at-badge-col, .at-header-left, .at-header-right { padding: 10px 8px; }
+  .at-row { min-height: 44px; }
+  .search-bar input { height: 44px; }
+}
+@media (max-width: 480px) {
+  .at-header-right { display: none; }
+  .at-badge-col { width: auto; flex-shrink: 0; }
+  .at-name { border-right: none; }
+}
 </style>
 </head>
 <body>
