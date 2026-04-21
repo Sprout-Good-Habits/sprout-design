@@ -1,16 +1,21 @@
 /* ============================================
    Sprout Mic Listener
-   Always-on microphone with silence detection and mute toggle.
+   Always-on microphone with silence detection, mute toggle,
+   and half-duplex disable/enable for echo prevention.
    Exposes window.SproutMicListener with:
      - start(opts)   // request mic, begin amplitude loop
    Returns a controller with:
-     - mute()        // disable mic tracks
-     - unmute()      // re-enable mic tracks
+     - mute()        // user mute (disables tracks, stops amplitude)
+     - unmute()      // user unmute
      - toggleMute()  // returns new isMuted boolean
      - isMuted()     // boolean
+     - disable()     // half-duplex: disable mic tracks (Sprout speaking)
+     - enable()      // half-duplex: re-enable mic tracks
+     - isDisabled()  // boolean
+     - pauseSilenceDetection()
+     - resumeSilenceDetection()
      - getAnalyser() // AnalyserNode for external use
      - destroy()     // stop stream, close AudioContext
-   Respects prefers-reduced-motion for reduced callback frequency.
 
    Usage:
      <script src="/kid-design-system/components/mic-listener.js"></script>
@@ -42,7 +47,8 @@
     var audioContext = null;
     var analyser = null;
     var stream = null;
-    var muted = false;
+    var muted = false;       // user-initiated mute
+    var disabled = false;    // half-duplex disable (Sprout speaking)
     var wasSpeaking = false;
     var silenceTimer = null;
     var animId = null;
@@ -70,7 +76,7 @@
       if (destroyed) return;
       animId = requestAnimationFrame(loop);
       if (!analyser) return;
-      if (muted) return;
+      if (muted || disabled) return;
 
       var dataArray = new Uint8Array(analyser.fftSize);
       analyser.getByteTimeDomainData(dataArray);
@@ -104,23 +110,38 @@
       }
     }
 
-    // Controller
+    function setTrackEnabled(val) {
+      if (stream) stream.getAudioTracks().forEach(function (t) { t.enabled = val; });
+    }
+
     var controller = {
+      // User mute/unmute
       mute: function () {
         muted = true;
-        if (stream) stream.getAudioTracks().forEach(function (t) { t.enabled = false; });
+        setTrackEnabled(false);
       },
       unmute: function () {
         muted = false;
-        if (stream) stream.getAudioTracks().forEach(function (t) { t.enabled = true; });
+        if (!disabled) setTrackEnabled(true);
       },
       toggleMute: function () {
         if (muted) controller.unmute(); else controller.mute();
         return muted;
       },
       isMuted: function () { return muted; },
-      getAnalyser: function () { return analyser; },
-      getAudioContext: function () { return audioContext; },
+
+      // Half-duplex: disable mic while Sprout speaks (echo prevention)
+      disable: function () {
+        disabled = true;
+        setTrackEnabled(false);
+      },
+      enable: function () {
+        disabled = false;
+        if (!muted) setTrackEnabled(true);
+      },
+      isDisabled: function () { return disabled; },
+
+      // Silence detection control
       pauseSilenceDetection: function () {
         paused = true;
         wasSpeaking = false;
@@ -129,6 +150,9 @@
       resumeSilenceDetection: function () {
         paused = false;
       },
+
+      getAnalyser: function () { return analyser; },
+      getAudioContext: function () { return audioContext; },
       destroy: function () {
         destroyed = true;
         if (animId) cancelAnimationFrame(animId);
