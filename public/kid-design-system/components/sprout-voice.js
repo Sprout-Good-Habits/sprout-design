@@ -79,6 +79,7 @@
     var isTalking = false;
     var mouthInterval = null;
     var lookInterval = null;
+    var thinkInterval = null;
     var safetyTimer = null;
     var fakeTalkTimer = null;
 
@@ -91,14 +92,32 @@
         var inputs = ri.stateMachineInputs(stateMachine);
         if (!inputs) return null;
         var map = {};
-        inputs.forEach(function (inp) { map[inp.name] = inp; });
+        inputs.forEach(function (inp) { map[inp.name.trim()] = inp; });
         return map;
       } catch (e) { return null; }
     }
 
+    var _loggedInputs = false;
     function fireTrigger(name) {
       var map = getInputs();
-      if (map && map[name] && map[name].fire) map[name].fire();
+      if (!map) return;
+      if (!_loggedInputs) {
+        _loggedInputs = true;
+        var triggers = [], bools = [], nums = [];
+        Object.keys(map).forEach(function(k) {
+          if (map[k].fire) triggers.push(k);
+          else if (typeof map[k].value === 'boolean') bools.push(k);
+          else nums.push(k);
+        });
+        console.log('[SproutVoice] Rive triggers:', triggers.join(', '));
+        console.log('[SproutVoice] Rive bools:', bools.join(', '));
+        console.log('[SproutVoice] Rive numbers:', nums.join(', '));
+      }
+      if (map[name] && map[name].fire) {
+        map[name].fire();
+      } else {
+        console.warn('[SproutVoice] trigger "' + name + '" not found');
+      }
     }
 
     function setRiveTalk(talking) {
@@ -106,7 +125,6 @@
       if (!map) return;
 
       if (talking) {
-        if (map['looking']) map['looking'].value = 3;
         if (lookInterval) { clearInterval(lookInterval); lookInterval = null; }
         if (map['smile'] && map['smile'].fire) map['smile'].fire();
         if (map['talkinganimation']) map['talkinganimation'].value = true;
@@ -126,26 +144,32 @@
 
     // ── Public methods ──
     function listen() {
-      var map = getInputs();
-      if (!map) return;
       fireTrigger('smile');
-      if (map['looking']) map['looking'].value = 1;
-      lookInterval = setInterval(function () {
-        if (map['looking']) {
-          map['looking'].value = Math.floor(Math.random() * 3);
-        }
-      }, 1500);
     }
 
     function stopListening() {
       if (lookInterval) { clearInterval(lookInterval); lookInterval = null; }
-      var map = getInputs();
-      if (map && map['looking']) map['looking'].value = 3;
     }
 
     function think() {
+      stopThinking();
+      // Ensure talking state is off so thinking animation can show
+      var map = getInputs();
+      if (map) {
+        if (map['talkinganimation']) map['talkinganimation'].value = false;
+        if (map['talkingmouth toggle']) map['talkingmouth toggle'].value = false;
+        if (map['mouthselector']) map['mouthselector'].value = 0;
+      }
       fireTrigger('thinking');
+      // Re-fire every 1.5s to keep the one-shot animation alive
+      thinkInterval = setInterval(function () {
+        fireTrigger('thinking');
+      }, 1500);
       playChime();
+    }
+
+    function stopThinking() {
+      if (thinkInterval) { clearInterval(thinkInterval); thinkInterval = null; }
     }
 
     function playChime() {
@@ -155,6 +179,7 @@
     }
 
     function speak(text) {
+      stopThinking();
       isTalking = true;
 
       // Safety timeout
@@ -218,15 +243,14 @@
     }
 
     function speakFake(text) {
-      fakeTalkTimer = setTimeout(function () {
-        onSpeechStart(text);
-        setRiveTalk(true);
-        if (waveform) waveform.startSimulation();
+      // Start talking immediately (caller handles the thinking delay)
+      onSpeechStart(text);
+      setRiveTalk(true);
+      if (waveform) waveform.startSimulation();
 
-        fakeTalkTimer = setTimeout(function () {
-          finishSpeaking();
-        }, 3000);
-      }, 2000);
+      fakeTalkTimer = setTimeout(function () {
+        finishSpeaking();
+      }, 3000);
     }
 
     function finishSpeaking() {
@@ -240,6 +264,7 @@
     function stop() {
       isTalking = false;
       setRiveTalk(false);
+      stopThinking();
       stopListening();
       if (waveform) waveform.stopSimulation();
       if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
