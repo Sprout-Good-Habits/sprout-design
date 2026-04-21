@@ -3,73 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout Product Explorer - Microphone</title>
+<title>Sprout Product Explorer - Microphone Video</title>
 <link rel="stylesheet" href="/product-explorer/tokens.css">
 <link rel="stylesheet" href="/product-explorer/styles.css">
 <link rel="stylesheet" href="/kid-design-system/components/waveform.css">
 <link rel="stylesheet" href="/kid-design-system/components/loading.css">
+<link rel="stylesheet" href="/kid-design-system/components/toolbar.css">
+<link rel="stylesheet" href="/kid-design-system/components/progress-bar.css">
+<link rel="stylesheet" href="/kid-design-system/components/button-utility.css">
+<link rel="stylesheet" href="/kid-design-system/components/conversational-feedback.css">
+<link rel="stylesheet" href="/kid-design-system/components/subtitles.css">
 <style>
 /* -- Device -- */
 .device-wrapper{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:32px;padding:4px;box-shadow:0 12px 16px -4px rgba(10,13,18,.08),0 4px 6px -2px rgba(10,13,18,.03),0 2px 2px -1px rgba(10,13,18,.04)}
 .device-inner-shadow{background:#fff;border-radius:28px;padding:4px;overflow:hidden;position:relative}
 .device-inner-shadow::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 6px 2px rgba(10,13,18,.08),inset 0 0 4px 2px rgba(10,13,18,.03);z-index:6}
 .device-mockup{background:#fafafa;border:2px solid #e9eaeb;border-radius:24px;clip-path:inset(0 round 24px);position:relative}
-.device-screen{width:402px;height:874px;position:relative;overflow:hidden;background:#e0f2fe;user-select:none;-webkit-user-select:none}
+.device-screen{width:402px;height:874px;position:relative;overflow:hidden;background:#d9d9d9;user-select:none;-webkit-user-select:none}
 
 /* -- Status bar -- */
-.status-bar{position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;z-index:10;pointer-events:none}
-.status-bar-time{font-size:17px;font-weight:600;color:#181d27;letter-spacing:-.01em}
+.status-bar{position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;z-index:50;pointer-events:none}
+.status-bar-time{font-size:17px;font-weight:600;color:#fff;letter-spacing:-.01em}
 .status-bar-icons{display:flex;align-items:center;gap:6px}
 .status-bar-icons svg{display:block}
 
-/* -- Chat toolbar -- */
-.chat-toolbar{position:absolute;top:62px;left:0;right:0;height:56px;display:flex;align-items:flex-start;justify-content:space-between;padding:0 16px 8px;z-index:10;background:#e0f2fe;box-shadow:0 3px 0 0 #e9eaeb}
-.chat-toolbar-title{position:absolute;left:50%;top:13px;transform:translateX(-50%);font-family:var(--font-family-body,'Inter',sans-serif);font-size:18px;line-height:28px;font-weight:600;color:#181d27;white-space:nowrap}
-.chat-toolbar-btn{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #e9eaeb;border-radius:9999px;box-shadow:0 3px 0 0 #e9eaeb;flex-shrink:0;cursor:pointer;transition:background .15s,box-shadow .15s,transform .15s}
-.chat-toolbar-btn:hover{background:#fafafa}
-.chat-toolbar-btn:active{box-shadow:none;transform:translateY(2px)}
-.chat-toolbar-btn svg{width:24px;height:24px;color:#181d27}
+/* -- Camera background -- */
+.camera-bg{position:absolute;inset:0;background:#d9d9d9}
 
-/* -- Sprout speech bubble (matches msg-bubble-in from DS) -- */
-.sprout-speech{position:absolute;top:140px;left:16px;right:16px;z-index:5;display:flex;justify-content:flex-start;pointer-events:none}
-.sprout-speech-bubble{background:#fff;border-radius:24px;padding:12px 16px;font-family:var(--font-family-body,'Inter',sans-serif);font-size:16px;line-height:24px;font-weight:400;color:#181d27;text-align:left;max-width:256px;min-width:90px;word-wrap:break-word;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s}
-.sprout-speech-bubble.visible{opacity:1;transform:translateY(0)}
+/* -- Avatar portrait (Sprout on camera) -- */
+.avatar-portrait{width:120px;height:176px;border-radius:24px;background:#b9e6fe;overflow:hidden;flex-shrink:0;position:relative}
+.avatar-portrait canvas{position:absolute;left:50%;top:-116px;width:100%;height:100%;display:block;transform:translateX(-50%) scale(2.64);transform-origin:center top}
 
-/* -- Grass -- */
-.bg-bottom{position:absolute;bottom:0;left:0;right:0;z-index:1;pointer-events:none}
-.bg-grass-edge{width:100%;height:24px;border-radius:24px 24px 0 0;background:#86cb3c}
-.bg-grass-fill{width:100%;height:89px;background:#86cb3c}
-
-/* -- Sprout (Rive character) -- */
-.rive-wrap{position:absolute;bottom:-196px;left:50%;transform:translateX(-50%);width:690px;height:690px;z-index:2;pointer-events:none}
-.rive-canvas{width:690px;height:690px}
+/* -- Feedback slot (avatar + subtitles over camera) -- */
+.vv-feedback-slot{position:absolute;top:128px;left:0;right:0;padding:0 16px;z-index:10;box-sizing:border-box}
 
 /* -- Home indicator -- */
-.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:#181d27;z-index:20}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:100px;background:rgba(255,255,255,.6);z-index:20}
 
-/* -- Composer bar -- */
-.composer-bar{position:absolute;bottom:45px;left:0;right:0;z-index:10;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px}
+/* -- Bottom bar (camera controls) -- */
+.vv-bottom-bar{position:absolute;bottom:45px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:10}
 
-/* -- Btn-util -- */
-.btn-util{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #e9eaeb;border-radius:9999px;box-shadow:0 3px 0 0 #e9eaeb;cursor:pointer;padding:0;transition:background .15s,box-shadow .15s,transform .15s}
-.btn-util:hover{background:#fafafa}
-.btn-util:active{box-shadow:none;transform:translateY(2px)}
-.btn-util svg{width:24px;height:24px;color:#181d27}
-.btn-util.muted{background:#f04438;border-color:#d92d20;box-shadow:0 4px 0 0 #d92d20}
-.btn-util.muted svg{color:#fff}
-.btn-util.muted:hover{background:#f97066}
-.btn-util.muted:active{box-shadow:none;transform:translateY(2px)}
-.btn-util.loading{pointer-events:none}
-.btn-util.loading .icon-mic-on,.btn-util.loading .icon-mic-off{display:none}
-.btn-util .mic-spinner{display:none}
-.btn-util.loading .mic-spinner{display:block}
+/* -- Btn-util overrides for camera -- */
+.btn-util-cam{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.85);border:2px solid rgba(255,255,255,.2);border-radius:9999px;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer;padding:0;transition:background .15s,box-shadow .15s,transform .15s;backdrop-filter:blur(8px)}
+.btn-util-cam:hover{background:rgba(255,255,255,.95)}
+.btn-util-cam:active{box-shadow:none;transform:translateY(2px)}
+.btn-util-cam svg{width:24px;height:24px;color:#181d27}
+.btn-util-cam.muted{background:#f04438;border-color:#d92d20;box-shadow:0 4px 0 0 #d92d20}
+.btn-util-cam.muted svg{color:#fff}
+.btn-util-cam.muted:hover{background:#f97066}
+.btn-util-cam.muted:active{box-shadow:none;transform:translateY(2px)}
+.btn-util-cam.loading{pointer-events:none}
+.btn-util-cam.loading .icon-mic-on,.btn-util-cam.loading .icon-mic-off{display:none}
+.btn-util-cam .mic-spinner{display:none}
+.btn-util-cam.loading .mic-spinner{display:block}
 
-/* -- Waveform positioning -- */
+/* -- Waveform positioning (on camera) -- */
 .waveform-container{position:absolute;bottom:0;left:0;right:0;height:34px;z-index:3}
 
 /* -- API key input -- */
-.api-key-bar{position:absolute;top:130px;left:16px;right:16px;z-index:15;display:flex;gap:8px}
-.api-key-bar input{flex:1;height:36px;border:2px solid #e9eaeb;border-radius:12px;padding:0 12px;font-size:13px;font-family:inherit;background:#fff;outline:none;color:#181d27}
+.api-key-bar{position:absolute;top:130px;left:16px;right:16px;z-index:55;display:flex;gap:8px}
+.api-key-bar input{flex:1;height:36px;border:2px solid rgba(255,255,255,.3);border-radius:12px;padding:0 12px;font-size:13px;font-family:inherit;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);outline:none;color:#181d27}
 .api-key-bar input:focus{border-color:#0ba5ec}
 .api-key-bar input::placeholder{color:#a4a7ae}
 .api-key-bar button{height:36px;padding:0 14px;background:#0ba5ec;color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
@@ -96,22 +89,29 @@
 <div class="status-bar">
   <span class="status-bar-time">9:41</span>
   <span class="status-bar-icons">
-    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
-    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
-    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#fff"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#fff"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#fff"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#fff"/><circle cx="8" cy="10.5" r="1.5" fill="#fff"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#fff"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#fff" fill-opacity="0.4"/></svg>
   </span>
 </div>
 
-<!-- Toolbar -->
-<div class="chat-toolbar">
-  <div class="chat-toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
-  <span class="chat-toolbar-title">Sprout</span>
-  <div style="width:48px"></div>
+<!-- Camera background -->
+<div class="camera-bg"></div>
+
+<!-- Toolbar: Quest Transparent -->
+<div class="toolbar toolbar-quest-transparent" style="position:absolute;top:62px;left:0;right:0;z-index:10">
+  <div class="btn-util"><div class="btn-util-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary, #414651)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+  <div class="progress-bar"><div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div></div>
 </div>
 
-<!-- Sprout speech bubble -->
-<div class="sprout-speech">
-  <div class="sprout-speech-bubble" id="speechBubble"></div>
+<!-- Conversational feedback (Sprout avatar + subtitles) -->
+<div class="conversational-feedback vv-feedback-slot">
+  <div class="avatar-portrait">
+    <canvas id="rive-videocall" class="rive-avatar" width="480" height="704"></canvas>
+  </div>
+  <div class="subtitles subtitles-overlay subtitles-centered">
+    <p class="subtitles-text" id="subtitleText"></p>
+  </div>
 </div>
 
 <!-- API Key bar -->
@@ -120,26 +120,16 @@
   <button id="apiKeyBtn">Connect</button>
 </div>
 
-<!-- Sprout character (Rive) -->
-<div class="rive-wrap">
-  <canvas id="rive-character" class="rive-canvas" width="1380" height="1380"></canvas>
-</div>
-
-<!-- Grass -->
-<div class="bg-bottom">
-  <div class="bg-grass-edge"></div>
-  <div class="bg-grass-fill"></div>
-</div>
-
 <!-- Waveform bars -->
 <div class="waveform-container" id="waveformContainer"></div>
 
-<!-- Composer bar -->
-<div class="composer-bar">
-  <button class="btn-util" id="btnPlus" aria-label="Add attachment">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+<!-- Bottom bar: flip camera, spacer, mute mic -->
+<div class="vv-bottom-bar">
+  <button class="btn-util-cam" id="btnFlip" aria-label="Flip camera">
+    <svg viewBox="0 0 256 256" width="24" height="24" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M208,208H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64H80L96,40h64l16,24h32a16,16,0,0,1,16,16V192A16,16,0,0,1,208,208Z"/><polyline points="156,144 172,128 156,112"/><polyline points="100,112 84,128 100,144"/><line x1="172" y1="128" x2="84" y2="128"/></svg>
   </button>
-  <button class="btn-util" id="micBtn" aria-label="Mute microphone">
+  <div style="width:48px"></div>
+  <button class="btn-util-cam" id="micBtn" aria-label="Mute microphone">
     <svg class="icon-mic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
       <rect x="9" y="2" width="6" height="11" rx="3"/>
       <path d="M5 10a7 7 0 0 0 14 0"/>
@@ -176,26 +166,28 @@
 (function() {
   // ── Elements ──
   var micBtn = document.getElementById('micBtn');
-  var speechBubble = document.getElementById('speechBubble');
+  var iconMicOn = micBtn.querySelector('.icon-mic-on');
+  var iconMicOff = micBtn.querySelector('.icon-mic-off');
+  var subtitleText = document.getElementById('subtitleText');
   var apiKeyBar = document.getElementById('apiKeyBar');
   var apiKeyInput = document.getElementById('apiKeyInput');
   var apiKeyBtn = document.getElementById('apiKeyBtn');
-  var iconMicOn = micBtn.querySelector('.icon-mic-on');
-  var iconMicOff = micBtn.querySelector('.icon-mic-off');
+
+  // ── State ──
+  var mic = null;
+  var voice = null;
 
   // ── Waveform ──
   var waveform = SproutWaveform.create({ container: 'waveformContainer' });
 
-  // ── Voice + Mic (initialized after Rive loads) ──
-  var voice = null;
-  var mic = null;
-
-  function showSpeech(text) {
-    speechBubble.textContent = text;
-    speechBubble.classList.add('visible');
+  // ── Subtitle helpers ──
+  function showSubtitle(text) {
+    subtitleText.textContent = text;
+    subtitleText.parentElement.style.opacity = '1';
+    subtitleText.parentElement.style.transform = 'translateY(0)';
   }
-  function hideSpeech() {
-    speechBubble.classList.remove('visible');
+  function hideSubtitle() {
+    subtitleText.parentElement.style.opacity = '0';
   }
 
   // ── Reply rotation ──
@@ -211,6 +203,25 @@
   ];
   var replyIdx = 0;
   function getReply() { return replies[replyIdx++ % replies.length]; }
+
+  // ── Mic button state ──
+  function updateMicButton() {
+    var state = voice ? voice.getState() : 'idle';
+    var userMuted = mic ? mic.isMuted() : false;
+    var disabled = mic ? mic.isDisabled() : false;
+    var isLoading = (state === 'greeting');
+
+    micBtn.classList.toggle('loading', isLoading);
+
+    if (!isLoading) {
+      var micOff = userMuted || disabled;
+      iconMicOn.style.display = micOff ? 'none' : '';
+      iconMicOff.style.display = micOff ? '' : 'none';
+      micBtn.classList.toggle('muted', micOff);
+    }
+
+    if (userMuted) waveform.setIdle();
+  }
 
   // ── Start session ──
   function startSession() {
@@ -235,22 +246,21 @@
         }, 3000);
       },
       onError: function() {
-        showSpeech('Please allow microphone access');
-        setTimeout(hideSpeech, 3000);
+        showSubtitle('Please allow microphone access');
+        setTimeout(hideSubtitle, 3000);
       }
     });
 
-    // Pause silence detection until greeting finishes
     mic.pauseSilenceDetection();
 
     // Connect mic to voice controller for half-duplex
     if (voice) voice.setMic(mic);
 
-    // Greet with wave animation -- wait for voice to be ready
+    // Greet with wave animation
     function tryGreet() {
       if (voice) {
         voice.setMic(mic);
-        voice.greet("Hi there! I'm Sprout! What should we do today?");
+        voice.greet("Hey! I'm right here. Start playing whenever you're ready!");
       } else {
         setTimeout(tryGreet, 300);
       }
@@ -258,27 +268,7 @@
     setTimeout(tryGreet, 500);
   }
 
-  // ── Mic button states ──
-  function updateMicButton() {
-    var state = voice ? voice.getState() : 'idle';
-    var userMuted = mic ? mic.isMuted() : false;
-    var disabled = mic ? mic.isDisabled() : false;
-    var isLoading = (state === 'greeting');
-
-    // Loading spinner during greeting
-    micBtn.classList.toggle('loading', isLoading);
-
-    if (!isLoading) {
-      // Show mic-off icon + red style when mic is off for ANY reason
-      var micOff = userMuted || disabled;
-      iconMicOn.style.display = micOff ? 'none' : '';
-      iconMicOff.style.display = micOff ? '' : 'none';
-      micBtn.classList.toggle('muted', micOff);
-    }
-
-    if (userMuted) waveform.setIdle();
-  }
-
+  // ── Mute toggle ──
   micBtn.addEventListener('click', function() {
     if (!mic) return;
     mic.toggleMute();
@@ -296,11 +286,11 @@
     if (e.key === 'Enter') apiKeyBtn.click();
   });
 
-  // ── Init: require click to start (Chrome autoplay policy) ──
-  showSpeech("Tap anywhere to start!");
+  // ── Tap to start (Chrome autoplay policy) ──
+  showSubtitle('Tap anywhere to start!');
 
   function onFirstInteraction() {
-    hideSpeech();
+    hideSubtitle();
     apiKeyBar.classList.add('connected');
     startSession();
     document.removeEventListener('click', onFirstInteraction);
@@ -309,12 +299,13 @@
   document.addEventListener('click', onFirstInteraction);
   document.addEventListener('touchstart', onFirstInteraction);
 
-  // ── Rive ──
+  // ── Rive avatar ──
   var SPROUT_SRC = '/kid-design-system/sprot2.97_.riv';
 
   function initRive() {
-    var canvas = document.getElementById('rive-character');
+    var canvas = document.getElementById('rive-videocall');
     if (!canvas || !window.rive) return;
+
     var r = new rive.Rive({
       src: SPROUT_SRC,
       canvas: canvas,
@@ -324,21 +315,19 @@
       alignment: rive.Alignment.BottomCenter,
       onLoad: function() {
         r.resizeDrawingSurfaceToCanvas();
-        try {
-          var inputs = r.stateMachineInputs('State Machine 1');
-          if (inputs) inputs.forEach(function(inp) {
-            if (inp.name === 'hairID') inp.value = 1;
-          });
-        } catch(e) {}
+        var inputs = r.stateMachineInputs('State Machine 1');
+        if (inputs) inputs.forEach(function(inp) {
+          if (inp.name === 'hairID') inp.value = 1;
+        });
 
-        // Init voice controller with mic reference for half-duplex
+        // Init voice controller with mic for half-duplex
         voice = SproutVoice.init({
           riveInstance: r,
           waveform: waveform,
-          mic: mic, // passed for half-duplex control
+          mic: mic,
           chimeSrc: '/product-explorer/assets/sprout-chime.wav',
           postSpeechBuffer: 1500,
-          onSpeechStart: function(text) { showSpeech(text); },
+          onSpeechStart: function(text) { showSubtitle(text); },
           onSpeechEnd: function() {
             // Keep subtitle visible while kid talks; hide when thinking starts
             if (mic) mic.resumeSilenceDetection();
@@ -349,13 +338,14 @@
       }
     });
   }
+
   initRive();
 })();
 </script>
 
-<script>window.DS_META={title:'Microphone',desc:'Voice conversation prototype with always-on microphone, Sprout Rive character, and ElevenLabs TTS.',owner:'Leti Schimmel',status:'WIP',rive:'sprot2.97_.riv',skill:'sprout-rive-skill.md',sound:'sprout-chime.wav',notes:'\
+<script>window.DS_META={title:'Microphone Video',desc:'Videocall voice prototype with always-on microphone, Sprout avatar portrait, waveform visualizer, and ElevenLabs TTS over a camera view.',owner:'Leti Schimmel',status:'WIP',rive:'sprot2.97_.riv',skill:'sprout-rive-skill.md',sound:'sprout-chime.wav',notes:'\
 <h2>How it works</h2>\
-<p>Based on <a href="https://sprout-hq.vercel.app/artifacts/voice-state-diagram" target="_blank">Han\'s Voice State Diagram</a>. Sprout behaves like a real person on a video call.</p>\
+<p>Based on <a href="https://sprout-hq.vercel.app/artifacts/voice-state-diagram" target="_blank">Han\'s Voice State Diagram</a>. Same behavior as the chat microphone prototype. The only difference is the medium: Sprout appears as a small avatar portrait with subtitles over a camera view instead of a full character with speech bubbles.</p>\
 \
 <h3>State machine</h3>\
 <pre style="font-size:12px;line-height:1.5;background:#f5f5f5;padding:16px;border-radius:12px;border:1px solid #e9eaeb;overflow-x:auto;white-space:pre">\
@@ -377,7 +367,7 @@
            |  Mic: ON    Avatar: idle + smile      |\
            |  Waveform: from mic amplitude         |\
            |  Smile ~8s, vocal "Mhm!" ~15s          |\
-           |  Speech bubble: stays from last reply |\
+           |  Subtitles: stay from last reply      |\
            +---------------------------------------+\
                   |                        |\
              Kid speaks               Kid taps mic\
@@ -426,7 +416,7 @@
      |  talkinganimation: true   |\
      |  mouthselector cycling    |\
      |  Waveform: simulated      |\
-     |  Speech bubble visible    |\
+     |  Subtitles visible        |\
      |  No barge-in (kid waits)  |\
      +---------------------------+\
                  |\
@@ -455,7 +445,7 @@
 <h3>State details</h3>\
 \
 <table style="width:100%;font-size:13px;border-collapse:collapse;margin:12px 0">\
-<tr style="border-bottom:1px solid #e9eaeb"><th style="text-align:left;padding:8px;color:#535862">State</th><th style="text-align:left;padding:8px;color:#535862">Mic</th><th style="text-align:left;padding:8px;color:#535862">Mic button</th><th style="text-align:left;padding:8px;color:#535862">Avatar</th><th style="text-align:left;padding:8px;color:#535862">Speech bubble</th></tr>\
+<tr style="border-bottom:1px solid #e9eaeb"><th style="text-align:left;padding:8px;color:#535862">State</th><th style="text-align:left;padding:8px;color:#535862">Mic</th><th style="text-align:left;padding:8px;color:#535862">Mic button</th><th style="text-align:left;padding:8px;color:#535862">Avatar</th><th style="text-align:left;padding:8px;color:#535862">Subtitles</th></tr>\
 <tr style="border-bottom:1px solid #f5f5f5"><td style="padding:8px"><strong>Greeting</strong></td><td style="padding:8px">Paused</td><td style="padding:8px">Spinner (loading)</td><td style="padding:8px">Wave + big smile (~1.5s)</td><td style="padding:8px">Greeting text</td></tr>\
 <tr style="border-bottom:1px solid #f5f5f5"><td style="padding:8px"><strong>Listening</strong></td><td style="padding:8px">ON</td><td style="padding:8px">White, mic-on</td><td style="padding:8px">Idle. Smile ~8s, vocal "Mhm!" ~15s</td><td style="padding:8px">Stays visible from last reply</td></tr>\
 <tr style="border-bottom:1px solid #f5f5f5"><td style="padding:8px"><strong>Thinking</strong></td><td style="padding:8px">OFF (half-duplex)</td><td style="padding:8px">Red, mic-off</td><td style="padding:8px">Thinking pose + progressive fillers</td><td style="padding:8px">Filler text ("Mm...", "Let me think...")</td></tr>\
