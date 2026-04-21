@@ -115,6 +115,53 @@
     }
   }
 
+  // ── Sidebar search ──
+  function attachSidebarSearch(container) {
+    var input = container.querySelector('.sidebar-search input');
+    if (!input) return;
+    input.addEventListener('input', function() {
+      var q = this.value.toLowerCase().trim();
+      var navList = container.querySelector('.nav-list');
+      if (!navList) return;
+
+      var topEls = navList.children;
+      for (var i = 0; i < topEls.length; i++) {
+        var el = topEls[i];
+
+        if (el.classList.contains('nav-item')) {
+          var text = el.textContent.toLowerCase();
+          el.classList.toggle('search-hidden', q !== '' && text.indexOf(q) === -1);
+        } else if (el.classList.contains('nav-section')) {
+          var sectionText = el.textContent.toLowerCase();
+          var childrenContainer = el.nextElementSibling;
+          var sectionMatch = q === '' || sectionText.indexOf(q) !== -1;
+          var anyChildMatch = false;
+
+          if (childrenContainer && childrenContainer.classList.contains('nav-children')) {
+            var children = childrenContainer.querySelectorAll('.nav-child');
+            for (var j = 0; j < children.length; j++) {
+              var childText = children[j].textContent.toLowerCase();
+              var childMatch = q === '' || childText.indexOf(q) !== -1 || sectionMatch;
+              children[j].classList.toggle('search-hidden', !childMatch && q !== '');
+              if (childMatch) anyChildMatch = true;
+            }
+            childrenContainer.classList.toggle('search-hidden', !sectionMatch && !anyChildMatch && q !== '');
+            if (q !== '' && (sectionMatch || anyChildMatch)) {
+              childrenContainer.classList.remove('collapsed');
+            }
+          }
+
+          el.classList.toggle('search-hidden', !sectionMatch && !anyChildMatch && q !== '');
+        }
+      }
+
+      if (q === '') {
+        var allHidden = navList.querySelectorAll('.search-hidden');
+        for (var h = 0; h < allHidden.length; h++) allHidden[h].classList.remove('search-hidden');
+      }
+    });
+  }
+
   // ── Sidebar ──
   function buildSidebar() {
     var sidebar = document.getElementById('sidebar');
@@ -122,9 +169,14 @@
 
     sidebar.innerHTML = '<div class="sidebar-inner">' +
       '<div class="sidebar-logo"><img src="/brand/assets/Landscape%20Lockup.svg" alt="Sprout — Good Habits" width="140" height="44"></div>' +
+      '<div class="sidebar-search">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+        '<input type="text" placeholder="Search..." autocomplete="off" />' +
+      '</div>' +
       '<div class="nav-list">' + buildNavHTML() + '</div></div>';
 
     attachSectionToggles(sidebar);
+    attachSidebarSearch(sidebar);
   }
 
   // ── Breadcrumb ──

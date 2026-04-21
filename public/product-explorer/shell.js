@@ -79,7 +79,15 @@
     '.breadcrumb-menu-btn:hover{color:#181d27;}',
     '.breadcrumb-menu-btn svg{width:20px;height:20px;}',
     /* Responsive: hide sidebar, show hamburger */
-    '@media(max-width:768px){}'
+    '@media(max-width:768px){}',
+    /* Search */
+    '.sidebar-search{padding:0 8px 8px;}',
+    '.sidebar-search input{width:100%;height:32px;padding:0 8px 0 30px;border:1px solid #e9eaeb;border-radius:6px;font-size:13px;font-family:inherit;color:#181d27;background:#fff;outline:none;box-sizing:border-box;transition:border-color .15s;}',
+    '.sidebar-search input:focus{border-color:#0ba5ec;}',
+    '.sidebar-search input::placeholder{color:#a4a7ae;}',
+    '.sidebar-search{position:relative;}',
+    '.sidebar-search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:#a4a7ae;pointer-events:none;}',
+    '.nav-item.search-hidden,.nav-section.search-hidden,.nav-children.search-hidden,.nav-child.search-hidden,.nav-sub-section.search-hidden,.nav-sub-children.search-hidden{display:none;}'
   ].join('\n');
   document.head.appendChild(styleEl);
 
@@ -266,6 +274,76 @@
     for (var i = 0; i < subSections.length; i++) { attachToggle(subSections[i], 'nav-sub-children'); }
   }
 
+  // ── Sidebar search ──
+  function attachSidebarSearch(container) {
+    var input = container.querySelector('.sidebar-search input');
+    if (!input) return;
+    input.addEventListener('input', function() {
+      var q = this.value.toLowerCase().trim();
+      var navList = container.querySelector('.nav-list');
+      if (!navList) return;
+
+      // Get all top-level nav elements (sections and standalone items)
+      var topEls = navList.children;
+      for (var i = 0; i < topEls.length; i++) {
+        var el = topEls[i];
+
+        if (el.classList.contains('nav-item')) {
+          // Standalone item: match its text
+          var text = el.textContent.toLowerCase();
+          el.classList.toggle('search-hidden', q !== '' && text.indexOf(q) === -1);
+        } else if (el.classList.contains('nav-section')) {
+          // Section header: check section label + all children in the next sibling
+          var sectionText = el.textContent.toLowerCase();
+          var childrenContainer = el.nextElementSibling;
+          var sectionMatch = q === '' || sectionText.indexOf(q) !== -1;
+          var anyChildMatch = false;
+
+          if (childrenContainer && (childrenContainer.classList.contains('nav-children'))) {
+            var children = childrenContainer.querySelectorAll('.nav-child, .nav-sub-section');
+            for (var j = 0; j < children.length; j++) {
+              var childText = children[j].textContent.toLowerCase();
+              var childMatch = q === '' || childText.indexOf(q) !== -1 || sectionMatch;
+              children[j].classList.toggle('search-hidden', !childMatch && q !== '');
+              if (childMatch) anyChildMatch = true;
+
+              // If this is a sub-section, also filter its sub-children
+              if (children[j].classList.contains('nav-sub-section')) {
+                var subChildren = children[j].nextElementSibling;
+                if (subChildren && subChildren.classList.contains('nav-sub-children')) {
+                  var subs = subChildren.querySelectorAll('.nav-child');
+                  var anySubMatch = false;
+                  for (var k = 0; k < subs.length; k++) {
+                    var subText = subs[k].textContent.toLowerCase();
+                    var subMatch = q === '' || subText.indexOf(q) !== -1 || childText.indexOf(q) !== -1 || sectionMatch;
+                    subs[k].classList.toggle('search-hidden', !subMatch && q !== '');
+                    if (subMatch) anySubMatch = true;
+                  }
+                  subChildren.classList.toggle('search-hidden', !anySubMatch && !sectionMatch && q !== '');
+                  if (anySubMatch) anyChildMatch = true;
+                }
+              }
+            }
+
+            // Expand matching sections, hide empty ones
+            childrenContainer.classList.toggle('search-hidden', !sectionMatch && !anyChildMatch && q !== '');
+            if (q !== '' && (sectionMatch || anyChildMatch)) {
+              childrenContainer.classList.remove('collapsed');
+            }
+          }
+
+          el.classList.toggle('search-hidden', !sectionMatch && !anyChildMatch && q !== '');
+        }
+      }
+
+      // If query is cleared, restore collapsed state
+      if (q === '') {
+        var allHidden = navList.querySelectorAll('.search-hidden');
+        for (var h = 0; h < allHidden.length; h++) allHidden[h].classList.remove('search-hidden');
+      }
+    });
+  }
+
   // ── Sidebar ──
   function buildSidebar() {
     var sidebar = document.getElementById('sidebar');
@@ -276,9 +354,14 @@
         '<img src="/kid-design-system/brand/assets/icon-primary.svg" alt="Sprout" />' +
         '<span>Sprout design</span>' +
       '</div>' +
+      '<div class="sidebar-search">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+        '<input type="text" placeholder="Search..." autocomplete="off" />' +
+      '</div>' +
       '<div class="nav-list">' + buildNavHTML() + '</div>';
 
     attachSectionToggles(sidebar);
+    attachSidebarSearch(sidebar);
   }
 
   // ── Sidebar toggle helpers ──
