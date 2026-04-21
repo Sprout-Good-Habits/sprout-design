@@ -47,6 +47,7 @@
     var silenceTimer = null;
     var animId = null;
     var destroyed = false;
+    var paused = false;
 
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
     audioContext.resume();
@@ -83,7 +84,8 @@
 
       onAmplitude(rms);
 
-      // Silence detection state machine
+      // Silence detection state machine (skip when paused)
+      if (paused) return;
       if (rms > speechThreshold) {
         if (!wasSpeaking) {
           wasSpeaking = true;
@@ -120,8 +122,12 @@
       getAnalyser: function () { return analyser; },
       getAudioContext: function () { return audioContext; },
       pauseSilenceDetection: function () {
+        paused = true;
         wasSpeaking = false;
         if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
+      },
+      resumeSilenceDetection: function () {
+        paused = false;
       },
       destroy: function () {
         destroyed = true;

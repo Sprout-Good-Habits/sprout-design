@@ -210,24 +210,24 @@
 
   function startMic() {
     mic = SproutMicListener.start({
+      silenceThreshold: 0.015,
+      speechThreshold: 0.04,
       silenceDelay: 2000,
       onAmplitude: function(rms) {
-        if (!voice || !voice.isTalking()) {
-          waveform.setAmplitude(rms);
-        }
+        waveform.setAmplitude(rms);
       },
       onSpeechStart: function() {
-        if (voice) voice.listen();
+        if (voice && !voice.isTalking()) voice.listen();
       },
       onSilence: function() {
-        if (!voice) return;
+        if (!voice || voice.isTalking()) return;
         voice.stopListening();
         voice.think();
         mic.pauseSilenceDetection();
         var reply = getReply();
         setTimeout(function() {
           voice.speak(reply);
-        }, 800);
+        }, 2000);
       },
       onError: function() {
         showSpeech('Please allow microphone access');
@@ -235,13 +235,18 @@
       }
     });
 
-    // Greet after mic ready
-    setTimeout(function() {
+    // Pause silence detection until greeting finishes
+    mic.pauseSilenceDetection();
+
+    // Greet -- wait for voice to be ready
+    function tryGreet() {
       if (voice) {
-        var greeting = "Hi there! I'm Sprout! What should we do today?";
-        voice.speak(greeting);
+        voice.speak("Hi there! I'm Sprout! What should we do today?");
+      } else {
+        setTimeout(tryGreet, 300);
       }
-    }, 800);
+    }
+    setTimeout(tryGreet, 500);
   }
 
   // ── Mute toggle ──
@@ -309,7 +314,10 @@
           waveform: waveform,
           chimeSrc: '/product-explorer/assets/sprout-chime.wav',
           onSpeechStart: function(text) { showSpeech(text); },
-          onSpeechEnd: function() { setTimeout(hideSpeech, 1500); }
+          onSpeechEnd: function() {
+            setTimeout(hideSpeech, 1500);
+            if (mic) mic.resumeSilenceDetection();
+          }
         });
       }
     });
@@ -320,31 +328,34 @@
 
 <script>window.DS_META={title:'Microphone',desc:'Voice conversation prototype with always-on microphone, Sprout Rive character, and ElevenLabs TTS.',owner:'Leti Schimmel',status:'WIP',rive:'sprot2.97_.riv',skill:'sprout-rive-skill.md',sound:'sprout-chime.wav',notes:'\
 <h2>How it works</h2>\
-<h3>1. Kid speaks</h3>\
-<p>The microphone is always listening. Waveform bars at the bottom animate based on the kid\'s voice amplitude. Sprout enters a <strong>listening state</strong> (eyes look around attentively, smile trigger).</p>\
-<h3>2. Kid stops speaking (2s silence)</h3>\
-<p>After 2 seconds of silence, two things happen:</p>\
+<p>The microphone is always on. The conversation loops through these states every time the kid speaks:</p>\
+<h3>1. Tap to start</h3>\
+<p>Chrome requires a user gesture before the mic can activate. On first tap, the mic starts and Sprout greets the kid with a fake-talk animation and speech bubble.</p>\
+<h3>2. Kid speaks</h3>\
+<p>Waveform bars animate from the kid\'s voice amplitude. Sprout enters a <strong>listening state</strong> (<code>smile</code> trigger, looking at camera).</p>\
+<h3>3. Kid stops speaking (2s silence)</h3>\
+<p>After 2 seconds of silence:</p>\
 <ul>\
 <li>The <strong>chime sound</strong> (sprout-chime.wav) plays</li>\
-<li>Sprout enters a <strong>thinking state</strong> (thinking trigger fires)</li>\
+<li>Sprout enters a <strong>thinking state</strong> (<code>thinking</code> trigger, re-fired every 2s to keep the one-shot animation alive)</li>\
+<li>Silence detection pauses so ambient noise doesn\'t re-trigger</li>\
 </ul>\
-<h3>3. Sprout responds</h3>\
-<p>After the chime, Sprout speaks back with a simulated talking animation after 2s of thinking. If an ElevenLabs API key is provided, real TTS voice is used instead.</p>\
-<p>During speech: <strong>talking animation</strong> (body movement + mouth visemes cycling), speech bubble shows text, waveform animates.</p>\
-<h3>4. Mute button</h3>\
-<p>Tap the mic button to mute/unmute. When muted, the button turns red with a mic-off icon. The mic stream stays alive but audio tracks are disabled.</p>\
+<h3>4. Sprout responds (2s after chime)</h3>\
+<p>Thinking interval clears. <code>smile</code> trigger fires to exit thinking. Then:</p>\
+<ul>\
+<li><strong>With ElevenLabs API key:</strong> Real TTS voice plays, waveform simulates, mouth moves</li>\
+<li><strong>Without API key:</strong> Fake-talk animation for 3s with simulated waveform</li>\
+</ul>\
+<p>Speech bubble shows what Sprout is saying. <code>talkinganimation</code> + <code>talkingmouth toggle</code> bools enable body/mouth movement. <code>mouthselector</code> cycles 1-8 every 120ms for visemes.</p>\
+<h3>5. Sprout finishes</h3>\
+<p>Talking bools reset. Waveform returns to idle. Speech bubble hides after 1.5s. Silence detection resumes. The cycle repeats from step 2.</p>\
+<h3>6. Mute button</h3>\
+<p>Tap the mic button to mute/unmute. Muted state: red filled button (<code>#f04438</code>), mic-off icon, mic tracks disabled. Waveform goes idle. Silence detection still paused.</p>\
 <h3>Reusable modules</h3>\
 <ul>\
-<li><code>mic-listener.js</code> - Mic stream, silence detection, mute API</li>\
-<li><code>waveform.js</code> + <code>waveform.css</code> - Bar rendering, amplitude-driven or simulated</li>\
-<li><code>sprout-voice.js</code> - Rive expression orchestration, ElevenLabs TTS, chime</li>\
-</ul>\
-<h3>Rive states used</h3>\
-<ul>\
-<li><strong>Listening:</strong> <code>smile</code> trigger + <code>looking</code> (0-2) cycling every 1.5s</li>\
-<li><strong>Thinking:</strong> <code>thinking</code> trigger</li>\
-<li><strong>Talking:</strong> <code>smile</code> trigger (to exit thinking) + <code>talkinganimation</code> bool + <code>talkingmouth toggle</code> bool + <code>mouthselector</code> (1-8) cycling every 120ms</li>\
-<li><strong>Idle:</strong> <code>looking</code> reset to 3, all bools off, <code>mouthselector</code> = 0</li>\
+<li><code>mic-listener.js</code> - Mic stream, RMS amplitude, silence detection, mute API</li>\
+<li><code>waveform.js</code> + <code>waveform.css</code> - 134-bar visualizer, amplitude-driven or simulated</li>\
+<li><code>sprout-voice.js</code> - Rive expression orchestration (listen/think/talk), ElevenLabs TTS, chime</li>\
 </ul>\
 '};</script>
 <script src="/product-explorer/nav.js"></script>
