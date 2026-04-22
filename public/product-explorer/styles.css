@@ -3,6 +3,7 @@
    ═══════════════════════════════════════════════════ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
 @font-face {
   font-family: 'TossFace';
@@ -520,7 +521,7 @@ code {
   align-items: center;
   justify-content: center;
 }
-.meta-icon svg { width: 20px; height: 20px; }
+.meta-icon .material-symbols-outlined { font-size: 20px; line-height: 1; }
 .meta-label {
   width: 140px;
   flex-shrink: 0;
@@ -584,7 +585,7 @@ code {
   cursor: pointer; padding: 0; border-radius: 4px; text-decoration: none;
 }
 .btn-download:hover { background: #f5f5f5; text-decoration: none; }
-.btn-download svg { width: 16px; height: 16px; }
+.btn-download .material-symbols-outlined { font-size: 16px; line-height: 1; }
 
 /* ── Responsive ── */
 @media (max-width: 1200px) {
