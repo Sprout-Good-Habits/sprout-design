@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<title>Sprout Product Explorer — Home (ACT)</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/device-frame.css">
+<link rel="stylesheet" href="/kid-design-system/components/avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/status-bar.css">
+<link rel="stylesheet" href="/kid-design-system/components/button.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-toolbar.css">
+<style>
+/* ── Page-specific ── */
+.device-screen { background: var(--brand-25, #f5fbff); }
+
+/* ── Approved/resolved button state (matches Figma disabled button) ── */
+.btn-resolved {
+  background: var(--fg-disabled-subtle, #d5d7da) !important;
+  border-color: transparent !important;
+  color: var(--text-disabled, #717680) !important;
+  pointer-events: none;
+  cursor: default;
+}
+/* iOS-style transitions — subtle, no bounce */
+.btn-primary, .act-item-trailing {
+  transition: transform 0.12s ease-out, opacity 0.12s ease-out;
+}
+.btn-primary:active, .act-item-trailing:active {
+  transform: scale(0.96);
+  opacity: 0.8;
+}
+/* Fade-out for departing element */
+.act-fade-out {
+  opacity: 0 !important;
+  transition: opacity 0.2s ease-out !important;
+}
+/* Fade-in for resolved button appearing */
+.act-spring-in {
+  animation: act-fade-in 0.25s ease-out both;
+}
+@keyframes act-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ── Material Symbols (weight 400, grade normal, fill off) ── */
+.act-icon {
+  font-family: 'Material Symbols Outlined';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.act-icon-sm {
+  font-size: 20px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+/* Active tab uses filled icon */
+.act-tab.active .act-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ── Filter sheet ── */
+.act-filter-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.4);
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.act-filter-scrim.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.act-filter-sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  z-index: 21;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  padding: 12px 16px 34px;
+}
+.act-filter-sheet.visible {
+  transform: translateY(0);
+}
+.act-filter-handle {
+  width: 36px;
+  height: 5px;
+  border-radius: 100px;
+  background: var(--gray-300, #d5d7da);
+  margin: 0 auto 16px;
+}
+.act-filter-title {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+  margin-bottom: 16px;
+}
+.act-filter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.act-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: var(--radius-xl, 12px);
+  cursor: pointer;
+  transition: background 0.15s ease-out;
+}
+.act-filter-row:active {
+  background: var(--gray-50, #fafafa);
+}
+.act-filter-row.selected {
+  background: var(--bg-secondary, #fafafa);
+}
+.act-filter-name {
+  flex: 1;
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.act-filter-name span {
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-tertiary, #535862);
+}
+.act-filter-check {
+  color: var(--brand-500, #0ba5ec);
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+.act-filter-row.selected .act-filter-check {
+  opacity: 1;
+}
+
+/* ── Header toolbar ── */
+.act-header {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 10px;
+  z-index: 10;
+}
+.act-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.act-header-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md, 8px);
+  border-radius: 296px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.04);
+  position: relative;
+}
+.act-header-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg-primary, white);
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+}
+.act-header-pill .avatar {
+  position: relative;
+  z-index: 1;
+}
+#headerSprout canvas.rive-sprout {
+  width: 64px;
+  height: 92px;
+  top: -27px;
+}
+/* 60px single avatar Rive sizing */
+.act-item-leading > .avatar canvas.rive-user {
+  width: 86px;
+  height: 124px;
+  top: -36px;
+}
+.act-item-leading > .avatar canvas.rive-sprout {
+  width: 130px;
+  height: 186px;
+  top: -54px;
+}
+/* 40px duo avatar Rive sizing */
+.act-item-leading--duo .avatar canvas.rive-user {
+  width: 58px;
+  height: 83px;
+  top: -24px;
+}
+.act-header-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-xs, 24px);
+  line-height: var(--line-height-display-xs, 32px);
+  color: var(--text-primary, #181d27);
+}
+.act-header-right .act-header-pill {
+  gap: var(--spacing-xl, 16px);
+  padding: var(--spacing-xs, 4px) var(--spacing-xs, 4px);
+  height: 44px;
+}
+.act-header-icon-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  color: var(--text-primary, #181d27);
+}
+#headerParent canvas.rive-user {
+  width: 35px;
+  height: 50px;
+  top: -14px;
+}
+
+/* Parent avatar in right pill — sits in 36x36 wrapper like filter icon */
+.act-header-avatar-wrap {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Feed scroll area ── */
+.act-feed {
+  position: absolute;
+  top: 116px;
+  left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.act-feed::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Date sections ── */
+.act-section {
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.act-section-header {
+  padding: var(--spacing-lg, 12px) 0;
+  font-weight: var(--font-weight-bold, 700);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: #000;
+  position: sticky;
+  top: -1px;
+  background: var(--brand-25, #f5fbff);
+  z-index: 3;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.act-section-header.stuck {
+  border-bottom-color: var(--border-secondary, #e9eaeb);
+}
+/* Flush sticky header against toolbar — no gap */
+.act-section:first-child .act-section-header {
+  padding-top: var(--spacing-lg, 12px);
+}
+/* Extend sticky bg to cover any subpixel gaps */
+.act-section-header::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0; right: 0;
+  height: calc(100% + 1px);
+  background: inherit;
+  z-index: -1;
+}
+
+/* ── List items ── */
+.act-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px) 0;
+}
+/* ── Avatar group leading (62x62 container) ── */
+.act-item-leading {
+  position: relative;
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+}
+/* Single avatar: 60px centered */
+.act-item-leading .avatar {
+  position: absolute;
+  top: 1px; left: 1px;
+  width: 60px;
+  height: 60px;
+  border: 1px solid white;
+}
+/* Two avatars: 40px each, diagonal overlap */
+.act-item-leading--duo .avatar {
+  width: 40px;
+  height: 40px;
+  border: 1px solid white;
+}
+.act-item-leading--duo .avatar:first-child {
+  top: 1px; left: 21px;
+}
+.act-item-leading--duo .avatar:nth-child(2) {
+  top: 21px; left: 1px;
+}
+/* Habit badge: 24px circle, bottom-right */
+.act-item-badge {
+  position: absolute;
+  left: 38px; top: 38px;
+  width: 24px; height: 24px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 12px;
+  line-height: 24px;
+  text-align: center;
+  z-index: 2;
+  overflow: hidden;
+}
+/* Sprout thread: single 60px avatar, no badge */
+.act-item-leading--sprout .avatar {
+  width: 60px;
+  height: 60px;
+}
+.act-item-emoji-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 24px;
+}
+.act-item-content {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.act-item-single {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.act-item-content b {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+}
+/* ── Time indicator ── */
+.act-item-time {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-quaternary, #717680);
+  display: inline;
+}
+/* Below mode: time on its own line, remove clamp so it's visible */
+.opt-actions-below .act-item-time {
+  display: block;
+  margin-top: 0;
+}
+.opt-actions-below .act-item-single {
+  display: block;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+  overflow: visible;
+}
+.act-item-action {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.act-item-trailing {
+  color: var(--fg-tertiary, #535862);
+}
+
+/* ═══ A/B TOGGLE OPTIONS ═══ */
+
+/* ── Option 1: Label format ── */
+.act-item-multi { display: none; }
+.opt-two-line .act-item-single { display: none; }
+.opt-two-line .act-item-multi { display: block; }
+.act-item-label {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.act-item-desc {
+  font-weight: var(--font-weight-regular, 400);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Option 2: Action button placement ── */
+.opt-actions-below .act-item:has(.btn) {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+.opt-actions-below .act-item:has(.btn) .act-item-action {
+  padding-top: 0;
+  gap: var(--spacing-md, 8px);
+  flex-basis: calc(100% - 70px);
+  margin-left: 70px;
+}
+/* Thumbnail spacing */
+.opt-actions-below .act-item-thumb,
+.opt-thumb-below .act-item-thumb {
+  margin-top: 0;
+}
+/* When both below: thumbnail before buttons */
+.opt-thumb-below.opt-actions-below .act-item-thumb {
+  order: 10;
+}
+.opt-thumb-below.opt-actions-below .act-item-action {
+  order: 20;
+}
+.opt-actions-below .act-item:has(.btn) .act-item-action .btn {
+  flex: 1;
+}
+/* Trailing icon becomes a secondary text button in below mode */
+.opt-actions-below .act-item:has(.btn) .act-item-trailing {
+  flex: 1;
+  background: var(--bg-primary, #fff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  color: var(--text-primary, #181d27);
+  border-radius: var(--radius-sm, 6px);
+  padding: var(--spacing-sm, 6px) var(--spacing-lg, 12px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-text-sm, 20px);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0;
+}
+.opt-actions-below .act-item:has(.btn) .act-item-trailing::after {
+  content: attr(data-label);
+  font-size: var(--font-size-text-sm, 14px);
+}
+
+/* ── Option 4: Thumbnails ── */
+.act-item-thumb {
+  display: none;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--gray-100, #f5f5f5);
+}
+.act-item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Inline: small square on right, between content and action */
+.opt-thumb-inline .act-item-thumb {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md, 8px);
+}
+/* Below (Slack-style): wide preview, wraps below, aligned with text */
+.opt-thumb-below .act-item:has(.act-item-thumb) {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+.opt-thumb-below .act-item-thumb {
+  display: block;
+  height: 154px;
+  border-radius: var(--radius-xl, 12px);
+  flex-basis: calc(100% - 70px);
+  order: 99;
+  margin-left: 70px;
+  margin-top: 0;
+}
+
+/* ── Toggle controls in metadata ── */
+.act-toggles { margin-top: 8px; }
+.act-toggle-group {
+  margin-bottom: 16px;
+}
+.act-toggle-label {
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  margin-bottom: 6px;
+}
+.act-toggle-row {
+  display: flex;
+  gap: 4px;
+}
+.act-toggle-btn {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium, 500);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  color: var(--text-secondary, #414651);
+  background: var(--bg-primary, #fff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+  text-align: center;
+  line-height: 18px;
+}
+.act-toggle-btn:hover { background: var(--gray-50, #fafafa); }
+.act-toggle-btn.active {
+  background: var(--brand-50, #f0f9ff);
+  border-color: var(--brand-200, #b9e6fe);
+  color: var(--brand-700, #026aa2);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* ── Bottom gradient fade ── */
+.act-fade-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 116px;
+  background: linear-gradient(to top, var(--brand-25, #f5fbff) 35%, rgba(245,251,255,0) 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ── Tab bar (floating capsule) ── */
+.act-tab-bar-wrap {
+  position: absolute;
+  bottom: 18px; left: 21px; right: 21px;
+  z-index: 6;
+}
+.act-tab-bar {
+  display: flex;
+  align-items: stretch;
+  background: white;
+  border: 1px solid white;
+  border-radius: var(--radius-full, 9999px);
+  padding: 3px;
+  box-shadow: 0 0 24px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+.act-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--spacing-md, 8px);
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-primary, #181d27);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-medium, 500);
+  font-size: 10px;
+  line-height: 14px;
+  text-align: center;
+}
+.act-tab.active {
+  background: var(--bg-secondary, #fafafa);
+  color: var(--brand-500, #0ba5ec);
+  font-weight: var(--font-weight-semibold, 600);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="two-col">
+        <div class="col-left">
+        <div class="device-wrapper" id="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen">
+
+<!-- Header frost gradient -->
+<div class="header-frost"></div>
+
+<!-- Status bar -->
+<div class="status-bar">
+  <span class="status-bar-time">9:41</span>
+  <span class="status-bar-icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+  </span>
+</div>
+
+<!-- Header toolbar -->
+<div class="act-header">
+  <div class="act-header-left">
+    <div class="act-header-pill">
+      <div class="avatar avatar-xs" id="headerSprout">
+        <canvas class="rive-sprout" width="64" height="92"></canvas>
+      </div>
+    </div>
+    <span class="act-header-title">Sprout</span>
+  </div>
+  <div class="act-header-right">
+    <div class="act-header-pill">
+      <button class="act-header-icon-btn" aria-label="Filter">
+        <span class="act-icon">filter_list</span>
+      </button>
+      <div class="act-header-avatar-wrap">
+        <div class="avatar avatar-xs" id="headerParent">
+          <canvas class="rive-user" width="35" height="50"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Feed -->
+<div class="act-feed">
+
+  <!-- ═══ TODAY ═══ -->
+  <div class="act-section">
+    <div class="act-section-header">Today</div>
+
+    <div class="act-item" data-unseen>
+      <div class="act-unseen-dot"></div>
+      <div class="act-item-leading act-item-leading--duo">
+        <div class="avatar" data-kid="ben"><canvas class="rive-user" width="58" height="83"></canvas></div>
+        <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="58" height="83"></canvas></div>
+        <div class="act-item-badge" style="background:var(--blue-dark-500);">🌙</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Ben &amp; Gabe</b> completed morning routine. Ben 4/4, Gabe 3/4</div>
+        <div class="act-item-multi"><div class="act-item-label">Morning Routine</div><div class="act-item-desc">Ben completed 4/4, Gabe 3/4</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+
+    <div class="act-item" data-unseen>
+      <div class="act-unseen-dot"></div>
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--violet-500);">📺</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Gabe</b> requested 45 min YouTube</div>
+        <div class="act-item-multi"><div class="act-item-label">Screen Time</div><div class="act-item-desc">Gabe requested 45 min YouTube</div></div>
+      </div>
+      <div class="act-item-thumb"><img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&h=200&fit=crop" alt=""></div>
+      <div class="act-item-action">
+        <button class="btn btn-primary btn-sm">Approve</button>
+        <span class="act-icon act-icon-sm act-item-trailing" data-label="Decline">close</span>
+      </div>
+    </div>
+
+    <div class="act-item" data-unseen>
+      <div class="act-unseen-dot"></div>
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--green-500);">📖</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Ben</b> read 18 min, 3 of 4 chapters</div>
+        <div class="act-item-multi"><div class="act-item-label">Reading</div><div class="act-item-desc">Ben read 18 min, 3 of 4 chapters</div></div>
+      </div>
+      <div class="act-item-thumb"><img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=200&fit=crop" alt=""></div>
+      <div class="act-item-action">
+        <button class="btn btn-primary btn-sm">Approve</button>
+        <span class="act-icon act-icon-sm act-item-trailing" data-label="Needs redo">replay</span>
+      </div>
+    </div>
+
+    <div class="act-item" data-unseen>
+      <div class="act-unseen-dot"></div>
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--yellow-500);">🏫</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Ben</b> has a permission slip due Friday</div>
+        <div class="act-item-multi"><div class="act-item-label">School - Ben</div><div class="act-item-desc">Permission slip due Friday</div></div>
+      </div>
+      <div class="act-item-thumb"><img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=200&fit=crop" alt=""></div>
+      <div class="act-item-action">
+        <button class="btn btn-primary btn-sm">Sign</button>
+        <span class="act-icon act-icon-sm act-item-trailing" data-label="Decline">close</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-unseen-dot"></div>
+      <div class="act-item-leading act-item-leading--sprout">
+        <div class="avatar"><canvas class="rive-sprout" width="130" height="186"></canvas></div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Ben</b> read 4 of 5 days this week, 12-day streak</div>
+        <div class="act-item-multi"><div class="act-item-label">Ben's Reading</div><div class="act-item-desc">Week 2: 4/5 days, 12-day streak</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-unseen-dot"></div>
+      <div class="act-item-leading act-item-leading--sprout">
+        <div class="avatar"><canvas class="rive-sprout" width="130" height="186"></canvas></div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Meal plan</b> 5 dinners planned, grocery list ready</div>
+        <div class="act-item-multi"><div class="act-item-label">This Week's Meals</div><div class="act-item-desc">5 dinners planned, grocery list ready</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ YESTERDAY ═══ -->
+  <div class="act-section">
+    <div class="act-section-header">Yesterday</div>
+
+    <div class="act-item">
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--pink-500);">✏️</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Gabe</b> scored 7/10 on multiplication quiz</div>
+        <div class="act-item-multi"><div class="act-item-label">Math Homework</div><div class="act-item-desc">Gabe scored 7/10 on multiplication</div></div>
+      </div>
+      <div class="act-item-thumb"><img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=400&h=200&fit=crop" alt=""></div>
+      <div class="act-item-action">
+        <span class="btn btn-sm btn-resolved">Approved</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--blue-dark-500);">🌙</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Shane</b> read "Goodnight Moon", 15 min</div>
+        <div class="act-item-multi"><div class="act-item-label">Bedtime Story</div><div class="act-item-desc">Shane read "Goodnight Moon", 15 min</div></div>
+      </div>
+      <div class="act-item-thumb"><img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=200&fit=crop" alt=""></div>
+      <div class="act-item-action">
+        <span class="btn btn-sm btn-resolved">Approved</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--violet-500);">🎹</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Gabe</b> has a piano recital in May</div>
+        <div class="act-item-multi"><div class="act-item-label">Piano - Gabe</div><div class="act-item-desc">May recital schedule</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="btn btn-sm btn-resolved">Signed</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-item-leading act-item-leading--sprout">
+        <div class="avatar"><canvas class="rive-sprout" width="130" height="186"></canvas></div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Gabe</b> multiplication at 70% accuracy this week</div>
+        <div class="act-item-multi"><div class="act-item-label">Gabe's Progress</div><div class="act-item-desc">Multiplication at 70% accuracy this week</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LAST 7 DAYS ═══ -->
+  <div class="act-section">
+    <div class="act-section-header">Last 7 days</div>
+
+    <div class="act-item">
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--orange-500);">⚽</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Ben</b> soccer Tue/Thu 3:30, pickup at 4:30</div>
+        <div class="act-item-multi"><div class="act-item-label">Soccer Practice</div><div class="act-item-desc">Ben: Tue/Thu 3:30, pickup at 4:30</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--sprout-500);">💰</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Gabe</b> earned 15 gems this week, 127 total</div>
+        <div class="act-item-multi"><div class="act-item-label">Gems Earned</div><div class="act-item-desc">Gabe: +15 gems, 127 total</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-item-leading act-item-leading--sprout">
+        <div class="avatar"><canvas class="rive-sprout" width="130" height="186"></canvas></div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Zeev</b> sent a message: pickup at 3?</div>
+        <div class="act-item-multi"><div class="act-item-label">Family Chat</div><div class="act-item-desc">Zeev: pickup at 3?</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LAST 30 DAYS ═══ -->
+  <div class="act-section">
+    <div class="act-section-header">Last 30 days</div>
+
+    <div class="act-item">
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--green-500);">📋</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Ben</b> 6th grade spring progress report available</div>
+        <div class="act-item-multi"><div class="act-item-label">Report Card - Ben</div><div class="act-item-desc">6th grade spring progress report</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-item-leading act-item-leading--sprout">
+        <div class="avatar"><canvas class="rive-sprout" width="130" height="186"></canvas></div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Shane</b> learned A through G, starting H this week</div>
+        <div class="act-item-multi"><div class="act-item-label">Shane's Letters</div><div class="act-item-desc">A-G complete, starting H this week</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--green-500);">📖</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Ben</b> reading goal set: 20 min/day, 5 days/week</div>
+        <div class="act-item-multi"><div class="act-item-label">Reading Goal</div><div class="act-item-desc">Ben: 20 min/day, 5 days/week</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ OLDER ═══ -->
+  <div class="act-section">
+    <div class="act-section-header">Older</div>
+
+    <div class="act-item">
+      <div class="act-item-leading act-item-leading--sprout">
+        <div class="avatar"><canvas class="rive-sprout" width="130" height="186"></canvas></div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Rosa</b> next cleaning Thu Apr 24, $150</div>
+        <div class="act-item-multi"><div class="act-item-label">Rosa - Cleaning</div><div class="act-item-desc">Next: Thu Apr 24, $150/session</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-item-leading">
+        <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+        <div class="act-item-badge" style="background:var(--violet-500);">🎹</div>
+      </div>
+      <div class="act-item-content">
+        <div class="act-item-single"><b>Gabe</b> started piano, Saturdays 10am with Ms. Chen</div>
+        <div class="act-item-multi"><div class="act-item-label">Piano Started</div><div class="act-item-desc">Gabe: Saturdays 10am, Ms. Chen</div></div>
+      </div>
+      <div class="act-item-action">
+        <span class="act-icon act-icon-sm act-item-trailing">chevron_right</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:120px;"></div>
+</div>
+
+<!-- Bottom gradient fade -->
+<div class="act-fade-bottom"></div>
+
+<!-- Tab bar -->
+<div class="act-tab-bar-wrap">
+  <div class="act-tab-bar">
+    <div class="act-tab active">
+      <span class="act-icon">home</span>
+      <span>Home</span>
+    </div>
+    <div class="act-tab">
+      <span class="act-icon">group</span>
+      <span>Family</span>
+    </div>
+    <div class="act-tab">
+      <span class="act-icon">forum</span>
+      <span>DMs</span>
+    </div>
+    <div class="act-tab">
+      <span class="act-icon">dashboard</span>
+      <span>Skills</span>
+    </div>
+  </div>
+</div>
+
+<!-- Filter scrim + sheet -->
+<div class="act-filter-scrim" id="filterScrim"></div>
+<div class="act-filter-sheet" id="filterSheet">
+  <div class="act-filter-handle"></div>
+  <div class="act-filter-title">Filter by kid</div>
+  <div class="act-filter-list">
+    <div class="act-filter-row selected" data-filter="all">
+      <div class="avatar avatar-xs" style="background:var(--gray-200);">
+        <span class="act-icon" style="font-size:16px;color:var(--gray-500);">group</span>
+      </div>
+      <div class="act-filter-name">All kids</div>
+      <span class="act-icon act-icon-sm act-filter-check">check</span>
+    </div>
+    <div class="act-filter-row" data-filter="ben">
+      <div class="avatar avatar-xs" id="filterBen"><canvas class="rive-user" width="35" height="50"></canvas></div>
+      <div class="act-filter-name">Ben <span>11, 6th grade</span></div>
+      <span class="act-icon act-icon-sm act-filter-check">check</span>
+    </div>
+    <div class="act-filter-row" data-filter="gabe">
+      <div class="avatar avatar-xs" id="filterGabe"><canvas class="rive-user" width="35" height="50"></canvas></div>
+      <div class="act-filter-name">Gabe <span>8, 3rd grade</span></div>
+      <span class="act-icon act-icon-sm act-filter-check">check</span>
+    </div>
+    <div class="act-filter-row" data-filter="shane">
+      <div class="avatar avatar-xs" id="filterShane"><canvas class="rive-user" width="35" height="50"></canvas></div>
+      <div class="act-filter-name">Shane <span>4, preschool</span></div>
+      <span class="act-icon act-icon-sm act-filter-check">check</span>
+    </div>
+  </div>
+</div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="col-right" id="col-right"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.DS_META = {
+  title: 'Home (ACT)',
+  desc: 'Notification-style feed with inline actions and date grouping. The primary triage surface for parents.',
+  owner: 'Leti',
+  status: 'In progress',
+  notes: '<h2>How ACT Works</h2>' +
+    '<p>The ACT tab is a <strong>notification feed</strong> for triage, not a thread list. Each item shows the most recently computed result for that entity. The preview is stable: chatting in a thread does not change the feed text.</p>' +
+    '<h2>Decisions to make</h2>' +
+    '<div class="act-toggles">' +
+    '<div class="act-toggle-group">' +
+      '<div class="act-toggle-label">1. Notification text</div>' +
+      '<p style="font-size:13px;color:#535862;margin:0 0 6px;">Just label uses one flowing line with mixed weights. Label + description separates the entity name from the data, easier to scan but takes more vertical space.</p>' +
+      '<div class="act-toggle-row">' +
+        '<button class="act-toggle-btn active" onclick="actToggle(\'text\',0,this)">Just label</button>' +
+        '<button class="act-toggle-btn" onclick="actToggle(\'text\',1,this)">Label + description</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="act-toggle-group">' +
+      '<div class="act-toggle-label">2. Action buttons</div>' +
+      '<p style="font-size:13px;color:#535862;margin:0 0 6px;">Inline is compact and fast for single-tap triage. Below gives more room for multiple actions and shows time on its own line, but increases row height.</p>' +
+      '<div class="act-toggle-row">' +
+        '<button class="act-toggle-btn active" onclick="actToggle(\'actions\',0,this)">Inline</button>' +
+        '<button class="act-toggle-btn" onclick="actToggle(\'actions\',1,this)">Below</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="act-toggle-group">' +
+      '<div class="act-toggle-label">3. Content thumbnails</div>' +
+      '<p style="font-size:13px;color:#535862;margin:0 0 6px;">Shows proof uploaded by kids (reading photos, homework). No thumbnail keeps rows compact. Inline adds a small square next to the text. Below adds a wide preview card under the text.</p>' +
+      '<div class="act-toggle-row">' +
+        '<button class="act-toggle-btn active" onclick="actToggle(\'thumb\',0,this)">None</button>' +
+        '<button class="act-toggle-btn" onclick="actToggle(\'thumb\',1,this)">Inline</button>' +
+        '<button class="act-toggle-btn" onclick="actToggle(\'thumb\',2,this)">Below</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="act-toggle-group">' +
+      '<div class="act-toggle-label">4. Unseen indicator</div>' +
+      '<p style="font-size:13px;color:#535862;margin:0 0 6px;">Do we need a way to signal which items are new since the parent\'s last visit? A blue dot helps parents who check the app multiple times a day. No indicator keeps the feed clean but loses "what changed" at a glance. Bold text makes unread items stand out without adding visual elements.</p>' +
+      '<p style="font-size:13px;color:#535862;margin:0 0 6px;"><strong style="color:var(--text-primary);">Co-parent actions:</strong> When the co-parent (Zeev) already acted on an item, it should still appear as unseen for Mali since it is new information. The item shows in its resolved state with attribution (e.g., "Approved by Zeev" instead of just "Approved"). This connects to the design brief\'s cross-parent action surfacing principle.</p>' +
+    '</div>' +
+  '</div>' +
+  '<div style="margin-top:20px;padding:12px 16px;background:var(--brand-50);border:1px solid var(--brand-200);border-radius:8px;font-size:13px;color:var(--text-secondary);line-height:20px;">' +
+    '<strong style="color:var(--text-primary);">Leti\'s recommendation</strong><br>' +
+    'Just label + action buttons inline + content thumbnails below.<br><br>' +
+    'Parents are scanning at 7pm between dinner and bedtime. Just label keeps rows compact so more items fit on screen without scrolling. Inline action buttons let them approve or decline in one tap without expanding the row. Content thumbnails below give visibility into what the kid actually did (the reading photo, the homework screenshot) since kid content is rich and visual proof builds trust, but only when there is something to show, keeping the feed tight otherwise.<br><br>' +
+    'Open to hearing the team\'s thoughts on the other options.' +
+  '</div>'
+};
+</script>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+<script>
+(function() {
+  var RIVE_SPROUT_SRC = '/kid-design-system/sprot2.97_.riv';
+  var RIVE_USER_SRC = '/kid-design-system/character2.91.riv';
+  var SM_NAME = 'State Machine 1';
+  var ARTBOARD = 'Village-character';
+
+  var SPROUT_STATE = { hairID: 1 };
+  var MALI_STATE = { skinID: 0, hairID: 6, hairshadeID: 5, clothingID: 2, clothingcolourID: 3, eyeshadeID: 2 };
+  var BEN_STATE = { skinID: 0, hairID: 2, hairshadeID: 4, clothingID: 1, clothingcolourID: 2, eyeshadeID: 1 };
+  var GABE_STATE = { skinID: 0, hairID: 5, hairshadeID: 6, clothingID: 2, clothingcolourID: 4, eyeshadeID: 2 };
+  var SHANE_STATE = { skinID: 0, hairID: 1, hairshadeID: 4, clothingID: 3, clothingcolourID: 1, eyeshadeID: 1 };
+  var KID_STATES = { ben: BEN_STATE, gabe: GABE_STATE, shane: SHANE_STATE };
+
+  function initRiveAvatar(canvas, opts) {
+    var w = parseInt(canvas.getAttribute('width'), 10) || 86;
+    var h = parseInt(canvas.getAttribute('height'), 10) || 124;
+    canvas.width = w; canvas.height = h;
+    var r;
+    try {
+      r = new rive.Rive({
+        src: opts.src, canvas: canvas, autoplay: true,
+        stateMachines: SM_NAME, artboard: opts.artboard || undefined,
+        fit: rive.Fit.Contain, alignment: rive.Alignment.Center,
+        onLoad: function() {
+          if (!r) return;
+          r.resizeDrawingSurfaceToCanvas();
+          try {
+            var inputs = r.stateMachineInputs(SM_NAME);
+            if (inputs && opts.state) {
+              inputs.forEach(function(inp) {
+                if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+              });
+            }
+          } catch(e) {}
+        }
+      });
+    } catch(e) { console.warn('Rive init failed', e); }
+  }
+
+  var hsc = document.querySelector('#headerSprout canvas.rive-sprout');
+  if (hsc) initRiveAvatar(hsc, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+
+  var hpc = document.querySelector('#headerParent canvas.rive-user');
+  if (hpc) initRiveAvatar(hpc, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: MALI_STATE });
+
+  document.querySelectorAll('.act-item-leading .avatar[data-kid]').forEach(function(el) {
+    var c = el.querySelector('canvas.rive-user');
+    if (c) initRiveAvatar(c, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: KID_STATES[el.getAttribute('data-kid')] || BEN_STATE });
+  });
+
+  document.querySelectorAll('.act-item-leading--sprout .avatar canvas.rive-sprout').forEach(function(c) {
+    initRiveAvatar(c, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+  });
+
+  // Init filter sheet kid avatars
+  var filterAvatars = { filterBen: BEN_STATE, filterGabe: GABE_STATE, filterShane: SHANE_STATE };
+  Object.keys(filterAvatars).forEach(function(id) {
+    var c = document.querySelector('#' + id + ' canvas.rive-user');
+    if (c) initRiveAvatar(c, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: filterAvatars[id] });
+  });
+
+  // ── Inject timestamps into items ──
+  var times = {
+    'Today': ['1h','2h','3h','4h','5h','6h'],
+    'Yesterday': ['1d','1d','1d','1d'],
+    'Last 7 days': ['3d','4d','5d'],
+    'Last 30 days': ['2w','2w','3w'],
+    'Older': ['1mo','2mo']
+  };
+  document.querySelectorAll('.act-section').forEach(function(section) {
+    var header = section.querySelector('.act-section-header');
+    if (!header) return;
+    var sectionName = header.textContent.trim();
+    var sectionTimes = times[sectionName] || [];
+    var items = section.querySelectorAll('.act-item');
+    items.forEach(function(item, i) {
+      var t = sectionTimes[i] || sectionTimes[sectionTimes.length - 1] || '';
+      if (!t) return;
+      // Add time to single-line format (inline at end of text)
+      var single = item.querySelector('.act-item-single');
+      if (single && !single.querySelector('.act-item-time')) {
+        var span = document.createElement('span');
+        span.className = 'act-item-time';
+        span.textContent = ' ' + t;
+        single.appendChild(span);
+      }
+      // Add time to multi-line format (after description)
+      var multi = item.querySelector('.act-item-multi');
+      if (multi && !multi.querySelector('.act-item-time')) {
+        var desc = multi.querySelector('.act-item-desc');
+        if (desc) {
+          var timeSpan = document.createElement('span');
+          timeSpan.className = 'act-item-time';
+          timeSpan.textContent = ' ' + t;
+          desc.appendChild(timeSpan);
+        }
+      }
+    });
+  });
+
+  // ── Sticky header border on scroll ──
+  var feed = document.querySelector('.act-feed');
+  var headers = document.querySelectorAll('.act-section-header');
+  if (feed && headers.length) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        // When top of header hits the top of the scroll container, it's stuck
+        entry.target.classList.toggle('stuck', entry.intersectionRatio < 1);
+      });
+    }, { root: feed, threshold: [1] });
+    headers.forEach(function(h) { observer.observe(h); });
+  }
+
+  // ── Tap row to navigate to parent chat (get context / interactive mode) ──
+  document.querySelectorAll('.act-item').forEach(function(item) {
+    // Make the whole row tappable except for the action buttons
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', function(e) {
+      // Don't navigate if tapping the Approve/Sign button or replay/close icons
+      if (e.target.closest('.btn') || e.target.closest('.act-item-trailing')) return;
+      // iOS press feedback
+      item.style.transition = 'opacity 0.1s ease';
+      item.style.opacity = '0.6';
+      setTimeout(function() {
+        window.location.href = '/product-explorer/parent-chat-3.html';
+      }, 150);
+    });
+  });
+
+  // ── Approve/Sign button tap → resolved state ──
+  // Maps for positive action (Approve/Sign) and negative action (replay/close)
+  var positiveLabels = { 'Approve': 'Approved', 'Sign': 'Signed' };
+  var negativeLabels = { 'replay': 'Needs redo', 'close': 'Decline' };
+
+  document.querySelectorAll('.act-item .act-item-action').forEach(function(action) {
+    var btn = action.querySelector('.btn');
+    var trailingIcon = action.querySelector('.act-item-trailing');
+    if (!btn || !trailingIcon) return;
+
+    var resolved = false;
+
+    // Positive: tap Approve/Sign → button resolves, trailing fades out
+    btn.addEventListener('click', function() {
+      if (resolved) return;
+      resolved = true;
+      var label = btn.textContent.trim();
+
+      // Fade out trailing icon
+      trailingIcon.classList.add('act-fade-out');
+
+      // After fade, swap button to resolved state with spring
+      setTimeout(function() {
+        trailingIcon.style.display = 'none';
+        btn.textContent = positiveLabels[label] || label;
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-resolved', 'act-spring-in');
+      }, 250);
+    });
+
+    // Negative: tap replay/close → button fades, resolved label springs in
+    trailingIcon.style.cursor = 'pointer';
+    trailingIcon.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (resolved) return;
+      resolved = true;
+      var iconName = trailingIcon.textContent.trim();
+      var label = negativeLabels[iconName] || 'Dismissed';
+
+      // Fade out the primary button
+      btn.classList.add('act-fade-out');
+
+      // After fade, replace with resolved label
+      setTimeout(function() {
+        btn.style.display = 'none';
+        var resolvedBtn = document.createElement('span');
+        resolvedBtn.className = 'btn btn-sm btn-resolved act-spring-in';
+        resolvedBtn.textContent = label;
+        trailingIcon.replaceWith(resolvedBtn);
+      }, 250);
+    });
+  });
+
+  // ── Filter sheet ──
+  var filterBtn = document.querySelector('.act-header-icon-btn[aria-label="Filter"]');
+  var filterScrim = document.getElementById('filterScrim');
+  var filterSheet = document.getElementById('filterSheet');
+
+  function openFilter() {
+    if (filterScrim) filterScrim.classList.add('visible');
+    if (filterSheet) filterSheet.classList.add('visible');
+  }
+  function closeFilter() {
+    if (filterScrim) filterScrim.classList.remove('visible');
+    if (filterSheet) filterSheet.classList.remove('visible');
+  }
+
+  if (filterBtn) filterBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    openFilter();
+  });
+  if (filterScrim) filterScrim.addEventListener('click', closeFilter);
+
+  // Row selection
+  document.querySelectorAll('.act-filter-row').forEach(function(row) {
+    row.addEventListener('click', function() {
+      document.querySelectorAll('.act-filter-row').forEach(function(r) { r.classList.remove('selected'); });
+      row.classList.add('selected');
+      // Close after brief delay
+      setTimeout(closeFilter, 200);
+    });
+  });
+  // ── A/B toggle controls ──
+  var screen = document.querySelector('.device-screen');
+  var toggleMap = {
+    text:    ['', 'opt-two-line'],
+    actions: ['', 'opt-actions-below'],
+    thumb:   ['', 'opt-thumb-inline', 'opt-thumb-below']
+  };
+  window.actToggle = function(type, idx, btn) {
+    // Update button active state
+    var row = btn.parentElement;
+    row.querySelectorAll('.act-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    // Toggle CSS class on device screen
+    var classes = toggleMap[type];
+    if (!classes || !screen) return;
+    classes.forEach(function(c) { if (c) screen.classList.remove(c); });
+    if (classes[idx]) screen.classList.add(classes[idx]);
+  };
+})();
+</script>
+</body>
+</html>
