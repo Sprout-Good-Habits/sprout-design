@@ -1363,16 +1363,6 @@
     senderInd.el.appendChild(typingLabel);
     group.appendChild(senderInd.el);
 
-    // "Answer now" CTA — Sprout only
-    if (!isCoparent) {
-      var cta = document.createElement('button');
-      cta.className = 'typing-cta';
-      cta.type = 'button';
-      cta.textContent = 'Answer now';
-      cta.addEventListener('click', function() { stopGeneration(); });
-      group.appendChild(cta);
-    }
-
     // Hidden msg-row — will hold avatar + bubble on delivery
     var row = document.createElement('div');
     row.className = 'msg-row msg-incoming';
