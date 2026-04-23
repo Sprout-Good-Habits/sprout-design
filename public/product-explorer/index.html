@@ -124,6 +124,37 @@
 .at-row.hidden {
   display: none;
 }
+.surface-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  background: #fafafa;
+  border: 1px solid #e9eaeb;
+  border-radius: 8px;
+  margin-top: 24px;
+}
+.surface-tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: #717680;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  line-height: 20px;
+  transition: background 0.1s, color 0.1s;
+}
+.surface-tab:hover {
+  color: #181d27;
+}
+.surface-tab.is-active {
+  background: #ffffff;
+  color: #181d27;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.04);
+}
 @media (max-width: 768px) {
   .artifacts-index { padding-top: 24px; }
   .artifacts-table { margin-top: 20px; }
@@ -148,6 +179,10 @@
       <div class="breadcrumb" id="breadcrumb"></div>
       <div class="artifacts-index">
         <h1 class="page-title">Product explorer</h1>
+        <div class="surface-tabs" id="surface-tabs" role="tablist">
+          <button type="button" class="surface-tab is-active" data-surface="kid" role="tab" aria-selected="true">Kid</button>
+          <button type="button" class="surface-tab" data-surface="parent" role="tab" aria-selected="false">Parent</button>
+        </div>
         <div class="search-bar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="search-input" placeholder="Search artifacts..." autocomplete="off" />
@@ -165,43 +200,67 @@
   if (!nav || !nav[0] || !nav[0].children) return;
   var items = nav[0].children;
   var table = document.getElementById('artifacts-table');
+  var tabs = document.querySelectorAll('.surface-tab');
+  var searchInput = document.getElementById('search-input');
 
-  var html = '<div class="at-header">';
-  html += '<div class="at-header-left">';
-  html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>';
-  html += 'Product explorer';
-  html += '</div>';
-  html += '<div class="at-header-right">Age group</div>';
-  html += '</div>';
-  html += '<div class="at-body">';
+  function render(surface) {
+    var filtered = items.filter(function(item) {
+      return (item.surface || 'kid') === surface;
+    });
 
-  for (var i = 0; i < items.length; i++) {
-    var item = items[i];
-    html += '<a class="at-row" href="' + item.href + '">';
-    html += '<div class="at-name">' + item.label + '</div>';
-    html += '<div class="at-badge-col">';
-    if (item.badge) {
-      html += '<span class="at-badge">' + item.badge + '</span>';
-    }
+    var html = '<div class="at-header">';
+    html += '<div class="at-header-left">';
+    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>';
+    html += 'Product explorer';
     html += '</div>';
-    html += '</a>';
+    html += '<div class="at-header-right">Version</div>';
+    html += '</div>';
+    html += '<div class="at-body">';
+
+    for (var i = 0; i < filtered.length; i++) {
+      var item = filtered[i];
+      html += '<a class="at-row" href="' + item.href + '">';
+      html += '<div class="at-name">' + item.label + '</div>';
+      html += '<div class="at-badge-col">';
+      if (item.badge) {
+        html += '<span class="at-badge">' + item.badge + '</span>';
+      }
+      html += '</div>';
+      html += '</a>';
+    }
+
+    html += '</div>';
+    table.innerHTML = html;
+
+    applySearch();
   }
 
-  html += '</div>';
-  table.innerHTML = html;
-
-  // Search filtering
-  var searchInput = document.getElementById('search-input');
-  var rows = table.querySelectorAll('.at-row');
-  searchInput.addEventListener('input', function() {
-    var q = this.value.toLowerCase().trim();
+  function applySearch() {
+    var q = (searchInput.value || '').toLowerCase().trim();
+    var rows = table.querySelectorAll('.at-row');
     for (var j = 0; j < rows.length; j++) {
       var name = rows[j].querySelector('.at-name').textContent.toLowerCase();
       var badge = rows[j].querySelector('.at-badge');
       var badgeText = badge ? badge.textContent.toLowerCase() : '';
       rows[j].classList.toggle('hidden', q !== '' && name.indexOf(q) === -1 && badgeText.indexOf(q) === -1);
     }
+  }
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) {
+        t.classList.remove('is-active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('is-active');
+      tab.setAttribute('aria-selected', 'true');
+      render(tab.dataset.surface);
+    });
   });
+
+  searchInput.addEventListener('input', applySearch);
+
+  render('kid');
 })();
 </script>
 </body>
