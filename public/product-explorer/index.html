@@ -38,11 +38,6 @@
   height: 20px;
   flex-shrink: 0;
 }
-.at-header-right {
-  width: 120px;
-  flex-shrink: 0;
-  padding: 8px;
-}
 .at-body {
   display: flex;
   flex-direction: column;
@@ -63,29 +58,8 @@
   font-weight: 500;
   color: #181d27;
   line-height: 20px;
-  border-right: 1px solid #e9eaeb;
   border-bottom: 1px solid #e9eaeb;
   border-top: 1px solid #e9eaeb;
-}
-.at-badge-col {
-  width: 120px;
-  flex-shrink: 0;
-  padding: 6px 8px;
-  border-bottom: 1px solid #e9eaeb;
-  border-top: 1px solid #e9eaeb;
-  display: flex;
-  align-items: center;
-}
-.at-badge {
-  background: #f0f9ff;
-  border: 1px solid #b9e6fe;
-  color: #026aa2;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 18px;
-  border-radius: 6px;
-  padding: 2px 6px;
-  white-space: nowrap;
 }
 .search-bar {
   position: relative;
@@ -158,16 +132,9 @@
 @media (max-width: 768px) {
   .artifacts-index { padding-top: 24px; }
   .artifacts-table { margin-top: 20px; }
-  .at-header-right { width: 80px; }
-  .at-badge-col { width: 80px; }
-  .at-name, .at-badge-col, .at-header-left, .at-header-right { padding: 10px 8px; }
+  .at-name, .at-header-left { padding: 10px 8px; }
   .at-row { min-height: 44px; }
   .search-bar input { height: 44px; }
-}
-@media (max-width: 480px) {
-  .at-header-right { display: none; }
-  .at-badge-col { width: auto; flex-shrink: 0; }
-  .at-name { border-right: none; }
 }
 </style>
 </head>
@@ -213,7 +180,6 @@
     html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>';
     html += 'Product explorer';
     html += '</div>';
-    html += '<div class="at-header-right">Version</div>';
     html += '</div>';
     html += '<div class="at-body">';
 
@@ -221,11 +187,6 @@
       var item = filtered[i];
       html += '<a class="at-row" href="' + item.href + '">';
       html += '<div class="at-name">' + item.label + '</div>';
-      html += '<div class="at-badge-col">';
-      if (item.badge) {
-        html += '<span class="at-badge">' + item.badge + '</span>';
-      }
-      html += '</div>';
       html += '</a>';
     }
 
@@ -240,9 +201,7 @@
     var rows = table.querySelectorAll('.at-row');
     for (var j = 0; j < rows.length; j++) {
       var name = rows[j].querySelector('.at-name').textContent.toLowerCase();
-      var badge = rows[j].querySelector('.at-badge');
-      var badgeText = badge ? badge.textContent.toLowerCase() : '';
-      rows[j].classList.toggle('hidden', q !== '' && name.indexOf(q) === -1 && badgeText.indexOf(q) === -1);
+      rows[j].classList.toggle('hidden', q !== '' && name.indexOf(q) === -1);
     }
   }
 
