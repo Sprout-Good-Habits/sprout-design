@@ -7,22 +7,28 @@
   var nav = window.DS_NAV;
   if (!nav) return;
 
-  // ── SVG Icons (20px, inline) ──
+  // ── Material Symbols helper ──
+  function msym(name, size) {
+    return '<span class="material-symbols-outlined" style="font-size:' + (size || 20) + 'px;line-height:1;">' + name + '</span>';
+  }
+
+  // ── Icons (Material Symbols, 20px) ──
   var ICONS = {
-    phone: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>',
-    'message-chat': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.09 11.22A8 8 0 1 1 9.5 21L3 22l1-4.5a8 8 0 0 1 2.09-6.28Z"/></svg>',
-    'stars-01': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.09 3.26L16 6l-2.91.74L12 10l-1.09-3.26L8 6l2.91-.74L12 2zM5 14l.55 1.63L7 16.17l-1.45.55L5 18.34l-.55-1.62L3 16.17l1.45-.54L5 14zM19 14l.55 1.63L21 16.17l-1.45.55L19 18.34l-.55-1.62L17 16.17l1.45-.54L19 14z"/></svg>',
-    'stars-02': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 22v-6M4.5 8V2M2 4.5h5M2 19.5h5M13 3l-1.74 4.52L6.74 9.5l4.52 1.74L13 15.76l1.74-4.52 4.52-1.74-4.52-1.74L13 3zM18 14l-1.16 3.01L13.83 18.17l3.01 1.16L18 22.34l1.16-3.01 3.01-1.16-3.01-1.16L18 14z"/></svg>',
-    home: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21V13.6c0-.56 0-.84.109-1.054a1 1 0 0 1 .437-.437C9.76 12 10.04 12 10.6 12h2.8c.56 0 .84 0 1.054.109a1 1 0 0 1 .437.437C15 12.76 15 13.04 15 13.6V21M11.018 2.764L4.235 8.039c-.316.252-.473.378-.588.536a1.5 1.5 0 0 0-.228.507C3.36 9.277 3.36 9.464 3.36 9.838v7.845c0 .84 0 1.26.164 1.581a1.5 1.5 0 0 0 .655.655c.321.164.741.164 1.581.164h12.48c.84 0 1.26 0 1.581-.164a1.5 1.5 0 0 0 .655-.655c.164-.321.164-.741.164-1.581V9.838c0-.374 0-.561-.06-.736a1.5 1.5 0 0 0-.227-.507c-.116-.158-.273-.284-.589-.536l-6.783-5.275c-.246-.191-.369-.287-.504-.324a.5.5 0 0 0-.272 0c-.135.037-.258.133-.504.324z"/></svg>',
-    grid: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
-    menu: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>',
-    'video-recorder': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 10 5-3v10l-5-3"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>'
+    phone: msym('smartphone'),
+    'message-chat': msym('forum'),
+    'stars-01': msym('auto_awesome'),
+    'stars-02': msym('auto_awesome'),
+    home: msym('home'),
+    grid: msym('grid_view'),
+    menu: msym('menu'),
+    'video-recorder': msym('videocam'),
+    mic: msym('mic')
   };
 
-  var CHEVRON_UP = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 10 4-4 4 4"/></svg>';
-  var CHEVRON_DOWN = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 4 4 4-4"/></svg>';
+  var CHEVRON_UP = msym('expand_less', 16);
+  var CHEVRON_DOWN = msym('expand_more', 16);
 
-  var CLOSE_X = '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+  var CLOSE_X = msym('close', 24);
 
   // ── Inject sidebar styles ──
   var styleEl = document.createElement('style');
@@ -47,12 +53,12 @@
     '.nav-item.active,.nav-section.active{background:#f0f0f0;font-weight:600;text-decoration:none;}',
     /* Icon wrapper */
     '.nav-icon{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}',
-    '.nav-icon svg{width:20px;height:20px;}',
+    '.nav-icon .material-symbols-outlined{font-size:20px;line-height:1;}',
     /* Badge pill */
     '.nav-badge{margin-left:auto;background:#f0f9ff;border:1px solid #b9e6fe;color:#026aa2;font-size:12px;font-weight:500;line-height:1;border-radius:6px;padding:2px 6px;white-space:nowrap;flex-shrink:0;}',
     /* Chevron */
     '.nav-chevron{width:16px;height:16px;margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#a4a7ae;}',
-    '.nav-chevron svg{width:16px;height:16px;}',
+    '.nav-chevron .material-symbols-outlined{font-size:16px;line-height:1;}',
     /* When badge + chevron coexist, chevron after badge */
     '.nav-section .nav-chevron{margin-left:0;}',
     /* Section link (clickable label in collapsible header) */
@@ -77,14 +83,14 @@
     /* Breadcrumb hamburger */
     '.breadcrumb-menu-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:#535862;padding:0;flex-shrink:0;border-radius:6px;-webkit-tap-highlight-color:transparent;}',
     '.breadcrumb-menu-btn:hover{color:#181d27;background:#f5f5f5;}',
-    '.breadcrumb-menu-btn svg{width:20px;height:20px;}',
+    '.breadcrumb-menu-btn .material-symbols-outlined{font-size:20px;line-height:1;}',
     /* Mobile sidebar overlay */
     '.sidebar-scrim{display:none;position:fixed;inset:0;background:rgba(10,13,18,0.4);z-index:199;-webkit-tap-highlight-color:transparent;}',
     '.sidebar-scrim.visible{display:block;}',
     /* Sidebar close button */
     '.sidebar-close{display:none;position:absolute;top:12px;right:12px;width:36px;height:36px;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:#535862;padding:0;border-radius:6px;-webkit-tap-highlight-color:transparent;}',
     '.sidebar-close:hover{color:#181d27;background:#f0f0f0;}',
-    '.sidebar-close svg{width:20px;height:20px;}',
+    '.sidebar-close .material-symbols-outlined{font-size:20px;line-height:1;}',
     /* Responsive: mobile sidebar as full-width overlay drawer */
     '@media(max-width:768px){.sidebar{transform:translateX(-100%);width:100%;position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;}.sidebar.collapsed{transform:translateX(-100%);}.sidebar:not(.collapsed){transform:translateX(0);}body:not(.sidebar-closed) .sidebar{transform:translateX(0);}.sidebar-close{display:flex;}.nav-item,.nav-section{height:36px;padding:8px;}.nav-child{height:36px;padding:8px 8px 8px 16px;}.nav-sub-section{height:36px;padding:8px 8px 8px 16px;}}',
     /* Search */
@@ -93,7 +99,7 @@
     '.sidebar-search input:focus{border-color:#0ba5ec;}',
     '.sidebar-search input::placeholder{color:#a4a7ae;}',
     '.sidebar-search{position:relative;}',
-    '.sidebar-search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:#a4a7ae;pointer-events:none;}',
+    '.sidebar-search .sidebar-search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:14px;line-height:1;color:#a4a7ae;pointer-events:none;}',
     '.nav-item.search-hidden,.nav-section.search-hidden,.nav-children.search-hidden,.nav-child.search-hidden,.nav-sub-section.search-hidden,.nav-sub-children.search-hidden{display:none;}'
   ].join('\n');
   document.head.appendChild(styleEl);
@@ -363,7 +369,7 @@
         '<span>Sprout design</span>' +
       '</div>' +
       '<div class="sidebar-search">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+        '<span class="material-symbols-outlined sidebar-search-icon">search</span>' +
         '<input type="text" placeholder="Search..." autocomplete="off" />' +
       '</div>' +
       '<div class="nav-list">' + buildNavHTML() + '</div>';
@@ -590,16 +596,19 @@
   });
 
   // ── Meta icons ──
+  function metaIcon(name) {
+    return '<span class="material-symbols-outlined" style="font-size:16px;line-height:1;color:#535862;">' + name + '</span>';
+  }
   var META_ICONS = {
-    owner: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    status: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
-    file: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>',
-    device: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>',
-    time: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-    screen: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
-    character: '<svg viewBox="0 0 24 24" fill="none" stroke="#535862" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
-    download: '<svg viewBox="0 0 24 24" fill="none" stroke="#717680" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
-    chevron: '<svg viewBox="0 0 12 12" fill="none" stroke="#414651" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 4.5 3 3 3-3"/></svg>'
+    owner: metaIcon('group'),
+    status: metaIcon('info'),
+    file: metaIcon('attach_file'),
+    device: metaIcon('smartphone'),
+    time: metaIcon('schedule'),
+    screen: metaIcon('desktop_windows'),
+    character: metaIcon('person'),
+    download: '<span class="material-symbols-outlined" style="font-size:16px;line-height:1;color:#717680;">download</span>',
+    chevron: '<span class="material-symbols-outlined" style="font-size:12px;line-height:1;color:#414651;">expand_more</span>'
   };
 
   // ── Build metadata from window.DS_META ──

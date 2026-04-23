@@ -423,12 +423,17 @@
 <!-- Thought process sheet -->
 <div class="reasoning-transcript-scrim" id="thoughtSheetScrim"></div>
 <div class="reasoning-transcript-sheet" id="thoughtSheet">
-  <div class="sheet-top">
+  <div class="sheet-top" style="padding-bottom:0">
     <div class="sheet-handle"></div>
   </div>
   <div class="reasoning-transcript-header">
-    <span class="reasoning-transcript-header-label" id="thoughtSheetLabel">Reasoning Transcript</span>
-    <span class="reasoning-transcript-header-time" id="thoughtSheetTime">6s</span>
+    <div class="reasoning-transcript-header-top">
+      <span class="reasoning-transcript-header-label" id="thoughtSheetLabel">Reasoning transcript</span>
+      <button class="reasoning-transcript-close" id="thoughtSheetBack" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <span class="reasoning-transcript-header-time" id="thoughtSheetTime">24 seconds</span>
   </div>
   <div class="reasoning-transcript-body" id="thoughtSheetBody"></div>
 </div>
@@ -1782,9 +1787,21 @@
     return mins + ':' + s;
   }
 
+  // SVG icons for step dot states
+  var checkSvg = '<svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var xSvg = '<svg viewBox="0 0 12 12" fill="none"><path d="M3 3L9 9M9 3L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function createStepDot(status) {
+    var dot = document.createElement('div');
+    dot.className = 'reasoning-step-dot ' + (status || 'completed');
+    if (status === 'completed') dot.innerHTML = checkSvg;
+    else if (status === 'error') dot.innerHTML = xSvg;
+    return dot;
+  }
+
   function openThoughtSheet(secs, steps) {
-    thoughtSheetLabel.textContent = 'Reasoning Transcript';
-    thoughtSheetTime.textContent = secs + 's';
+    thoughtSheetLabel.textContent = 'Reasoning transcript';
+    thoughtSheetTime.textContent = secs + ' second' + (secs !== 1 ? 's' : '');
     thoughtSheetBody.innerHTML = '';
 
     for (var i = 0; i < steps.length; i++) {
@@ -1792,17 +1809,21 @@
       var stepEl = document.createElement('div');
       stepEl.className = 'reasoning-step';
 
-      // Timeline: dot + dashed line (no line on last step)
+      // Timeline: top line + dot + bottom line
       var timeline = document.createElement('div');
       timeline.className = 'reasoning-step-timeline';
-      var dot = document.createElement('div');
-      dot.className = 'reasoning-step-dot';
+
+      var lineTop = document.createElement('div');
+      lineTop.className = 'reasoning-step-line-top';
+      timeline.appendChild(lineTop);
+
+      var status = s.status || 'completed';
+      var dot = createStepDot(status);
       timeline.appendChild(dot);
-      if (i < steps.length - 1) {
-        var line = document.createElement('div');
-        line.className = 'reasoning-step-line';
-        timeline.appendChild(line);
-      }
+
+      var lineBottom = document.createElement('div');
+      lineBottom.className = 'reasoning-step-line';
+      timeline.appendChild(lineBottom);
 
       var content = document.createElement('div');
       content.className = 'reasoning-step-content';
@@ -1815,10 +1836,23 @@
       content.appendChild(title);
       content.appendChild(desc);
 
+      // Optional error description
+      if (s.error) {
+        var errDesc = document.createElement('div');
+        errDesc.className = 'reasoning-step-desc error';
+        errDesc.textContent = s.error;
+        content.appendChild(errDesc);
+      }
+
       // Per-step timestamp
       var time = document.createElement('div');
       time.className = 'reasoning-step-time';
-      time.textContent = formatStepTime(secs, i, steps.length);
+      var stepTime = formatStepTime(secs, i, steps.length);
+      time.textContent = stepTime;
+      // Hide time for last step if 00:00
+      if (i === steps.length - 1 && stepTime === '00:00') {
+        time.classList.add('hidden');
+      }
 
       stepEl.appendChild(timeline);
       stepEl.appendChild(content);
@@ -1839,6 +1873,7 @@
   }
 
   thoughtSheetScrim.addEventListener('click', closeThoughtSheet);
+  document.getElementById('thoughtSheetBack').addEventListener('click', closeThoughtSheet);
 
   /**
    * Build the Images row (Figma 20971:59353) — horizontal strip of 108×108 thumbnails
