@@ -15,16 +15,22 @@
 <link rel="stylesheet" href="/kid-design-system/components/chat-banner.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-messages.css">
 <link rel="stylesheet" href="/parent-design-system/components/media.css">
+<link rel="stylesheet" href="/kid-design-system/components/reasoning-transcript.css">
+<link rel="stylesheet" href="/kid-design-system/components/tool-usage.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-chips.css">
 <link rel="stylesheet" href="/kid-design-system/components/confirm-card.css">
 <link rel="stylesheet" href="/kid-design-system/components/artifact.css">
 <link rel="stylesheet" href="/kid-design-system/components/chat-composer.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-context-menu.css">
+<link rel="stylesheet" href="/kid-design-system/components/attach-panel.css">
 <link rel="stylesheet" href="/kid-design-system/components/planning-tree.css">
 <script src="/kid-design-system/components/planning-tree.js"></script>
 <link rel="stylesheet" href="/kid-design-system/components/card.css">
 <link rel="stylesheet" href="/kid-design-system/components/button.css">
 <link rel="stylesheet" href="/kid-design-system/components/scope-sheet.css">
+<link rel="stylesheet" href="/kid-design-system/components/skill-sheet.css">
 <link rel="stylesheet" href="/kid-design-system/components/comm-card.css">
+<link rel="stylesheet" href="/kid-design-system/components/result-card.css">
 <link rel="stylesheet" href="/kid-design-system/components/connector-more-menu.css">
 <style>
 /* ── Page-specific overrides ── */
@@ -128,6 +134,8 @@
   </div>
   <!-- Composer row -->
   <div class="composer-row" style="position:relative">
+    <!-- Mention popup -->
+    <div class="mention-popup" id="mentionPopup"></div>
     <div class="composer-pill">
       <!-- Attachment preview strip (inside composer card) -->
       <div class="attach-strip" id="attachStrip"></div>
@@ -232,6 +240,27 @@
       <div class="ios-kb-bottom-icon"><img src="/product-explorer/assets/ios-kb-mic.svg" width="19" height="28" alt=""></div>
     </div>
   </div>
+  <!-- Attachment panel (inline below composer) -->
+  <div class="attach-panel" id="attachPanel">
+    <div class="attach-panel-row" id="attachPanelPhotos">
+      <div class="attach-panel-icon attach-panel-icon--photos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </div>
+      <span class="attach-panel-label">Photos</span>
+    </div>
+    <div class="attach-panel-row" id="attachPanelCamera">
+      <div class="attach-panel-icon attach-panel-icon--camera">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <span class="attach-panel-label">Camera</span>
+    </div>
+    <div class="attach-panel-row" id="attachPanelDocument">
+      <div class="attach-panel-icon attach-panel-icon--document">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <span class="attach-panel-label">Document</span>
+    </div>
+  </div>
 </div>
 
 <!-- Sheet scrim -->
@@ -258,11 +287,72 @@
   </div>
 </div>
 
+<!-- Context menu sheet -->
+<div class="sheet-scrim" id="ctxScrim"></div>
+<div class="sheet ctx-sheet" id="ctxSheet">
+  <div class="sheet-top">
+    <div class="sheet-handle"></div>
+  </div>
+  <div class="ctx-menu-list">
+    <button class="ctx-menu-item" id="ctxCopy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15C4.06812 15 3.60218 15 3.23463 14.8478C2.74458 14.6448 2.35523 14.2554 2.15224 13.7654C2 13.3978 2 12.9319 2 12V5.2C2 4.0799 2 3.51984 2.21799 3.09202C2.40974 2.7157 2.7157 2.40974 3.09202 2.21799C3.51984 2 4.0799 2 5.2 2H12C12.9319 2 13.3978 2 13.7654 2.15224C14.2554 2.35523 14.6448 2.74458 14.8478 3.23463C15 3.60218 15 4.06812 15 5M12.2 22H18.8C19.9201 22 20.4802 22 20.908 21.782C21.2843 21.5903 21.5903 21.2843 21.782 20.908C22 20.4802 22 19.9201 22 18.8V12.2C22 11.0799 22 10.5198 21.782 10.092C21.5903 9.7157 21.2843 9.40974 20.908 9.21799C20.4802 9 19.9201 9 18.8 9H12.2C11.0799 9 10.5198 9 10.092 9.21799C9.7157 9.40974 9.40974 9.7157 9.21799 10.092C9 10.5198 9 11.0799 9 12.2V18.8C9 19.9201 9 20.4802 9.21799 20.908C9.40974 21.2843 9.7157 21.5903 10.092 21.782C10.5198 22 11.0799 22 12.2 22Z"/></svg>
+      <span>Copy</span>
+    </button>
+    <button class="ctx-menu-item" id="ctxReply">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4V5.4C4 8.76031 4 10.4405 4.65396 11.7239C5.2292 12.8529 6.14708 13.7708 7.27606 14.346C8.55953 15 10.2397 15 13.6 15H20M20 15L15 10M20 15L15 20"/></svg>
+      <span>Reply</span>
+    </button>
+    <button class="ctx-menu-item" id="ctxForward">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V18.6C4 15.2397 4 13.5595 4.65396 12.2761C5.2292 11.1471 6.14708 10.2292 7.27606 9.65396C8.55953 9 10.2397 9 13.6 9H20M20 9L15 14M20 9L15 4"/></svg>
+      <span>Forward</span>
+    </button>
+    <button class="ctx-menu-item destructive" id="ctxDelete">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.0799 16 3.51984 15.782 3.09202C15.5903 2.7157 15.2843 2.40974 14.908 2.21799C14.4802 2 13.9201 2 12.8 2H11.2C10.0799 2 9.51984 2 9.09202 2.21799C8.71569 2.40974 8.40973 2.7157 8.21799 3.09202C8 3.51984 8 4.0799 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.8802 19 19.7202 18.673 20.362C18.3854 20.9265 17.9265 21.3854 17.362 21.673C16.7202 22 15.8802 22 14.2 22H9.8C8.11984 22 7.27976 22 6.63803 21.673C6.07354 21.3854 5.6146 20.9265 5.32698 20.362C5 19.7202 5 18.8802 5 17.2V6"/></svg>
+      <span>Delete for me</span>
+    </button>
+  </div>
+</div>
+
+<!-- Delete undo banner -->
+<div class="banner banner-delete" id="deleteBanner">
+  <div class="banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.0799 16 3.51984 15.782 3.09202C15.5903 2.7157 15.2843 2.40974 14.908 2.21799C14.4802 2 13.9201 2 12.8 2H11.2C10.0799 2 9.51984 2 9.09202 2.21799C8.71569 2.40974 8.40973 2.7157 8.21799 3.09202C8 3.51984 8 4.0799 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.8802 19 19.7202 18.673 20.362C18.3854 20.9265 17.9265 21.3854 17.362 21.673C16.7202 22 15.8802 22 14.2 22H9.8C8.11984 22 7.27976 22 6.63803 21.673C6.07354 21.3854 5.6146 20.9265 5.32698 20.362C5 19.7202 5 18.8802 5 17.2V6"/></svg></div>
+  <span class="banner-text">Message deleted</span>
+  <button class="banner-undo" id="deleteUndoBtn">Undo</button>
+</div>
 
 <!-- Toast banner -->
 <div class="banner banner-toast" id="toast">
   <div class="banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div>
   <span class="banner-text">Message copied</span>
+</div>
+
+<!-- Artifact sheet -->
+<div class="artifact-sheet-scrim" id="artifactSheetScrim"></div>
+<div class="artifact-sheet" id="artifactSheet">
+  <div class="sheet-top">
+    <div class="sheet-handle"></div>
+  </div>
+  <div class="artifact-sheet-header">
+    <div class="artifact-sheet-title">Brush Teeth Champion</div>
+    <button class="artifact-sheet-close" id="artifactSheetClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="artifact-sheet-body">
+    <h3>Quest Details</h3>
+    <p>Help Emma build a consistent tooth-brushing habit with this fun quest. She earns gems for each successful brush.</p>
+    <h3>Requirements</h3>
+    <ul>
+      <li>Brush teeth for 2 minutes</li>
+      <li>Use the timer in the app</li>
+      <li>Morning and evening sessions</li>
+    </ul>
+    <h3>Rewards</h3>
+    <p>5 gems per completion, 20 gem bonus for a full week streak.</p>
+  </div>
+  <div class="artifact-sheet-footer">
+    <button class="artifact-sheet-assign" id="artifactAssignBtn">Assign to Emma</button>
+  </div>
 </div>
 
 <!-- Scope sheet (Connectors / OAuth) -->
@@ -302,6 +392,55 @@
   </button>
 </div>
 
+<!-- Skill sheet -->
+<div class="artifact-sheet-scrim" id="skillSheetScrim"></div>
+<div class="artifact-sheet skill-sheet" id="skillSheet">
+  <div class="sheet-top">
+    <div class="artifact-sheet-header">
+      <button class="skill-sheet-back" id="skillSheetBack"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="skill-sheet-title">
+        <div class="skill-sheet-title-text" id="skillSheetTitle">Skill</div>
+        <div class="skill-sheet-subtitle" id="skillSheetSubtitle">Last updated today</div>
+      </div>
+      <div class="skill-sheet-spacer"></div>
+    </div>
+  </div>
+  <div class="artifact-sheet-body" id="skillSheetBody"></div>
+</div>
+
+<!-- Skill more menu sheet -->
+<div class="sheet-scrim" id="skillMoreScrim"></div>
+<div class="sheet connector-more-sheet" id="skillMoreSheet">
+  <div class="sheet-top"><div class="sheet-handle"></div></div>
+  <button class="connector-more-item" id="skillMoreRename">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+    <span>Rename</span>
+  </button>
+  <button class="connector-more-item destructive" id="skillMoreDelete">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6V5.2C16 4.08 16 3.52 15.782 3.092C15.59 2.716 15.284 2.41 14.908 2.218C14.48 2 13.92 2 12.8 2H11.2C10.08 2 9.52 2 9.092 2.218C8.716 2.41 8.41 2.716 8.218 3.092C8 3.52 8 4.08 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.88 19 19.72 18.673 20.362C18.385 20.927 17.927 21.385 17.362 21.673C16.72 22 15.88 22 14.2 22H9.8C8.12 22 7.28 22 6.638 21.673C6.074 21.385 5.615 20.927 5.327 20.362C5 19.72 5 18.88 5 17.2V6"/></svg>
+    <span>Delete</span>
+  </button>
+</div>
+
+<!-- Thought process sheet -->
+<div class="reasoning-transcript-scrim" id="thoughtSheetScrim"></div>
+<div class="reasoning-transcript-sheet" id="thoughtSheet">
+  <div class="sheet-top" style="padding-bottom:0">
+    <div class="sheet-handle"></div>
+  </div>
+  <div class="reasoning-transcript-header">
+    <div class="reasoning-transcript-header-top">
+      <span class="reasoning-transcript-header-label" id="thoughtSheetLabel">Reasoning transcript</span>
+      <button class="reasoning-transcript-close" id="thoughtSheetBack" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <span class="reasoning-transcript-header-time" id="thoughtSheetTime">24 seconds</span>
+  </div>
+  <div class="reasoning-transcript-body" id="thoughtSheetBody"></div>
+</div>
+
+
 <!-- Home indicator -->
 <div class="home-indicator"></div>
 
@@ -325,13 +464,18 @@
   var plusPill = document.getElementById('plusPill');
   var scrim = document.getElementById('scrim');
   var sheet = document.getElementById('sheet');
+  var mentionPopup = document.getElementById('mentionPopup');
   var suggestionChips = document.getElementById('suggestionChips');
   var composerArea = document.getElementById('composerArea');
   var replyBar = document.getElementById('replyBar');
   var replyBarText = document.getElementById('replyBarText');
   var replyBarClose = document.getElementById('replyBarClose');
   var attachStrip = document.getElementById('attachStrip');
+  var ctxScrim = document.getElementById('ctxScrim');
+  var ctxSheet = document.getElementById('ctxSheet');
   var toast = document.getElementById('toast');
+  var artifactSheetScrim = document.getElementById('artifactSheetScrim');
+  var artifactSheet = document.getElementById('artifactSheet');
   var reconnectBanner = document.getElementById('reconnectBanner');
   var connectorMoreScrim = document.getElementById('connectorMoreScrim');
   var connectorMoreSheet = document.getElementById('connectorMoreSheet');
@@ -341,6 +485,7 @@
   var scopeSheetTitle = document.getElementById('scopeSheetTitle');
   var scopeSaveBtn = document.getElementById('scopeSaveBtn');
   var scopeSheetBack = document.getElementById('scopeSheetBack');
+  var attachPanel = document.getElementById('attachPanel');
   var iosKeyboard = document.getElementById('iosKeyboard');
 
   // ── Rive config ──
@@ -675,11 +820,97 @@
   }
 
   /* ════════════════════════════════
-     LONG-PRESS (stub, context menu removed)
+     LONG-PRESS CONTEXT MENU (#2)
      ════════════════════════════════ */
+  var longPressTimer = null;
+
   function setupLongPress(row, groupEl) {
-    // Context menu removed in LATER variant
+    function onDown(e) {
+      longPressTimer = setTimeout(function() {
+        openContextMenu(groupEl);
+      }, 400);
+    }
+    function onUp() { clearTimeout(longPressTimer); }
+    function onCancel() { clearTimeout(longPressTimer); }
+
+    row.addEventListener('touchstart', onDown, { passive: true });
+    row.addEventListener('touchend', onUp);
+    row.addEventListener('touchmove', onCancel);
+    row.addEventListener('mousedown', onDown);
+    row.addEventListener('mouseup', onUp);
+    row.addEventListener('mousemove', onCancel);
+    row.addEventListener('mouseleave', onCancel);
   }
+
+  function openContextMenu(groupEl) {
+    ctxTargetGroup = groupEl;
+    ctxScrim.classList.add('open');
+    ctxSheet.classList.add('open');
+  }
+
+  function closeContextMenu() {
+    ctxScrim.classList.remove('open');
+    ctxSheet.classList.remove('open');
+  }
+
+  ctxScrim.addEventListener('click', closeContextMenu);
+
+  // Context menu actions
+  document.getElementById('ctxReply').addEventListener('click', function() {
+    closeContextMenu();
+    if (ctxTargetGroup) triggerReplyTo(ctxTargetGroup);
+  });
+  document.getElementById('ctxForward').addEventListener('click', function() {
+    closeContextMenu();
+  });
+  document.getElementById('ctxCopy').addEventListener('click', function() {
+    closeContextMenu();
+    if (ctxTargetGroup) {
+      var text = getTextContent(ctxTargetGroup);
+      if (navigator.clipboard) navigator.clipboard.writeText(text);
+      showToast('Copied!');
+    }
+  });
+  var deleteBanner = document.getElementById('deleteBanner');
+  var deleteUndoBtn = document.getElementById('deleteUndoBtn');
+  var deletedEl = null;
+  var deletedNextSibling = null;
+  var deleteTimer = null;
+
+  document.getElementById('ctxDelete').addEventListener('click', function() {
+    closeContextMenu();
+    if (!ctxTargetGroup) return;
+
+    // Hide the message (keep reference for undo)
+    deletedEl = ctxTargetGroup;
+    deletedNextSibling = deletedEl.nextSibling;
+    deletedEl.style.display = 'none';
+
+    // Show undo banner
+    deleteBanner.classList.add('show');
+    clearTimeout(deleteTimer);
+    deleteTimer = setTimeout(function() {
+      // Permanently remove after timeout
+      deleteBanner.classList.remove('show');
+      if (deletedEl) { deletedEl.remove(); deletedEl = null; }
+    }, 4000);
+  });
+
+  deleteUndoBtn.addEventListener('click', function() {
+    clearTimeout(deleteTimer);
+    deleteBanner.classList.remove('show');
+    if (deletedEl) {
+      deletedEl.style.display = '';
+      // Re-insert at original position
+      if (deletedNextSibling) {
+        chatThread.insertBefore(deletedEl, deletedNextSibling);
+      } else {
+        chatThread.appendChild(deletedEl);
+      }
+      deletedEl = null;
+      scrollThread();
+    }
+  });
 
   function showToast(msg) {
     var textEl = toast.querySelector('.banner-text');
@@ -718,6 +949,112 @@
     if (suggestionChips && !convoStarted) suggestionChips.classList.remove('faded');
   });
 
+  /* ════════════════════════════════
+     @MENTION AUTOCOMPLETE (#1)
+     ════════════════════════════════ */
+  var mentionActive = false;
+  var mentionStart = -1;
+
+  function renderMentions(filter) {
+    mentionPopup.innerHTML = '';
+    var filtered = members.filter(function(m) {
+      var f = filter.toLowerCase();
+      return m.name.toLowerCase().indexOf(f) >= 0 || (m.sub && m.sub.toLowerCase().indexOf(f) >= 0);
+    });
+    if (filtered.length === 0) { mentionPopup.classList.remove('open'); return; }
+
+    filtered.forEach(function(m) {
+      var item = document.createElement('div');
+      item.className = 'mention-item';
+
+      if (m.type === 'project') {
+        // Folder icon for projects
+        var icon = document.createElement('div');
+        icon.className = 'mention-item-icon';
+        icon.innerHTML = FOLDER_SVG;
+        item.appendChild(icon);
+      } else {
+        // Avatar for people (avatar-xs, 24px with Rive)
+        var avWrap = document.createElement('div');
+        avWrap.className = 'mention-item-avatar-wrap';
+        if (m.isSprout) {
+          var av = document.createElement('div');
+          av.className = 'avatar avatar-xs';
+          var canvas = document.createElement('canvas');
+          canvas.className = 'rive-sprout';
+          canvas.setAttribute('width', '64');
+          canvas.setAttribute('height', '92');
+          av.appendChild(canvas);
+          avWrap.appendChild(av);
+          setTimeout(function() { initRiveAvatar(canvas, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE }); }, 0);
+        } else {
+          var av = document.createElement('div');
+          av.className = 'avatar avatar-xs ' + (m.avatarBg || '');
+          var canvas = document.createElement('canvas');
+          canvas.className = 'rive-user';
+          canvas.setAttribute('width', '35');
+          canvas.setAttribute('height', '50');
+          av.appendChild(canvas);
+          avWrap.appendChild(av);
+          var state = m.avatarState || COPARENT_STATE;
+          setTimeout(function() { initRiveAvatar(canvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: state }); }, 0);
+        }
+        item.appendChild(avWrap);
+      }
+
+      var info = document.createElement('div');
+      info.className = 'mention-item-info' + (m.type === 'project' ? ' stacked' : '');
+      var nameEl = document.createElement('div');
+      nameEl.className = 'mention-item-name';
+      nameEl.textContent = m.name;
+      info.appendChild(nameEl);
+      if (m.sub) {
+        var sub = document.createElement('div');
+        sub.className = 'mention-item-sub';
+        sub.textContent = m.sub;
+        info.appendChild(sub);
+      }
+
+      item.appendChild(info);
+
+      item.addEventListener('click', function() {
+        var sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        var fullText = getInputText();
+        var info = getCaretInfo();
+        var before = fullText.substring(0, mentionStart);
+        var after = fullText.substring(info.pos);
+        composerInput.innerHTML = '';
+        if (before) composerInput.appendChild(document.createTextNode(before));
+        var mentionSpan = document.createElement('span');
+        mentionSpan.className = 'mention-tag';
+        mentionSpan.contentEditable = 'false';
+        mentionSpan.textContent = '@' + m.name;
+        composerInput.appendChild(mentionSpan);
+        composerInput.appendChild(document.createTextNode('\u00A0' + after));
+        var range = document.createRange();
+        range.selectNodeContents(composerInput);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        closeMention();
+        composerInput.focus();
+        btnMic.setAttribute('data-mode', 'send');
+      });
+
+      mentionPopup.appendChild(item);
+    });
+    mentionPopup.classList.add('open');
+    if (suggestionChips) suggestionChips.classList.add('faded');
+  }
+
+  function closeMention() {
+    mentionActive = false;
+    mentionStart = -1;
+    mentionPopup.classList.remove('open');
+    if (suggestionChips && !convoStarted) suggestionChips.classList.remove('faded');
+  }
+
   function getInputText() {
     var text = '';
     composerInput.childNodes.forEach(function(node) {
@@ -753,6 +1090,25 @@
 
   composerInput.addEventListener('input', function() {
     var val = getInputText();
+    var info = getCaretInfo();
+    var pos = info.pos;
+
+    // Check for @ trigger
+    if (!mentionActive) {
+      if (pos > 0 && val[pos - 1] === '@' && (pos === 1 || val[pos - 2] === ' ')) {
+        mentionActive = true;
+        mentionStart = pos - 1;
+        renderMentions('');
+      }
+    } else {
+      // Filter by text after @
+      var query = val.substring(mentionStart + 1, pos);
+      if (query.indexOf(' ') >= 0 || pos <= mentionStart) {
+        closeMention();
+      } else {
+        renderMentions(query);
+      }
+    }
 
     // Fade out suggestion chips once user starts typing
     if (val.trim() && suggestionChips && !suggestionChips.classList.contains('faded')) {
@@ -762,6 +1118,10 @@
     if (!listening) {
       btnMic.setAttribute('data-mode', val.trim() ? 'send' : 'mic');
     }
+  });
+
+  composerInput.addEventListener('blur', function() {
+    setTimeout(closeMention, 150);
   });
 
   /* ════════════════════════════════
@@ -876,6 +1236,109 @@
   }
 
   /* ════════════════════════════════
+     TOOL USAGE
+     ════════════════════════════════ */
+  function addToolUsage(tools) {
+    if (!tools || tools.length === 0) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'tool-usage';
+
+    var av = document.createElement('div');
+    av.className = 'tool-usage-avatar';
+    av.innerHTML = SPROUT_FACE_MINI;
+
+    var chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chevron.setAttribute('viewBox', '0 0 16 16');
+    chevron.setAttribute('class', 'tool-usage-chevron');
+    chevron.innerHTML = '<path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
+
+    var label = document.createElement('span');
+    label.className = 'tool-usage-label';
+    // Start by showing the first tool name
+    label.textContent = tools[0];
+
+    wrap.appendChild(av);
+    wrap.appendChild(chevron);
+    wrap.appendChild(label);
+
+    var details = document.createElement('div');
+    details.className = 'tool-usage-details';
+    details.textContent = tools.join(', ');
+
+    chatThread.appendChild(wrap);
+    chatThread.appendChild(details);
+    scrollThread();
+
+    // Cycle through each tool name, then collapse to summary
+    var step = 1;
+    var toolRotate = setInterval(function() {
+      if (step < tools.length) {
+        label.classList.add('fade-out');
+        setTimeout(function() {
+          label.textContent = tools[step];
+          label.classList.remove('fade-out');
+          step++;
+        }, 300);
+      } else {
+        clearInterval(toolRotate);
+        // Transition to final collapsed summary
+        label.classList.add('fade-out');
+        setTimeout(function() {
+          label.textContent = tools.length + ' items';
+          label.classList.remove('fade-out');
+          // Now enable click to expand
+          wrap.addEventListener('click', function() {
+            chevron.classList.toggle('open');
+            details.classList.toggle('open');
+          });
+        }, 300);
+      }
+      scrollThread();
+    }, 800);
+  }
+
+  /* ════════════════════════════════
+     OPTION CHIPS (#6)
+     ════════════════════════════════ */
+  function addOptionChips(chips) {
+    // Remove any existing option chips from composer area
+    var existing = composerArea.querySelector('.option-chips');
+    if (existing) existing.remove();
+
+    var row = document.createElement('div');
+    row.className = 'option-chips';
+
+    chips.forEach(function(chipText) {
+      var chip = document.createElement('div');
+      chip.className = 'option-chip';
+      chip.textContent = chipText;
+      chip.addEventListener('click', function() {
+        if (chip.classList.contains('selected') || chip.classList.contains('faded')) return;
+        chip.classList.add('selected');
+        row.querySelectorAll('.option-chip').forEach(function(c) {
+          if (c !== chip) c.classList.add('faded');
+        });
+        // Send as user message after brief delay
+        setTimeout(function() {
+          row.remove();
+          addOutgoingMessage(chipText);
+          triggerAIReply();
+        }, 300);
+      });
+      row.appendChild(chip);
+    });
+
+    // Place in composer area where suggestion chips live
+    if (suggestionChips) {
+      suggestionChips.style.display = 'none';
+    }
+    var composerRow = composerArea.querySelector('.composer-row');
+    composerArea.insertBefore(row, composerRow);
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
      ACTION BUTTONS (#5)
      ════════════════════════════════ */
   /**
@@ -924,6 +1387,88 @@
     }
     return stack;
   }
+
+  /* ════════════════════════════════
+     CONFIRMATION CARD (#7)
+     ════════════════════════════════ */
+  function addConfirmationCard() {
+    var card = document.createElement('div');
+    card.className = 'confirm-card';
+
+    card.innerHTML =
+      '<div class="confirm-card-title">Schedule Update</div>' +
+      '<div class="confirm-card-row"><span class="confirm-card-label">Time</span><span class="confirm-card-value">7:30 AM</span></div>' +
+      '<div class="confirm-card-row"><span class="confirm-card-label">Days</span><span class="confirm-card-value">Weekdays</span></div>' +
+      '<div class="confirm-card-row"><span class="confirm-card-label">Child</span><span class="confirm-card-value">Emma</span></div>' +
+      '<div class="confirm-card-desc">This will update Emma\'s morning routine reminder schedule.</div>' +
+      '<div class="confirm-card-btns">' +
+        '<button class="confirm-card-btn confirm-card-btn-cancel" id="confirmCancel">Cancel</button>' +
+        '<button class="confirm-card-btn confirm-card-btn-confirm" id="confirmOk">Confirm</button>' +
+      '</div>';
+
+    chatThread.appendChild(card);
+
+    var cancelBtn = card.querySelector('#confirmCancel');
+    var okBtn = card.querySelector('#confirmOk');
+
+    function doConfirm(btn, otherBtn, isDismiss) {
+      btn.innerHTML = '<span class="spinner"></span>';
+      otherBtn.style.pointerEvents = 'none';
+      otherBtn.style.opacity = '.5';
+      setTimeout(function() {
+        if (isDismiss) {
+          btn.classList.add('dismissed');
+          btn.innerHTML = 'Dismissed';
+        } else {
+          btn.classList.add('done');
+          btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Confirmed';
+        }
+        otherBtn.style.display = 'none';
+      }, 1000);
+    }
+
+    cancelBtn.addEventListener('click', function() { doConfirm(cancelBtn, okBtn, true); });
+    okBtn.addEventListener('click', function() { doConfirm(okBtn, cancelBtn, false); });
+
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     ARTIFACT BLOCK (#8)
+     ════════════════════════════════ */
+  function addArtifactBlock() {
+    var card = document.createElement('div');
+    card.className = 'artifact-card';
+    card.innerHTML =
+      '<div class="artifact-icon">&#x1F4C4;</div>' +
+      '<div class="artifact-body">' +
+        '<div class="artifact-name">Brush Teeth Champion <span class="artifact-version">v1</span></div>' +
+        '<div class="artifact-sub">Quest template</div>' +
+      '</div>' +
+      '<div class="artifact-link">View</div>';
+
+    card.addEventListener('click', function() {
+      artifactSheetScrim.classList.add('open'); artifactSheet.classList.add('open');
+    });
+
+    chatThread.appendChild(card);
+    scrollThread();
+  }
+
+  // Artifact modal
+  document.getElementById('artifactSheetClose').addEventListener('click', function() {
+    artifactSheetScrim.classList.remove('open'); artifactSheet.classList.remove('open');
+  });
+  artifactSheetScrim.addEventListener('click', function() {
+    artifactSheetScrim.classList.remove('open'); artifactSheet.classList.remove('open');
+  });
+  document.getElementById('artifactAssignBtn').addEventListener('click', function() {
+    this.textContent = 'Assigned!';
+    this.style.background = 'var(--bg-success-primary)';
+    this.style.color = 'var(--green-500)';
+    this.style.pointerEvents = 'none';
+    setTimeout(function() { artifactSheetScrim.classList.remove('open'); artifactSheet.classList.remove('open'); }, 800);
+  });
 
   /* ════════════════════════════════
      TYPING + INCOMING MESSAGE
@@ -1229,9 +1774,108 @@
     { title: 'Composing response', desc: 'Generated personalized reply based on context' }
   ];
 
-  // Thought sheet removed in LATER variant (stubs for typing indicator)
-  function openThoughtSheet() {}
-  function closeThoughtSheet() {}
+  // Thought process sheet elements
+  var thoughtSheetScrim = document.getElementById('thoughtSheetScrim');
+  var thoughtSheet = document.getElementById('thoughtSheet');
+  var thoughtSheetBody = document.getElementById('thoughtSheetBody');
+  var thoughtSheetLabel = document.getElementById('thoughtSheetLabel');
+  var thoughtSheetTime = document.getElementById('thoughtSheetTime');
+
+  function formatStepTime(totalSecs, stepIndex, totalSteps) {
+    // Distribute time across steps, accumulating
+    var elapsed = Math.round(totalSecs * stepIndex / totalSteps);
+    var mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    var s = String(elapsed % 60).padStart(2, '0');
+    return mins + ':' + s;
+  }
+
+  // SVG icons for step dot states
+  var checkSvg = '<svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var xSvg = '<svg viewBox="0 0 12 12" fill="none"><path d="M3 3L9 9M9 3L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function createStepDot(status) {
+    var dot = document.createElement('div');
+    dot.className = 'reasoning-step-dot ' + (status || 'completed');
+    if (status === 'completed') dot.innerHTML = checkSvg;
+    else if (status === 'error') dot.innerHTML = xSvg;
+    return dot;
+  }
+
+  function openThoughtSheet(secs, steps) {
+    thoughtSheetLabel.textContent = 'Reasoning transcript';
+    thoughtSheetTime.textContent = secs + ' second' + (secs !== 1 ? 's' : '');
+    thoughtSheetBody.innerHTML = '';
+
+    for (var i = 0; i < steps.length; i++) {
+      var s = steps[i];
+      var stepEl = document.createElement('div');
+      stepEl.className = 'reasoning-step';
+
+      // Timeline: top line + dot + bottom line
+      var timeline = document.createElement('div');
+      timeline.className = 'reasoning-step-timeline';
+
+      var lineTop = document.createElement('div');
+      lineTop.className = 'reasoning-step-line-top';
+      timeline.appendChild(lineTop);
+
+      var status = s.status || 'completed';
+      var dot = createStepDot(status);
+      timeline.appendChild(dot);
+
+      var lineBottom = document.createElement('div');
+      lineBottom.className = 'reasoning-step-line';
+      timeline.appendChild(lineBottom);
+
+      var content = document.createElement('div');
+      content.className = 'reasoning-step-content';
+      var title = document.createElement('div');
+      title.className = 'reasoning-step-title';
+      title.textContent = s.title;
+      var desc = document.createElement('div');
+      desc.className = 'reasoning-step-desc';
+      desc.textContent = s.desc;
+      content.appendChild(title);
+      content.appendChild(desc);
+
+      // Optional error description
+      if (s.error) {
+        var errDesc = document.createElement('div');
+        errDesc.className = 'reasoning-step-desc error';
+        errDesc.textContent = s.error;
+        content.appendChild(errDesc);
+      }
+
+      // Per-step timestamp
+      var time = document.createElement('div');
+      time.className = 'reasoning-step-time';
+      var stepTime = formatStepTime(secs, i, steps.length);
+      time.textContent = stepTime;
+      // Hide time for last step if 00:00
+      if (i === steps.length - 1 && stepTime === '00:00') {
+        time.classList.add('hidden');
+      }
+
+      stepEl.appendChild(timeline);
+      stepEl.appendChild(content);
+      stepEl.appendChild(time);
+      thoughtSheetBody.appendChild(stepEl);
+    }
+
+    thoughtSheetScrim.classList.add('open');
+    thoughtSheet.classList.add('open');
+  }
+
+  function closeThoughtSheet() {
+    thoughtSheetScrim.classList.remove('open');
+    thoughtSheet.classList.remove('open');
+    // Reset any open reasoning chevrons in the thread
+    var openChevrons = document.querySelectorAll('.reasoning-indicator-chevron.open');
+    for (var i = 0; i < openChevrons.length; i++) openChevrons[i].classList.remove('open');
+  }
+
+  thoughtSheetScrim.addEventListener('click', closeThoughtSheet);
+  document.getElementById('thoughtSheetBack').addEventListener('click', closeThoughtSheet);
 
   /**
    * Build the Images row (Figma 20971:59353) — horizontal strip of 108×108 thumbnails
@@ -1362,7 +2006,9 @@
     var tools = toolActivities[idx] || toolActivities[toolActivities.length - 1];
 
     addIncomingMessage(data, function() {
-      // chips, artifact, confirm_card removed in LATER variant
+      if (data.type === 'chips') addOptionChips(data.chips);
+      if (data.type === 'artifact') addArtifactBlock();
+      if (data.type === 'confirm_card') addConfirmationCard();
     }, tools);
   }
 
@@ -1558,6 +2204,21 @@
     btnPlus.setAttribute('aria-label', label);
     plusPill.classList.add('swapping');
   }
+  function openAttachPanel() {
+    hideInstant(iosKeyboard); // instantly kill keyboard, no animation
+    attachPanel.classList.add('open');
+    swapPlusIcon(keyboardIconSvg, 'Show keyboard');
+  }
+  function closeAttachPanel() {
+    hideInstant(attachPanel); // instantly kill panel, no animation
+    attachPanel.querySelectorAll('.attach-panel-row').forEach(function(r) {
+      r.style.transition = 'none';
+      void r.offsetWidth;
+      r.style.transition = '';
+    });
+    swapPlusIcon(plusIconSvg, 'Add attachment');
+  }
+
   // ── Inline plus-pill expand/collapse ──
   function expandPlusPill() {
     plusPill.classList.add('expanded');
@@ -1568,17 +2229,39 @@
 
   // Composer focus -> show keyboard (Active state)
   composerInput.addEventListener('focus', function() {
-    showKeyboard();
-    scrollThread();
+    if (!attachPanel.classList.contains('open')) {
+      showKeyboard();
+      scrollThread();
+    }
   });
 
-  // + button: inline mode only (panel removed)
+  // + button: behavior depends on active attach mode
   btnPlus.addEventListener('click', function(e) {
     e.stopPropagation();
-    if (plusPill.classList.contains('expanded')) {
-      collapsePlusPill();
+    if (attachMode === 'panel') {
+      // Panel mode: toggle between keyboard and panel
+      if (attachPanel.classList.contains('open')) {
+        // Swap panel → keyboard instantly (no animation on either)
+        hideInstant(attachPanel);
+        attachPanel.querySelectorAll('.attach-panel-row').forEach(function(r) {
+          r.style.transition = 'none'; void r.offsetWidth; r.style.transition = '';
+        });
+        iosKeyboard.style.transition = 'none';
+        iosKeyboard.classList.add('open');
+        void iosKeyboard.offsetWidth;
+        iosKeyboard.style.transition = '';
+        swapPlusIcon(plusIconSvg, 'Add attachment');
+        composerInput.focus();
+      } else {
+        openAttachPanel();
+      }
     } else {
-      expandPlusPill();
+      // Inline mode: toggle the pill (+ rotates to X)
+      if (plusPill.classList.contains('expanded')) {
+        collapsePlusPill();
+      } else {
+        expandPlusPill();
+      }
     }
   });
 
@@ -1618,6 +2301,7 @@
   // Tap outside composer area -> Default: hide everything, blur
   document.getElementById('device-wrapper').addEventListener('click', function(e) {
     if (!composerArea.contains(e.target)) {
+      closeAttachPanel();
       collapsePlusPill();
       hideKeyboard();
       composerInput.blur();
@@ -1657,6 +2341,19 @@
   });
   document.getElementById('tileFiles').addEventListener('click', function() {
     closeSheet();
+    addAttachment('file', null, 'document.pdf');
+  });
+
+  // Attach panel row handlers (Attachments B) — stay on panel
+  document.getElementById('attachPanelPhotos').addEventListener('click', function() {
+    addAttachment('photo', photoColors[photoIdx % photoColors.length]);
+    photoIdx++;
+  });
+  document.getElementById('attachPanelCamera').addEventListener('click', function() {
+    addAttachment('photo', photoColors[photoIdx % photoColors.length]);
+    photoIdx++;
+  });
+  document.getElementById('attachPanelDocument').addEventListener('click', function() {
     addAttachment('file', null, 'document.pdf');
   });
 
@@ -1769,12 +2466,16 @@
     activeReply = null;
     replyBar.classList.remove('visible');
     clearAttachments();
-    if (typeof closeMention === 'function') closeMention();
+    closeMention();
+    closeContextMenu();
     closeSheet();
+    closeAttachPanel();
     collapsePlusPill();
     plusPill.classList.remove('plain');
     attachMode = 'inline';
     hideKeyboard();
+    deleteBanner.classList.remove('show');
+    artifactSheetScrim.classList.remove('open'); artifactSheet.classList.remove('open');
     scopeSheetScrim.classList.remove('open'); scopeSheet.classList.remove('open');
     connectorMoreScrim.classList.remove('open'); connectorMoreSheet.classList.remove('open');
     composerInput.innerHTML = '';
@@ -1904,11 +2605,73 @@
     return group;
   }
 
+  function demoMentions() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      composerInput.textContent = '@';
+      composerInput.focus();
+      // Position caret after the @
+      var range = document.createRange();
+      var sel = window.getSelection();
+      range.selectNodeContents(composerInput);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      // Trigger mention detection
+      mentionActive = true;
+      mentionStart = 0;
+      renderMentions('');
+    }, 400);
+  }
+
   function demoDictation() {
     addSystemMessage('Today at ' + fmtTime());
     addIncomingInstant(aiReplies[0].text);
     setTimeout(function() {
       startListening();
+    }, 400);
+  }
+
+  function demoReplyThreading() {
+    addSystemMessage('Today at ' + fmtTime());
+    var group = addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      triggerReplyTo(group);
+    }, 400);
+  }
+
+  function demoOptionChips() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[1].text);
+    addOptionChips(aiReplies[1].chips);
+  }
+
+  function demoButtonStack() {
+    addSystemMessage('Today at ' + fmtTime());
+    addOutgoingInstant('Did Noah finish his habits today?');
+    var group = addIncomingInstant("Noah completed 2 pending habits: brushing teeth and reading. Would you like to approve them?");
+    createButtonStack('Approve', 'Reject', group);
+    scrollThread();
+  }
+
+  function demoConfirmationCard() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[4].text);
+    addConfirmationCard();
+  }
+
+  function demoArtifact() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[2].text);
+    addArtifactBlock();
+  }
+
+  function demoAttachments() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      openSheet();
     }, 400);
   }
 
@@ -1923,6 +2686,38 @@
       setTimeout(function() {
         expandPlusPill();
       }, 300);
+    }, 400);
+  }
+
+  function demoAttachmentsPanel() {
+    attachMode = 'panel';
+    plusPill.classList.add('plain');
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      openAttachPanel();
+    }, 400);
+  }
+
+  function demoToolUsage() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingMessage(aiReplies[5], null, toolActivities[1]);
+  }
+
+  function demoCopy() {
+    addSystemMessage('Today at ' + fmtTime());
+    addIncomingInstant(aiReplies[0].text);
+    setTimeout(function() {
+      showToast('Copied!');
+    }, 400);
+  }
+
+  function demoContextMenu() {
+    addSystemMessage('Today at ' + fmtTime());
+    var group = addIncomingInstant(aiReplies[0].text);
+    addOutgoingMessage('How is Emma doing today?');
+    setTimeout(function() {
+      openContextMenu(group);
     }, 400);
   }
 
@@ -1942,6 +2737,18 @@
       suggestionChips.style.display = '';
       suggestionChips.classList.remove('faded');
     }
+  }
+
+  function demoTypingIndicator() {
+    addSystemMessage('Today at ' + fmtTime());
+    addOutgoingMessage('How is Emma doing today?');
+    // Show Sprout's typing indicator without ever delivering, so it stays visible
+    // for inspection. After a beat, also surface the co-parent variant.
+    isProcessing = true;
+    showTypingIndicator({ name: 'Sprout', avatarType: 'sprout' });
+    setTimeout(function() {
+      addCoparentMessage('Let me jump in here too.', 'Randall', 'R', '#7C3AED');
+    }, 3500);
   }
 
   function demoPlanningTree() {
@@ -2261,11 +3068,43 @@
   document.getElementById('connMoreDisconnect').addEventListener('click', closeConnectorMore);
   document.getElementById('connMoreDelete').addEventListener('click', closeConnectorMore);
 
-  // Skill sheet removed in LATER variant (stubs for profile/comm cards)
-  function openSkillSheet() {}
-  function closeSkillSheet() {}
-  function openSkillMore() {}
-  function closeSkillMore() {}
+  // Skill sheet
+  var skillSheet = document.getElementById('skillSheet');
+  var skillSheetScrim = document.getElementById('skillSheetScrim');
+  var skillSheetTitle = document.getElementById('skillSheetTitle');
+  var skillSheetSubtitle = document.getElementById('skillSheetSubtitle');
+  var skillSheetBody = document.getElementById('skillSheetBody');
+  var skillSheetBack = document.getElementById('skillSheetBack');
+
+  function openSkillSheet(title, subtitle, bodyHTML) {
+    skillSheetTitle.textContent = title;
+    skillSheetSubtitle.textContent = subtitle || 'Last updated today';
+    skillSheetBody.innerHTML = bodyHTML || '';
+    skillSheetScrim.classList.add('open');
+    skillSheet.classList.add('open');
+  }
+  function closeSkillSheet() {
+    skillSheetScrim.classList.remove('open');
+    skillSheet.classList.remove('open');
+  }
+  skillSheetBack.addEventListener('click', closeSkillSheet);
+  skillSheetScrim.addEventListener('click', closeSkillSheet);
+
+  // Skill more menu (Rename + Delete)
+  var skillMoreSheet = document.getElementById('skillMoreSheet');
+  var skillMoreScrim = document.getElementById('skillMoreScrim');
+
+  function openSkillMore() {
+    skillMoreScrim.classList.add('open');
+    skillMoreSheet.classList.add('open');
+  }
+  function closeSkillMore() {
+    skillMoreScrim.classList.remove('open');
+    skillMoreSheet.classList.remove('open');
+  }
+  skillMoreScrim.addEventListener('click', closeSkillMore);
+  document.getElementById('skillMoreRename').addEventListener('click', closeSkillMore);
+  document.getElementById('skillMoreDelete').addEventListener('click', closeSkillMore);
 
   /* ════════════════════════════════
      CONNECT OAUTH FLOW
@@ -2396,6 +3235,137 @@
   }
 
   /* ════════════════════════════════
+     SAVED SKILL DEMO
+     ════════════════════════════════ */
+  function demoSavedSkill() {
+    addSystemMessage('Today at ' + fmtTime());
+
+    // 1. Parent asks to create a skill
+    addOutgoingInstant('Create a bedtime routine reminder for Noah at 8:30 PM');
+
+    // 2. Sprout confirms
+    var confirmGroup = addIncomingInstant('Done! I\'ve set up a bedtime routine skill for Noah. It will remind him every night at 8:30 PM to start winding down.');
+
+    // 3. Show the saved skill card with badge + overflow dots
+    var skillCard = document.createElement('div');
+    skillCard.className = 'card';
+
+    var icon = document.createElement('div');
+    icon.className = 'card-icon card-icon-tinted';
+    icon.textContent = '\uD83C\uDF19'; // crescent moon
+    skillCard.appendChild(icon);
+
+    var body = document.createElement('div');
+    body.className = 'card-body';
+    var label = document.createElement('div');
+    label.className = 'card-label';
+    label.textContent = 'Bedtime routine';
+    var desc = document.createElement('div');
+    desc.className = 'card-desc';
+    desc.textContent = '5 rules \u00B7 just now';
+    body.appendChild(label);
+    body.appendChild(desc);
+    skillCard.appendChild(body);
+
+    var badge = document.createElement('span');
+    badge.className = 'card-badge badge-success';
+    badge.textContent = 'Active';
+    skillCard.appendChild(badge);
+
+    var dots = document.createElement('button');
+    dots.className = 'card-overflow';
+    dots.innerHTML = ICON_DOTS;
+    dots.addEventListener('click', function(e) { e.stopPropagation(); openSkillMore(); });
+    skillCard.appendChild(dots);
+
+    // Tapping the card body opens the skill sheet
+    skillCard.style.cursor = 'pointer';
+    skillCard.addEventListener('click', function() {
+      openSkillSheet('Bedtime routine', 'Last updated just now',
+        '<p>Noah\'s bedtime routine skill. Sprout reminds him every night to start winding down and checks off each step as he goes.</p>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Type</div><div class="skill-sheet-field-value">Routine</div></div>' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Weeknight</div><div class="skill-sheet-field-value">8:30 PM</div></div>' +
+          '<div class="skill-sheet-field"><div class="skill-sheet-field-label">Weekend</div><div class="skill-sheet-field-value">9:30 PM</div></div>' +
+        '</div>' +
+        '<ul><li>Brush teeth for 2 minutes</li><li>Put on pajamas</li><li>Pick one book to read</li><li>Lights out</li><li>No screens after 8 PM</li></ul>'
+      );
+    });
+
+    insertCardInMessage(confirmGroup, skillCard);
+
+    // 4. Parent asks about active skills
+    addOutgoingInstant('What skills are active for Noah?');
+
+    // 5. Sprout shows a skill list
+    var listGroup = addIncomingInstant('Noah has 3 active skills:');
+    var list = document.createElement('div');
+    list.className = 'card-list';
+
+    var listHeader = document.createElement('div');
+    listHeader.className = 'card-list-header';
+    listHeader.innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span>Skills</span>';
+    list.appendChild(listHeader);
+
+    var skills = [
+      { emoji: '\uD83C\uDF19', name: 'Bedtime routine', meta: '5 rules \u00B7 just now', status: 'Active', statusClass: 'badge-success' },
+      { emoji: '\uD83D\uDCDA', name: 'Reading tracker', meta: '3 rules \u00B7 2h ago', status: 'Active', statusClass: 'badge-success' },
+      { emoji: '\uD83C\uDFB9', name: 'Piano practice', meta: '2 rules \u00B7 1d ago', status: 'Paused', statusClass: 'badge-neutral' }
+    ];
+
+    var skillSheetContent = {
+      '\uD83C\uDF19': { title: 'Bedtime routine', subtitle: 'Last updated just now', body: '<p>Noah\'s bedtime routine skill. Sprout reminds him every night to start winding down.</p><div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"><div class="skill-sheet-field"><div class="skill-sheet-field-label">Type</div><div class="skill-sheet-field-value">Routine</div></div><div class="skill-sheet-field"><div class="skill-sheet-field-label">Weeknight</div><div class="skill-sheet-field-value">8:30 PM</div></div><div class="skill-sheet-field"><div class="skill-sheet-field-label">Weekend</div><div class="skill-sheet-field-value">9:30 PM</div></div></div><ul><li>Brush teeth for 2 minutes</li><li>Put on pajamas</li><li>Pick one book to read</li><li>Lights out</li><li>No screens after 8 PM</li></ul>' },
+      '\uD83D\uDCDA': { title: 'Reading tracker', subtitle: 'Last updated 2h ago', body: '<p>Tracks Noah\'s daily reading progress and logs minutes read.</p><div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"><div class="skill-sheet-field"><div class="skill-sheet-field-label">Type</div><div class="skill-sheet-field-value">Tracker</div></div><div class="skill-sheet-field"><div class="skill-sheet-field-label">Goal</div><div class="skill-sheet-field-value">20 min/day</div></div></div><ul><li>Log reading time after each session</li><li>Track book titles and pages</li><li>Weekly summary on Sundays</li></ul>' },
+      '\uD83C\uDFB9': { title: 'Piano practice', subtitle: 'Last updated 1d ago', body: '<p>Reminds Noah to practice piano and tracks session length.</p><div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"><div class="skill-sheet-field"><div class="skill-sheet-field-label">Type</div><div class="skill-sheet-field-value">Practice</div></div><div class="skill-sheet-field"><div class="skill-sheet-field-label">Schedule</div><div class="skill-sheet-field-value">Mon, Wed, Fri</div></div></div><ul><li>15 minutes minimum per session</li><li>Practice assigned piece first</li></ul>' }
+    };
+
+    skills.forEach(function(s) {
+      var row = document.createElement('div');
+      row.className = 'card-row';
+      row.style.cursor = 'pointer';
+
+      var rIcon = document.createElement('div');
+      rIcon.className = 'card-icon card-icon-tinted';
+      rIcon.textContent = s.emoji;
+      row.appendChild(rIcon);
+
+      var rBody = document.createElement('div');
+      rBody.className = 'card-body';
+      var rLabel = document.createElement('div');
+      rLabel.className = 'card-label';
+      rLabel.textContent = s.name;
+      var rDesc = document.createElement('div');
+      rDesc.className = 'card-desc';
+      rDesc.textContent = s.meta;
+      rBody.appendChild(rLabel);
+      rBody.appendChild(rDesc);
+      row.appendChild(rBody);
+
+      var rBadge = document.createElement('span');
+      rBadge.className = 'card-badge ' + s.statusClass;
+      rBadge.textContent = s.status;
+      row.appendChild(rBadge);
+
+      var rDots = document.createElement('button');
+      rDots.className = 'card-overflow';
+      rDots.innerHTML = ICON_DOTS;
+      rDots.addEventListener('click', function(e) { e.stopPropagation(); openSkillMore(); });
+      row.appendChild(rDots);
+
+      // Tap row to open skill sheet
+      var content = skillSheetContent[s.emoji];
+      row.addEventListener('click', function() {
+        openSkillSheet(content.title, content.subtitle, content.body);
+      });
+
+      list.appendChild(row);
+    });
+
+    insertCardInMessage(listGroup, list);
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
      GRADUATION CARD DEMO
      ════════════════════════════════ */
   function demoGraduationCard() {
@@ -2514,6 +3484,113 @@
 
     insertCardInMessage(draftGroup, emailCard);
     createButtonStack('Send email', 'Edit', draftGroup);
+
+    scrollThread();
+  }
+
+  /* ════════════════════════════════
+     RESULT CARD DEMO
+     ════════════════════════════════ */
+  var ICON_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>';
+  var ICON_GLOBE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>';
+  var ICON_LIGHTBULB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 01-1 1h-6a1 1 0 01-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/></svg>';
+
+  function createResultCard(opts) {
+    var card = document.createElement('div');
+    card.className = 'result-card';
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'result-card-header';
+    var headerIcon = document.createElement('span');
+    headerIcon.innerHTML = opts.icon || ICON_GLOBE;
+    headerIcon.querySelector('svg').style.cssText = 'width:20px;height:20px;color:var(--text-quaternary,#717680)';
+    header.appendChild(headerIcon);
+    var typeLabel = document.createElement('span');
+    typeLabel.className = 'result-card-type';
+    typeLabel.textContent = opts.type || 'Web result';
+    header.appendChild(typeLabel);
+    var expandBtn = document.createElement('button');
+    expandBtn.className = 'result-card-expand';
+    expandBtn.innerHTML = ICON_EXPAND;
+    expandBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      openSkillSheet(
+        opts.title || opts.type,
+        opts.category || '',
+        '<p>' + (opts.fullText || opts.desc || '') + '</p>'
+      );
+    });
+    header.appendChild(expandBtn);
+    card.appendChild(header);
+
+    // Body
+    var body = document.createElement('div');
+    body.className = 'result-card-body';
+    if (opts.category) {
+      var cat = document.createElement('div');
+      cat.className = 'result-card-category';
+      cat.textContent = opts.category;
+      body.appendChild(cat);
+    }
+    var title = document.createElement('div');
+    title.className = 'result-card-title';
+    title.textContent = opts.title;
+    body.appendChild(title);
+    if (opts.desc) {
+      var desc = document.createElement('div');
+      desc.className = 'result-card-desc';
+      desc.textContent = opts.desc;
+      body.appendChild(desc);
+    }
+    card.appendChild(body);
+
+    return card;
+  }
+
+  function demoResultCard() {
+    addSystemMessage('Today at ' + fmtTime());
+
+    // 1. Parent asks a question
+    addOutgoingInstant('What time should a 7-year-old go to bed?');
+
+    // 2. Sprout responds with a research result
+    var researchGroup = addIncomingInstant('Based on pediatric sleep guidelines, here\'s what I found:');
+    var researchCard = createResultCard({
+      type: 'Research result',
+      icon: ICON_BOOK,
+      category: 'aap.org',
+      title: 'Sleep Guidelines for Children Ages 6-12',
+      desc: 'Recommended 9-12 hours per night. Consistent bedtime routines improve both sleep quality and next-day behavior.',
+      fullText: 'The American Academy of Pediatrics recommends that children aged 6-12 get 9 to 12 hours of sleep per night. Consistent bedtime routines improve both sleep quality and next-day behavior. Key factors include limiting screen time before bed, maintaining a consistent schedule even on weekends, and creating a calm sleep environment.'
+    });
+    insertCardInMessage(researchGroup, researchCard);
+
+    // 3. Parent asks about summer activities
+    addOutgoingInstant('Any fun reading programs this summer?');
+
+    // 4. Sprout shows a web result
+    var webGroup = addIncomingInstant('I found one nearby:');
+    var webCard = createResultCard({
+      type: 'Web result',
+      icon: ICON_GLOBE,
+      category: 'citylib.org',
+      title: 'Summer Reading Challenge 2026',
+      desc: 'Ages 5-12. Runs June 1 - August 15. Read 20 books to earn a pizza party ticket. Register at any branch.',
+      fullText: 'The 2026 Summer Reading Challenge is open to children ages 5-12. It runs from June 1 through August 15. Kids who read 20 books earn a pizza party ticket. Registration is available at any library branch or online at citylib.org/summer2026. Books can be any format: print, audiobook, or e-book. Parents can log progress through the library app.'
+    });
+    insertCardInMessage(webGroup, webCard);
+
+    // 5. Sprout also surfaces a recommendation
+    var recoGroup = addIncomingInstant('Also, I noticed something about Noah\'s schedule:');
+    var recoCard = createResultCard({
+      type: 'Recommendation',
+      icon: ICON_LIGHTBULB,
+      title: 'Consider Moving Soccer to Wednesday',
+      desc: 'Noah\'s Thursday has a 27-min conflict between piano and soccer. Wednesday is open 3:00-6:00 PM.',
+      fullText: 'Noah\'s current Thursday schedule has piano from 3:30-4:15 PM and soccer from 3:45-5:00 PM, creating a 27-minute overlap. Wednesday afternoons are completely open from 3:00-6:00 PM. Moving soccer to Wednesday would eliminate the conflict and give him a 15-minute buffer between school pickup and practice.'
+    });
+    insertCardInMessage(recoGroup, recoCard);
 
     scrollThread();
   }
@@ -2715,9 +3792,12 @@
       case 4: demoConnectors(); break;
       case 5: demoReconnection(); break;
       case 6: demoAttachmentsSheet(); break;
-      case 7: demoGraduationCard(); break;
-      case 8: demoProfileCard(); break;
-      case 9: demoCommCard(); break;
+      case 7: demoAttachmentsPanel(); break;
+      case 8: demoButtonStack(); break;
+      case 9: demoGraduationCard(); break;
+      case 10: demoProfileCard(); break;
+      case 11: demoCommCard(); break;
+      case 12: demoMentions(); break;
     }
   };
 
@@ -2736,7 +3816,7 @@
 })();
 </script>
 
-<script>window.DS_META={title:'Parent Chat (Later)',desc:'Deprioritized features for future iterations.',owner:'Leti Schimmel',status:'Draft',device:['Phone','Tablet'],notes:'<div class="pc-features"><div class="pc-features-title">Features</div><div class="pc-feature-item active" data-feature="0">Default Flow</div><div class="pc-feature-item" data-feature="1">Voice Dictation <span class="pc-feature-badge pc-feature-badge--later">later</span></div><div class="pc-feature-item" data-feature="2">Suggestion Chips <span class="pc-feature-badge pc-feature-badge--later">later</span></div><div class="pc-feature-item" data-feature="3">Planning Tree <span class="pc-feature-badge pc-feature-badge--later">later</span></div><div class="pc-feature-item" data-feature="4">Connectors / OAuth <span class="pc-feature-badge pc-feature-badge--later">later</span></div><div class="pc-feature-item" data-feature="5">Reconnection Banner <span class="pc-feature-badge pc-feature-badge--later">later</span></div><div class="pc-feature-item" data-feature="6">Attachment A <span class="pc-feature-badge pc-feature-badge--later">later</span></div><div class="pc-feature-item" data-feature="7">Graduation Card <span class="pc-feature-badge pc-feature-badge--later">later</span></div><div class="pc-feature-item" data-feature="8">Profile Card <span class="pc-feature-badge pc-feature-badge--later">later</span></div><div class="pc-feature-item" data-feature="9">Communication Card <span class="pc-feature-badge pc-feature-badge--later">later</span></div></div>'};</script>
+<script>window.DS_META={title:'Parent Chat (Later)',desc:'Deprioritized features for future iterations.',owner:'Leti Schimmel',status:'Draft',device:['Phone','Tablet'],notes:'<div class="pc-features"><div class="pc-features-title">Features</div><div class="pc-feature-item active" data-feature="0">Default Flow</div><div class="pc-feature-item" data-feature="1">Voice Dictation</div><div class="pc-feature-item" data-feature="2">Suggestion Chips</div><div class="pc-feature-item" data-feature="3">Planning Tree</div><div class="pc-feature-item" data-feature="4">Connectors / OAuth</div><div class="pc-feature-item" data-feature="5">Reconnection Banner</div><div class="pc-feature-item" data-feature="6">Attachment A</div><div class="pc-feature-item" data-feature="7">Attachment</div><div class="pc-feature-item" data-feature="8">Button Stack</div><div class="pc-feature-item" data-feature="9">Graduation Card</div><div class="pc-feature-item" data-feature="10">Profile Card</div><div class="pc-feature-item" data-feature="11">Communication Card</div><div class="pc-feature-item" data-feature="12">@Mentions</div></div>'};</script>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 <script>

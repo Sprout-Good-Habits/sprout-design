@@ -125,7 +125,7 @@
       <div class="composer-input" id="composerInput" contenteditable="true" role="textbox" data-placeholder="Ask anything"></div>
       <div class="composer-toolbar">
         <div class="composer-toolbar-left">
-          <div class="plus-pill" id="plusPill">
+          <div class="plus-pill plain" id="plusPill">
             <button class="plus-pill-icon plus-pill-plus" id="btnPlus" aria-label="Add attachment">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </button>
@@ -528,9 +528,7 @@
   var FOLDER_SVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H12L10 5H5C3.89543 5 3 5.89543 3 7Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var members = [
     { type: 'person', name: 'Randall', sub: 'co-parent', avatarBg: 'avatar-bg-blue', avatarState: COPARENT_STATE },
-    { type: 'person', name: 'Sprout', sub: 'family AI', isSprout: true },
-    { type: 'project', name: 'Morning Routine Quest', sub: 'Project' },
-    { type: 'project', name: 'Reading Challenge', sub: 'Project' }
+    { type: 'person', name: 'Sprout', sub: 'family AI', isSprout: true }
   ];
 
   /* ════════════════════════════════
@@ -1153,16 +1151,18 @@
      OPTION CHIPS (#6)
      ════════════════════════════════ */
   function addOptionChips(chips) {
-    // Remove any existing option chips from composer area
-    var existing = composerArea.querySelector('.option-chips');
+    // Remove any existing option chips
+    var existing = chatThread.querySelector('.option-chips');
     if (existing) existing.remove();
 
     var row = document.createElement('div');
     row.className = 'option-chips';
+    row.style.cssText = 'flex-direction:column;align-items:flex-start;overflow:visible;padding:0;';
 
     chips.forEach(function(chipText) {
       var chip = document.createElement('div');
       chip.className = 'option-chip';
+      chip.style.whiteSpace = 'normal';
       chip.textContent = chipText;
       chip.addEventListener('click', function() {
         if (chip.classList.contains('selected') || chip.classList.contains('faded')) return;
@@ -1170,7 +1170,6 @@
         row.querySelectorAll('.option-chip').forEach(function(c) {
           if (c !== chip) c.classList.add('faded');
         });
-        // Send as user message after brief delay
         setTimeout(function() {
           row.remove();
           addOutgoingMessage(chipText);
@@ -1180,12 +1179,17 @@
       row.appendChild(chip);
     });
 
-    // Place in composer area where suggestion chips live
-    if (suggestionChips) {
-      suggestionChips.style.display = 'none';
+    // Place inside the last incoming message group (like button stack)
+    var groups = chatThread.querySelectorAll('.msg-group.msg-incoming');
+    var lastGroup = groups[groups.length - 1];
+    if (lastGroup) {
+      var col = lastGroup.querySelector('.msg-col');
+      if (col) {
+        col.appendChild(row);
+      } else {
+        lastGroup.appendChild(row);
+      }
     }
-    var composerRow = composerArea.querySelector('.composer-row');
-    composerArea.insertBefore(row, composerRow);
     scrollThread();
   }
 
@@ -2018,8 +2022,8 @@
   var keyboardIconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>';
   var plusIconSvg = btnPlus.innerHTML;
 
-  // Tracks which attach flow is active: 'inline' (default) or 'panel'
-  var attachMode = 'inline';
+  // Tracks which attach flow is active: 'inline' or 'panel' (default)
+  var attachMode = 'panel';
 
   // Instantly hide an element (skip transition), then restore transition next frame
   function hideInstant(el) {
@@ -2306,8 +2310,8 @@
     closeContextMenu();
     closeAttachPanel();
     collapsePlusPill();
-    plusPill.classList.remove('plain');
-    attachMode = 'inline';
+    plusPill.classList.add('plain');
+    attachMode = 'panel';
     hideKeyboard();
     if (typeof deleteBanner !== 'undefined' && deleteBanner) deleteBanner.classList.remove('show');
     composerInput.innerHTML = '';
@@ -2844,9 +2848,9 @@
       case 6: demoAttachmentsPanel(); break;
       case 7: demoToolUsage(); break;
       case 8: demoTypingIndicator(); break;
-      case 9: demoButtonStack(); break;
-      case 10: demoSavedSkill(); break;
-      case 11: demoResultCard(); break;
+      case 9: demoSavedSkill(); break;
+      case 10: demoResultCard(); break;
+      case 11: demoReconnection(); break;
     }
   };
 
@@ -2865,7 +2869,7 @@
 })();
 </script>
 
-<script>window.DS_META={title:'Parent Chat (Now)',desc:'In-scope features for parent chat v1.',owner:'Leti Schimmel',status:'Draft',device:['Phone','Tablet'],notes:'<div class="pc-features"><div class="pc-features-title">Features</div><div class="pc-feature-item active" data-feature="0">Default Flow</div><div class="pc-feature-item" data-feature="1">@Mentions <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="2">Option Chips <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="3">Reply Threading <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="4">Copy <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="5">Context Menu <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="6">Attachment B <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="7">Reasoning Transcript <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="8">Typing Indicator <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="9">Button Stack <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="10">Saved Skill <span class="pc-feature-badge pc-feature-badge--now">now</span></div><div class="pc-feature-item" data-feature="11">Result Card <span class="pc-feature-badge pc-feature-badge--now">now</span></div></div>'};</script>
+<script>window.DS_META={title:'Parent Chat (Now)',desc:'In-scope features for parent chat v1.',owner:'Leti Schimmel',status:'Done',device:['Phone','Tablet'],notes:'<div class="pc-features"><div class="pc-features-title">Features</div><div class="pc-feature-item active" data-feature="0">Default Flow</div><div class="pc-feature-item" data-feature="1">@Mentions</div><div class="pc-feature-item" data-feature="2">Option Chips</div><div class="pc-feature-item" data-feature="3">Reply Threading</div><div class="pc-feature-item" data-feature="4">Copy</div><div class="pc-feature-item" data-feature="5">Context Menu</div><div class="pc-feature-item" data-feature="6">Attachment</div><div class="pc-feature-item" data-feature="7">Reasoning Transcript</div><div class="pc-feature-item" data-feature="8">Typing Indicator</div><div class="pc-feature-item" data-feature="9">Saved Skill</div><div class="pc-feature-item" data-feature="10">Result Card</div><div class="pc-feature-item" data-feature="11">Reconnection Banner</div></div>'};</script>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 <script>
