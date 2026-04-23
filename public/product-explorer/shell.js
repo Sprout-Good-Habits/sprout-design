@@ -104,6 +104,16 @@
   ].join('\n');
   document.head.appendChild(styleEl);
 
+  // ── Persist nav collapse state ──
+  var NAV_COLLAPSE_KEY = 'sprout-nav-collapsed';
+  function getCollapsedSections() {
+    try { return JSON.parse(localStorage.getItem(NAV_COLLAPSE_KEY)) || []; }
+    catch(e) { return []; }
+  }
+  function saveCollapsedSections(list) {
+    localStorage.setItem(NAV_COLLAPSE_KEY, JSON.stringify(list));
+  }
+
   // ── Utility functions ──
   function currentPath() {
     var p = location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
@@ -166,7 +176,9 @@
 
       if (item.collapsible && item.children) {
         // Collapsible section header (not a link)
-        var expanded = item.defaultOpen || sectionActive;
+        var storedCollapsed = getCollapsedSections();
+        var wasCollapsed = storedCollapsed.indexOf(item.label) !== -1;
+        var expanded = wasCollapsed ? false : (item.defaultOpen || sectionActive);
         var icon = item.icon && ICONS[item.icon] ? ICONS[item.icon] : '';
         var active = item.href && isActive(item.href) ? ' active' : '';
 
@@ -188,7 +200,8 @@
           if (child.collapsible && child.children) {
             // Nested collapsible sub-section
             var subActive = isSectionActive(child);
-            var subExpanded = child.defaultOpen || subActive;
+            var subWasCollapsed = storedCollapsed.indexOf(child.label) !== -1;
+            var subExpanded = subWasCollapsed ? false : (child.defaultOpen || subActive);
             html += '<div class="nav-sub-section" data-collapsible="true">';
             if (childIcon) html += '<span class="nav-icon">' + childIcon + '</span>';
             if (child.href) {
@@ -274,6 +287,16 @@
       } else {
         children.classList.add('collapsed');
         if (chevron) chevron.innerHTML = CHEVRON_DOWN;
+      }
+      // Persist collapse state
+      var labelEl = el.querySelector('.nav-section-label, .nav-section-link');
+      if (labelEl) {
+        var text = labelEl.textContent;
+        var stored = getCollapsedSections();
+        var idx = stored.indexOf(text);
+        if (isCollapsed && idx !== -1) stored.splice(idx, 1);
+        if (!isCollapsed && idx === -1) stored.push(text);
+        saveCollapsedSections(stored);
       }
     });
   }
