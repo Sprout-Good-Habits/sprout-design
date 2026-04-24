@@ -15,7 +15,7 @@
 /* ── Page-specific ── */
 .device-screen { background: var(--brand-25, #f5fbff); }
 
-/* ── Approved/resolved button state ── */
+/* ── Declined/negative resolved state ── */
 .btn-resolved {
   background: var(--fg-disabled-subtle, #d5d7da) !important;
   border-color: transparent !important;
@@ -63,6 +63,48 @@
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
 }
 
+/* ── Empty inbox state ── */
+.act-empty {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px;
+  text-align: center;
+  gap: 12px;
+}
+.act-empty-icon {
+  font-size: 48px;
+  line-height: 1;
+  opacity: 0.4;
+}
+.act-empty-title {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  color: var(--text-primary, #181d27);
+}
+.act-empty-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-tertiary, #535862);
+}
+
+/* ── Invalidated notification state ── */
+.act-item--invalidated {
+  opacity: 0.55;
+}
+.act-item--invalidated .act-item-trailing {
+  display: none;
+}
+
+/* ── Toolbar border on scroll ── */
+.act-header--scrolled {
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+
 /* ── Header toolbar ── */
 .act-header {
   position: absolute;
@@ -80,13 +122,11 @@
   min-width: 0;
   gap: 10px;
 }
-.act-header-title {
-  font-family: var(--font-family-display, 'Inter', sans-serif);
-  font-weight: var(--font-weight-semibold, 600);
-  font-size: var(--font-size-display-md, 36px);
-  line-height: var(--line-height-display-md, 44px);
-  color: #000;
-  letter-spacing: -0.72px;
+.act-header-logo {
+  display: block;
+  height: 22px;
+  width: auto;
+  color: var(--brand-500, #0BA5EC);
 }
 .act-header-trailing {
   display: flex;
@@ -290,6 +330,10 @@
   display: flex;
   align-items: center;
   gap: 4px;
+}
+.act-item-action .btn:disabled {
+  min-width: 100px;
+  text-align: center;
 }
 .act-item-trailing {
   color: var(--fg-tertiary, #535862);
@@ -1105,7 +1149,7 @@
   <!-- Header toolbar -->
   <div class="act-header">
     <div class="act-header-leading">
-      <span class="act-header-title">Sprout</span>
+      <svg class="act-header-logo" viewBox="0 0 106.245 22" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-label="Sprout"><path d="M106.245 0.825055L106.097 7.0871L101.696 7.26433L101.165 20.9699L94.9321 21.2948L94.3708 7.58924L89.9697 7.82555L90.1469 0.854593L106.245 0.825055Z"/><path d="M89.7196 0.850838C89.2765 4.31662 88.8974 7.76764 88.5823 11.2039C88.2673 14.6303 87.967 18.0813 87.6814 21.5569L81.6262 22L81.892 19.7256C81.6951 19.952 81.4637 20.149 81.1979 20.3163C80.9419 20.4837 80.6662 20.6216 80.3708 20.7299C80.0754 20.8283 79.7702 20.9022 79.4551 20.9514C79.14 20.9908 78.8397 21.0056 78.5542 20.9957C77.8847 20.9859 77.2545 20.8579 76.6638 20.6117C76.073 20.3557 75.5315 20.021 75.0392 19.6074C74.5469 19.184 74.1038 18.6967 73.71 18.1453C73.3162 17.5841 72.9814 16.9982 72.7057 16.3878C72.4399 15.7675 72.2331 15.1374 72.0854 14.4974C71.9476 13.8574 71.8786 13.2371 71.8786 12.6365C71.8786 11.7503 71.8934 10.8347 71.9229 9.88945C71.9623 8.93439 72.0263 7.97933 72.1149 7.02427C72.2036 6.06921 72.3168 5.12399 72.4546 4.18863C72.6023 3.25326 72.7845 2.35727 73.0011 1.50067C74.2023 1.55975 75.4084 1.6139 76.6195 1.66313C77.8305 1.71236 79.0367 1.72713 80.2379 1.70744C80.0114 2.56404 79.785 3.42556 79.5585 4.29201C79.3419 5.14861 79.145 6.01505 78.9677 6.89135C78.7905 7.75779 78.6477 8.62916 78.5394 9.50545C78.4311 10.3817 78.377 11.2679 78.377 12.1639C78.377 12.3706 78.3868 12.666 78.4065 13.05C78.4262 13.434 78.4754 13.8131 78.5542 14.1872C78.6428 14.5614 78.7708 14.8912 78.9382 15.1767C79.1154 15.4524 79.3616 15.5903 79.6767 15.5903C80.0508 15.5903 80.3856 15.4327 80.6809 15.1177C80.9763 14.7927 81.2372 14.3595 81.4637 13.818C81.6902 13.2765 81.8822 12.6512 82.0397 11.9423C82.2071 11.2334 82.3449 10.495 82.4532 9.72699C82.5714 8.94916 82.6649 8.1664 82.7338 7.37872C82.8028 6.59104 82.852 5.8526 82.8815 5.16338C82.9209 4.46431 82.9455 3.83909 82.9554 3.28772C82.9751 2.73634 82.9849 2.30804 82.9849 2.00282C82.9849 1.8059 82.98 1.6139 82.9701 1.42683C82.9603 1.23975 82.9455 1.04776 82.9258 0.850838C83.5658 0.87053 84.2009 0.885299 84.831 0.895145C85.4612 0.904991 86.0962 0.909914 86.7362 0.909914C87.2285 0.909914 87.7208 0.909914 88.2131 0.909914C88.7153 0.900068 89.2174 0.880376 89.7196 0.850838Z"/><path d="M71.0831 10.3374C71.0831 11.2333 70.9798 12.0998 70.773 12.9367C70.5662 13.7638 70.2659 14.5416 69.8721 15.2702C69.4881 15.9988 69.0155 16.6683 68.4543 17.2788C67.9029 17.8794 67.2777 18.3963 66.5786 18.8295C65.8894 19.2627 65.1362 19.6024 64.319 19.8486C63.5017 20.0849 62.6353 20.203 61.7196 20.203C60.8335 20.203 59.9867 20.0898 59.1793 19.8633C58.3818 19.6369 57.6335 19.3218 56.9345 18.9181C56.2354 18.5046 55.6003 18.0123 55.0293 17.4412C54.468 16.8603 53.9856 16.2203 53.5819 15.5213C53.1881 14.8124 52.8779 14.0542 52.6515 13.2468C52.4349 12.4395 52.3266 11.5976 52.3266 10.7213C52.3266 9.86475 52.4299 9.02784 52.6367 8.21062C52.8435 7.38356 53.1388 6.60573 53.5228 5.87713C53.9167 5.14852 54.3893 4.479 54.9407 3.86855C55.492 3.2581 56.1074 2.73134 56.7868 2.28827C57.476 1.8452 58.2194 1.50059 59.0169 1.25444C59.8144 1.00829 60.6562 0.885216 61.5424 0.885216C62.9701 0.885216 64.2697 1.10675 65.4414 1.54982C66.6229 1.99289 67.6272 2.62795 68.4543 3.45502C69.2912 4.27223 69.9361 5.26668 70.389 6.43835C70.8518 7.60017 71.0831 8.89984 71.0831 10.3374ZM64.5257 10.7213C64.5257 10.298 64.4617 9.88936 64.3337 9.49552C64.2156 9.09184 64.0383 8.73738 63.802 8.43216C63.5657 8.11709 63.2704 7.86601 62.9159 7.67894C62.5713 7.48202 62.1725 7.38356 61.7196 7.38356C61.2569 7.38356 60.8433 7.46725 60.479 7.63463C60.1147 7.80201 59.7996 8.0334 59.5338 8.32877C59.2778 8.61431 59.0809 8.95399 58.943 9.34783C58.8052 9.73183 58.7363 10.1404 58.7363 10.5737C58.7363 10.9872 58.7954 11.4007 58.9135 11.8143C59.0317 12.2278 59.2089 12.6019 59.4452 12.9367C59.6815 13.2715 59.972 13.5422 60.3166 13.749C60.671 13.9558 61.0796 14.0591 61.5424 14.0591C62.0051 14.0591 62.4187 13.9705 62.783 13.7933C63.1571 13.6062 63.4722 13.3601 63.7282 13.0548C63.9842 12.7398 64.1811 12.3804 64.319 11.9767C64.4568 11.573 64.5257 11.1546 64.5257 10.7213Z"/><path d="M51.7961 7.41402C51.7961 8.18201 51.7272 8.88107 51.5893 9.51121C51.4613 10.1315 51.2546 10.7026 50.969 11.2244C50.6835 11.7463 50.3143 12.2287 49.8614 12.6718C49.4084 13.1148 48.862 13.5382 48.222 13.9419L51.737 20.2039L45.091 21.5036L42.8166 15.212L40.9852 15.2711L40.7194 21.415H34.3687C34.4179 19.1701 34.4622 16.9351 34.5016 14.7099C34.5509 12.4847 34.605 10.2497 34.6641 8.00478C34.6838 6.87249 34.7035 5.75005 34.7232 4.63745C34.7429 3.52486 34.7822 2.40242 34.8413 1.27013C35.5305 1.01414 36.2099 0.802447 36.8794 0.635065C37.549 0.467684 38.2185 0.339686 38.888 0.251072C39.5674 0.152613 40.2517 0.0886138 40.9409 0.0590758C41.64 0.0196919 42.3538 0 43.0824 0C44.2048 0 45.2879 0.157536 46.3316 0.472607C47.3851 0.777832 48.3155 1.24059 49.1229 1.86089C49.9303 2.48119 50.5752 3.2541 51.0576 4.17962C51.5499 5.10514 51.7961 6.18327 51.7961 7.41402ZM45.1796 7.88663C45.1796 7.4731 45.1205 7.09403 45.0024 6.74942C44.8941 6.40481 44.7267 6.10943 44.5002 5.86328C44.2836 5.60728 44.0079 5.41036 43.6732 5.27252C43.3482 5.12483 42.9642 5.05099 42.5212 5.05099C42.3243 5.05099 42.1323 5.06575 41.9452 5.09529C41.7581 5.11498 41.576 5.14945 41.3987 5.19868L41.1624 10.6927H41.5169C41.9403 10.6927 42.3686 10.6386 42.8018 10.5303C43.2449 10.422 43.6387 10.2546 43.9833 10.0281C44.3378 9.80167 44.6233 9.51121 44.8399 9.15676C45.0664 8.8023 45.1796 8.37893 45.1796 7.88663Z"/><path d="M33.6455 8.03227C33.6455 8.98733 33.5027 9.83408 33.2172 10.5725C32.9316 11.311 32.5378 11.9608 32.0356 12.522C31.5433 13.0734 30.9624 13.5411 30.2929 13.9251C29.6234 14.2992 28.9046 14.6094 28.1366 14.8555C27.3785 15.0918 26.5908 15.2691 25.7736 15.3872C24.9564 15.4955 24.1539 15.5546 23.3663 15.5644V21.856H16.4839C16.4839 20.7336 16.4839 19.6407 16.4839 18.5773C16.4938 17.5139 16.4987 16.4604 16.4987 15.4168C16.5085 14.3632 16.5135 13.3048 16.5135 12.2414C16.5233 11.1781 16.5331 10.0802 16.543 8.94795C16.5627 7.74674 16.5676 6.54553 16.5578 5.34432C16.5479 4.14311 16.5725 2.93205 16.6316 1.71115C17.8919 1.33701 19.1522 1.0564 20.4125 0.869322C21.6727 0.682248 22.9724 0.588711 24.3115 0.588711C25.0696 0.588711 25.8277 0.65271 26.5859 0.780708C27.344 0.89886 28.0677 1.09086 28.7569 1.3567C29.456 1.62254 30.1009 1.9573 30.6917 2.36099C31.2923 2.75483 31.8092 3.22743 32.2424 3.77881C32.6756 4.33018 33.0153 4.96033 33.2615 5.66924C33.5175 6.37815 33.6455 7.16582 33.6455 8.03227ZM27.088 8.53442C27.088 7.89443 26.8911 7.39721 26.4973 7.04275C26.1133 6.67845 25.6111 6.4963 24.9908 6.4963C24.7841 6.4963 24.5675 6.51599 24.341 6.55537C24.1244 6.58491 23.9176 6.6243 23.7207 6.67353L23.5435 10.9861C23.6813 11.0058 23.8142 11.0156 23.9422 11.0156C24.0702 11.0156 24.2032 11.0156 24.341 11.0156C24.6955 11.0156 25.0351 10.9565 25.3601 10.8384C25.6948 10.7202 25.9902 10.5528 26.2462 10.3362C26.5022 10.1098 26.704 9.84885 26.8517 9.55348C27.0093 9.24825 27.088 8.90856 27.088 8.53442Z"/><path d="M15.4779 14.0875C15.4779 15.4364 15.2416 16.6032 14.769 17.5878C14.3062 18.5625 13.6662 19.3699 12.849 20.0099C12.0416 20.64 11.0915 21.1077 9.99859 21.4129C8.91553 21.7083 7.74878 21.856 6.49834 21.856C6.01589 21.856 5.48421 21.792 4.9033 21.664C4.33223 21.536 3.75132 21.3785 3.16056 21.1914C2.5698 20.9945 1.99873 20.7877 1.44736 20.5711C0.90583 20.3446 0.423377 20.1329 0 19.936L0.649835 14.1466C1.48674 14.6487 2.41226 15.0327 3.4264 15.2986C4.45038 15.5546 5.45467 15.6826 6.43927 15.6826C6.62634 15.6826 6.8528 15.6776 7.11864 15.6678C7.38448 15.6481 7.63556 15.6038 7.87186 15.5349C8.11801 15.4561 8.32477 15.3429 8.49216 15.1952C8.65954 15.0475 8.74323 14.8358 8.74323 14.5601C8.74323 14.373 8.68415 14.2155 8.566 14.0875C8.44785 13.9497 8.29524 13.8414 8.10816 13.7626C7.92109 13.674 7.7094 13.61 7.4731 13.5706C7.23679 13.5214 7.00541 13.4869 6.77896 13.4672C6.5525 13.4475 6.34081 13.4377 6.14389 13.4377C5.94697 13.4377 5.78943 13.4377 5.67128 13.4377C4.82453 13.4377 4.05162 13.3048 3.35256 13.0389C2.66334 12.7731 2.06766 12.3989 1.56551 11.9165C1.07321 11.4242 0.689218 10.8334 0.413531 10.1442C0.137844 9.44513 0 8.67222 0 7.82546C0 6.66364 0.23138 5.62489 0.694141 4.70921C1.16675 3.78369 1.79197 3.00094 2.5698 2.36095C3.35748 1.71111 4.25838 1.21389 5.27252 0.869281C6.28666 0.524672 7.33525 0.352367 8.41831 0.352367C8.90076 0.352367 9.39799 0.372059 9.90998 0.411443C10.422 0.440981 10.929 0.500057 11.4312 0.588671C11.9432 0.677285 12.4404 0.790513 12.9228 0.928357C13.4053 1.0662 13.8631 1.23851 14.2964 1.44527L13.7351 7.44147C13.0656 7.21501 12.3616 7.02794 11.6232 6.88025C10.8946 6.72271 10.1807 6.64395 9.48168 6.64395C9.35368 6.64395 9.1863 6.64887 8.97953 6.65872C8.78261 6.65872 8.57092 6.67349 8.34447 6.70302C8.12785 6.72272 7.90632 6.75718 7.67986 6.80641C7.4534 6.85564 7.25156 6.92456 7.07433 7.01317C6.89711 7.09194 6.75434 7.20024 6.64603 7.33809C6.53773 7.47593 6.4885 7.63839 6.49834 7.82546C6.50819 8.04208 6.58696 8.20946 6.73465 8.32761C6.89218 8.44576 7.0891 8.53437 7.32541 8.59345C7.57156 8.64268 7.8374 8.6673 8.12293 8.6673C8.41831 8.6673 8.70877 8.66237 8.9943 8.65253C9.27983 8.63283 9.54567 8.61807 9.79182 8.60822C10.038 8.58853 10.2398 8.5836 10.3974 8.59345C11.185 8.64268 11.8939 8.81006 12.5241 9.0956C13.1542 9.38113 13.6859 9.7602 14.1191 10.2328C14.5622 10.7054 14.897 11.2716 15.1234 11.9312C15.3597 12.5811 15.4779 13.2998 15.4779 14.0875Z"/></svg>
     </div>
     <div class="act-header-trailing">
       <button class="act-header-btn" aria-label="Profile">
@@ -1119,43 +1163,47 @@
   <!-- Feed -->
   <div class="act-feed">
 
+    <!-- Empty inbox state (hidden by default) -->
+    <div class="act-empty" id="emptyState">
+      <div class="act-empty-icon">&#x2705;</div>
+      <div class="act-empty-title">You're all caught up</div>
+      <div class="act-empty-desc">No new notifications right now. Enjoy the quiet!</div>
+    </div>
+
     <!-- Today -->
     <div class="act-section">
       <div class="act-section-header">Today</div>
 
-      <!-- Ben & Gabe completed morning routine -->
+      <!-- Screen time request -->
       <div class="act-item">
-        <div class="act-item-leading act-item-leading--duo">
-          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="58" height="83"></canvas></div>
-          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="58" height="83"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
-        </div>
-        <div class="act-item-content">
-          <b>Ben &amp; Gabe</b> completed morning routine. Ben 4/4, Gabe 3/4 <span class="act-item-time">1h</span>
-        </div>
-      </div>
-
-      <!-- Gabe requested YouTube -->
-      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F4FA;</div>
         </div>
-        <div class="act-item-body">
-          <div class="act-item-row">
-            <div class="act-item-content">
-              <b>Gabe</b> requested 45 min YouTube <span class="act-item-time">2h</span>
-            </div>
-            <div class="act-item-action">
-              <button class="btn btn-primary btn-sm">Approve</button>
-              <span class="act-icon act-icon-sm act-item-trailing" data-label="Decline">replay</span>
-            </div>
-          </div>
-          <div class="act-item-placeholder"><img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&h=200&fit=crop" alt="YouTube"></div>
+        <div class="act-item-content">
+          <b>Gabe</b> requested 45 min screen time <span class="act-item-time">2h</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm">Approve</button>
+          <span class="act-icon act-icon-sm act-item-trailing" data-label="Decline">close</span>
         </div>
       </div>
 
-      <!-- Ben read 18 min -->
+      <!-- Screen time request (Zeev already approved) -->
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F4FA;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Shane</b> requested 30 min screen time <span class="act-item-time">2h</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
+        </div>
+      </div>
+
+      <!-- Quest approval -->
       <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
@@ -1180,37 +1228,25 @@
     <div class="act-section">
       <div class="act-section-header">Yesterday</div>
 
+      <!-- Daily summary -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> has a permission slip due Friday <span class="act-item-time">4h</span>
-        </div>
-        <div class="act-item-action">
-          <button class="btn btn-primary btn-sm">Approve</button>
-          <span class="act-icon act-icon-sm act-item-trailing" data-label="Decline">replay</span>
+          <b>Ben</b> completed 4 of 5 tasks yesterday <span class="act-item-time">18h</span>
         </div>
       </div>
 
+      <!-- Meal plan -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+          <div class="act-item-badge" style="background:var(--green-500);">&#x1F372;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> read 4 of 5 days this week, 12-day streak <span class="act-item-time">5h</span>
-        </div>
-      </div>
-
-      <div class="act-item">
-        <div class="act-item-leading">
-          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
-        </div>
-        <div class="act-item-content">
-          <b>Meal plan</b> 5 dinners planned, grocery list ready <span class="act-item-time">6h</span>
+          <b>Meal plan</b> 5 dinners planned, grocery list ready <span class="act-item-time">1d</span>
         </div>
       </div>
     </div>
@@ -1219,33 +1255,36 @@
     <div class="act-section">
       <div class="act-section-header">Last 7 days</div>
 
-      <div class="act-item">
-        <div class="act-item-leading">
-          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--orange-500);">&#x26BD;</div>
-        </div>
-        <div class="act-item-content">
-          <b>Ben</b> soccer Tue/Thu 3:30, pickup at 4:30 <span class="act-item-time">3d</span>
-        </div>
-      </div>
-
+      <!-- Screen time request -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:var(--violet-500);">&#x1F4FA;</div>
         </div>
         <div class="act-item-content">
-          <b>Zeev</b> approved 30 min iPad for Gabe <span class="act-item-time">4d</span>
+          <b>Zeev</b> gave 30 min screen time for Gabe <span class="act-item-time">4d</span>
         </div>
       </div>
 
+      <!-- Daily summary -->
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Gabe</b> completed 3 of 4 tasks on Tuesday <span class="act-item-time">5d</span>
+        </div>
+      </div>
+
+      <!-- Quest approval -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--sprout-500);">&#x1F4B0;</div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
         </div>
         <div class="act-item-content">
-          <b>Gabe</b> earned 15 gems this week, 127 total <span class="act-item-time">5d</span>
+          <b>Ben</b> finished math practice, 12 of 15 correct <span class="act-item-time">6d</span>
         </div>
       </div>
     </div>
@@ -1254,23 +1293,25 @@
     <div class="act-section">
       <div class="act-section-header">Last 30 days</div>
 
+      <!-- Meal plan -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--green-500);">&#x1F4CB;</div>
+          <div class="act-item-badge" style="background:var(--green-500);">&#x1F372;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> 6th grade spring progress report available <span class="act-item-time">2w</span>
+          <b>Meal plan</b> 4 dinners planned, 2 new recipes <span class="act-item-time">2w</span>
         </div>
       </div>
 
+      <!-- Daily summary -->
       <div class="act-item">
         <div class="act-item-leading">
-          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F3B9;</div>
+          <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
         </div>
         <div class="act-item-content">
-          <b>Zeev</b> signed Gabe's piano recital permission slip <span class="act-item-time">2w</span>
+          <b>Shane</b> completed 5 of 5 tasks last Thursday <span class="act-item-time">2w</span>
         </div>
       </div>
     </div>
@@ -1279,23 +1320,25 @@
     <div class="act-section">
       <div class="act-section-header">Older</div>
 
-      <div class="act-item">
-        <div class="act-item-leading">
-          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--green-500);">&#x1F4D6;</div>
-        </div>
-        <div class="act-item-content">
-          <b>Ben</b> reading goal set: 20 min/day, 5 days/week <span class="act-item-time">1mo</span>
-        </div>
-      </div>
-
+      <!-- Screen time request -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F3B9;</div>
+          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F4FA;</div>
         </div>
         <div class="act-item-content">
-          <b>Gabe</b> started piano, Saturdays 10am with Ms. Chen <span class="act-item-time">2mo</span>
+          <b>Zeev</b> gave 20 min screen time for Gabe <span class="act-item-time">1mo</span>
+        </div>
+      </div>
+
+      <!-- Quest approval -->
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Ben</b> practiced spelling, 18 of 20 correct <span class="act-item-time">1mo</span>
         </div>
       </div>
     </div>
@@ -1649,14 +1692,32 @@ window.DS_META = {
   title: 'Home v3',
   desc: 'Tab-based navigation: bottom bar with Home, Family, and Skills tabs. Chat accessible via header Sprout avatar.',
   owner: 'Leti',
-  status: 'In progress'
+  status: 'In progress',
+  screen: ['Default', 'Empty inbox', 'Invalidated'],
+  notes: '\
+<h3>How ACT inbox works</h3>\
+<p>The ACT tab is a <strong>notification feed</strong>, not a thread list. Each item shows the most relevant current state of an entity. Preview text = latest generation, not latest chat.</p>\
+<p><strong>Three postures per item</strong></p>\
+<ul>\
+<li><strong>Quick action</strong> &ndash; deal with it right there. Approve, decline, acknowledge. Some items resolve without ever opening a thread.</li>\
+<li><strong>Get context</strong> &ndash; tap through to the thread where it originated. Read history, see the canvas detail.</li>\
+<li><strong>Interactive mode</strong> &ndash; talk to Sprout to figure out the right call. Opens into the thread chat.</li>\
+</ul>\
+<p><strong>Cross-parent action surfacing</strong></p>\
+<ul>\
+<li>Actions surface to whichever parent needs to act, not whoever set it up.</li>\
+<li>If one parent approves, the other sees a disabled "Approved" button (not removed).</li>\
+<li>Invalidation logic is feature-specific for now.</li>\
+</ul>\
+<p><strong>Not everything leads to a thread</strong> &ndash; approving a screen time request is a single tap. The thread is there for context when you want it, not the mandatory destination.</p>\
+<p><strong>Time sections</strong>: Today, Yesterday, Last 7 days, Last 30 days, Older</p>'
 };
 </script>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 <script>
 (function() {
-  var RIVE_SPROUT_SRC = '/kid-design-system/sprot2.97_.riv';
+  var RIVE_SPROUT_SRC = '/kid-design-system/sprout.riv';
   var RIVE_USER_SRC = '/kid-design-system/character2.91.riv';
   var SM_NAME = 'State Machine 1';
   var ARTBOARD = 'Village-character';
@@ -1851,9 +1912,60 @@ window.DS_META = {
     });
   });
 
+  // ══════════════════════════════════
+  // TOOLBAR BORDER ON SCROLL
+  // ══════════════════════════════════
+  var homeHeader = document.querySelector('#tabHome .act-header');
+  var actFeed = document.querySelector('#tabHome .act-feed');
+  if (actFeed && homeHeader) {
+    actFeed.addEventListener('scroll', function() {
+      homeHeader.classList.toggle('act-header--scrolled', actFeed.scrollTop > 0);
+    });
+  }
+
+  // ══════════════════════════════════
+  // SCREEN STATE SWITCHING (metadata dropdown)
+  // ══════════════════════════════════
+  var savedActionHTML = {};
+  var feedSections = document.querySelectorAll('#tabHome .act-section');
+  var emptyState = document.getElementById('emptyState');
+  var actionItems = document.querySelectorAll('#tabHome .act-item .act-item-action');
+
+  // Save original action button HTML for restore
+  actionItems.forEach(function(action, i) {
+    savedActionHTML[i] = action.innerHTML;
+  });
+
+  window.onScreenChange = function(index) {
+    // 0 = Default, 1 = Empty inbox, 2 = Invalidated
+    var showFeed = index !== 1;
+    var invalidated = index === 2;
+
+    // Toggle feed sections vs empty state
+    feedSections.forEach(function(s) { s.style.display = showFeed ? '' : 'none'; });
+    if (emptyState) emptyState.style.display = showFeed ? 'none' : 'flex';
+
+    // Handle invalidation state
+    actionItems.forEach(function(action, i) {
+      var item = action.closest('.act-item');
+      if (invalidated) {
+        item.classList.add('act-item--invalidated');
+        var btn = action.querySelector('.btn');
+        if (btn) {
+          var label = btn.textContent.trim();
+          var resolvedLabel = { 'Approve': 'Approved', 'Sign': 'Signed' }[label] || label;
+          action.innerHTML = '<button class="btn btn-primary btn-sm" disabled>' + resolvedLabel + '</button>';
+        }
+      } else {
+        item.classList.remove('act-item--invalidated');
+        action.innerHTML = savedActionHTML[i];
+      }
+    });
+  };
+
   // Approve button tap -> resolved state
   var positiveLabels = { 'Approve': 'Approved', 'Sign': 'Signed' };
-  var negativeLabels = { 'replay': 'Needs redo', 'close': 'Decline' };
+  var negativeLabels = { 'replay': 'Sent back', 'close': 'Declined' };
 
   document.querySelectorAll('.act-item .act-item-action').forEach(function(action) {
     var btn = action.querySelector('.btn');
@@ -1862,16 +1974,25 @@ window.DS_META = {
 
     var resolved = false;
 
+    // Measure combined width of button + icon before any action
+    function resolveAction(labelText, isPositive) {
+      btn.style.display = 'none';
+      trailingIcon.style.display = 'none';
+      var resolvedBtn = document.createElement('button');
+      resolvedBtn.className = 'btn btn-sm act-spring-in' + (isPositive ? ' btn-primary' : ' btn-resolved');
+      resolvedBtn.disabled = true;
+      resolvedBtn.textContent = labelText;
+      action.appendChild(resolvedBtn);
+    }
+
     btn.addEventListener('click', function() {
       if (resolved) return;
       resolved = true;
       var label = btn.textContent.trim();
       trailingIcon.classList.add('act-fade-out');
+      btn.classList.add('act-fade-out');
       setTimeout(function() {
-        trailingIcon.style.display = 'none';
-        btn.textContent = positiveLabels[label] || label;
-        btn.classList.remove('btn-primary');
-        btn.classList.add('btn-resolved', 'act-spring-in');
+        resolveAction(positiveLabels[label] || label, true);
       }, 250);
     });
 
@@ -1883,12 +2004,9 @@ window.DS_META = {
       var iconName = trailingIcon.textContent.trim();
       var label = negativeLabels[iconName] || 'Dismissed';
       btn.classList.add('act-fade-out');
+      trailingIcon.classList.add('act-fade-out');
       setTimeout(function() {
-        btn.style.display = 'none';
-        var resolvedBtn = document.createElement('span');
-        resolvedBtn.className = 'btn btn-sm btn-resolved act-spring-in';
-        resolvedBtn.textContent = label;
-        trailingIcon.replaceWith(resolvedBtn);
+        resolveAction(label, false);
       }, 250);
     });
   });
