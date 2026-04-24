@@ -69,35 +69,44 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 32px;
+  padding: 16px;
   text-align: center;
-  gap: 12px;
+  gap: 8px;
+  height: 100%;
 }
 .act-empty-icon {
-  font-size: 48px;
-  line-height: 1;
-  opacity: 0.4;
+  width: 24px;
+  height: 24px;
+  color: var(--text-secondary, #414651);
 }
 .act-empty-title {
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-weight: var(--font-weight-semibold, 600);
-  font-size: var(--font-size-text-lg, 18px);
-  line-height: var(--line-height-text-lg, 28px);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
   color: var(--text-primary, #181d27);
 }
 .act-empty-desc {
   font-family: var(--font-family-body, 'Inter', sans-serif);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  color: var(--text-tertiary, #535862);
+  color: var(--text-secondary, #414651);
 }
-
-/* ── Invalidated notification state ── */
-.act-item--invalidated {
-  opacity: 0.55;
+.act-empty-btn {
+  background: var(--brand-500, #0ba5ec);
+  color: #fff;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  padding: 8px 12px;
+  border-radius: var(--radius-md, 8px);
+  border: none;
+  cursor: pointer;
 }
-.act-item--invalidated .act-item-trailing {
-  display: none;
+.act-empty-btn:active {
+  transform: scale(0.96);
+  opacity: 0.8;
 }
 
 /* ── Toolbar border on scroll ── */
@@ -1165,9 +1174,17 @@
 
     <!-- Empty inbox state (hidden by default) -->
     <div class="act-empty" id="emptyState">
-      <div class="act-empty-icon">&#x2705;</div>
-      <div class="act-empty-title">You're all caught up</div>
-      <div class="act-empty-desc">No new notifications right now. Enjoy the quiet!</div>
+      <div class="act-empty-icon"><span class="act-icon">inbox</span></div>
+      <div class="act-empty-title">You are all caught up</div>
+      <div class="act-empty-desc">No new notifications right now. Enjoy the quiet.</div>
+    </div>
+
+    <!-- Null state (hidden by default) -->
+    <div class="act-empty" id="nullState">
+      <div class="act-empty-icon"><span class="act-icon">face</span></div>
+      <div class="act-empty-title">Add your child to get started</div>
+      <div class="act-empty-desc">Once you add a child, notifications will appear here.</div>
+      <button class="act-empty-btn">Setup child</button>
     </div>
 
     <!-- Today -->
@@ -1693,7 +1710,7 @@ window.DS_META = {
   desc: 'Tab-based navigation: bottom bar with Home, Family, and Skills tabs. Chat accessible via header Sprout avatar.',
   owner: 'Leti',
   status: 'In progress',
-  screen: ['Default', 'Empty inbox', 'Invalidated'],
+  screen: ['Default', 'Empty state', 'Null state'],
   notes: '\
 <h3>How ACT inbox works</h3>\
 <p>The ACT tab is a <strong>notification feed</strong>, not a thread list. Each item shows the most relevant current state of an entity. Preview text = latest generation, not latest chat.</p>\
@@ -1707,7 +1724,6 @@ window.DS_META = {
 <ul>\
 <li>Actions surface to whichever parent needs to act, not whoever set it up.</li>\
 <li>If one parent approves, the other sees a disabled "Approved" button (not removed).</li>\
-<li>Invalidation logic is feature-specific for now.</li>\
 </ul>\
 <p><strong>Not everything leads to a thread</strong> &ndash; approving a screen time request is a single tap. The thread is there for context when you want it, not the mandatory destination.</p>\
 <p><strong>Time sections</strong>: Today, Yesterday, Last 7 days, Last 30 days, Older</p>'
@@ -1926,41 +1942,18 @@ window.DS_META = {
   // ══════════════════════════════════
   // SCREEN STATE SWITCHING (metadata dropdown)
   // ══════════════════════════════════
-  var savedActionHTML = {};
   var feedSections = document.querySelectorAll('#tabHome .act-section');
   var emptyState = document.getElementById('emptyState');
-  var actionItems = document.querySelectorAll('#tabHome .act-item .act-item-action');
-
-  // Save original action button HTML for restore
-  actionItems.forEach(function(action, i) {
-    savedActionHTML[i] = action.innerHTML;
-  });
+  var nullState = document.getElementById('nullState');
 
   window.onScreenChange = function(index) {
-    // 0 = Default, 1 = Empty inbox, 2 = Invalidated
-    var showFeed = index !== 1;
-    var invalidated = index === 2;
+    // 0 = Default, 1 = Empty state, 2 = Null state
+    var showFeed = index === 0;
 
-    // Toggle feed sections vs empty state
     feedSections.forEach(function(s) { s.style.display = showFeed ? '' : 'none'; });
-    if (emptyState) emptyState.style.display = showFeed ? 'none' : 'flex';
-
-    // Handle invalidation state
-    actionItems.forEach(function(action, i) {
-      var item = action.closest('.act-item');
-      if (invalidated) {
-        item.classList.add('act-item--invalidated');
-        var btn = action.querySelector('.btn');
-        if (btn) {
-          var label = btn.textContent.trim();
-          var resolvedLabel = { 'Approve': 'Approved', 'Sign': 'Signed' }[label] || label;
-          action.innerHTML = '<button class="btn btn-primary btn-sm" disabled>' + resolvedLabel + '</button>';
-        }
-      } else {
-        item.classList.remove('act-item--invalidated');
-        action.innerHTML = savedActionHTML[i];
-      }
-    });
+    if (emptyState) emptyState.style.display = index === 1 ? 'flex' : 'none';
+    if (nullState) nullState.style.display = index === 2 ? 'flex' : 'none';
+    if (actFeed) actFeed.style.overflowY = showFeed ? 'auto' : 'hidden';
   };
 
   // Approve button tap -> resolved state
