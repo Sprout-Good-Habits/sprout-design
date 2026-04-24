@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<title>Sprout Product Explorer — Home v3</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/device-frame.css">
+<link rel="stylesheet" href="/kid-design-system/components/avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/status-bar.css">
+<link rel="stylesheet" href="/kid-design-system/components/button.css">
+<style>
+/* ── Page-specific ── */
+.device-screen { background: var(--brand-25, #f5fbff); }
+
+/* ── Approved/resolved button state ── */
+.btn-resolved {
+  background: var(--fg-disabled-subtle, #d5d7da) !important;
+  border-color: transparent !important;
+  color: var(--text-disabled, #717680) !important;
+  pointer-events: none;
+  cursor: default;
+}
+.btn-primary, .act-item-trailing {
+  transition: transform 0.12s ease-out, opacity 0.12s ease-out;
+}
+.btn-primary:active, .act-item-trailing:active {
+  transform: scale(0.96);
+  opacity: 0.8;
+}
+.act-fade-out {
+  opacity: 0 !important;
+  transition: opacity 0.2s ease-out !important;
+}
+.act-spring-in {
+  animation: act-fade-in 0.25s ease-out both;
+}
+@keyframes act-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ── Material Symbols ── */
+.act-icon {
+  font-family: 'Material Symbols Outlined';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.act-icon-sm {
+  font-size: 20px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+/* ── Header toolbar ── */
+.act-header {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 10px;
+  z-index: 10;
+}
+.act-header-leading {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 10px;
+}
+.act-header-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-md, 36px);
+  line-height: var(--line-height-display-md, 44px);
+  color: #000;
+  letter-spacing: -0.72px;
+}
+.act-header-trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg, 12px);
+}
+.act-header-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 296px;
+  box-shadow: 0 4px 16px -2px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+  padding: var(--spacing-xs, 4px);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+.act-header-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+}
+.act-header-btn .act-icon,
+.act-header-btn .avatar {
+  position: relative;
+  z-index: 1;
+}
+.act-header-btn .act-icon {
+  color: var(--text-primary, #181d27);
+}
+/* Bottom Sprout avatar (next to tab bar) */
+.tab-bar-sprout {
+  width: 62px;
+  height: 62px;
+  border: 1.292px solid white;
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  overflow: hidden;
+  flex-shrink: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  position: relative;
+  background: var(--bg-sky, #e0f2fe);
+}
+#bottomSprout canvas.rive-sprout {
+  width: 167px;
+  height: 178px;
+  top: -34px;
+}
+/* Parent avatar inside header button */
+.act-header-btn .avatar {
+  width: 32px;
+  height: 32px;
+  border: 1px solid white;
+}
+#headerParent canvas.rive-user {
+  width: 46px;
+  height: 66px;
+  top: -20px;
+}
+
+/* ── Tab views ── */
+.tab-view {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: none;
+}
+.tab-view.active {
+  display: block;
+}
+
+/* ── Feed scroll area ── */
+.act-feed {
+  position: absolute;
+  top: 116px;
+  left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.act-feed::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Date sections ── */
+.act-section {
+  padding: 0 16px;
+}
+.act-section-header {
+  padding: var(--spacing-md, 8px) 0;
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+
+/* ── List items ── */
+.act-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px) 0;
+}
+.act-item-stacked {
+  align-items: flex-start;
+}
+
+/* ── Avatar group leading (62x62 container) ── */
+.act-item-leading {
+  position: relative;
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+}
+.act-item-leading .avatar {
+  position: absolute;
+  top: 1px; left: 1px;
+  width: 60px;
+  height: 60px;
+  border: 1px solid white;
+}
+.act-item-leading--duo .avatar {
+  width: 40px;
+  height: 40px;
+  border: 1px solid white;
+}
+.act-item-leading--duo .avatar:first-child {
+  top: 1px; left: 21px;
+}
+.act-item-leading--duo .avatar:nth-child(2) {
+  top: 21px; left: 1px;
+}
+.act-item-badge {
+  position: absolute;
+  left: 38px; top: 38px;
+  width: 24px; height: 24px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 12px;
+  line-height: 24px;
+  text-align: center;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* 60px single avatar Rive sizing */
+.act-item-leading > .avatar canvas.rive-user {
+  width: 86px;
+  height: 124px;
+  top: -36px;
+}
+/* 40px duo avatar Rive sizing */
+.act-item-leading--duo .avatar canvas.rive-user {
+  width: 58px;
+  height: 83px;
+  top: -24px;
+}
+
+.act-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg, 12px);
+  padding-top: var(--spacing-lg, 12px);
+}
+.act-item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.act-item-content {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.act-item-content b {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+}
+.act-item-time {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-quaternary, #717680);
+}
+.act-item-action {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.act-item-trailing {
+  color: var(--fg-tertiary, #535862);
+  cursor: pointer;
+}
+.act-item-placeholder {
+  width: 100%;
+  height: 154px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.act-item-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Bottom gradient fade ── */
+.act-fade-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 116px;
+  background: linear-gradient(to bottom, rgba(245,251,255,0) 0%, var(--brand-25, #f5fbff) 35%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   BOTTOM TAB BAR
+   ══════════════════════════════════════════ */
+.tab-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 20;
+  padding: 16px 21px 18px;
+  background: linear-gradient(to bottom, rgba(245,251,255,0) 0%, var(--brand-25, #f5fbff) 80%);
+  pointer-events: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.tab-bar-inner {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid white;
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  overflow: hidden;
+  padding: 3px;
+  pointer-events: auto;
+}
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px;
+  border-radius: var(--radius-full, 9999px);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  position: relative;
+}
+.tab-bar-item .act-icon {
+  font-size: 24px;
+  color: var(--text-primary, #181d27);
+}
+.tab-bar-item-label {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: 10px;
+  line-height: 14px;
+  color: var(--text-primary, #181d27);
+  text-align: center;
+}
+.tab-bar-item.active {
+  background: var(--bg-secondary, #fafafa);
+  mix-blend-mode: multiply;
+}
+.tab-bar-item.active .act-icon {
+  color: var(--brand-500, #0ba5ec);
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.tab-bar-item.active .tab-bar-item-label {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--brand-500, #0ba5ec);
+}
+
+/* ══════════════════════════════════════════
+   FAMILY TAB
+   ══════════════════════════════════════════ */
+.family-scroll {
+  position: absolute;
+  top: 116px; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.family-scroll::-webkit-scrollbar { display: none; }
+.family-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-md, 36px);
+  line-height: var(--line-height-display-md, 44px);
+  color: #000;
+  letter-spacing: -0.72px;
+  padding: 0 16px 8px;
+}
+.family-members {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px 24px;
+}
+.family-member {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-3xl, 20px);
+}
+.family-member-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.family-member-name {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+.family-member-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.family-member-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  white-space: nowrap;
+}
+.family-member-stat-value {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: 20px;
+  line-height: 30px;
+  color: var(--text-secondary, #414651);
+}
+.family-member-stat-label {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-quaternary, #717680);
+}
+.family-member-divider {
+  width: 1px;
+  height: 21px;
+  background: var(--border-secondary, #e9eaeb);
+  flex-shrink: 0;
+}
+.family-store-header {
+  padding: 8px 16px;
+}
+.family-store-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-xs, 24px);
+  line-height: var(--line-height-display-xs, 32px);
+  color: #000;
+}
+.family-store-desc {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.family-store-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 16px 24px;
+}
+.family-store-card {
+  width: 177px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.family-store-card-thumb {
+  width: 177px;
+  height: 100px;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-2xl, 16px);
+  overflow: hidden;
+}
+.family-store-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.family-store-card-name {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.family-store-card-price {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-quaternary, #717680);
+}
+.family-member-progress {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+}
+.family-member-progress svg {
+  transform: rotate(-90deg);
+}
+.family-member-progress .track {
+  fill: none;
+  stroke: var(--gray-200, #e9eaeb);
+  stroke-width: 4;
+}
+.family-member-progress .fill {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease-out;
+}
+
+/* ══════════════════════════════════════════
+   SKILLS TAB
+   ══════════════════════════════════════════ */
+.skills-scroll {
+  position: absolute;
+  top: 116px; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.skills-scroll::-webkit-scrollbar { display: none; }
+.skills-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-md, 36px);
+  line-height: var(--line-height-display-md, 44px);
+  color: #000;
+  letter-spacing: -0.72px;
+  padding: 0 16px 8px;
+}
+.skills-toolbar-trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg, 12px);
+}
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 16px 24px;
+}
+.skill-card {
+  width: 177px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.skill-card-thumb {
+  width: 177px;
+  height: 100px;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-2xl, 16px);
+  overflow: hidden;
+  padding: 12px 12px 0;
+  display: flex;
+  align-items: stretch;
+}
+.skill-card-thumb-inner {
+  flex: 1;
+  background: white;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-bottom: none;
+  border-radius: var(--radius-md, 8px) var(--radius-md, 8px) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 32px;
+}
+.skill-card-name {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.skill-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-quaternary, #717680);
+}
+.skill-card-avatars {
+  display: flex;
+  align-items: center;
+  padding-right: 6px;
+}
+.skill-card-avatars .avatar {
+  width: 20px;
+  height: 20px;
+  margin-right: -6px;
+}
+.skill-card-avatars .avatar canvas.rive-user {
+  width: 29px;
+  height: 41px;
+  top: -12px;
+}
+
+/* ══════════════════════════════════════════
+   CHAT SHEET OVERLAY
+   ══════════════════════════════════════════ */
+.overlay-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.overlay-scrim.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.chat-sheet {
+  position: absolute;
+  top: 62px; left: 0; right: 0; bottom: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: 40px 40px 0 0;
+  z-index: 31;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  transform-origin: top center;
+  display: flex;
+  flex-direction: column;
+}
+.chat-sheet.visible {
+  transform: translateY(0);
+}
+.chat-sheet.pushed {
+  transform: scaleX(0.92);
+  opacity: 0.8;
+}
+.chat-sheet-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 10px;
+}
+.chat-sheet-toolbar-trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg, 12px);
+}
+.chat-sheet-avatar-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 6px;
+  border-radius: 296px;
+  box-shadow: 0 4px 16px -2px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+}
+.chat-sheet-avatar-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+}
+.chat-sheet-avatar-stack {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  padding-right: 8px;
+}
+.chat-sheet-avatar-stack .avatar {
+  width: 32px;
+  height: 32px;
+  border: 1px solid white;
+  margin-right: -8px;
+}
+.chat-sheet-avatar-stack .avatar canvas.rive-user {
+  width: 46px;
+  height: 66px;
+  top: -20px;
+}
+.chat-sheet-avatar-stack .avatar canvas.rive-sprout {
+  width: 86px;
+  height: 92px;
+  top: -19px;
+}
+.chat-sheet-body {
+  flex: 1;
+}
+.chat-sheet-composer {
+  position: absolute;
+  bottom: 34px;
+  left: 16px; right: 16px;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid white;
+  border-radius: var(--radius-4xl, 24px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  overflow: hidden;
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.chat-sheet-composer-input {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--text-placeholder, #717680);
+  padding: 6px 4px;
+}
+.chat-sheet-composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-sheet-composer-leading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  color: var(--text-primary, #181d27);
+}
+
+/* ── Chat history sheet ── */
+.chat-history-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.3);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.chat-history-scrim.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.chat-history {
+  position: absolute;
+  top: 72px; left: 0; right: 0; bottom: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: 40px 40px 0 0;
+  z-index: 41;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.chat-history.visible {
+  transform: translateY(0);
+}
+.chat-history-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px 16px 0;
+  flex-shrink: 0;
+}
+.chat-history-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.chat-history-scroll::-webkit-scrollbar { display: none; }
+.chat-history-scroll-spacer {
+  height: 80px;
+}
+.chat-history-fade {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom, rgba(245,251,255,0) 0%, var(--brand-25, #f5fbff) 50%);
+  pointer-events: none;
+  z-index: 5;
+}
+.chat-history-bottom {
+  position: absolute;
+  bottom: 16px; left: 16px; right: 16px;
+  display: flex;
+  gap: 12px;
+  z-index: 6;
+}
+.chat-history-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-md, 36px);
+  line-height: var(--line-height-display-md, 44px);
+  color: #000;
+  letter-spacing: -0.72px;
+  padding: 0 16px 8px;
+}
+.chat-history-section {
+  padding: 0 16px;
+}
+.chat-history-section-header {
+  padding: var(--spacing-md, 8px) 0;
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+.chat-history-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 0;
+}
+.chat-history-item-icon {
+  color: var(--text-quaternary, #717680);
+  flex-shrink: 0;
+}
+.chat-history-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.chat-history-item-title {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.chat-history-item-time {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.chat-history-search-bar {
+  flex: 1;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid white;
+  border-radius: var(--radius-4xl, 24px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  padding: 6.5px 12.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 49px;
+}
+.chat-history-search-bar .act-icon {
+  color: var(--text-quaternary, #717680);
+}
+.chat-history-search-bar span:last-child {
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--text-placeholder, #717680);
+}
+.chat-history-edit-btn {
+  width: 49px;
+  height: 49px;
+  flex-shrink: 0;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid white;
+  border-radius: var(--radius-4xl, 24px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* ══════════════════════════════════════════
+   EXPLORE OVERLAY (inside Skills tab)
+   ══════════════════════════════════════════ */
+.explore-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  z-index: 32;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease-out;
+}
+.explore-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+.explore-toolbar {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 10px;
+  z-index: 10;
+}
+.explore-toolbar-title {
+  flex: 1;
+  text-align: center;
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: #000;
+}
+.explore-pills {
+  position: absolute;
+  top: 116px; left: 0; right: 0;
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  z-index: 10;
+}
+.explore-pills::-webkit-scrollbar { display: none; }
+.explore-pill {
+  padding: 6px 12px;
+  border-radius: var(--radius-full, 9999px);
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+.explore-pill.active {
+  background: var(--brand-500, #0ba5ec);
+  color: white;
+}
+.explore-pill:not(.active) {
+  background: var(--brand-200, #b9e6fe);
+  color: var(--text-secondary, #414651);
+}
+.explore-scroll {
+  position: absolute;
+  top: 168px; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.explore-scroll::-webkit-scrollbar { display: none; }
+.explore-section-header {
+  padding: 8px 16px;
+}
+.explore-section-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-xs, 24px);
+  line-height: var(--line-height-display-xs, 32px);
+  color: #000;
+}
+.explore-section-desc {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.explore-carousel {
+  display: flex;
+  gap: 16px;
+  padding: 0 16px 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.explore-carousel::-webkit-scrollbar { display: none; }
+.explore-card {
+  flex-shrink: 0;
+  width: 291px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.explore-card-thumb {
+  width: 291px;
+  height: 164px;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-4xl, 24px);
+  overflow: hidden;
+  padding: 20px 20px 0;
+  display: flex;
+  align-items: stretch;
+}
+.explore-card-thumb-inner {
+  flex: 1;
+  background: white;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-bottom: none;
+  border-radius: var(--radius-2xl, 16px) var(--radius-2xl, 16px) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 48px;
+}
+.explore-card-name {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.explore-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-quaternary, #717680);
+}
+.explore-bottom-bar {
+  position: absolute;
+  bottom: 34px;
+  left: 16px; right: 16px;
+  display: flex;
+  gap: 12px;
+  z-index: 6;
+}
+.explore-category-view {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px 24px;
+}
+.explore-category-view.visible {
+  display: flex;
+}
+.explore-category-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.explore-category-card-thumb {
+  width: 100%;
+  height: 209px;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-4xl, 24px);
+  overflow: hidden;
+  padding: 25px 25px 0;
+  display: flex;
+  align-items: stretch;
+}
+.explore-category-card-thumb-inner {
+  flex: 1;
+  background: white;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-bottom: none;
+  border-radius: var(--radius-2xl, 16px) var(--radius-2xl, 16px) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 64px;
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="two-col">
+        <div class="col-left">
+        <div class="device-wrapper" id="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen">
+
+<!-- Status bar -->
+<div class="status-bar">
+  <span class="status-bar-time">9:41</span>
+  <span class="status-bar-icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+  </span>
+</div>
+
+<!-- ═══════════════════════════════════
+     TAB: HOME
+     ═══════════════════════════════════ -->
+<div class="tab-view active" id="tabHome">
+  <!-- Header toolbar -->
+  <div class="act-header">
+    <div class="act-header-leading">
+      <span class="act-header-title">Sprout</span>
+    </div>
+    <div class="act-header-trailing">
+      <button class="act-header-btn" aria-label="Profile">
+        <div class="avatar avatar-xs" id="headerParent">
+          <canvas class="rive-user" width="46" height="66"></canvas>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div class="act-feed">
+
+    <!-- Today -->
+    <div class="act-section">
+      <div class="act-section-header">Today</div>
+
+      <!-- Ben & Gabe completed morning routine -->
+      <div class="act-item">
+        <div class="act-item-leading act-item-leading--duo">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="58" height="83"></canvas></div>
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="58" height="83"></canvas></div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Ben &amp; Gabe</b> completed morning routine. Ben 4/4, Gabe 3/4 <span class="act-item-time">1h</span>
+        </div>
+      </div>
+
+      <!-- Gabe requested YouTube -->
+      <div class="act-item act-item-stacked">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+        </div>
+        <div class="act-item-body">
+          <div class="act-item-row">
+            <div class="act-item-content">
+              <b>Gabe</b> requested 45 min YouTube <span class="act-item-time">2h</span>
+            </div>
+            <div class="act-item-action">
+              <button class="btn btn-primary btn-sm">Approve</button>
+              <span class="act-icon act-icon-sm act-item-trailing" data-label="Decline">replay</span>
+            </div>
+          </div>
+          <div class="act-item-placeholder"><img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&h=200&fit=crop" alt="YouTube"></div>
+        </div>
+      </div>
+
+      <!-- Ben read 18 min -->
+      <div class="act-item act-item-stacked">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+        </div>
+        <div class="act-item-body">
+          <div class="act-item-row">
+            <div class="act-item-content">
+              <b>Ben</b> read 18 min, 3 of 4 chapters <span class="act-item-time">3h</span>
+            </div>
+            <div class="act-item-action">
+              <button class="btn btn-primary btn-sm">Approve</button>
+              <span class="act-icon act-icon-sm act-item-trailing" data-label="Needs redo">replay</span>
+            </div>
+          </div>
+          <div class="act-item-placeholder"><img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=200&fit=crop" alt="Reading"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Yesterday -->
+    <div class="act-section">
+      <div class="act-section-header">Yesterday</div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Ben</b> has a permission slip due Friday <span class="act-item-time">4h</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm">Approve</button>
+          <span class="act-icon act-icon-sm act-item-trailing" data-label="Decline">replay</span>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Ben</b> read 4 of 5 days this week, 12-day streak <span class="act-item-time">5h</span>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Meal plan</b> 5 dinners planned, grocery list ready <span class="act-item-time">6h</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Last 7 days -->
+    <div class="act-section">
+      <div class="act-section-header">Last 7 days</div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--orange-500);">&#x26BD;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Ben</b> soccer Tue/Thu 3:30, pickup at 4:30 <span class="act-item-time">3d</span>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F4FA;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Zeev</b> approved 30 min iPad for Gabe <span class="act-item-time">4d</span>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--sprout-500);">&#x1F4B0;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Gabe</b> earned 15 gems this week, 127 total <span class="act-item-time">5d</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Last 30 days -->
+    <div class="act-section">
+      <div class="act-section-header">Last 30 days</div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--green-500);">&#x1F4CB;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Ben</b> 6th grade spring progress report available <span class="act-item-time">2w</span>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F3B9;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Zeev</b> signed Gabe's piano recital permission slip <span class="act-item-time">2w</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Older -->
+    <div class="act-section">
+      <div class="act-section-header">Older</div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--green-500);">&#x1F4D6;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Ben</b> reading goal set: 20 min/day, 5 days/week <span class="act-item-time">1mo</span>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F3B9;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Gabe</b> started piano, Saturdays 10am with Ms. Chen <span class="act-item-time">2mo</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:120px;"></div>
+  </div>
+
+  <!-- Bottom gradient fade -->
+  <div class="act-fade-bottom"></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     TAB: FAMILY
+     ═══════════════════════════════════ -->
+<div class="tab-view" id="tabFamily">
+  <div class="act-header">
+    <div class="act-header-leading">
+      <span class="act-header-title">Family</span>
+    </div>
+    <div class="act-header-trailing">
+      <button class="act-header-btn" aria-label="Add member">
+        <span class="act-icon">person_add</span>
+      </button>
+      <button class="act-header-btn" aria-label="Store">
+        <span class="act-icon">add_shopping_cart</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="family-scroll">
+    <div class="family-members">
+      <div class="family-member">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--gray-200, #e9eaeb);">&#x1F512;</div>
+        </div>
+        <div class="family-member-info">
+          <div class="family-member-name">Ben</div>
+          <div class="family-member-stats">
+            <div class="family-member-stat"><span class="family-member-stat-value">3</span><span class="family-member-stat-label">tasks</span></div>
+            <div class="family-member-divider"></div>
+            <div class="family-member-stat"><span class="family-member-stat-value">120</span><span class="family-member-stat-label">gems</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="family-member">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--brand-200, #b9e6fe);">&#x23F1;&#xFE0F;</div>
+        </div>
+        <div class="family-member-info">
+          <div class="family-member-name">Gabe</div>
+          <div class="family-member-stats">
+            <div class="family-member-stat"><span class="family-member-stat-value">3</span><span class="family-member-stat-label">tasks</span></div>
+            <div class="family-member-divider"></div>
+            <div class="family-member-stat"><span class="family-member-stat-value">120</span><span class="family-member-stat-label">gems</span></div>
+          </div>
+        </div>
+        <div class="family-member-progress">
+          <svg width="56" height="56" viewBox="0 0 56 56"><circle class="track" cx="28" cy="28" r="24"/><circle class="fill" cx="28" cy="28" r="24" stroke="var(--brand-500, #0ba5ec)" stroke-dasharray="150.8" stroke-dashoffset="37.7"/></svg>
+        </div>
+      </div>
+      <div class="family-member">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:var(--red-200, #fecdca);">&#x231B;&#xFE0F;</div>
+        </div>
+        <div class="family-member-info">
+          <div class="family-member-name">Shane</div>
+          <div class="family-member-stats">
+            <div class="family-member-stat"><span class="family-member-stat-value">3</span><span class="family-member-stat-label">tasks</span></div>
+            <div class="family-member-divider"></div>
+            <div class="family-member-stat"><span class="family-member-stat-value">120</span><span class="family-member-stat-label">gems</span></div>
+          </div>
+        </div>
+        <div class="family-member-progress">
+          <svg width="56" height="56" viewBox="0 0 56 56"><circle class="track" cx="28" cy="28" r="24"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="family-store-header">
+      <div class="family-store-title">Store</div>
+      <div class="family-store-desc">Curated rewards for gems earned</div>
+    </div>
+    <div class="family-store-grid">
+      <div class="family-store-card"><div class="family-store-card-thumb"><img src="https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=400&h=200&fit=crop" alt="Nintendo Switch"></div><div><div class="family-store-card-name">Nintendo Switch</div><div class="family-store-card-price"><span class="act-icon" style="font-size:20px;">diamond</span> 500</div></div></div>
+      <div class="family-store-card"><div class="family-store-card-thumb"><img src="https://images.unsplash.com/photo-1472457897821-70d3819a0e24?w=400&h=200&fit=crop" alt="LEGO set"></div><div><div class="family-store-card-name">LEGO set</div><div class="family-store-card-price"><span class="act-icon" style="font-size:20px;">diamond</span> 350</div></div></div>
+      <div class="family-store-card"><div class="family-store-card-thumb"><img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&h=200&fit=crop" alt="Art supplies"></div><div><div class="family-store-card-name">Art supplies</div><div class="family-store-card-price"><span class="act-icon" style="font-size:20px;">diamond</span> 200</div></div></div>
+      <div class="family-store-card"><div class="family-store-card-thumb"><img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=200&fit=crop" alt="Movie night"></div><div><div class="family-store-card-name">Movie night</div><div class="family-store-card-price"><span class="act-icon" style="font-size:20px;">diamond</span> 150</div></div></div>
+    </div>
+    <div style="height:120px;"></div>
+  </div>
+  <div class="act-fade-bottom"></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     TAB: SKILLS
+     ═══════════════════════════════════ -->
+<div class="tab-view" id="tabSkills">
+  <div class="act-header">
+    <div class="act-header-leading">
+      <span class="act-header-title">Skills</span>
+    </div>
+    <div class="act-header-trailing">
+      <button class="act-header-btn" id="exploreBtn" aria-label="Explore">
+        <span class="act-icon">explore</span>
+      </button>
+      <button class="act-header-btn" aria-label="Filter">
+        <span class="act-icon">filter_list</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="skills-scroll">
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x2600;&#xFE0F;</div></div>
+        <div><div class="skill-card-name">Morning routine</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x1F4D6;</div></div>
+        <div><div class="skill-card-name">Reading time</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x1F3B9;</div></div>
+        <div><div class="skill-card-name">Piano practice</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x1F4FA;</div></div>
+        <div><div class="skill-card-name">Screen time</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x26BD;</div></div>
+        <div><div class="skill-card-name">Soccer practice</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x1F373;</div></div>
+        <div><div class="skill-card-name">Meal planning</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x1F3EB;</div></div>
+        <div><div class="skill-card-name">School reminders</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x1F4B0;</div></div>
+        <div><div class="skill-card-name">Allowance</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x270F;&#xFE0F;</div></div>
+        <div><div class="skill-card-name">Homework</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-thumb"><div class="skill-card-thumb-inner">&#x1F9F9;</div></div>
+        <div><div class="skill-card-name">Chores</div><div class="skill-card-meta">for <span class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div></span></div></div>
+      </div>
+    </div>
+    <div style="height:120px;"></div>
+  </div>
+  <div class="act-fade-bottom"></div>
+
+  <!-- Explore overlay (inside Skills tab) -->
+  <div class="explore-overlay" id="exploreOverlay">
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <span class="status-bar-icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+        <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+    <div class="explore-toolbar">
+      <div>
+        <button class="act-header-btn" id="exploreBack" aria-label="Back">
+          <span class="act-icon">chevron_backward</span>
+        </button>
+      </div>
+      <span class="explore-toolbar-title">Explore</span>
+      <div style="width:44px;"></div>
+    </div>
+    <div class="explore-pills">
+      <button class="explore-pill active">Top picks</button>
+      <button class="explore-pill">Growth</button>
+      <button class="explore-pill">Productivity</button>
+      <button class="explore-pill">Lifestyle</button>
+    </div>
+    <div class="explore-scroll">
+      <div class="explore-section-header">
+        <div class="explore-section-title">Featured</div>
+        <div class="explore-section-desc">Curated top pics from this week</div>
+      </div>
+      <div class="explore-carousel">
+        <div class="explore-card"><div class="explore-card-thumb"><div class="explore-card-thumb-inner">&#x2600;&#xFE0F;</div></div><div><div class="explore-card-name">Morning routine</div><div class="explore-card-meta">by <b style="font-weight:500;">parenthacks</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 5,131</div></div></div>
+        <div class="explore-card"><div class="explore-card-thumb"><div class="explore-card-thumb-inner">&#x1F4D6;</div></div><div><div class="explore-card-name">Reading tracker</div><div class="explore-card-meta">by <b style="font-weight:500;">bookwormfam</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 3,200</div></div></div>
+        <div class="explore-card"><div class="explore-card-thumb"><div class="explore-card-thumb-inner">&#x1F3EB;</div></div><div><div class="explore-card-name">School prep</div><div class="explore-card-meta">by <b style="font-weight:500;">teachermom</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 2,100</div></div></div>
+      </div>
+      <div class="explore-section-header">
+        <div class="explore-section-title">Trending</div>
+        <div class="explore-section-desc">Most popular skills by our community</div>
+      </div>
+      <div class="explore-carousel">
+        <div class="explore-card"><div class="explore-card-thumb"><div class="explore-card-thumb-inner">&#x26BD;</div></div><div><div class="explore-card-name">Sports schedule</div><div class="explore-card-meta">by <b style="font-weight:500;">coachdad</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 4,200</div></div></div>
+        <div class="explore-card"><div class="explore-card-thumb"><div class="explore-card-thumb-inner">&#x1F3B9;</div></div><div><div class="explore-card-name">Music practice</div><div class="explore-card-meta">by <b style="font-weight:500;">melodymama</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 2,800</div></div></div>
+        <div class="explore-card"><div class="explore-card-thumb"><div class="explore-card-thumb-inner">&#x1F4FA;</div></div><div><div class="explore-card-name">Screen time</div><div class="explore-card-meta">by <b style="font-weight:500;">digitaldad</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 1,900</div></div></div>
+      </div>
+      <div class="explore-section-header">
+        <div class="explore-section-title">By Sprout</div>
+        <div class="explore-section-desc">Skills created by the Sprout team</div>
+      </div>
+      <div class="explore-carousel">
+        <div class="explore-card"><div class="explore-card-thumb"><div class="explore-card-thumb-inner">&#x1F373;</div></div><div><div class="explore-card-name">Meal planner</div><div class="explore-card-meta">by <b style="font-weight:500;">sprout</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 6,100</div></div></div>
+        <div class="explore-card"><div class="explore-card-thumb"><div class="explore-card-thumb-inner">&#x1F9F9;</div></div><div><div class="explore-card-name">Chore tracker</div><div class="explore-card-meta">by <b style="font-weight:500;">sprout</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 3,900</div></div></div>
+        <div class="explore-card"><div class="explore-card-thumb"><div class="explore-card-thumb-inner">&#x1F4B0;</div></div><div><div class="explore-card-name">Allowance</div><div class="explore-card-meta">by <b style="font-weight:500;">sprout</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 4,500</div></div></div>
+      </div>
+      <!-- Category vertical view (hidden by default) -->
+      <div class="explore-category-view" id="exploreCategoryView">
+        <div class="explore-category-card"><div class="explore-category-card-thumb"><div class="explore-category-card-thumb-inner">&#x2600;&#xFE0F;</div></div><div><div class="explore-card-name">Morning routine</div><div class="explore-card-meta">by <b style="font-weight:500;">parenthacks</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 5,131</div></div></div>
+        <div class="explore-category-card"><div class="explore-category-card-thumb"><div class="explore-category-card-thumb-inner">&#x1F4D6;</div></div><div><div class="explore-card-name">Reading tracker</div><div class="explore-card-meta">by <b style="font-weight:500;">bookwormfam</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 3,200</div></div></div>
+        <div class="explore-category-card"><div class="explore-category-card-thumb"><div class="explore-category-card-thumb-inner">&#x1F3EB;</div></div><div><div class="explore-card-name">School prep</div><div class="explore-card-meta">by <b style="font-weight:500;">teachermom</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 2,100</div></div></div>
+        <div class="explore-category-card"><div class="explore-category-card-thumb"><div class="explore-category-card-thumb-inner">&#x270F;&#xFE0F;</div></div><div><div class="explore-card-name">Homework helper</div><div class="explore-card-meta">by <b style="font-weight:500;">studybuddy</b> <span style="color:var(--text-quaternary);">&#183;</span> <span class="act-icon" style="font-size:20px;">person</span> 1,800</div></div></div>
+      </div>
+      <div style="height:120px;"></div>
+    </div>
+    <div class="act-fade-bottom"></div>
+    <div class="explore-bottom-bar">
+      <div class="chat-history-search-bar">
+        <span class="act-icon">search</span>
+        <span>Search</span>
+      </div>
+      <div class="chat-history-edit-btn">
+        <span class="act-icon">edit</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     BOTTOM TAB BAR (persists across tabs)
+     ═══════════════════════════════════ -->
+<div class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-bar-item active" data-tab="tabHome">
+      <span class="act-icon">home</span>
+      <span class="tab-bar-item-label">Home</span>
+    </button>
+    <button class="tab-bar-item" data-tab="tabFamily">
+      <span class="act-icon">group</span>
+      <span class="tab-bar-item-label">Family</span>
+    </button>
+    <button class="tab-bar-item" data-tab="tabSkills">
+      <span class="act-icon">dashboard</span>
+      <span class="tab-bar-item-label">Skills</span>
+    </button>
+  </div>
+  <div class="tab-bar-sprout avatar" id="bottomSprout">
+    <canvas class="rive-sprout" width="167" height="178"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CHAT SHEET OVERLAY
+     ═══════════════════════════════════ -->
+<div class="overlay-scrim" id="chatScrim"></div>
+<div class="chat-sheet" id="chatSheet">
+  <div class="chat-sheet-toolbar">
+    <div>
+      <button class="act-header-btn" aria-label="History">
+        <span class="act-icon">schedule</span>
+      </button>
+    </div>
+    <div class="chat-sheet-toolbar-trailing">
+      <button class="act-header-btn" aria-label="New chat">
+        <span class="act-icon">edit</span>
+      </button>
+      <div class="chat-sheet-avatar-pill">
+        <div class="chat-sheet-avatar-stack">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="46" height="66"></canvas></div>
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="46" height="66"></canvas></div>
+          <div class="avatar avatar-xs" id="chatSheetSprout"><canvas class="rive-sprout" width="97" height="103"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-sheet-body"></div>
+  <div class="chat-sheet-composer">
+    <div class="chat-sheet-composer-input">Ask anything</div>
+    <div class="chat-sheet-composer-actions">
+      <div class="chat-sheet-composer-leading">
+        <span class="act-icon">add</span>
+        <span class="act-icon">alternate_email</span>
+      </div>
+      <span class="act-icon" style="color:var(--text-primary, #181d27);">mic</span>
+    </div>
+  </div>
+</div>
+
+<!-- Chat history overlay -->
+<div class="chat-history-scrim" id="chatHistoryScrim"></div>
+<div class="chat-history" id="chatHistory">
+  <div class="chat-history-toolbar">
+    <button class="act-header-btn" id="chatHistoryClose" aria-label="Close history">
+      <span class="act-icon">close</span>
+    </button>
+  </div>
+  <div class="chat-history-scroll">
+    <div class="chat-history-title">Chats</div>
+    <div class="chat-history-section">
+      <div class="chat-history-section-header">Today</div>
+      <div class="chat-history-item"><span class="act-icon chat-history-item-icon">chat_bubble</span><div class="chat-history-item-info"><div class="chat-history-item-title">Morning routine help</div><div class="chat-history-item-time">1h ago</div></div></div>
+    </div>
+    <div class="chat-history-section">
+      <div class="chat-history-section-header">Yesterday</div>
+      <div class="chat-history-item"><span class="act-icon chat-history-item-icon">chat_bubble</span><div class="chat-history-item-info"><div class="chat-history-item-title">Screen time limits</div><div class="chat-history-item-time">1d ago</div></div></div>
+      <div class="chat-history-item"><span class="act-icon chat-history-item-icon">chat_bubble</span><div class="chat-history-item-info"><div class="chat-history-item-title">Reading goals for Ben</div><div class="chat-history-item-time">1d ago</div></div></div>
+      <div class="chat-history-item"><span class="act-icon chat-history-item-icon">chat_bubble</span><div class="chat-history-item-info"><div class="chat-history-item-title">Piano practice schedule</div><div class="chat-history-item-time">1d ago</div></div></div>
+    </div>
+    <div class="chat-history-section">
+      <div class="chat-history-section-header">Last 7 days</div>
+      <div class="chat-history-item"><span class="act-icon chat-history-item-icon">chat_bubble</span><div class="chat-history-item-info"><div class="chat-history-item-title">Meal planning</div><div class="chat-history-item-time">3d ago</div></div></div>
+      <div class="chat-history-item"><span class="act-icon chat-history-item-icon">chat_bubble</span><div class="chat-history-item-info"><div class="chat-history-item-title">Soccer carpool</div><div class="chat-history-item-time">4d ago</div></div></div>
+      <div class="chat-history-item"><span class="act-icon chat-history-item-icon">chat_bubble</span><div class="chat-history-item-info"><div class="chat-history-item-title">Homework tracking</div><div class="chat-history-item-time">5d ago</div></div></div>
+      <div class="chat-history-item"><span class="act-icon chat-history-item-icon">chat_bubble</span><div class="chat-history-item-info"><div class="chat-history-item-title">Allowance setup</div><div class="chat-history-item-time">6d ago</div></div></div>
+      <div class="chat-history-item"><span class="act-icon chat-history-item-icon">chat_bubble</span><div class="chat-history-item-info"><div class="chat-history-item-title">Bedtime routine</div><div class="chat-history-item-time">7d ago</div></div></div>
+    </div>
+    <div class="chat-history-scroll-spacer"></div>
+  </div>
+  <div class="chat-history-fade"></div>
+  <div class="chat-history-bottom">
+    <div class="chat-history-search-bar">
+      <span class="act-icon">search</span>
+      <span>Search</span>
+    </div>
+    <div class="chat-history-edit-btn">
+      <span class="act-icon">edit</span>
+    </div>
+  </div>
+</div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="col-right" id="col-right"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.DS_META = {
+  title: 'Home v3',
+  desc: 'Tab-based navigation: bottom bar with Home, Family, and Skills tabs. Chat accessible via header Sprout avatar.',
+  owner: 'Leti',
+  status: 'In progress'
+};
+</script>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+<script>
+(function() {
+  var RIVE_SPROUT_SRC = '/kid-design-system/sprot2.97_.riv';
+  var RIVE_USER_SRC = '/kid-design-system/character2.91.riv';
+  var SM_NAME = 'State Machine 1';
+  var ARTBOARD = 'Village-character';
+
+  var SPROUT_STATE = { hairID: 1 };
+  var MALI_STATE = { skinID: 0, hairID: 6, hairshadeID: 5, clothingID: 2, clothingcolourID: 3, eyeshadeID: 2 };
+  var BEN_STATE = { skinID: 0, hairID: 2, hairshadeID: 4, clothingID: 1, clothingcolourID: 2, eyeshadeID: 1 };
+  var GABE_STATE = { skinID: 0, hairID: 5, hairshadeID: 6, clothingID: 2, clothingcolourID: 4, eyeshadeID: 2 };
+  var SHANE_STATE = { skinID: 0, hairID: 1, hairshadeID: 4, clothingID: 3, clothingcolourID: 1, eyeshadeID: 1 };
+  var KID_STATES = { ben: BEN_STATE, gabe: GABE_STATE, shane: SHANE_STATE };
+
+  function initRiveAvatar(canvas, opts) {
+    var w = parseInt(canvas.getAttribute('width'), 10) || 86;
+    var h = parseInt(canvas.getAttribute('height'), 10) || 124;
+    canvas.width = w; canvas.height = h;
+    var r;
+    try {
+      r = new rive.Rive({
+        src: opts.src, canvas: canvas, autoplay: true,
+        stateMachines: SM_NAME, artboard: opts.artboard || undefined,
+        fit: rive.Fit.Contain, alignment: rive.Alignment.Center,
+        onLoad: function() {
+          if (!r) return;
+          r.resizeDrawingSurfaceToCanvas();
+          try {
+            var inputs = r.stateMachineInputs(SM_NAME);
+            if (inputs && opts.state) {
+              inputs.forEach(function(inp) {
+                if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+              });
+            }
+          } catch(e) {}
+        }
+      });
+    } catch(e) { console.warn('Rive init failed', e); }
+  }
+
+  // Bottom Sprout avatar (next to tab bar)
+  var bsc = document.querySelector('#bottomSprout canvas.rive-sprout');
+  if (bsc) initRiveAvatar(bsc, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+
+  // Header parent avatar
+  var hpc = document.querySelector('#headerParent canvas.rive-user');
+  if (hpc) initRiveAvatar(hpc, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: MALI_STATE });
+
+  // Chat sheet Sprout avatar
+  var cssc = document.querySelector('#chatSheetSprout canvas.rive-sprout');
+  if (cssc) initRiveAvatar(cssc, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+
+  // All kid avatars
+  document.querySelectorAll('.avatar[data-kid]').forEach(function(el) {
+    var c = el.querySelector('canvas.rive-user');
+    var kid = el.getAttribute('data-kid');
+    if (c) initRiveAvatar(c, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: KID_STATES[kid] || BEN_STATE });
+  });
+
+  // ══════════════════════════════════
+  // TAB BAR NAVIGATION
+  // ══════════════════════════════════
+  var tabButtons = document.querySelectorAll('.tab-bar-item');
+  var tabViews = document.querySelectorAll('.tab-view');
+
+  function switchTab(tabId) {
+    tabViews.forEach(function(v) { v.classList.remove('active'); });
+    tabButtons.forEach(function(b) { b.classList.remove('active'); });
+    var target = document.getElementById(tabId);
+    if (target) target.classList.add('active');
+    var btn = document.querySelector('.tab-bar-item[data-tab="' + tabId + '"]');
+    if (btn) btn.classList.add('active');
+  }
+
+  tabButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      switchTab(btn.getAttribute('data-tab'));
+    });
+  });
+
+  // ══════════════════════════════════
+  // CHAT SHEET: tap Sprout avatar or profile to open
+  // ══════════════════════════════════
+  var chatScrim = document.getElementById('chatScrim');
+  var chatSheet = document.getElementById('chatSheet');
+
+  var sproutTrigger = document.getElementById('bottomSprout');
+  if (sproutTrigger) sproutTrigger.addEventListener('click', function() {
+    if (chatScrim) chatScrim.classList.add('visible');
+    if (chatSheet) chatSheet.classList.add('visible');
+  });
+
+  function closeChatSheet() {
+    if (chatScrim) chatScrim.classList.remove('visible');
+    if (chatSheet) chatSheet.classList.remove('visible');
+  }
+  if (chatScrim) chatScrim.addEventListener('click', closeChatSheet);
+
+  // ══════════════════════════════════
+  // CHAT HISTORY
+  // ══════════════════════════════════
+  var scheduleBtn = document.querySelector('.chat-sheet .act-header-btn[aria-label="History"]');
+  var chatHistory = document.getElementById('chatHistory');
+  var chatHistoryScrim = document.getElementById('chatHistoryScrim');
+  var chatHistoryClose = document.getElementById('chatHistoryClose');
+
+  function openChatHistory() {
+    if (chatHistoryScrim) chatHistoryScrim.classList.add('visible');
+    if (chatHistory) chatHistory.classList.add('visible');
+    if (chatSheet) chatSheet.classList.add('pushed');
+  }
+  function closeChatHistory() {
+    if (chatHistoryScrim) chatHistoryScrim.classList.remove('visible');
+    if (chatHistory) chatHistory.classList.remove('visible');
+    if (chatSheet) chatSheet.classList.remove('pushed');
+  }
+  if (scheduleBtn) scheduleBtn.addEventListener('click', openChatHistory);
+  if (chatHistoryClose) chatHistoryClose.addEventListener('click', closeChatHistory);
+  if (chatHistoryScrim) chatHistoryScrim.addEventListener('click', closeChatHistory);
+
+  // ══════════════════════════════════
+  // EXPLORE OVERLAY (inside Skills)
+  // ══════════════════════════════════
+  var exploreBtn = document.getElementById('exploreBtn');
+  var exploreOverlay = document.getElementById('exploreOverlay');
+  var exploreBack = document.getElementById('exploreBack');
+
+  if (exploreBtn) exploreBtn.addEventListener('click', function() {
+    if (exploreOverlay) exploreOverlay.classList.add('visible');
+  });
+  if (exploreBack) exploreBack.addEventListener('click', function() {
+    if (exploreOverlay) exploreOverlay.classList.remove('visible');
+  });
+
+  // Explore pill switching
+  var explorePills = document.querySelectorAll('.explore-pill');
+  var exploreSections = document.querySelectorAll('.explore-section-header');
+  var exploreCarousels = document.querySelectorAll('.explore-carousel');
+  var exploreCategoryView = document.getElementById('exploreCategoryView');
+
+  var categoryDescs = {
+    'Growth': 'Skills to help your family grow',
+    'Productivity': 'Curated top pics from this week',
+    'Lifestyle': 'Skills for everyday life'
+  };
+
+  explorePills.forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      explorePills.forEach(function(p) { p.classList.remove('active'); });
+      pill.classList.add('active');
+      var label = pill.textContent.trim();
+      var isTopPicks = (label === 'Top picks');
+
+      exploreSections.forEach(function(s, i) {
+        s.style.display = isTopPicks ? '' : (i === 0 ? '' : 'none');
+      });
+      exploreCarousels.forEach(function(c) {
+        c.style.display = isTopPicks ? '' : 'none';
+      });
+
+      if (isTopPicks) {
+        var titles = [['Featured','Curated top pics from this week'],['Trending','Most popular skills by our community'],['By Sprout','Skills created by the Sprout team']];
+        exploreSections.forEach(function(s, i) {
+          var t = titles[i];
+          if (t) {
+            s.querySelector('.explore-section-title').textContent = t[0];
+            s.querySelector('.explore-section-desc').textContent = t[1];
+          }
+        });
+        if (exploreCategoryView) exploreCategoryView.classList.remove('visible');
+      } else {
+        var firstHeader = exploreSections[0];
+        if (firstHeader) {
+          firstHeader.querySelector('.explore-section-title').textContent = label;
+          firstHeader.querySelector('.explore-section-desc').textContent = categoryDescs[label] || '';
+        }
+        if (exploreCategoryView) exploreCategoryView.classList.add('visible');
+      }
+    });
+  });
+
+  // ══════════════════════════════════
+  // FEED ITEM INTERACTIONS
+  // ══════════════════════════════════
+  // Tap row to navigate to parent chat
+  document.querySelectorAll('.act-item').forEach(function(item) {
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', function(e) {
+      if (e.target.closest('.btn') || e.target.closest('.act-item-trailing')) return;
+      item.style.transition = 'opacity 0.1s ease';
+      item.style.opacity = '0.6';
+      setTimeout(function() {
+        window.location.href = '/product-explorer/parent-chat-3.html';
+      }, 150);
+    });
+  });
+
+  // Approve button tap -> resolved state
+  var positiveLabels = { 'Approve': 'Approved', 'Sign': 'Signed' };
+  var negativeLabels = { 'replay': 'Needs redo', 'close': 'Decline' };
+
+  document.querySelectorAll('.act-item .act-item-action').forEach(function(action) {
+    var btn = action.querySelector('.btn');
+    var trailingIcon = action.querySelector('.act-item-trailing');
+    if (!btn || !trailingIcon) return;
+
+    var resolved = false;
+
+    btn.addEventListener('click', function() {
+      if (resolved) return;
+      resolved = true;
+      var label = btn.textContent.trim();
+      trailingIcon.classList.add('act-fade-out');
+      setTimeout(function() {
+        trailingIcon.style.display = 'none';
+        btn.textContent = positiveLabels[label] || label;
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-resolved', 'act-spring-in');
+      }, 250);
+    });
+
+    trailingIcon.style.cursor = 'pointer';
+    trailingIcon.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (resolved) return;
+      resolved = true;
+      var iconName = trailingIcon.textContent.trim();
+      var label = negativeLabels[iconName] || 'Dismissed';
+      btn.classList.add('act-fade-out');
+      setTimeout(function() {
+        btn.style.display = 'none';
+        var resolvedBtn = document.createElement('span');
+        resolvedBtn.className = 'btn btn-sm btn-resolved act-spring-in';
+        resolvedBtn.textContent = label;
+        trailingIcon.replaceWith(resolvedBtn);
+      }, 250);
+    });
+  });
+})();
+</script>
+</body>
+</html>
