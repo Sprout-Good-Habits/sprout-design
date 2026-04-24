@@ -42,6 +42,7 @@ window.DS_NAV = [
       { label: 'Parent Chat', icon: 'message-chat', badge: 'Now', href: '/product-explorer/parent-chat-now.html' },
       { label: 'Parent Chat', icon: 'message-chat', badge: 'Later', href: '/product-explorer/parent-chat-later.html' },
       { label: 'Home', icon: 'home', href: '/product-explorer/parent-home.html' },
+      { label: 'Home', icon: 'home', badge: 'v2', href: '/product-explorer/parent-home-v2.html' },
       { label: 'Home', icon: 'home', badge: 'v3', href: '/product-explorer/parent-home-v3.html' },
       { label: 'Home', icon: 'home', badge: 'v4', href: '/product-explorer/parent-home-v4.html' }
     ]
