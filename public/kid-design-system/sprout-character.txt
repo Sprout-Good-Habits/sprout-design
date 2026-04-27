@@ -6,7 +6,7 @@ Current name: `State Machine 1`
 
 ## 2. Rive File
 
-`sprot2.97_.riv` — default artboard, no artboard name needed.
+`sprout.riv` -- default artboard, no artboard name needed.
 
 ## 3. Inputs
 
@@ -15,14 +15,16 @@ Current name: `State Machine 1`
 |------------|------|-------|-------------|
 | `skinID` | Number | 0-9 | Skin color index |
 | `hairID` | Number | 0-8 | Hair style index |
-| `looking` | Number | 0-3 | Eye direction: 0=top-left, 1=top-middle, 2=top-right |
-| `mouthselector` | Number | 0-12 | Mouth shape/viseme ID. 0=closed |
+| `looking` | Number | 0-6 | Eye direction: 0=top-left, 1=top-middle, 2=top-right, 3=bottom-left, 4=bottom-middle, 5=bottom-right |
+| `mouthselector` | Number | 0-20 | Mouth shape/viseme ID. 0=closed |
+| `listening` | Number | 0-3 | Listening animation: 1=neutral, 2=happy, 3=curious |
 
 ### Boolean Inputs
 | Input Name | Type | Description |
 |------------|------|-------------|
 | `talkinganimation` | Boolean | Body movement during talking |
 | `talkingmouth toggle` | Boolean | Enable/disable mouth movement |
+| `sleeping` | Boolean | Plays the sleeping animation |
 
 ### Trigger Inputs
 | Input Name | Description |
@@ -68,10 +70,10 @@ Current name: `State Machine 1`
 
 ## 6. Mouth Shapes (mouthselector)
 
-Range: 0-12
+Range: 0-20
 
 - `0` = closed mouth (default/rest)
-- `1-12` = open mouth variations (mapped to viseme phonemes)
+- `1-20` = open mouth variations (mapped to viseme phonemes)
 
 ## 7. Display Setup
 
