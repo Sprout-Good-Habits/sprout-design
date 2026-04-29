@@ -1657,7 +1657,7 @@
 .cal-today-section {
   background: white;
   padding: 16px;
-  min-height: 300px;
+  flex: 1;
 }
 .cal-today-header {
   font-weight: var(--font-weight-semibold, 600);
@@ -2970,19 +2970,19 @@ window.DS_META = {
     }
     var feedPreviews = {
       ben: [
-        '"Today was kinda rough because Marcus kept talking in class and I got in trouble too..."',
-        '"I told the teacher it wasn\'t fair and she actually listened for once..."',
-        '"Nothing happened. It was just a normal day I guess."'
+        'Today was kinda rough because Marcus kept talking in class and I got in trouble too...',
+        'I told the teacher it wasn\'t fair and she actually listened for once...',
+        'Nothing happened. It was just a normal day I guess.'
       ],
       gabe: [
-        '"We played this game at recess where you have to freeze and I won three times..."',
-        '"My friend said something weird at lunch and I didn\'t know what to say..."',
-        '"I drew a robot in art class and the teacher put it on the wall!"'
+        'We played this game at recess where you have to freeze and I won three times...',
+        'My friend said something weird at lunch and I didn\'t know what to say...',
+        'I drew a robot in art class and the teacher put it on the wall!'
       ],
       shane: [
-        '"I learned how to do a cartwheel today and only fell once..."',
-        '"The substitute teacher was really nice and let us pick our seats..."',
-        '"We had a fire drill and I was the line leader!"'
+        'I learned how to do a cartwheel today and only fell once...',
+        'The substitute teacher was really nice and let us pick our seats...',
+        'We had a fire drill and I was the line leader!'
       ]
     };
     var previewIdx = {};
@@ -3361,9 +3361,9 @@ window.DS_META = {
   }
 
   var calPreviews = {
-    ben: '"Today was kinda rough because Marcus kept talking in class and I got in trouble too..."',
-    gabe: '"We played this game at recess where you have to freeze and I won three times..."',
-    shane: '"I learned how to do a cartwheel today and only fell once..."'
+    ben: 'Today was kinda rough because Marcus kept talking in class and I got in trouble too...',
+    gabe: 'We played this game at recess where you have to freeze and I won three times...',
+    shane: 'I learned how to do a cartwheel today and only fell once...'
   };
 
   function updateCalFeed(dayNum, status) {
