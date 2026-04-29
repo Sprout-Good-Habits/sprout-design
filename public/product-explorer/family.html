@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<title>Sprout Product Explorer - Family</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/device-frame.css">
+<link rel="stylesheet" href="/kid-design-system/components/avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/status-bar.css">
+<link rel="stylesheet" href="/kid-design-system/components/button.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-banner.css">
+<style>
+/* ── Page-specific ── */
+.device-screen { background: var(--brand-25, #f5fbff); }
+
+/* ── Material Symbols (matches v3) ── */
+.act-icon {
+  font-family: 'Material Symbols Outlined';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.act-icon-sm {
+  font-size: 20px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+/* ── Header toolbar (v3 pattern) ── */
+.act-header {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 10px;
+  z-index: 10;
+}
+.act-header--scrolled {
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.act-header-leading {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 10px;
+}
+.act-header-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-xs, 24px);
+  line-height: var(--line-height-display-xs, 32px);
+  color: var(--text-primary, #181d27);
+}
+.act-header-trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg, 12px);
+}
+.act-header-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 296px;
+  box-shadow: 0 4px 16px -2px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+  padding: var(--spacing-xs, 4px);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+.act-header-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+}
+.act-header-btn .act-icon,
+.act-header-btn .avatar {
+  position: relative;
+  z-index: 1;
+}
+.act-header-btn .act-icon {
+  color: var(--text-primary, #181d27);
+}
+.act-header-btn .avatar {
+  width: 32px;
+  height: 32px;
+  border: 1px solid white;
+}
+
+/* ── Screen transitions (full page slide) ── */
+.fam-screen {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--brand-25, #f5fbff);
+  overflow: hidden;
+}
+#screenProfile {
+  z-index: 25;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  pointer-events: none;
+}
+#screenProfile.visible {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* ── Feed scroll area (v3 pattern) ── */
+.act-feed {
+  position: absolute;
+  top: 116px; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.act-feed::-webkit-scrollbar { display: none; }
+.fam-scroll {
+  position: absolute;
+  top: 116px; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0 16px 120px;
+}
+.fam-scroll::-webkit-scrollbar { display: none; }
+
+/* ── Sections (v3 pattern) ── */
+.act-section { padding: 0 16px; }
+.act-section-header {
+  padding: var(--spacing-md, 8px) 0;
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+
+/* ── Bottom gradient (v3) ── */
+.act-fade-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 116px;
+  background: linear-gradient(to bottom, rgba(245,251,255,0) 0%, var(--brand-25, #f5fbff) 35%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ── Tab bar (v3 pattern) ── */
+.tab-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 20;
+  padding: 16px 21px 18px;
+  background: linear-gradient(to bottom, rgba(245,251,255,0) 0%, var(--brand-25, #f5fbff) 80%);
+  pointer-events: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.tab-bar-inner {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid white;
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  overflow: hidden;
+  padding: 3px;
+  pointer-events: auto;
+}
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px;
+  border-radius: var(--radius-full, 9999px);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  position: relative;
+}
+.tab-bar-item .act-icon {
+  font-size: 24px;
+  color: var(--text-primary, #181d27);
+}
+.tab-bar-item-label {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: 10px;
+  line-height: 14px;
+  color: var(--text-primary, #181d27);
+  text-align: center;
+}
+.tab-bar-item.active {
+  background: var(--bg-secondary, #fafafa);
+  mix-blend-mode: multiply;
+}
+.tab-bar-item.active .act-icon {
+  color: var(--brand-500, #0ba5ec);
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.tab-bar-item.active .tab-bar-item-label {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--brand-500, #0ba5ec);
+}
+/* Bottom Sprout avatar (v3 pattern) */
+.tab-bar-sprout {
+  width: 62px;
+  height: 62px;
+  border: 1.292px solid white;
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  overflow: hidden;
+  flex-shrink: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  position: relative;
+  background: var(--bg-sky, #e0f2fe);
+}
+#bottomSprout canvas.rive-sprout {
+  width: 167px;
+  height: 178px;
+  top: -34px;
+}
+
+/* ── Profile header ── */
+.fam-profile-header {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px 10px;
+  z-index: 10;
+}
+
+/* ── Card (v3 inline surface: brand-25 bg, 20px radius) ── */
+.fam-card {
+  background: var(--brand-25, #f5fbff);
+  border-radius: var(--radius-3xl, 20px);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  overflow: hidden;
+}
+.fam-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 8px;
+}
+.fam-card-title {
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-tertiary, #535862);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 12px;
+}
+.fam-card-action {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 100px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-tertiary, #535862);
+}
+
+/* ── Kid row (matches v3 act-item sizing) ── */
+.fam-kid-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px) 0;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.fam-kid-row:hover { background: var(--gray-50, #fafafa); }
+.fam-kid-row:active { background: var(--gray-100, #f5f5f5); }
+.fam-kid-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+}
+.fam-kid-avatar .avatar {
+  position: absolute;
+  top: 1px; left: 1px;
+  width: 60px;
+  height: 60px;
+  border: 1px solid white;
+}
+.fam-kid-avatar .avatar canvas.rive-user {
+  width: 86px;
+  height: 124px;
+  top: -36px;
+}
+.fam-kid-info { flex: 1; min-width: 0; }
+.fam-kid-name-row { display: flex; align-items: center; gap: 6px; }
+.fam-kid-name {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.fam-pending-badge {
+  display: inline-flex;
+  padding: 1px 8px;
+  border-radius: var(--radius-full, 9999px);
+  background: #fef3c7;
+  font-size: 11px;
+  font-weight: var(--font-weight-medium, 500);
+  color: #b45309;
+  line-height: 18px;
+}
+.fam-kid-meta {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+.fam-kid-meta-sep { color: var(--gray-300, #d5d7da); margin: 0 4px; }
+.fam-kid-stats { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+.fam-kid-stat {
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-quaternary, #717680);
+  display: flex; align-items: center; gap: 3px;
+}
+.fam-kid-chevron { color: var(--gray-400, #a4a7ae); flex-shrink: 0; }
+
+/* ── Empty state ── */
+.fam-empty {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 32px 16px; gap: 12px; text-align: center;
+}
+.fam-empty-emoji { font-family: 'TossFace', sans-serif; font-size: 40px; }
+.fam-empty-text {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-tertiary, #535862);
+  line-height: var(--line-height-text-sm, 20px);
+}
+
+/* ══════════════════════════════════
+   SCREEN 2: Kid Profile
+   ══════════════════════════════════ */
+
+/* ── Profile: scroll ── */
+.pro-scroll {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.pro-scroll::-webkit-scrollbar { display: none; }
+
+/* ── Profile: avatar hero (bg-sky, 264px) ── */
+.pro-hero {
+  background: var(--bg-sky, #e0f2fe);
+  height: 264px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.pro-hero-avatar {
+  position: relative;
+  width: 209px;
+  height: 299px;
+  margin-top: 25px;
+  overflow: hidden;
+}
+.pro-hero-avatar canvas.rive-user {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 209px;
+  height: 299px;
+  top: 0;
+  pointer-events: none;
+}
+
+/* ── Profile: white container ── */
+.pro-container {
+  background: var(--bg-primary, #fff);
+  border-radius: 24px 24px 0 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: -12px;
+  position: relative;
+}
+
+/* ── Profile: name ── */
+.pro-name {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-xl, 20px);
+  line-height: var(--line-height-text-xl, 30px);
+  color: var(--text-primary, #181d27);
+}
+.pro-meta {
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-primary, #181d27);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Profile: stats card ── */
+.pro-stats-card {
+  background: var(--brand-25, #f5fbff);
+  border-radius: var(--radius-3xl, 20px);
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+}
+.pro-stat {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+}
+.pro-stat-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pro-stat-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.pro-stat-value {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.pro-stat-label {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+
+/* ── Profile: segment control (Figma) ── */
+.pro-segment {
+  display: flex;
+  background: var(--brand-50, #f0f9ff);
+  border-radius: var(--radius-lg, 10px);
+  padding: 4px;
+  gap: 4px;
+}
+.pro-segment-btn {
+  flex: 1;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm, 6px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-quaternary, #717680);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pro-segment-btn.active {
+  background: var(--brand-25, #f5fbff);
+  color: var(--text-secondary, #414651);
+  box-shadow: 0 1px 3px rgba(10,13,18,0.1), 0 1px 2px -1px rgba(10,13,18,0.1);
+}
+
+/* ── Profile: tab panes (reduced gap after segment) ── */
+.pro-container .fam-tab-pane { margin-top: -8px; }
+
+/* ── Profile: quest cards ── */
+.pro-quest-list {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-3xl, 20px);
+  overflow: hidden;
+}
+.pro-quest-card {
+  background: var(--brand-25, #f5fbff);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.pro-quest-card:last-child { border-bottom: none; }
+.pro-quest-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md, 8px);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-family: 'TossFace', sans-serif;
+  font-size: 24px;
+  overflow: hidden;
+}
+.pro-quest-info { flex: 1; min-width: 0; }
+.pro-quest-name {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.pro-quest-detail {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-quaternary, #717680);
+}
+.pro-quest-badge {
+  background: var(--brand-200, #b9e6fe);
+  color: var(--brand-600, #0086c9);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-text-xs, 16px);
+  padding: 4px 8px;
+  border-radius: var(--radius-full, 9999px);
+  flex-shrink: 0;
+}
+
+/* ── Profile: toolbar tier badge ── */
+.pro-tier-badge {
+  background: var(--brand-200, #b9e6fe);
+  color: var(--brand-600, #0086c9);
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-text-xs, 16px);
+  padding: 4px 8px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+/* ── Feed items (v3 pattern) ── */
+.act-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px) 0;
+}
+.act-item-leading {
+  position: relative;
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+}
+.act-item-leading .avatar {
+  position: absolute;
+  top: 1px; left: 1px;
+  width: 60px;
+  height: 60px;
+  border: 1px solid white;
+}
+.act-item-leading .avatar canvas.rive-user {
+  width: 86px;
+  height: 124px;
+  top: -36px;
+}
+.act-item-badge {
+  position: absolute;
+  left: 38px; top: 38px;
+  width: 24px; height: 24px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 12px;
+  line-height: 24px;
+  text-align: center;
+  z-index: 2;
+  overflow: hidden;
+}
+.act-item-content {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.act-item-content b {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+}
+.act-item-time {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-quaternary, #717680);
+}
+.act-item-action {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.act-item-trailing {
+  color: var(--fg-tertiary, #535862);
+}
+
+/* ── Profile: detail rows ── */
+.pro-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.pro-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pro-detail-text {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-secondary, #414651);
+  line-height: var(--line-height-text-sm, 20px);
+}
+
+.fam-info-card {
+  background: var(--brand-25, #f5fbff);
+  border-radius: var(--radius-3xl, 20px);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  padding: 16px; display: flex; align-items: center; gap: 12px;
+}
+.fam-info-avatar { flex-shrink: 0; }
+.fam-info-details { flex: 1; min-width: 0; }
+.fam-info-name {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  color: var(--text-primary, #181d27);
+  display: flex; align-items: center; gap: 6px;
+}
+.fam-info-meta {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-quaternary, #717680);
+  line-height: var(--line-height-text-sm, 20px);
+}
+.fam-tier-badge {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 4px;
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  color: #067647;
+}
+
+/* ── Segment control ── */
+.fam-segment {
+  display: flex;
+  background: var(--gray-100, #f5f5f5);
+  border-radius: var(--radius-md, 8px);
+  padding: 2px; margin-top: 16px;
+}
+.fam-segment-btn {
+  flex: 1; padding: 6px 12px;
+  border-radius: var(--radius-sm, 6px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-tertiary, #535862);
+  text-align: center; background: none; border: none;
+  cursor: pointer; transition: all 0.2s;
+  line-height: var(--line-height-text-sm, 20px);
+}
+.fam-segment-btn.active {
+  background: var(--bg-primary, #fff);
+  color: var(--text-primary, #181d27);
+  font-weight: var(--font-weight-semibold, 600);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ── Tab panes ── */
+.fam-tab-pane { display: none; margin-top: 12px; }
+.fam-tab-pane.active { display: block; }
+
+/* ── Task rows ── */
+.fam-task-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.fam-task-row:last-child { border-bottom: none; }
+.fam-task-emoji {
+  width: 36px; height: 36px; border-radius: var(--radius-md, 8px);
+  background: var(--gray-50, #fafafa);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'TossFace', sans-serif; font-size: 18px; flex-shrink: 0;
+}
+.fam-task-info { flex: 1; min-width: 0; }
+.fam-task-name {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-primary, #181d27);
+  line-height: var(--line-height-text-sm, 20px);
+}
+.fam-task-detail { font-size: var(--font-size-text-xs, 12px); color: var(--text-quaternary, #717680); }
+.fam-task-status-done {
+  font-size: 11px; font-weight: var(--font-weight-medium, 500);
+  color: #067647; background: #ecfdf3;
+  padding: 1px 6px; border-radius: var(--radius-full, 9999px);
+}
+.fam-task-status-pending {
+  font-size: 11px; font-weight: var(--font-weight-medium, 500);
+  color: #b45309; background: #fef3c7;
+  padding: 1px 6px; border-radius: var(--radius-full, 9999px);
+}
+
+/* ── Device rows ── */
+.fam-device-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+}
+.fam-device-row:last-child { border-bottom: none; }
+.fam-device-icon {
+  width: 36px; height: 36px; border-radius: var(--radius-md, 8px);
+  background: var(--gray-50, #fafafa);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-tertiary, #535862); flex-shrink: 0;
+}
+.fam-device-info { flex: 1; min-width: 0; }
+.fam-device-name {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-primary, #181d27);
+  line-height: var(--line-height-text-sm, 20px);
+}
+.fam-device-detail { font-size: var(--font-size-text-xs, 12px); color: var(--text-quaternary, #717680); }
+
+/* ── VPC setup CTA ── */
+.fam-vpc-cta {
+  background: #fef3c7; border-radius: var(--radius-3xl, 20px);
+  padding: 20px 16px; text-align: center; margin-top: 12px;
+}
+.fam-vpc-cta-emoji { font-family: 'TossFace', sans-serif; font-size: 32px; margin-bottom: 8px; }
+.fam-vpc-cta-title {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-md, 16px);
+  color: #92400e; margin-bottom: 4px;
+}
+.fam-vpc-cta-desc {
+  font-size: var(--font-size-text-sm, 14px); color: #b45309;
+  line-height: var(--line-height-text-sm, 20px); margin-bottom: 12px;
+}
+
+.fam-members-card { margin-top: 12px; }
+
+/* ── QR code view inside sheet ── */
+.fam-qr-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0 0;
+}
+.fam-qr-back {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--brand-600, #0086c9);
+  padding: 0;
+}
+.fam-qr-frame {
+  width: 200px;
+  height: 200px;
+  background: var(--bg-primary, #fff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-2xl, 16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.fam-qr-grid {
+  width: 160px;
+  height: 160px;
+  display: grid;
+  grid-template-columns: repeat(21, 1fr);
+  grid-template-rows: repeat(21, 1fr);
+  gap: 0;
+}
+.fam-qr-cell {
+  background: var(--text-primary, #181d27);
+  border-radius: 1px;
+}
+.fam-qr-cell.off { background: transparent; }
+.fam-qr-desc {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-secondary, #414651);
+  text-align: center;
+  line-height: var(--line-height-text-sm, 20px);
+  max-width: 240px;
+}
+.fam-qr-expire {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-quaternary, #717680);
+}
+
+/* ── Add child sheet ── */
+.fam-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.fam-scrim.visible { opacity: 1; pointer-events: auto; }
+.fam-sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg-primary, #fff);
+  border-radius: 24px 24px 0 0;
+  z-index: 31;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  padding: 12px 16px 34px;
+}
+.fam-sheet.visible { transform: translateY(0); }
+.fam-sheet-handle {
+  width: 36px; height: 5px;
+  border-radius: 100px;
+  background: var(--gray-300, #d5d7da);
+  margin: 0 auto 16px;
+}
+.fam-sheet-title {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  color: var(--text-primary, #181d27);
+  margin-bottom: 16px;
+}
+.fam-sheet-field { margin-bottom: 16px; }
+.fam-sheet-label {
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #181d27);
+  margin-bottom: 6px;
+}
+.fam-sheet-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-md, 8px);
+  font-size: var(--font-size-text-md, 16px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  color: var(--text-primary, #181d27);
+  background: var(--bg-primary, #fff);
+  outline: none;
+  box-sizing: border-box;
+}
+.fam-sheet-input:focus { border-color: var(--brand-500, #0ba5ec); }
+.fam-sheet-input::placeholder { color: var(--text-quaternary, #717680); }
+.fam-sheet-row {
+  display: flex;
+  gap: 12px;
+}
+.fam-sheet-row .fam-sheet-field { flex: 1; }
+.fam-sheet-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md, 8px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: var(--font-weight-medium, 500);
+  border: none;
+  cursor: pointer;
+  background: var(--brand-500, #0ba5ec);
+  color: #fff;
+  margin-top: 8px;
+}
+.fam-sheet-btn:active { opacity: 0.85; }
+
+/* ── State toggle controls (metadata panel) ── */
+.fam-toggles { margin-top: 8px; }
+.fam-toggle-group { margin-bottom: 16px; }
+.fam-toggle-label {
+  font-size: 13px; font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27); margin-bottom: 6px;
+}
+.fam-toggle-row { display: flex; gap: 4px; }
+.fam-toggle-btn {
+  flex: 1; padding: 6px 10px; font-size: 12px;
+  font-weight: var(--font-weight-medium, 500);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  color: var(--text-secondary, #414651);
+  background: var(--bg-primary, #fff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer; text-align: center; line-height: 18px;
+  transition: all 0.15s;
+}
+.fam-toggle-btn:hover { background: var(--gray-50, #fafafa); }
+.fam-toggle-btn.active {
+  background: var(--brand-50, #f0f9ff);
+  border-color: var(--brand-200, #b9e6fe);
+  color: var(--brand-700, #026aa2);
+  font-weight: var(--font-weight-semibold, 600);
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="two-col">
+        <div class="col-left">
+        <div class="device-wrapper" id="device-wrapper">
+          <div class="device-inner-shadow">
+            <div class="device-mockup">
+              <div class="device-screen" id="deviceScreen">
+
+<!-- ═══════════════════════════════════════
+     SCREEN 1: FAMILY TAB (KIDS NOW)
+     ═══════════════════════════════════════ -->
+<div class="fam-screen active" id="screenFamily">
+
+<!-- Status bar -->
+<div class="status-bar">
+  <span class="status-bar-time">9:41</span>
+  <span class="status-bar-icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+  </span>
+</div>
+
+<!-- Header toolbar (v3 pattern: leading title + trailing action buttons) -->
+<div class="act-header" id="familyHeader">
+  <div class="act-header-leading">
+    <span class="act-header-title">Family</span>
+  </div>
+  <div class="act-header-trailing">
+    <button class="act-header-btn" aria-label="Add child">
+      <span class="act-icon">person_add</span>
+    </button>
+  </div>
+</div>
+
+<!-- Feed scroll (v3 act-feed pattern) -->
+<div class="act-feed" id="familyScroll">
+
+  <!-- ═══ NORMAL STATE ═══ -->
+  <div class="act-section" id="kidsNowCard">
+    <div class="fam-kid-row" data-kid="ben" onclick="openProfile('ben')">
+      <div class="fam-kid-avatar">
+        <div class="avatar" id="famBen"><canvas class="rive-user" width="86" height="124"></canvas></div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name-row"><span class="fam-kid-name">Ben</span></div>
+        <div class="fam-kid-stats">
+          <span class="fam-kid-stat"><span class="act-icon" style="font-size:14px;">local_fire_department</span> 12</span>
+        </div>
+      </div>
+      <span class="act-icon act-icon-sm fam-kid-chevron">chevron_right</span>
+    </div>
+
+    <div class="fam-kid-row" data-kid="gabe" onclick="openProfile('gabe')">
+      <div class="fam-kid-avatar">
+        <div class="avatar" id="famGabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name-row"><span class="fam-kid-name">Gabe</span></div>
+        <div class="fam-kid-stats">
+          <span class="fam-kid-stat"><span class="act-icon" style="font-size:14px;">local_fire_department</span> 8</span>
+        </div>
+      </div>
+      <span class="act-icon act-icon-sm fam-kid-chevron">chevron_right</span>
+    </div>
+
+    <div class="fam-kid-row" data-kid="shane" onclick="openProfile('shane')">
+      <div class="fam-kid-avatar">
+        <div class="avatar" id="famShane"><canvas class="rive-user" width="86" height="124"></canvas></div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name-row"><span class="fam-kid-name">Shane</span></div>
+        <div class="fam-kid-stats">
+          <span class="fam-kid-stat"><span class="act-icon" style="font-size:14px;">local_fire_department</span> 3</span>
+        </div>
+      </div>
+      <span class="act-icon act-icon-sm fam-kid-chevron">chevron_right</span>
+    </div>
+
+    <div class="fam-kid-row" style="cursor:default;">
+      <div class="fam-kid-avatar">
+        <div class="avatar avatar-md avatar-bg-violet" id="famZeev"><canvas class="rive-user" width="58" height="83"></canvas></div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name">Zeev</div>
+        <div class="fam-kid-meta">Co-parent</div>
+      </div>
+    </div>
+
+    <div class="fam-kid-row" style="cursor:default;">
+      <div class="fam-kid-avatar">
+        <div class="avatar avatar-md" id="famMali"><canvas class="rive-user" width="58" height="83"></canvas></div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name">Mali</div>
+        <div class="fam-kid-meta">You</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EMPTY STATE (hidden) ═══ -->
+  <div class="act-section" id="kidsEmptyCard" style="display:none;">
+    <div class="fam-empty">
+      <span class="act-icon" style="font-size:40px;color:var(--text-secondary,#414651);">face</span>
+      <div class="fam-empty-text">Add your first child to get started</div>
+      <button class="btn btn-primary btn-sm" aria-label="Add child">Add Child</button>
+    </div>
+  </div>
+
+  <!-- ═══ PENDING STATE (hidden) ═══ -->
+  <div class="act-section" id="kidsPendingCard" style="display:none;">
+    <div class="fam-kid-row" data-kid="ben" onclick="openProfile('ben')">
+      <div class="fam-kid-avatar">
+        <div class="avatar" id="famBenPending"><canvas class="rive-user" width="86" height="124"></canvas></div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name-row"><span class="fam-kid-name">Ben</span></div>
+        <div class="fam-kid-stats">
+          <span class="fam-kid-stat"><span class="act-icon" style="font-size:14px;">local_fire_department</span> 12</span>
+        </div>
+      </div>
+      <span class="act-icon act-icon-sm fam-kid-chevron">chevron_right</span>
+    </div>
+
+    <div class="fam-kid-row" data-kid="gabe" onclick="openProfile('gabe')">
+      <div class="fam-kid-avatar">
+        <div class="avatar"><img class="silhouette-img" src="/product-explorer/brand/assets/silhouette.svg" alt="" style="width:82px;height:75px;bottom:-5px;"></div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name-row">
+          <span class="fam-kid-name">Gabe</span>
+          <span class="fam-pending-badge">Pending</span>
+        </div>
+      </div>
+      <span class="act-icon act-icon-sm fam-kid-chevron">chevron_right</span>
+    </div>
+  </div>
+
+  <div style="height:120px;"></div>
+</div>
+
+<!-- Bottom gradient + Tab bar (v3 pattern) -->
+<div class="act-fade-bottom"></div>
+<div class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-bar-item"><span class="act-icon">home</span><span class="tab-bar-item-label">Home</span></button>
+    <button class="tab-bar-item active"><span class="act-icon">group</span><span class="tab-bar-item-label">Family</span></button>
+    <button class="tab-bar-item"><span class="act-icon">dashboard</span><span class="tab-bar-item-label">Skills</span></button>
+  </div>
+  <div class="tab-bar-sprout avatar" id="bottomSprout">
+    <canvas class="rive-sprout" width="167" height="178"></canvas>
+  </div>
+</div>
+
+<!-- Toast banner -->
+<div class="banner banner-toast" id="toast">
+  <div class="banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+  <span class="banner-text">Link copied</span>
+</div>
+
+<!-- Add member sheet -->
+<div class="fam-scrim" id="addChildScrim"></div>
+<div class="fam-sheet" id="addChildSheet">
+  <div class="fam-sheet-handle"></div>
+  <div class="fam-sheet-title">Add to family</div>
+  <div class="fam-segment" id="sheetSegment" style="margin-top:0;margin-bottom:16px;">
+    <button class="fam-segment-btn active" onclick="switchSheetTab('child',this)">Child</button>
+    <button class="fam-segment-btn" onclick="switchSheetTab('parent',this)">Parent</button>
+  </div>
+  <!-- Child tab -->
+  <div id="sheetChildPane">
+    <div class="fam-sheet-field">
+      <div class="fam-sheet-label">Name</div>
+      <input class="fam-sheet-input" type="text" placeholder="Child's name">
+    </div>
+    <div class="fam-sheet-row">
+      <div class="fam-sheet-field">
+        <div class="fam-sheet-label">Birth date</div>
+        <input class="fam-sheet-input" type="text" placeholder="MM / DD / YYYY">
+      </div>
+      <div class="fam-sheet-field">
+        <div class="fam-sheet-label">Grade</div>
+        <input class="fam-sheet-input" type="text" placeholder="e.g. 3rd">
+      </div>
+    </div>
+    <button class="fam-sheet-btn" onclick="closeAddChild()">Add child</button>
+    <p style="font-size:12px;color:var(--text-quaternary,#717680);text-align:center;margin-top:12px;line-height:18px;">By adding a child you agree to our <a href="#" style="color:var(--brand-600,#0086c9);text-decoration:none;">Privacy Policy</a></p>
+  </div>
+  <!-- Parent tab -->
+  <div id="sheetParentPane" style="display:none;">
+    <!-- Invite options (default) -->
+    <div id="parentInviteOptions">
+      <div class="fam-sheet-field">
+        <div class="fam-sheet-label">Email address</div>
+        <input class="fam-sheet-input" type="email" placeholder="Co-parent's email">
+      </div>
+      <button class="fam-sheet-btn" onclick="closeAddChild()">Send invitation</button>
+      <div style="display:flex;align-items:center;gap:12px;margin:16px 0;"><div style="flex:1;height:1px;background:var(--border-secondary,#e9eaeb);"></div><span style="font-size:12px;color:var(--text-quaternary,#717680);">or</span><div style="flex:1;height:1px;background:var(--border-secondary,#e9eaeb);"></div></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-sm" style="flex:1;" onclick="showQrView()"><span class="act-icon act-icon-sm" style="vertical-align:middle;margin-right:4px;">qr_code_2</span>QR code</button>
+        <button class="btn btn-sm" style="flex:1;" onclick="copyLink()"><span class="act-icon act-icon-sm" style="vertical-align:middle;margin-right:4px;">link</span>Copy link</button>
+      </div>
+    </div>
+    <!-- QR code view (hidden) -->
+    <div id="parentQrView" style="display:none;">
+      <div class="fam-qr-view">
+        <button class="fam-qr-back" onclick="hideQrView()">
+          <span class="act-icon" style="font-size:18px;">arrow_back</span> Back
+        </button>
+        <div class="fam-qr-frame" id="qrFrame"></div>
+        <div class="fam-qr-desc">Scan this code with the co-parent's phone to join your family</div>
+        <div class="fam-qr-expire">Expires in 24 hours</div>
+        <button class="fam-sheet-btn" onclick="closeAddChild()">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /screenFamily -->
+
+
+<!-- ═══════════════════════════════════════
+     SCREEN 2: KID PROFILE
+     ═══════════════════════════════════════ -->
+<div class="fam-screen" id="screenProfile" style="background:var(--bg-sky,#e0f2fe);">
+
+<!-- Status bar -->
+<div class="status-bar">
+  <span class="status-bar-time">9:41</span>
+  <span class="status-bar-icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+  </span>
+</div>
+
+<!-- Toolbar -->
+<div class="act-header" style="z-index:12;">
+  <div class="act-header-leading">
+    <button class="act-header-btn" onclick="closeProfile()" aria-label="Back">
+      <span class="act-icon">chevron_left</span>
+    </button>
+  </div>
+  <div class="act-header-trailing">
+    <span class="pro-tier-badge" id="profileTierBadge">Early reader</span>
+    <button class="act-header-btn" aria-label="Settings">
+      <span class="act-icon">settings</span>
+    </button>
+  </div>
+</div>
+
+<!-- Scrollable profile -->
+<div class="pro-scroll" id="profileScroll">
+
+  <!-- Avatar hero -->
+  <div class="pro-hero" id="profileHero">
+    <div class="pro-hero-avatar" id="profileAvatar">
+      <canvas class="rive-user" width="209" height="299"></canvas>
+    </div>
+  </div>
+
+  <!-- White container -->
+  <div class="pro-container">
+    <!-- Name + meta -->
+    <div>
+      <div class="pro-name" id="profileTitle">Ben Rosenstein</div>
+      <div class="pro-meta">
+        <span id="profileAge">7 years old</span>
+        <span>&#xB7;</span>
+        <span id="profileGrade">Grade 3rd</span>
+      </div>
+    </div>
+
+    <!-- Stats card: streak -->
+    <div class="pro-stats-card" id="profileStatsRow">
+      <div class="pro-stat">
+        <div class="pro-stat-icon" style="font-family:'TossFace',sans-serif;font-size:40px;line-height:1;">&#x1F525;</div>
+        <div class="pro-stat-text">
+          <span class="pro-stat-value" id="profileStreak">7</span>
+          <span class="pro-stat-label">Days</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VPC Setup CTA (pending) -->
+    <div class="fam-vpc-cta" id="profileVpcCta" style="display:none;">
+      <span class="act-icon" style="font-size:32px;color:#92400e;">smartphone</span>
+      <div class="fam-vpc-cta-title">Set up device</div>
+      <div class="fam-vpc-cta-desc">Activate this child's account to connect their device and start using Sprout.</div>
+      <button class="btn btn-primary btn-sm">Activate</button>
+    </div>
+
+    <!-- Segment control -->
+    <div class="pro-segment" id="profileSegment">
+      <button class="pro-segment-btn active" onclick="switchTab('tasks',this)">Quests</button>
+      <button class="pro-segment-btn" onclick="switchTab('devices',this)">Devices</button>
+    </div>
+
+    <!-- Quests tab -->
+    <div class="fam-tab-pane active" id="pane-tasks">
+      <div class="pro-quest-list">
+        <div class="pro-quest-card">
+          <div class="pro-quest-icon" style="background:var(--yellow-400,#fac515);">&#x1F9EE;</div>
+          <div class="pro-quest-info">
+            <div class="pro-quest-name">Math quiz</div>
+          </div>
+          <span class="pro-quest-badge">Required</span>
+          <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">more_vert</span>
+        </div>
+        <div class="pro-quest-card">
+          <div class="pro-quest-icon" style="background:var(--blue-dark-400,#528bff);">&#x1F4D2;</div>
+          <div class="pro-quest-info">
+            <div class="pro-quest-name">Journaling</div>
+          </div>
+          <span class="pro-quest-badge">Required</span>
+          <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">more_vert</span>
+        </div>
+        <div class="pro-quest-card">
+          <div class="pro-quest-icon" style="background:var(--gray-400,#a4a7ae);">&#x1F1EB;&#x1F1F7;</div>
+          <div class="pro-quest-info">
+            <div class="pro-quest-name">Learn french</div>
+          </div>
+          <span class="pro-quest-badge">Required</span>
+          <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">more_vert</span>
+        </div>
+        <div class="pro-quest-card" style="cursor:pointer;justify-content:center;gap:4px;color:var(--brand-500,#0ba5ec);">
+          <span class="act-icon" style="font-size:20px;">add</span>
+          <span style="font-weight:500;font-size:14px;">Add quest</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Devices tab -->
+    <div class="fam-tab-pane" id="pane-devices">
+      <div class="pro-quest-list">
+        <div class="pro-quest-card">
+          <div class="pro-quest-icon" style="background:var(--brand-100,#e0f2fe);"><span class="act-icon" style="font-size:20px;color:var(--brand-600,#0086c9);">tablet</span></div>
+          <div class="pro-quest-info">
+            <div class="pro-quest-name">iPad Air</div>
+            <div class="pro-quest-detail">iPadOS 17.4</div>
+          </div>
+          <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">chevron_right</span>
+        </div>
+        <div class="pro-quest-card">
+          <div class="pro-quest-icon" style="background:var(--brand-100,#e0f2fe);"><span class="act-icon" style="font-size:20px;color:var(--brand-600,#0086c9);">smartphone</span></div>
+          <div class="pro-quest-info">
+            <div class="pro-quest-name">iPhone 14</div>
+            <div class="pro-quest-detail">iOS 17.3</div>
+          </div>
+          <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">chevron_right</span>
+        </div>
+        <div class="pro-quest-card" style="cursor:pointer;justify-content:center;gap:4px;color:var(--brand-500,#0ba5ec);">
+          <span class="act-icon" style="font-size:20px;">add</span>
+          <span style="font-weight:500;font-size:14px;">Link device</span>
+        </div>
+      </div>
+    </div>
+
+
+    <div style="height:80px;"></div>
+  </div>
+</div>
+</div><!-- /screenProfile -->
+
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="col-right" id="col-right"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.DS_META = {
+  title: 'Family',
+  desc: 'The Family tab is the parent\'s management hub for children, devices, and tasks. It surfaces the "Kids" card for at-a-glance status and taps through to full kid profiles.',
+  owner: 'Leti',
+  status: 'In progress',
+  screen: ['Kids', 'Ben Profile', 'Gabe Profile', 'Shane Profile'],
+  screenDefault: 0,
+  notes: '<h2>Two connected screens</h2>' +
+    '<p><strong>Kids</strong> is a card on the Family tab showing all children with live status. Tapping a child navigates to their <strong>Kid Profile</strong>, a detail screen with tasks and devices.</p>' +
+    '<h2>States</h2>' +
+    '<div class="fam-toggles">' +
+    '<div class="fam-toggle-group">' +
+      '<div class="fam-toggle-label">Family state</div>' +
+      '<p style="font-size:13px;color:#535862;margin:0 0 6px;">Switch between normal (3 active kids), empty (no kids yet), and pending (one child awaiting activation).</p>' +
+      '<div class="fam-toggle-row">' +
+        '<button class="fam-toggle-btn active" onclick="setFamilyState(\'normal\',this)">Normal</button>' +
+        '<button class="fam-toggle-btn" onclick="setFamilyState(\'empty\',this)">Empty</button>' +
+        '<button class="fam-toggle-btn" onclick="setFamilyState(\'pending\',this)">Pending</button>' +
+      '</div>' +
+    '</div>' +
+    '</div>' +
+    '<h2>Key patterns</h2>' +
+    '<ul>' +
+      '<li><strong>Pending badge:</strong> Amber pill next to name when child is not yet activated</li>' +
+      '<li><strong>Age tier:</strong> Auto-calculated from birthdate, parents can override with "Custom" badge</li>' +
+      '<li><strong>Segment control:</strong> Quests / Devices tabs in kid profile</li>' +
+    '</ul>'
+};
+</script>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+<script>
+(function() {
+  var RIVE_SPROUT_SRC = '/kid-design-system/sprout.riv';
+  var RIVE_USER_SRC = '/kid-design-system/character2.91.riv';
+  var SM_NAME = 'State Machine 1';
+  var ARTBOARD = 'Village-character';
+
+  var SPROUT_STATE = { hairID: 1 };
+  var MALI_STATE = { skinID: 0, hairID: 6, hairshadeID: 5, clothingID: 2, clothingcolourID: 3, eyeshadeID: 2 };
+  var BEN_STATE = { skinID: 0, hairID: 2, hairshadeID: 4, clothingID: 1, clothingcolourID: 2, eyeshadeID: 1 };
+  var GABE_STATE = { skinID: 0, hairID: 5, hairshadeID: 6, clothingID: 2, clothingcolourID: 4, eyeshadeID: 2 };
+  var SHANE_STATE = { skinID: 0, hairID: 1, hairshadeID: 4, clothingID: 3, clothingcolourID: 1, eyeshadeID: 1 };
+
+  var KID_PROFILES = {
+    ben:   { name: 'Ben',   age: 11, grade: 'Grade 6',   streak: 12, tierLabel: 'Middle',    state: BEN_STATE,   pending: false, bg: '#b9e6fe' },
+    gabe:  { name: 'Gabe',  age: 8,  grade: 'Grade 3',   streak: 8,  tierLabel: 'Standard',  state: GABE_STATE,  pending: false, bg: '#ddd6fe' },
+    shane: { name: 'Shane', age: 4,  grade: 'Preschool',  streak: 3,  tierLabel: 'Younger',   state: SHANE_STATE, pending: false, bg: '#ceeab0' }
+  };
+
+  function initRiveAvatar(canvas, opts) {
+    var w = parseInt(canvas.getAttribute('width'), 10) || 69;
+    var h = parseInt(canvas.getAttribute('height'), 10) || 99;
+    canvas.width = w; canvas.height = h;
+    var r;
+    try {
+      r = new rive.Rive({
+        src: opts.src, canvas: canvas, autoplay: true,
+        stateMachines: SM_NAME, artboard: opts.artboard || undefined,
+        fit: rive.Fit.Contain, alignment: rive.Alignment.Center,
+        onLoad: function() {
+          if (!r) return;
+          r.resizeDrawingSurfaceToCanvas();
+          try {
+            var inputs = r.stateMachineInputs(SM_NAME);
+            if (inputs && opts.state) {
+              inputs.forEach(function(inp) {
+                if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+              });
+            }
+          } catch(e) {}
+        }
+      });
+    } catch(e) { console.warn('Rive init failed', e); }
+  }
+
+  // Init bottom Sprout avatar
+  var bsc = document.querySelector('#bottomSprout canvas.rive-sprout');
+  if (bsc) initRiveAvatar(bsc, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+
+  var ZEEV_STATE = { skinID: 5, hairID: 4, hairshadeID: 8, beardID: 2, beardshadeID: 8, clothingID: 3, clothingcolourID: 5, eyeshadeID: 3 };
+
+  // Init family list avatars
+  var avatarMap = { famBen: BEN_STATE, famGabe: GABE_STATE, famShane: SHANE_STATE, famBenPending: BEN_STATE, famZeev: ZEEV_STATE, famMali: MALI_STATE };
+  Object.keys(avatarMap).forEach(function(id) {
+    var c = document.querySelector('#' + id + ' canvas.rive-user');
+    if (c) initRiveAvatar(c, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: avatarMap[id] });
+  });
+
+  // Add member sheet
+  var addChildScrim = document.getElementById('addChildScrim');
+  var addChildSheet = document.getElementById('addChildSheet');
+
+  function openSheet(tab) {
+    switchSheetTab(tab || 'child');
+    addChildScrim.classList.add('visible');
+    addChildSheet.classList.add('visible');
+  }
+
+  document.querySelectorAll('[aria-label="Add child"]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) { e.stopPropagation(); openSheet('child'); });
+  });
+  document.querySelectorAll('[aria-label="Invite"]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) { e.stopPropagation(); openSheet('parent'); });
+  });
+  addChildScrim.addEventListener('click', function() { closeAddChild(); });
+  window.closeAddChild = function() {
+    addChildScrim.classList.remove('visible');
+    addChildSheet.classList.remove('visible');
+  };
+
+  // QR code view
+  window.showQrView = function() {
+    document.getElementById('parentInviteOptions').style.display = 'none';
+    var qrView = document.getElementById('parentQrView');
+    qrView.style.display = '';
+    // Generate a fake QR pattern
+    var frame = document.getElementById('qrFrame');
+    if (!frame.hasChildNodes()) {
+      var svg = '<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">';
+      // Simple QR-like pattern
+      var pattern = [
+        [1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,1,0,0,1,0,1,1,0,1,0,0,0,0,0,1],
+        [1,0,1,1,1,0,1,0,1,0,1,0,0,0,1,0,1,1,1,0,1],
+        [1,0,1,1,1,0,1,0,0,1,1,1,0,0,1,0,1,1,1,0,1],
+        [1,0,1,1,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,0,1],
+        [1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1],
+        [0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0],
+        [1,0,1,0,1,1,1,1,0,0,1,0,1,1,0,1,1,0,1,0,1],
+        [0,1,0,1,0,0,0,1,1,0,1,1,0,0,1,0,0,1,0,1,0],
+        [1,0,1,1,1,0,1,0,0,1,0,0,1,0,1,1,0,0,1,0,1],
+        [0,1,0,0,0,1,0,1,1,0,1,1,0,1,0,0,1,1,0,1,0],
+        [1,0,1,1,0,0,1,0,1,1,0,0,1,0,1,0,1,0,1,0,1],
+        [0,0,0,0,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0],
+        [1,1,1,1,1,1,1,0,0,1,0,1,1,0,1,0,1,0,0,1,1],
+        [1,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,0,1,0,0],
+        [1,0,1,1,1,0,1,0,1,1,0,1,1,0,1,1,1,0,1,1,1],
+        [1,0,1,1,1,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,0],
+        [1,0,1,1,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,1],
+        [1,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,1,0],
+        [1,1,1,1,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1]
+      ];
+      var cellSize = 160 / 21;
+      for (var r = 0; r < 21; r++) {
+        for (var c = 0; c < 21; c++) {
+          if (pattern[r][c]) {
+            svg += '<rect x="' + (c * cellSize) + '" y="' + (r * cellSize) + '" width="' + cellSize + '" height="' + cellSize + '" rx="1" fill="#181d27"/>';
+          }
+        }
+      }
+      svg += '</svg>';
+      frame.innerHTML = svg;
+    }
+  };
+  window.hideQrView = function() {
+    document.getElementById('parentQrView').style.display = 'none';
+    document.getElementById('parentInviteOptions').style.display = '';
+  };
+
+  // Copy link with toast
+  var toast = document.getElementById('toast');
+  window.copyLink = function() {
+    var textEl = toast.querySelector('.banner-text');
+    if (textEl) textEl.textContent = 'Link copied';
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 1500);
+  };
+
+  window.switchSheetTab = function(tabId, btn) {
+    var btns = document.querySelectorAll('#sheetSegment .fam-segment-btn');
+    btns.forEach(function(b, i) { b.classList.toggle('active', (tabId === 'child' ? i === 0 : i === 1)); });
+    if (!btn) {
+      btns.forEach(function(b, i) { b.classList.toggle('active', (tabId === 'child' ? i === 0 : i === 1)); });
+    } else {
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+    document.getElementById('sheetChildPane').style.display = tabId === 'child' ? '' : 'none';
+    document.getElementById('sheetParentPane').style.display = tabId === 'parent' ? '' : 'none';
+  };
+
+  // Header scroll border
+  var familyScroll = document.getElementById('familyScroll');
+  var familyHeader = document.getElementById('familyHeader');
+  if (familyScroll && familyHeader) {
+    familyScroll.addEventListener('scroll', function() {
+      familyHeader.classList.toggle('act-header--scrolled', familyScroll.scrollTop > 0);
+    });
+  }
+
+  /* ═══ SCREEN NAVIGATION ═══ */
+  var screenFamily = document.getElementById('screenFamily');
+  var screenProfile = document.getElementById('screenProfile');
+  var currentKid = null;
+
+  window.openProfile = function(kidId) {
+    var kid = KID_PROFILES[kidId];
+    if (!kid) return;
+    currentKid = kidId;
+
+    document.getElementById('profileTitle').textContent = kid.name;
+    document.getElementById('profileStreak').textContent = kid.streak;
+    document.getElementById('profileAge').textContent = kid.age + ' years old';
+    document.getElementById('profileGrade').textContent = kid.grade;
+    document.getElementById('profileTierBadge').textContent = kid.tierLabel;
+    var isPending = kid.pending;
+    document.getElementById('profileStatsRow').style.display = isPending ? 'none' : '';
+    document.getElementById('profileSegment').style.display = isPending ? 'none' : '';
+    document.getElementById('profileVpcCta').style.display = isPending ? '' : 'none';
+    document.querySelectorAll('.fam-tab-pane').forEach(function(p) { p.style.display = isPending ? 'none' : ''; });
+    if (!isPending) {
+      document.querySelectorAll('.pro-segment-btn').forEach(function(b, i) { b.classList.toggle('active', i === 0); });
+      document.getElementById('pane-tasks').classList.add('active');
+      document.getElementById('pane-devices').classList.remove('active');
+    }
+
+    var c = document.querySelector('#profileAvatar canvas.rive-user');
+    if (c) { c.width = 209; c.height = 299; initRiveAvatar(c, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: kid.state }); }
+
+    screenProfile.classList.add('visible');
+    document.getElementById('profileScroll').scrollTop = 0;
+  };
+
+  window.closeProfile = function() {
+    screenProfile.classList.remove('visible');
+    currentKid = null;
+  };
+
+  window.onScreenChange = function(idx) {
+    if (idx === 0) { closeProfile(); } else { openProfile(['ben','gabe','shane'][idx - 1]); }
+  };
+
+  window.switchTab = function(tabId, btn) {
+    btn.parentElement.querySelectorAll('.pro-segment-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.fam-tab-pane').forEach(function(p) { p.classList.remove('active'); });
+    var pane = document.getElementById('pane-' + tabId);
+    if (pane) pane.classList.add('active');
+  };
+
+
+  window.setFamilyState = function(state, btn) {
+    var row = btn.parentElement;
+    row.querySelectorAll('.fam-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('kidsNowCard').style.display = 'none';
+    document.getElementById('kidsEmptyCard').style.display = 'none';
+    document.getElementById('kidsPendingCard').style.display = 'none';
+    if (state === 'normal') { document.getElementById('kidsNowCard').style.display = ''; }
+    else if (state === 'empty') { document.getElementById('kidsEmptyCard').style.display = ''; }
+    else if (state === 'pending') { document.getElementById('kidsPendingCard').style.display = ''; KID_PROFILES.gabe.pending = true; }
+    if (state !== 'pending') { KID_PROFILES.gabe.pending = false; }
+    // familyMembersCard is now part of kidsNowCard section
+    if (screenProfile.classList.contains('visible')) { closeProfile(); }
+  };
+})();
+</script>
+</body>
+</html>
