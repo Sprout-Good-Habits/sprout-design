@@ -399,9 +399,28 @@
   overflow: hidden;
 }
 
+/* ── Alt 3: Label + Text Art (gradient card) ── */
+.act-item-textart {
+  display: none;
+  border-radius: var(--radius-xl, 12px);
+  padding: 16px;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #414651);
+  height: 154px;
+  text-align: center;
+  word-break: break-word;
+  overflow: hidden;
+  background: var(--brand-100, #e0f2fe);
+}
+
 /* ── Notification toggle visibility (driven by .device-screen class) ── */
 .opt-notif-thumb .act-item-quote { display: none; }
 .opt-notif-thumb .act-item-thumb { display: flex; }
+.opt-notif-textart .act-item-quote { display: none; }
+.opt-notif-textart .act-item-thumb { display: none; }
+.opt-notif-textart .act-item-textart { display: flex; align-items: center; justify-content: center; }
 
 /* ── Toggle controls in metadata ── */
 .act-toggles { margin-top: 8px; }
@@ -1261,16 +1280,31 @@
           </div>
           <div class="act-item-content">
             Pick their first quest! <span class="act-item-time">5m</span>
-          </div>        </div>
+          </div>
+          <button class="btn btn-sm btn-primary">Browse quests</button>
+        </div>
 
-        <!-- Add child (done) -->
+        <!-- Add child -->
         <div class="act-item">
           <div class="act-item-leading">
             <div class="avatar" style="background:var(--bg-sky, #e0f2fe);"><canvas class="rive-sprout" width="160" height="230"></canvas></div>
           </div>
           <div class="act-item-content">
             Add a child so I can start chatting with them! <span class="act-item-time">10m</span>
-          </div>        </div>
+          </div>
+          <button class="btn btn-sm btn-primary">Add child</button>
+        </div>
+
+        <!-- Invite co-parent -->
+        <div class="act-item">
+          <div class="act-item-leading">
+            <div class="avatar" style="background:var(--bg-sky, #e0f2fe);"><canvas class="rive-sprout" width="160" height="230"></canvas></div>
+          </div>
+          <div class="act-item-content">
+            Invite a co-parent so you can share the fun! <span class="act-item-time">10m</span>
+          </div>
+          <button class="btn btn-sm">Invite</button>
+        </div>
 
         <!-- Welcome -->
         <div class="act-item">
@@ -1279,6 +1313,116 @@
           </div>
           <div class="act-item-content">
             Hey! Let's get your family set up. <span class="act-item-time">15m</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Still: infrequent user (hidden by default) -->
+    <div id="stillState" style="display:none;">
+      <div class="act-section">
+        <div class="act-section-header">Older</div>
+
+        <!-- Shane completed Hot Take Olympics -->
+        <div class="act-item act-item-stacked">
+          <div class="act-item-leading">
+            <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
+            <div class="act-item-badge" style="background:#fac515;">&#x1F525;</div>
+          </div>
+          <div class="act-item-content">
+            <div class="act-item-label"><div class="act-item-label-text"><b>Shane</b> finished <b>Hot Take Olympics</b></div> <span class="act-item-time">2mo</span></div>
+            <div class="act-item-quote">"Pineapple on pizza is actually good because the sweetness balances the salt and anyone who disagrees hasn't tried it properly."</div>
+            <div class="act-item-thumb">
+              <div class="act-item-thumb-bar"></div>
+              <div class="act-item-thumb-text">"Pineapple on pizza is actually good because the sweetness balances the salt and anyone who disagrees hasn't tried it properly."</div>
+            </div>
+            <div class="act-item-textart">"Pineapple on pizza is actually good because the sweetness balances the salt and anyone who disagrees hasn't tried it properly."</div>
+          </div>
+        </div>
+
+        <!-- Ben completed School dump -->
+        <div class="act-item act-item-stacked">
+          <div class="act-item-leading">
+            <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+            <div class="act-item-badge" style="background:#f670c7;">&#x1F3EB;</div>
+          </div>
+          <div class="act-item-content">
+            <div class="act-item-label"><div class="act-item-label-text"><b>Ben</b> finished <b>School dump</b></div> <span class="act-item-time">2mo</span></div>
+            <div class="act-item-quote">"Today was kinda rough because Marcus kept talking in class and I got in trouble too even though I wasn't doing anything."</div>
+            <div class="act-item-thumb">
+              <div class="act-item-thumb-bar"></div>
+              <div class="act-item-thumb-text">"Today was kinda rough because Marcus kept talking in class and I got in trouble too even though I wasn't doing anything."</div>
+            </div>
+            <div class="act-item-textart">"Today was kinda rough because Marcus kept talking in class and I got in trouble too even though I wasn't doing anything."</div>
+          </div>
+        </div>
+
+        <!-- Gabe completed 20 Questions -->
+        <div class="act-item act-item-stacked">
+          <div class="act-item-leading">
+            <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+            <div class="act-item-badge" style="background:#f38744;">&#x2753;</div>
+          </div>
+          <div class="act-item-content">
+            <div class="act-item-label"><div class="act-item-label-text"><b>Gabe</b> finished <b>20 Questions</b></div> <span class="act-item-time">3mo</span></div>
+            <div class="act-item-quote">"Is it alive? Is it bigger than a car? Can you find it at school?"</div>
+            <div class="act-item-thumb">
+              <div class="act-item-thumb-bar"></div>
+              <div class="act-item-thumb-text">"Is it alive? Is it bigger than a car? Can you find it at school?"</div>
+            </div>
+            <div class="act-item-textart">"Is it alive? Is it bigger than a car? Can you find it at school?"</div>
+          </div>
+        </div>
+
+        <!-- Ben completed T-rex interview -->
+        <div class="act-item act-item-stacked">
+          <div class="act-item-leading">
+            <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+            <div class="act-item-badge" style="background:#47cd89;">&#x1F3AD;</div>
+          </div>
+          <div class="act-item-content">
+            <div class="act-item-label"><div class="act-item-label-text"><b>Ben</b> finished <b>T-rex interview</b></div> <span class="act-item-time">3mo</span></div>
+            <div class="act-item-quote">"Well, my arms are short but my personality is huge. Next question."</div>
+            <div class="act-item-thumb">
+              <div class="act-item-thumb-bar"></div>
+              <div class="act-item-thumb-text">"Well, my arms are short but my personality is huge. Next question."</div>
+            </div>
+            <div class="act-item-textart">"Well, my arms are short but my personality is huge. Next question."</div>
+          </div>
+        </div>
+
+        <!-- Gabe completed One-sentence story -->
+        <div class="act-item act-item-stacked">
+          <div class="act-item-leading">
+            <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+            <div class="act-item-badge" style="background:#a48afb;">&#x1F4D6;</div>
+          </div>
+          <div class="act-item-content">
+            <div class="act-item-label"><div class="act-item-label-text"><b>Gabe</b> finished <b>One-sentence story</b></div> <span class="act-item-time">4mo</span></div>
+            <div class="act-item-quote">"The dragon opened the fridge, found no pizza, and decided to become a chef instead."</div>
+            <div class="act-item-thumb">
+              <div class="act-item-thumb-bar"></div>
+              <div class="act-item-thumb-text">"The dragon opened the fridge, found no pizza, and decided to become a chef instead."</div>
+            </div>
+            <div class="act-item-textart">"The dragon opened the fridge, found no pizza, and decided to become a chef instead."</div>
+          </div>
+        </div>
+
+        <!-- Shane completed Bedtime defense -->
+        <div class="act-item act-item-stacked">
+          <div class="act-item-leading">
+            <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
+            <div class="act-item-badge" style="background:#f97066;">&#x1F6CF;&#xFE0F;</div>
+          </div>
+          <div class="act-item-content">
+            <div class="act-item-label"><div class="act-item-label-text"><b>Shane</b> finished <b>Bedtime defense</b></div> <span class="act-item-time">5mo</span></div>
+            <div class="act-item-quote">"I should stay up because I need to protect the house from imaginary burglars."</div>
+            <div class="act-item-thumb">
+              <div class="act-item-thumb-bar"></div>
+              <div class="act-item-thumb-text">"I should stay up because I need to protect the house from imaginary burglars."</div>
+            </div>
+            <div class="act-item-textart">"I should stay up because I need to protect the house from imaginary burglars."</div>
           </div>
         </div>
 
@@ -1302,6 +1446,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"Today was kinda rough because Marcus kept talking in class and I got in trouble too even though I wasn't doing anything."</div>
           </div>
+          <div class="act-item-textart">"Today was kinda rough because Marcus kept talking in class and I got in trouble too even though I wasn't doing anything."</div>
         </div>
       </div>
 
@@ -1318,6 +1463,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"Pineapple on pizza is actually good because the sweetness balances the salt and anyone who disagrees hasn't tried it properly."</div>
           </div>
+          <div class="act-item-textart">"Pineapple on pizza is actually good because the sweetness balances the salt and anyone who disagrees hasn't tried it properly."</div>
         </div>
       </div>
 
@@ -1334,6 +1480,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"Is it alive? Is it bigger than a car? Can you find it at school?"</div>
           </div>
+          <div class="act-item-textart">"Is it alive? Is it bigger than a car? Can you find it at school?"</div>
         </div>
       </div>
     </div>
@@ -1355,6 +1502,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"Well, my arms are short but my personality is huge. Next question."</div>
           </div>
+          <div class="act-item-textart">"Well, my arms are short but my personality is huge. Next question."</div>
         </div>
       </div>
 
@@ -1371,6 +1519,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"The dragon opened the fridge, found no pizza, and decided to become a chef instead."</div>
           </div>
+          <div class="act-item-textart">"The dragon opened the fridge, found no pizza, and decided to become a chef instead."</div>
         </div>
       </div>
     </div>
@@ -1392,6 +1541,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"I should stay up because I need to protect the house from imaginary burglars."</div>
           </div>
+          <div class="act-item-textart">"I should stay up because I need to protect the house from imaginary burglars."</div>
         </div>
       </div>
 
@@ -1408,6 +1558,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"Would you rather have spaghetti for hair or sneeze confetti forever?"</div>
           </div>
+          <div class="act-item-textart">"Would you rather have spaghetti for hair or sneeze confetti forever?"</div>
         </div>
       </div>
 
@@ -1424,6 +1575,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"Dogs are better than cats because dogs actually care about you and cats just judge you silently."</div>
           </div>
+          <div class="act-item-textart">"Dogs are better than cats because dogs actually care about you and cats just judge you silently."</div>
         </div>
       </div>
     </div>
@@ -1445,6 +1597,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"Remember when Dad got lost at the mall and we had to find him at the pretzel stand?"</div>
           </div>
+          <div class="act-item-textart">"Remember when Dad got lost at the mall and we had to find him at the pretzel stand?"</div>
         </div>
       </div>
 
@@ -1461,6 +1614,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"Does it have legs? Can it fly? Is it something you'd find in the kitchen?"</div>
           </div>
+          <div class="act-item-textart">"Does it have legs? Can it fly? Is it something you'd find in the kitchen?"</div>
         </div>
       </div>
     </div>
@@ -1482,6 +1636,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"We had a substitute teacher and she let us draw for the last 20 minutes which was actually really cool."</div>
           </div>
+          <div class="act-item-textart">"We had a substitute teacher and she let us draw for the last 20 minutes which was actually really cool."</div>
         </div>
       </div>
 
@@ -1498,6 +1653,7 @@
             <div class="act-item-thumb-bar"></div>
             <div class="act-item-thumb-text">"My bedtime should be later because I'm basically a teenager now and teenagers stay up late."</div>
           </div>
+          <div class="act-item-textart">"My bedtime should be later because I'm basically a teenager now and teenagers stay up late."</div>
         </div>
       </div>
     </div>
@@ -1766,7 +1922,7 @@ window.DS_META = {
   desc: 'Home tab only view (based on Navigation v3). Chat accessible via header Sprout avatar.',
   owner: 'Leti',
   status: 'In progress',
-  state: ['Default', 'NUX'],
+  state: ['Default', 'Still', 'NUX'],
   notes: '\
 <h3>How ACT inbox works</h3>\
 <p>The ACT tab is a <strong>notification feed</strong>, not a thread list. Each item shows the most relevant current state of an entity. Preview text = latest generation, not latest chat.</p>\
@@ -1791,6 +1947,7 @@ window.DS_META = {
     '<div class="act-toggle-row">' +
       '<button class="act-toggle-btn active" onclick="actToggle(\'notif\',0,this)">Label + Description</button>' +
       '<button class="act-toggle-btn" onclick="actToggle(\'notif\',1,this)">Label + Quote</button>' +
+      '<button class="act-toggle-btn" onclick="actToggle(\'notif\',2,this)">Label + Text Art</button>' +
     '</div>' +
   '</div>' +
   '</div>'
@@ -1803,7 +1960,7 @@ window.DS_META = {
   // ── A/B toggle controls ──
   var screen = document.querySelector('.device-screen');
   var toggleMap = {
-    notif: ['', 'opt-notif-thumb']
+    notif: ['', 'opt-notif-thumb', 'opt-notif-textart']
   };
   window.actToggle = function(type, idx, btn) {
     var row = btn.parentElement;
@@ -2026,18 +2183,29 @@ window.DS_META = {
   // ══════════════════════════════════
   var feedSections = document.querySelectorAll('#tabHome .act-feed > .act-section');
   var nullState = document.getElementById('nullState');
+  var stillState = document.getElementById('stillState');
 
   var nullSproutsInited = false;
+  var stillInited = false;
   window.onScreenChange = function(index) {
-    // 0 = Default, 1 = NUX
-    var showFeed = index === 0;
-
-    feedSections.forEach(function(s) { s.style.display = showFeed ? '' : 'none'; });
-    if (nullState) nullState.style.display = index === 1 ? 'block' : 'none';
+    // 0 = Default, 1 = Still, 2 = NUX
+    feedSections.forEach(function(s) { s.style.display = index === 0 ? '' : 'none'; });
+    if (stillState) stillState.style.display = index === 1 ? 'block' : 'none';
+    if (nullState) nullState.style.display = index === 2 ? 'block' : 'none';
     if (actFeed) actFeed.style.overflowY = 'auto';
 
-    // Init Sprout avatars on first show (Rive needs visible canvas)
-    if (index === 1 && !nullSproutsInited) {
+    // Init Still avatars on first show
+    if (index === 1 && !stillInited) {
+      stillInited = true;
+      document.querySelectorAll('#stillState canvas.rive-user').forEach(function(c) {
+        var kid = c.closest('.avatar').getAttribute('data-kid');
+        var st = kid === 'ben' ? BEN_STATE : kid === 'shane' ? SHANE_STATE : kid === 'gabe' ? GABE_STATE : MALI_STATE;
+        initRiveAvatar(c, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: st });
+      });
+    }
+
+    // Init NUX Sprout avatars on first show
+    if (index === 2 && !nullSproutsInited) {
       nullSproutsInited = true;
       document.querySelectorAll('#nullState canvas.rive-sprout').forEach(function(c) {
         initRiveAvatar(c, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
