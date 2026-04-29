@@ -1172,33 +1172,62 @@
   <!-- Feed -->
   <div class="act-feed">
 
-    <!-- Empty inbox state (hidden by default) -->
-    <div class="act-empty" id="emptyState">
-      <div class="act-empty-icon"><span class="act-icon">inbox</span></div>
-      <div class="act-empty-title">You are all caught up</div>
-      <div class="act-empty-desc">No new notifications right now. Enjoy the quiet.</div>
-    </div>
+    <!-- Null state: Sprout onboarding notifications (hidden by default) -->
+    <div id="nullState" style="display:none;">
+      <div class="act-section">
+        <div class="act-section-header">Today</div>
 
-    <!-- Null state (hidden by default) -->
-    <div class="act-empty" id="nullState">
-      <div class="act-empty-icon"><span class="act-icon">face</span></div>
-      <div class="act-empty-title">Add your child to get started</div>
-      <div class="act-empty-desc">Once you add a child, notifications will appear here.</div>
-      <button class="act-empty-btn">Setup child</button>
+        <!-- Pick a quest -->
+        <div class="act-item">
+          <div class="act-item-leading">
+            <div class="avatar" style="background:var(--bg-sky, #e0f2fe);"><canvas class="rive-sprout" width="162" height="172"></canvas></div>
+          </div>
+          <div class="act-item-content">
+            Pick their first quest! <span class="act-item-time">5m</span>
+          </div>
+          <div class="act-item-action">
+            <button class="btn btn-primary btn-sm">Browse quests</button>
+          </div>
+        </div>
+
+        <!-- Add child (done) -->
+        <div class="act-item">
+          <div class="act-item-leading">
+            <div class="avatar" style="background:var(--bg-sky, #e0f2fe);"><canvas class="rive-sprout" width="162" height="172"></canvas></div>
+          </div>
+          <div class="act-item-content">
+            Add a child so I can start chatting with them! <span class="act-item-time">10m</span>
+          </div>
+          <div class="act-item-action">
+            <button class="btn btn-primary btn-sm" disabled>Done</button>
+          </div>
+        </div>
+
+        <!-- Welcome -->
+        <div class="act-item">
+          <div class="act-item-leading">
+            <div class="avatar" style="background:var(--bg-sky, #e0f2fe);"><canvas class="rive-sprout" width="162" height="172"></canvas></div>
+          </div>
+          <div class="act-item-content">
+            Hey! Let's get your family set up. <span class="act-item-time">15m</span>
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <!-- Today -->
     <div class="act-section">
       <div class="act-section-header">Today</div>
 
-      <!-- Screen time request -->
+      <!-- Ben completed School dump -->
       <div class="act-item">
         <div class="act-item-leading">
-          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F4FA;</div>
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:#f670c7;">&#x1F3EB;</div>
         </div>
         <div class="act-item-content">
-          <b>Gabe</b> requested 45 min screen time <span class="act-item-time">2h</span>
+          <b>Ben</b> finished School dump <span class="act-item-time">1h</span>
         </div>
         <div class="act-item-action">
           <button class="btn btn-primary btn-sm">Approve</button>
@@ -1206,37 +1235,33 @@
         </div>
       </div>
 
-      <!-- Screen time request (Zeev already approved) -->
+      <!-- Shane completed Hot Take Olympics -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F4FA;</div>
+          <div class="act-item-badge" style="background:#fac515;">&#x1F525;</div>
         </div>
         <div class="act-item-content">
-          <b>Shane</b> requested 30 min screen time <span class="act-item-time">2h</span>
+          <b>Shane</b> finished Hot Take Olympics <span class="act-item-time">2h</span>
         </div>
         <div class="act-item-action">
-          <button class="btn btn-primary btn-sm" disabled>Approved</button>
+          <button class="btn btn-primary btn-sm">Approve</button>
+          <span class="act-icon act-icon-sm act-item-trailing" data-label="Decline">close</span>
         </div>
       </div>
 
-      <!-- Quest approval -->
-      <div class="act-item act-item-stacked">
+      <!-- Gabe completed 20 Questions -->
+      <div class="act-item">
         <div class="act-item-leading">
-          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:#f38744;">&#x2753;</div>
         </div>
-        <div class="act-item-body">
-          <div class="act-item-row">
-            <div class="act-item-content">
-              <b>Ben</b> read 18 min, 3 of 4 chapters <span class="act-item-time">3h</span>
-            </div>
-            <div class="act-item-action">
-              <button class="btn btn-primary btn-sm">Approve</button>
-              <span class="act-icon act-icon-sm act-item-trailing" data-label="Needs redo">replay</span>
-            </div>
-          </div>
-          <div class="act-item-placeholder"><img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=200&fit=crop" alt="Reading"></div>
+        <div class="act-item-content">
+          <b>Gabe</b> finished 20 Questions <span class="act-item-time">3h</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm">Approve</button>
+          <span class="act-icon act-icon-sm act-item-trailing" data-label="Decline">close</span>
         </div>
       </div>
     </div>
@@ -1245,25 +1270,31 @@
     <div class="act-section">
       <div class="act-section-header">Yesterday</div>
 
-      <!-- Daily summary -->
+      <!-- Ben completed T-rex interview -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+          <div class="act-item-badge" style="background:#47cd89;">&#x1F3AD;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> completed 4 of 5 tasks yesterday <span class="act-item-time">18h</span>
+          <b>Ben</b> finished T-rex interview <span class="act-item-time">18h</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
         </div>
       </div>
 
-      <!-- Meal plan -->
+      <!-- Gabe completed One-sentence story -->
       <div class="act-item">
         <div class="act-item-leading">
-          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--green-500);">&#x1F372;</div>
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:#a48afb;">&#x1F4D6;</div>
         </div>
         <div class="act-item-content">
-          <b>Meal plan</b> 5 dinners planned, grocery list ready <span class="act-item-time">1d</span>
+          <b>Gabe</b> finished One-sentence story <span class="act-item-time">22h</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
         </div>
       </div>
     </div>
@@ -1272,36 +1303,45 @@
     <div class="act-section">
       <div class="act-section-header">Last 7 days</div>
 
-      <!-- Screen time request -->
+      <!-- Shane completed Bedtime defense -->
       <div class="act-item">
         <div class="act-item-leading">
-          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F4FA;</div>
+          <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:#f97066;">&#x1F6CF;&#xFE0F;</div>
         </div>
         <div class="act-item-content">
-          <b>Zeev</b> gave 30 min screen time for Gabe <span class="act-item-time">4d</span>
+          <b>Shane</b> finished Bedtime defense <span class="act-item-time">3d</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
         </div>
       </div>
 
-      <!-- Daily summary -->
-      <div class="act-item">
-        <div class="act-item-leading">
-          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
-        </div>
-        <div class="act-item-content">
-          <b>Gabe</b> completed 3 of 4 tasks on Tuesday <span class="act-item-time">5d</span>
-        </div>
-      </div>
-
-      <!-- Quest approval -->
+      <!-- Ben completed Would you rather -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+          <div class="act-item-badge" style="background:#528bff;">&#x1F60A;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> finished math practice, 12 of 15 correct <span class="act-item-time">6d</span>
+          <b>Ben</b> finished Would you rather <span class="act-item-time">5d</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
+        </div>
+      </div>
+
+      <!-- Gabe completed Hot Take Olympics -->
+      <div class="act-item">
+        <div class="act-item-leading">
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
+          <div class="act-item-badge" style="background:#fac515;">&#x1F525;</div>
+        </div>
+        <div class="act-item-content">
+          <b>Gabe</b> finished Hot Take Olympics <span class="act-item-time">6d</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
         </div>
       </div>
     </div>
@@ -1310,25 +1350,31 @@
     <div class="act-section">
       <div class="act-section-header">Last 30 days</div>
 
-      <!-- Meal plan -->
+      <!-- Ben completed Callback -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--green-500);">&#x1F372;</div>
+          <div class="act-item-badge" style="background:#36bffa;">&#x1F9E0;</div>
         </div>
         <div class="act-item-content">
-          <b>Meal plan</b> 4 dinners planned, 2 new recipes <span class="act-item-time">2w</span>
+          <b>Ben</b> finished Callback <span class="act-item-time">2w</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
         </div>
       </div>
 
-      <!-- Daily summary -->
+      <!-- Shane completed 20 Questions -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+          <div class="act-item-badge" style="background:#f38744;">&#x2753;</div>
         </div>
         <div class="act-item-content">
-          <b>Shane</b> completed 5 of 5 tasks last Thursday <span class="act-item-time">2w</span>
+          <b>Shane</b> finished 20 Questions <span class="act-item-time">3w</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
         </div>
       </div>
     </div>
@@ -1337,25 +1383,31 @@
     <div class="act-section">
       <div class="act-section-header">Older</div>
 
-      <!-- Screen time request -->
+      <!-- Gabe completed School dump -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--violet-500);">&#x1F4FA;</div>
+          <div class="act-item-badge" style="background:#f670c7;">&#x1F3EB;</div>
         </div>
         <div class="act-item-content">
-          <b>Zeev</b> gave 20 min screen time for Gabe <span class="act-item-time">1mo</span>
+          <b>Gabe</b> finished School dump <span class="act-item-time">1mo</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
         </div>
       </div>
 
-      <!-- Quest approval -->
+      <!-- Ben completed Bedtime defense -->
       <div class="act-item">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
-          <div class="act-item-badge" style="background:var(--blue-dark-500);">&#x1F319;</div>
+          <div class="act-item-badge" style="background:#f97066;">&#x1F6CF;&#xFE0F;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> practiced spelling, 18 of 20 correct <span class="act-item-time">1mo</span>
+          <b>Ben</b> finished Bedtime defense <span class="act-item-time">1mo</span>
+        </div>
+        <div class="act-item-action">
+          <button class="btn btn-primary btn-sm" disabled>Approved</button>
         </div>
       </div>
     </div>
@@ -1710,7 +1762,7 @@ window.DS_META = {
   desc: 'Tab-based navigation: bottom bar with Home, Family, and Skills tabs. Chat accessible via header Sprout avatar.',
   owner: 'Leti',
   status: 'In progress',
-  screen: ['Default', 'Empty state', 'Null state'],
+  screen: ['Default', 'Null state'],
   notes: '\
 <h3>How ACT inbox works</h3>\
 <p>The ACT tab is a <strong>notification feed</strong>, not a thread list. Each item shows the most relevant current state of an entity. Preview text = latest generation, not latest chat.</p>\
@@ -1942,18 +1994,25 @@ window.DS_META = {
   // ══════════════════════════════════
   // SCREEN STATE SWITCHING (metadata dropdown)
   // ══════════════════════════════════
-  var feedSections = document.querySelectorAll('#tabHome .act-section');
-  var emptyState = document.getElementById('emptyState');
+  var feedSections = document.querySelectorAll('#tabHome .act-feed > .act-section');
   var nullState = document.getElementById('nullState');
 
+  var nullSproutsInited = false;
   window.onScreenChange = function(index) {
-    // 0 = Default, 1 = Empty state, 2 = Null state
+    // 0 = Default, 1 = Null state
     var showFeed = index === 0;
 
     feedSections.forEach(function(s) { s.style.display = showFeed ? '' : 'none'; });
-    if (emptyState) emptyState.style.display = index === 1 ? 'flex' : 'none';
-    if (nullState) nullState.style.display = index === 2 ? 'flex' : 'none';
-    if (actFeed) actFeed.style.overflowY = showFeed ? 'auto' : 'hidden';
+    if (nullState) nullState.style.display = index === 1 ? 'block' : 'none';
+    if (actFeed) actFeed.style.overflowY = 'auto';
+
+    // Init Sprout avatars on first show (Rive needs visible canvas)
+    if (index === 1 && !nullSproutsInited) {
+      nullSproutsInited = true;
+      document.querySelectorAll('#nullState canvas.rive-sprout').forEach(function(c) {
+        initRiveAvatar(c, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+      });
+    }
   };
 
   // Approve button tap -> resolved state
