@@ -489,49 +489,6 @@
 .explore-list-card-thumb[data-color="sky"]     { background: #36bffa; }
 .explore-list-card-thumb[data-color="green"]   { background: #47cd89; }
 
-/* Explore bottom bar */
-.explore-bottom {
-  position: absolute;
-  bottom: 34px; left: 0; right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 0 16px;
-  z-index: 10;
-}
-.explore-search-pill {
-  flex: 1;
-  height: 49px;
-  background: var(--brand-25, #f5fbff);
-  border: 1px solid white;
-  border-radius: var(--radius-4xl, 24px);
-  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 13px;
-  cursor: text;
-}
-.explore-search-pill .mi { color: var(--text-quaternary, #717680); }
-.explore-search-text {
-  font-size: var(--font-size-text-md, 16px);
-  color: var(--text-placeholder, #717680);
-}
-.explore-edit-btn {
-  width: 49px;
-  height: 49px;
-  background: var(--brand-25, #f5fbff);
-  border: 1px solid white;
-  border-radius: var(--radius-4xl, 24px);
-  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-primary, #181d27);
-  flex-shrink: 0;
-}
 
 /* ======================================
    SKILL DETAIL SCREEN (new for v1)
@@ -2235,11 +2192,6 @@
     </div>
   </div>
 
-  <!-- Bottom bar -->
-  <div class="explore-bottom">
-    <div class="explore-search-pill"><span class="mi">search</span><span class="explore-search-text">Search</span></div>
-    <button class="explore-edit-btn"><span class="mi">edit</span></button>
-  </div>
 </div>
 
 
