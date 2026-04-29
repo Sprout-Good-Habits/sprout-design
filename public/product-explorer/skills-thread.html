@@ -168,6 +168,47 @@
   color: var(--text-quaternary, #717680);
   padding-left: 8px;
 }
+.skill-card-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+.skill-card-badge--active {
+  background: var(--green-200, #abefc6);
+  color: var(--green-600, #079455);
+}
+.skill-card-badge--archived {
+  background: var(--gray-200, #e9eaeb);
+  color: var(--gray-600, #535862);
+}
+
+/* NUX empty state */
+.skills-nux {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 32px 16px; gap: 12px; text-align: center;
+}
+.skills-nux.hidden { display: none; }
+.skills-nux-text {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-tertiary, #535862);
+  line-height: var(--line-height-text-sm, 20px);
+}
+.skills-section-header {
+  padding: var(--spacing-md, 8px) 0;
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+.skills-section-header:first-child { padding-top: 0; }
 
 /* ======================================
    BOTTOM TAB BAR + SPROUT FAB
@@ -725,15 +766,23 @@
    ADOPTED SKILL VIEW
    ====================================== */
 .adopted-hero-banner {
-  position: absolute;
-  top: 0; left: 0; right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 140px 20px 24px;
+  margin: 0 -16px;
   overflow: hidden;
-  background: var(--brand-dark-500, #2970ff);
+  background: #47cd89;
+  flex-shrink: 0;
 }
+.adopted-hero-banner[data-color="yellow"]  { background: #fac515; }
+.adopted-hero-banner[data-color="orange"]  { background: #f38744; }
+.adopted-hero-banner[data-color="red"]     { background: #f97066; }
+.adopted-hero-banner[data-color="pink"]    { background: #f670c7; }
+.adopted-hero-banner[data-color="violet"]  { background: #a48afb; }
+.adopted-hero-banner[data-color="blue"]    { background: #528bff; }
+.adopted-hero-banner[data-color="sky"]     { background: #36bffa; }
+.adopted-hero-banner[data-color="green"]   { background: #47cd89; }
 .adopted-hero-banner-emoji {
   width: 80px;
   height: 80px;
@@ -744,13 +793,24 @@
   font-size: 64px;
   line-height: 1;
 }
+.adopted-gradient {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 116px;
+  background: linear-gradient(to bottom, var(--brand-25, #f5fbff) 35%, rgba(245,251,255,0));
+  z-index: 9;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.adopted-gradient.visible { opacity: 1; }
 .adopted-scroll {
   position: absolute;
-  top: 244px; left: 0; right: 0; bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: 24px 16px 120px;
+  padding: 0 16px 120px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -791,6 +851,157 @@
   font-size: var(--font-size-text-md, 16px);
   line-height: var(--line-height-text-md, 24px);
   color: var(--text-quaternary, #717680);
+}
+
+/* Streak card (new horizontal layout) */
+.adopted-streak-card {
+  background: white;
+  border-radius: var(--radius-2xl, 16px);
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.04);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.adopted-streak-label {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+.adopted-streak-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.adopted-streak-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.adopted-streak-avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+.adopted-streak-avatar .avatar {
+  width: 40px;
+  height: 40px;
+  border: 2.5px solid white;
+}
+.adopted-streak-avatar .avatar canvas.rive-user {
+  width: 58px;
+  height: 83px;
+  top: -23px;
+}
+.adopted-streak-info {
+  flex: 1;
+  min-width: 0;
+}
+.adopted-streak-count {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.adopted-streak-unit {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+
+/* Activity feed */
+.adopted-feed {
+  display: flex;
+  flex-direction: column;
+}
+.adopted-feed-header {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+  padding: 8px 0;
+}
+.adopted-feed-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+.adopted-feed-item + .adopted-feed-item {
+  border-top: 1px solid var(--border-secondary, #e9eaeb);
+}
+.adopted-feed-leading {
+  position: relative;
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+}
+.adopted-feed-leading .avatar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border: 1px solid white;
+}
+.adopted-feed-leading .avatar canvas.rive-user {
+  width: 87px;
+  height: 124px;
+  top: -36px;
+}
+.adopted-feed-badge {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 24px; height: 24px;
+  border-radius: 9999px;
+  border: 1px solid white;
+  background: var(--green-400, #47cd89);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.adopted-feed-badge .mi { font-size: 12px; color: white; }
+.adopted-feed-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.adopted-feed-title {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.adopted-feed-title-text {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.adopted-feed-title-text b {
+  color: var(--text-primary, #181d27);
+  font-weight: var(--font-weight-semibold, 600);
+}
+.adopted-feed-time {
+  color: var(--text-quaternary, #717680);
+  font-size: var(--font-size-text-sm, 14px);
+  flex-shrink: 0;
+}
+.adopted-feed-preview {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-tertiary, #535862);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 /* Avatar stack button (trailing) */
@@ -931,6 +1142,160 @@
 }
 .filter-chip .avatar { width: 20px; height: 20px; }
 .filter-chip .avatar canvas.rive-user { width: 29px; height: 41px; top: -12px; }
+
+/* Info button (toolbar pill with info icon + avatars) */
+.info-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg, 12px);
+  height: 44px;
+  padding: 0 6px 0 10px;
+  border-radius: 296px;
+  border: 1px solid white;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px -2px rgba(0,0,0,0.08);
+}
+.info-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+}
+.info-btn > * { position: relative; z-index: 1; }
+.info-btn .mi { font-size: 24px; color: var(--text-primary, #181d27); cursor: pointer; }
+.info-btn-avatars {
+  display: flex;
+  align-items: baseline;
+  padding-right: 8px;
+  cursor: pointer;
+}
+.info-btn-avatars .avatar {
+  width: 32px;
+  height: 32px;
+  margin-right: -8px;
+  border: 1px solid white;
+}
+.info-btn-avatars .avatar canvas.rive-user {
+  width: 46px;
+  height: 66px;
+  top: -20px;
+}
+
+/* Info about sheet */
+.info-about-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.info-about-scrim.visible { opacity: 1; pointer-events: auto; }
+.info-about-sheet {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: 40px 40px 0 0;
+  z-index: 41;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  max-height: 93%;
+  overflow: hidden;
+}
+.info-about-sheet.visible { transform: translateY(0); }
+.info-about-sheet-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 16px 16px 24px;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(to bottom, var(--brand-25, #f5fbff) 60%, rgba(245,251,255,0));
+}
+.info-about-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 60px;
+}
+.info-about-sheet-body::-webkit-scrollbar { display: none; }
+.info-about-title {
+  padding: 0 16px 24px;
+}
+.info-about-title h2 {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-md, 36px);
+  line-height: var(--line-height-display-md, 44px);
+  color: #000;
+  letter-spacing: -0.72px;
+  margin: 0;
+}
+.info-about-stats {
+  display: flex;
+  align-items: stretch;
+  padding: 0 0 24px;
+}
+.info-about-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  color: var(--text-quaternary, #717680);
+}
+.info-about-stat-label {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  text-transform: uppercase;
+}
+.info-about-stat-value {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-xs, 24px);
+  line-height: var(--line-height-display-xs, 32px);
+}
+.info-about-stat-sub {
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+}
+.info-about-stat-divider {
+  width: 1px;
+  background: var(--border-secondary, #e9eaeb);
+  align-self: center;
+  height: 40px;
+  flex-shrink: 0;
+}
+.info-about-section {
+  padding: 0 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.info-about-section-title {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.info-about-section-body {
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
 
 /* Beat timeline (reasoning-transcript style) */
 .beat-timeline {
@@ -1403,7 +1768,17 @@
   flex-shrink: 0;
 }
 
-/* Transcript sheet */
+/* Transcript scrim + sheet */
+.transcript-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 41;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.transcript-scrim.visible { opacity: 1; pointer-events: auto; }
 .cal-sheet.dimmed {
   opacity: 0.5;
   pointer-events: none;
@@ -1692,8 +2067,15 @@
   </div>
 </div>
 
-<div class="skills-scroll">
+<div class="skills-scroll" id="skillsScroll">
   <div class="skills-grid" id="skillsGrid">
+    <!-- NUX empty state -->
+    <div class="skills-nux hidden" id="skillsNux">
+      <span class="mi" style="font-size:24px;color:var(--text-quaternary,#717680);">explore</span>
+      <div class="skills-nux-text">Explore skills to get started</div>
+      <button class="btn btn-primary btn-sm" id="nuxExploreBtn">Explore</button>
+    </div>
+    <div class="skills-section-header" id="skillsActiveHeader">Active</div>
     <div class="skill-card" data-skill="school-dump" data-emoji="&#x1F3EB;" data-name="School dump" data-category="Talk" data-by="Sprout" data-users="5.1K" data-age="5+" data-kids="Ben, Gabe" data-desc="Right after school, Sprout asks about the one weird thing that happened. One sharp follow-up, then a summary using their exact words. You get flagged on anything worth knowing." data-opener="Tell me the one weird thing that happened today." data-status="active">
       <div class="skill-card-icon" data-color="pink">&#x1F3EB;</div>
       <div class="skill-card-body">
@@ -1729,13 +2111,6 @@
         <div class="skill-card-avatars"><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Gabe</span></div>
       </div>
     </div>
-    <div class="skill-card" data-skill="wyr" data-emoji="&#x1F60A;" data-name="Would you rather" data-category="Play" data-by="Sprout" data-users="5.8K" data-age="5+" data-kids="Ben, Gabe, Shane" data-desc="Five would-you-rathers, no passing. Starts tame, ends in spaghetti-feet-vs-bread-hands territory. Sprout roasts weak answers." data-opener="Five would-you-rathers. No passing. Go." data-status="paused">
-      <div class="skill-card-icon" data-color="blue">&#x1F60A;</div>
-      <div class="skill-card-body">
-        <div class="skill-card-name">Would you rather</div>
-        <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben, Gabe, Shane</span></div>
-      </div>
-    </div>
     <div class="skill-card" data-skill="callback" data-emoji="&#x1F9E0;" data-name="Callback" data-category="Talk" data-by="Sprout" data-users="2.1K" data-age="5+" data-kids="Ben" data-desc="Sprout opens unprompted with something it remembers from a past conversation. Proves it was actually listening. Tags a detail to follow up on next time." data-opener="Wait, did that thing with Noah end up happening?" data-status="active">
       <div class="skill-card-icon" data-color="sky">&#x1F9E0;</div>
       <div class="skill-card-body">
@@ -1747,6 +2122,14 @@
       <div class="skill-card-icon" data-color="red">&#x1F6CF;&#xFE0F;</div>
       <div class="skill-card-body">
         <div class="skill-card-name">Bedtime defense</div>
+        <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben, Gabe, Shane</span></div>
+      </div>
+    </div>
+    <div class="skills-section-header" id="skillsArchivedHeader">Archived</div>
+    <div class="skill-card" data-skill="wyr" data-emoji="&#x1F60A;" data-name="Would you rather" data-category="Play" data-by="Sprout" data-users="5.8K" data-age="5+" data-kids="Ben, Gabe, Shane" data-desc="Five would-you-rathers, no passing. Starts tame, ends in spaghetti-feet-vs-bread-hands territory. Sprout roasts weak answers." data-opener="Five would-you-rathers. No passing. Go." data-status="archived">
+      <div class="skill-card-icon" data-color="blue">&#x1F60A;</div>
+      <div class="skill-card-body">
+        <div class="skill-card-name">Would you rather</div>
         <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben, Gabe, Shane</span></div>
       </div>
     </div>
@@ -1775,7 +2158,7 @@
     <div class="filter-chips">
       <div class="filter-chip selected" data-filter-status="all">All</div>
       <div class="filter-chip" data-filter-status="active"><span style="width:6px;height:6px;border-radius:9999px;background:var(--sprout-500);display:inline-block;"></span> Active</div>
-      <div class="filter-chip" data-filter-status="paused"><span style="width:6px;height:6px;border-radius:9999px;background:var(--orange-400,#f38744);display:inline-block;"></span> Paused</div>
+      <div class="filter-chip" data-filter-status="archived"><span style="width:6px;height:6px;border-radius:9999px;background:var(--gray-400,#98a2b3);display:inline-block;"></span> Archived</div>
     </div>
   </div>
 </div>
@@ -2081,61 +2464,55 @@
     </span>
   </div>
 
-  <!-- Blue hero banner with emoji -->
-  <div class="adopted-hero-banner">
-    <div class="adopted-hero-banner-emoji" id="adoptedIcon">&#x1F319;</div>
-  </div>
-
   <div class="detail-toolbar">
     <button class="header-btn" id="adoptedBack" aria-label="Back"><span class="mi">chevron_backward</span></button>
     <div style="flex:1;"></div>
-    <button class="adopted-avatar-stack-btn" id="adoptedSettingsBtn" aria-label="Members">
-      <div class="adopted-avatar-stack">
-        <div class="avatar" data-kid="ben"><canvas class="rive-user" width="46" height="66"></canvas></div>
-        <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="46" height="66"></canvas></div>
-        <div class="avatar" data-kid="shane"><canvas class="rive-user" width="46" height="66"></canvas></div>
+    <div class="info-btn">
+      <span class="mi" id="infoAboutBtn" role="button" aria-label="About this skill">info</span>
+      <div class="info-btn-avatars" id="infoAvatarsBtn" role="button" aria-label="Members">
+        <!-- Populated dynamically by updateAdopted() -->
       </div>
-    </button>
+    </div>
   </div>
+  <div class="adopted-gradient"></div>
 
   <div class="adopted-scroll">
+    <!-- Blue hero banner with emoji -->
+    <div class="adopted-hero-banner">
+      <div class="adopted-hero-banner-emoji" id="adoptedIcon">&#x1F319;</div>
+    </div>
     <!-- Title block -->
     <div>
       <div class="adopted-title-row">
         <div class="adopted-title-name" id="adoptedName">Routine</div>
         <div class="adopted-badge" id="adoptedBadge">Active</div>
       </div>
-      <div class="adopted-subtitle" id="adoptedSubtitle">Weekly on Mon, Tue, and Wed</div>
+      <div class="adopted-subtitle" id="adoptedSubtitle">Weekly on Mon, Wed, and Fri</div>
     </div>
 
     <!-- Activity widget -->
     <div class="activity-widget">
       <div class="activity-widget-row">
-        <div class="activity-widget-day"><div class="activity-widget-day-label">M</div><div class="activity-widget-bar-wrap"><div class="activity-widget-bar" style="height:40px;"></div></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label">M</div><div class="activity-widget-bar-wrap"><div class="activity-widget-bar" style="height:60px;"></div></div></div>
         <div class="activity-widget-day"><div class="activity-widget-day-label active">T</div><div class="activity-widget-bar-wrap" data-state="no-skill"><div class="activity-widget-bar"></div></div></div>
         <div class="activity-widget-day"><div class="activity-widget-day-label">W</div><div class="activity-widget-bar-wrap"></div></div>
-        <div class="activity-widget-day"><div class="activity-widget-day-label">T</div><div class="activity-widget-bar-wrap"></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label">T</div><div class="activity-widget-bar-wrap" data-state="no-skill"><div class="activity-widget-bar"></div></div></div>
         <div class="activity-widget-day"><div class="activity-widget-day-label">F</div><div class="activity-widget-bar-wrap"></div></div>
-        <div class="activity-widget-day"><div class="activity-widget-day-label">S</div><div class="activity-widget-bar-wrap"></div></div>
-        <div class="activity-widget-day"><div class="activity-widget-day-label">S</div><div class="activity-widget-bar-wrap"></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label">S</div><div class="activity-widget-bar-wrap" data-state="no-skill"><div class="activity-widget-bar"></div></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label">S</div><div class="activity-widget-bar-wrap" data-state="no-skill"><div class="activity-widget-bar"></div></div></div>
       </div>
       <div class="activity-widget-link">See all</div>
     </div>
 
-    <!-- About -->
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div class="detail-section-title">About</div>
-      <div class="detail-section-body" id="adoptedDesc" style="max-height:72px;overflow:hidden;text-overflow:ellipsis;">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy.</div>
+    <!-- Streak -->
+    <div class="adopted-streak-card">
+      <div class="adopted-streak-label">Streak</div>
+      <div class="adopted-streak-row" id="adoptedStreakRow"></div>
     </div>
 
-    <div class="detail-divider"></div>
-
-    <!-- How it works -->
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div class="detail-section-title">How it works</div>
-      <div class="beat-timeline" id="adoptedBeats">
-        <!-- Populated by JS -->
-      </div>
+    <!-- Activity feed -->
+    <div class="adopted-feed" id="adoptedFeed">
+      <!-- Populated by JS with grouped headers + items -->
     </div>
 
     <div style="height:40px;"></div>
@@ -2153,25 +2530,6 @@
     </div>
 
     <div class="cal-sheet-body">
-    <!-- Streak cards -->
-    <div class="cal-streak-section">
-      <div class="cal-streak-label">Streak</div>
-      <div class="cal-streak-row">
-        <div class="cal-streak-card">
-          <div class="cal-streak-avatar"><div class="avatar avatar-md" data-kid="ben"><canvas class="rive-user" width="58" height="83"></canvas></div></div>
-          <div class="cal-streak-info"><div class="cal-streak-count">10</div><div class="cal-streak-unit">Days</div></div>
-        </div>
-        <div class="cal-streak-card">
-          <div class="cal-streak-avatar"><div class="avatar avatar-md" data-kid="gabe"><canvas class="rive-user" width="58" height="83"></canvas></div></div>
-          <div class="cal-streak-info"><div class="cal-streak-count">10</div><div class="cal-streak-unit">Days</div></div>
-        </div>
-        <div class="cal-streak-card">
-          <div class="cal-streak-avatar"><div class="avatar avatar-md" data-kid="shane"><canvas class="rive-user" width="58" height="83"></canvas></div></div>
-          <div class="cal-streak-info"><div class="cal-streak-count">10</div><div class="cal-streak-unit">Days</div></div>
-        </div>
-      </div>
-    </div>
-
     <!-- Calendar grid -->
     <div class="cal-grid">
       <!-- Week 1: Apr 1-5 (Wed-Sun, pad Mon+Tue) -->
@@ -2180,37 +2538,37 @@
         <div class="cal-day hidden"><div class="cal-day-num">0</div><div class="cal-day-indicator"></div></div>
         <div class="cal-day"><div class="cal-day-num">1</div><div class="cal-day-indicator" data-status="empty"></div></div>
         <div class="cal-day"><div class="cal-day-num">2</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
-        <div class="cal-day"><div class="cal-day-num">3</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">3</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">4</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
         <div class="cal-day"><div class="cal-day-num">5</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
       </div>
       <!-- Week 2: Apr 6-12 -->
       <div class="cal-week">
-        <div class="cal-day"><div class="cal-day-num">6</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">6</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">7</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
-        <div class="cal-day"><div class="cal-day-num">8</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">8</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">9</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
-        <div class="cal-day"><div class="cal-day-num">10</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">10</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">11</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
         <div class="cal-day"><div class="cal-day-num">12</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
       </div>
       <!-- Week 3: Apr 13-19 -->
       <div class="cal-week">
-        <div class="cal-day"><div class="cal-day-num">13</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">13</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">14</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
-        <div class="cal-day"><div class="cal-day-num">15</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">15</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">16</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
-        <div class="cal-day"><div class="cal-day-num">17</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">17</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">18</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
         <div class="cal-day"><div class="cal-day-num">19</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
       </div>
       <!-- Week 4: Apr 20-26 -->
       <div class="cal-week">
-        <div class="cal-day"><div class="cal-day-num">20</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">20</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">21</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
-        <div class="cal-day"><div class="cal-day-num">22</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">22</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">23</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
-        <div class="cal-day"><div class="cal-day-num">24</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">24</div><div class="cal-day-indicator" data-status="completed">2</div></div>
         <div class="cal-day"><div class="cal-day-num">25</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
         <div class="cal-day"><div class="cal-day-num">26</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
       </div>
@@ -2226,30 +2584,13 @@
       </div>
     </div>
 
-    <!-- Today feed -->
-    <div class="cal-today-section">
-      <div class="cal-today-header">Today, April 28</div>
-      <div class="cal-today-card">
-        <div class="cal-today-avatar">
-          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="87" height="124"></canvas></div>
-          <div class="cal-today-badge"><span class="mi" style="font-size:12px;">check</span></div>
-        </div>
-        <div class="cal-today-text"><b>Ben</b> completed morning routine. <span class="cal-time">1h</span></div>
-        <span class="mi cal-today-chevron">chevron_forward</span>
-      </div>
-      <div class="cal-today-card">
-        <div class="cal-today-avatar">
-          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="87" height="124"></canvas></div>
-          <div class="cal-today-badge"><span class="mi" style="font-size:12px;">check</span></div>
-        </div>
-        <div class="cal-today-text"><b>Gabe</b> completed morning routine. <span class="cal-time">1h</span></div>
-        <span class="mi cal-today-chevron">chevron_forward</span>
-      </div>
-    </div>
+    <!-- Day feed (populated by JS on day select) -->
+    <div class="cal-today-section" id="calDayFeed"></div>
     </div><!-- /.cal-sheet-body -->
   </div>
 
-  <!-- Transcript sheet -->
+  <!-- Transcript scrim + sheet -->
+  <div class="transcript-scrim" id="transcriptScrim"></div>
   <div class="transcript-sheet" id="transcriptSheet">
     <div class="transcript-toolbar">
       <button class="header-btn" id="transcriptBack" aria-label="Back"><span class="mi">chevron_backward</span></button>
@@ -2293,6 +2634,42 @@
       <button class="btn btn-destructive btn-md" id="archiveConfirm">Archive</button>
     </div>
   </div>
+
+  <!-- Info about sheet -->
+  <div class="info-about-scrim" id="infoAboutScrim"></div>
+  <div class="info-about-sheet" id="infoAboutSheet">
+    <div class="info-about-sheet-header">
+      <button class="header-btn" id="infoAboutClose" aria-label="Close"><span class="mi">close</span></button>
+    </div>
+    <div class="info-about-sheet-body">
+      <div class="info-about-title">
+        <h2 id="infoAboutName">Routine</h2>
+      </div>
+      <div class="info-about-stats">
+        <div class="info-about-stat">
+          <span class="info-about-stat-label">AGES</span>
+          <span class="info-about-stat-value" id="infoAboutAge">4+</span>
+          <span class="info-about-stat-sub">years</span>
+        </div>
+        <div class="info-about-stat-divider"></div>
+        <div class="info-about-stat">
+          <span class="info-about-stat-label">DEVELOPER</span>
+          <div style="display:flex;align-items:center;justify-content:center;height:32px;">
+            <div class="avatar avatar-xs" id="infoAboutDevAvatar"><canvas class="rive-sprout" width="64" height="92"></canvas></div>
+          </div>
+          <span class="info-about-stat-sub">Sprout team</span>
+        </div>
+      </div>
+      <div class="info-about-section">
+        <div class="info-about-section-title">About</div>
+        <div class="info-about-section-body" id="infoAboutDesc">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy.</div>
+      </div>
+      <div class="info-about-section">
+        <div class="info-about-section-title">How it works</div>
+        <div class="beat-timeline" id="infoAboutBeats"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -2314,23 +2691,35 @@ window.DS_META = {
   owner: 'Leti',
   status: 'In progress',
   screen: ['Skills tab', 'Explore', 'Skill detail', 'Adopt in chat', 'Adopted skill view'],
+  state: ['Active', 'Still', 'NUX'],
   notes: '\
 <h3>Flow</h3>\
 <ol>\
-<li><b>Skills tab</b> - Grid of adopted skills. Tap "explore" to browse.</li>\
+<li><b>Skills tab</b> - List of adopted skills grouped by Active/Archived with badges. Tap "explore" to browse the library.</li>\
 <li><b>Explore</b> - Browse by category (carousels or vertical list). Tap a card to preview.</li>\
-<li><b>Skill detail</b> - Metadata, stats, description. Tap "Get" to adopt.</li>\
+<li><b>Skill detail</b> - Metadata, stats, about, how-it-works beat timeline. Tap "Get" to adopt.</li>\
 <li><b>Adopt in chat</b> - Customize the skill: pick kids, adjust steps/tone. Activate or save.</li>\
-<li><b>Adopted skill view</b> - Blue banner hero, activity chart, about, how-it-works beat timeline.</li>\
+<li><b>Adopted skill view</b> - Color-coded hero banner, weekly activity widget (Mon/Wed/Fri schedule), streak cards per kid, activity feed with transcripts.</li>\
 </ol>\
+<h3>States (use dropdown)</h3>\
+<ul>\
+<li><b>Active</b> - Default. Active skills at top, archived at bottom with section headers.</li>\
+<li><b>Still</b> - 4 active skills, rest archived. Represents a partially active account.</li>\
+<li><b>NUX</b> - Empty state for new users with no adopted skills.</li>\
+</ul>\
 <h3>Interactions</h3>\
 <ul>\
-<li><b>Tap skill card</b> on Skills tab - opens adopted skill view</li>\
+<li><b>Tap skill card</b> on Skills tab - opens adopted skill view with color banner, activity widget, streak, and feed</li>\
+<li><b>Tap info icon</b> in adopted view toolbar - opens about sheet with metadata, ages, developer, and how-it-works</li>\
+<li><b>Tap kid avatars</b> in toolbar - opens context menu (rename, edit, archive)</li>\
+<li><b>Tap feed item</b> - opens transcript of that session</li>\
+<li><b>Tap "See all"</b> in activity widget - opens calendar sheet with day-by-day history</li>\
 <li><b>Tap explore icon</b> - opens explore overlay</li>\
 <li><b>Tap explore card</b> - opens skill detail</li>\
 <li><b>Tap "Get"</b> - opens adopt chat</li>\
 <li><b>Tap "Activate now"</b> - opens adopted skill view</li>\
 <li><b>Category pills</b> - switch between carousel and vertical list views</li>\
+<li><b>Filter button</b> - filter skills by kid or status</li>\
 </ul>'
 };
 </script>
@@ -2342,6 +2731,100 @@ window.DS_META = {
   var detailScreen = document.getElementById('detailScreen');
   var adoptScreen = document.getElementById('adoptScreen');
   var adoptedScreen = document.getElementById('adoptedScreen');
+
+  // ── Skills tab states: NUX / Still / Active ──
+  var skillsNux = document.getElementById('skillsNux');
+  var skillsScroll = document.getElementById('skillsScroll');
+  var skillsHeader = document.querySelector('.skills-header-actions');
+  var savedStatuses = {};
+
+  // Inject badges on skill cards
+  document.querySelectorAll('.skill-card').forEach(function(card) {
+    var status = card.getAttribute('data-status') || 'active';
+    var badge = document.createElement('span');
+    badge.className = 'skill-card-badge skill-card-badge--' + (status === 'active' ? 'active' : 'archived');
+    badge.textContent = status === 'active' ? 'Active' : 'Archived';
+    card.appendChild(badge);
+    savedStatuses[card.getAttribute('data-skill')] = status;
+  });
+
+  var activeHeader = document.getElementById('skillsActiveHeader');
+  var archivedHeader = document.getElementById('skillsArchivedHeader');
+
+  function setSkillsState(state) {
+    if (state === 'nux') {
+      skillsNux.classList.remove('hidden');
+      document.querySelectorAll('.skill-card').forEach(function(c) { c.style.display = 'none'; });
+      activeHeader.style.display = 'none';
+      archivedHeader.style.display = 'none';
+      skillsHeader.style.display = 'none';
+    } else if (state === 'still') {
+      skillsNux.classList.add('hidden');
+      skillsHeader.style.display = '';
+      activeHeader.style.display = '';
+      archivedHeader.style.display = '';
+      var grid = document.getElementById('skillsGrid');
+      var cards = Array.from(document.querySelectorAll('.skill-card'));
+      // Reorder: active header, first 4 cards, archived header, rest
+      grid.appendChild(activeHeader);
+      cards.forEach(function(card, i) {
+        card.style.display = '';
+        var badge = card.querySelector('.skill-card-badge');
+        if (i < 4) {
+          badge.className = 'skill-card-badge skill-card-badge--active';
+          badge.textContent = 'Active';
+          grid.appendChild(card);
+        }
+      });
+      grid.appendChild(archivedHeader);
+      cards.forEach(function(card, i) {
+        if (i >= 4) {
+          var badge = card.querySelector('.skill-card-badge');
+          badge.className = 'skill-card-badge skill-card-badge--archived';
+          badge.textContent = 'Archived';
+          grid.appendChild(card);
+        }
+      });
+    } else {
+      skillsNux.classList.add('hidden');
+      skillsHeader.style.display = '';
+      activeHeader.style.display = '';
+      archivedHeader.style.display = '';
+      var grid = document.getElementById('skillsGrid');
+      var cards = Array.from(document.querySelectorAll('.skill-card'));
+      // Reorder: active header, active cards, archived header, archived cards
+      grid.appendChild(activeHeader);
+      cards.forEach(function(card) {
+        var status = savedStatuses[card.getAttribute('data-skill')] || 'active';
+        if (status === 'active') {
+          card.style.display = '';
+          var badge = card.querySelector('.skill-card-badge');
+          badge.className = 'skill-card-badge skill-card-badge--active';
+          badge.textContent = 'Active';
+          grid.appendChild(card);
+        }
+      });
+      grid.appendChild(archivedHeader);
+      cards.forEach(function(card) {
+        var status = savedStatuses[card.getAttribute('data-skill')] || 'active';
+        if (status !== 'active') {
+          card.style.display = '';
+          var badge = card.querySelector('.skill-card-badge');
+          badge.className = 'skill-card-badge skill-card-badge--archived';
+          badge.textContent = 'Archived';
+          grid.appendChild(card);
+        }
+      });
+    }
+  }
+
+  // NUX explore button
+  document.getElementById('nuxExploreBtn').addEventListener('click', function() {
+    exploreOverlay.classList.add('visible');
+  });
+
+  // Expose for switcher
+  window.setSkillsState = setSkillsState;
 
   var currentSkill = {};
 
@@ -2387,6 +2870,32 @@ window.DS_META = {
       { title: 'Interview begins', desc: 'Sprout goes full NPR journalist with a straight face.' },
       { title: 'Deep questions', desc: 'Real interview questions applied to an absurd character.' },
       { title: 'Sign off', desc: 'Sprout wraps with a broadcast-style outro.' }
+    ],
+    'One-sentence story': [
+      { title: 'First line', desc: 'Sprout writes the opening sentence of a brand new story.' },
+      { title: 'Your turn', desc: 'Your kid adds the next sentence, taking the plot anywhere.' },
+      { title: 'Complications', desc: 'Sprout throws in twists, villains, or impossible choices.' },
+      { title: 'Climax', desc: 'The story builds to a peak around sentence 8.' },
+      { title: 'Title it', desc: 'After 10 sentences, Sprout names the story based on what happened.' }
+    ],
+    'Would you rather': [
+      { title: 'Round one', desc: 'Sprout opens with an easy would-you-rather to warm up.' },
+      { title: 'Escalate', desc: 'Each round gets weirder: spaghetti feet vs bread hands territory.' },
+      { title: 'Defend it', desc: 'Your kid has to explain why. No "I don\'t know" allowed.' },
+      { title: 'Roast', desc: 'Sprout lovingly roasts weak answers.' },
+      { title: 'Final round', desc: 'The hardest choice yet. No passing.' }
+    ],
+    'Callback': [
+      { title: 'Surprise opener', desc: 'Sprout brings up something from a past conversation, unprompted.' },
+      { title: 'Memory check', desc: 'Your kid confirms, corrects, or adds to the story.' },
+      { title: 'Follow the thread', desc: 'Sprout digs into what happened next or how it turned out.' },
+      { title: 'Tag for later', desc: 'Sprout flags a new detail to follow up on next time.' }
+    ],
+    'Bedtime defense': [
+      { title: 'Opening argument', desc: 'Your kid makes their case for a later bedtime.' },
+      { title: 'Cross-examination', desc: 'Sprout pushes back with real counterarguments. No easy wins.' },
+      { title: 'Rebuttal', desc: 'Your kid gets one more chance to strengthen their case.' },
+      { title: 'Verdict', desc: 'Sprout delivers the ruling. One side wins, fair and square.' }
     ]
   };
   // Default beats for any skill
@@ -2439,10 +2948,25 @@ window.DS_META = {
     if (ref) ref.textContent = currentSkill.name;
   }
 
+  function reinitAdoptedRive() {
+    // Re-init Rive avatars after adopted screen becomes visible (canvases need to be in viewport)
+    setTimeout(function() {
+      adoptedScreen.querySelectorAll('.avatar[data-kid] canvas.rive-user').forEach(function(c) {
+        c._riveInited = false;
+      });
+      if (window.initRiveAvatars) window.initRiveAvatars(adoptedScreen);
+    }, 50);
+  }
+
   function updateAdopted() {
     document.getElementById('adoptedIcon').innerHTML = currentSkill.emoji;
     document.getElementById('adoptedName').textContent = currentSkill.name;
-    document.getElementById('adoptedDesc').textContent = currentSkill.desc;
+
+    // Set banner color from skill emoji
+    document.querySelector('.adopted-hero-banner').setAttribute('data-color', getEmojiColor(currentSkill.emoji));
+
+    // Re-init Rive avatars in toolbar
+    reinitAdoptedRive();
 
     // Update status badge from skill card data
     var badge = document.getElementById('adoptedBadge');
@@ -2457,28 +2981,114 @@ window.DS_META = {
       badge.style.color = '';
     }
 
-    // Render beat timeline in "How it works"
-    var beats = skillBeats[currentSkill.name] || defaultBeats;
-    var container = document.getElementById('adoptedBeats');
-    container.innerHTML = '';
-    beats.forEach(function(beat, i) {
-      var isFirst = (i === 0);
-      var isLast = (i === beats.length - 1);
-      var step = document.createElement('div');
-      step.className = 'beat-step';
-      step.innerHTML =
-        '<div class="beat-step-timeline">' +
-          '<div class="beat-step-line-top" style="' + (isFirst ? 'visibility:hidden' : '') + '"></div>' +
-          '<div class="beat-step-dot"><div class="beat-step-dot-inner"></div></div>' +
-          (isLast ? '' : '<div class="beat-step-line"></div>') +
-        '</div>' +
-        '<div class="beat-step-content">' +
-          '<div class="beat-step-title">' + beat.title + '</div>' +
-          '<div class="beat-step-desc">' + beat.desc + '</div>' +
-        '</div>';
-      container.appendChild(step);
+    // Render toolbar info button avatars from assigned kids
+    var kids = (currentSkill.kids || 'Ben, Gabe').split(',').map(function(k) { return k.trim().toLowerCase(); });
+    var infoAvatars = document.getElementById('infoAvatarsBtn');
+    infoAvatars.innerHTML = '';
+    kids.forEach(function(kid) {
+      var div = document.createElement('div');
+      div.className = 'avatar';
+      div.setAttribute('data-kid', kid);
+      div.innerHTML = '<canvas class="rive-user" width="46" height="66"></canvas>';
+      infoAvatars.appendChild(div);
     });
+
+    // Render streak items from assigned kids
+    var streakRow = document.getElementById('adoptedStreakRow');
+    streakRow.innerHTML = '';
+    kids.forEach(function(kid) {
+      var item = document.createElement('div');
+      item.className = 'adopted-streak-item';
+      item.innerHTML =
+        '<div class="adopted-streak-avatar"><div class="avatar" data-kid="' + kid + '"><canvas class="rive-user" width="58" height="83"></canvas></div></div>' +
+        '<div class="adopted-streak-info"><div class="adopted-streak-count">10</div><div class="adopted-streak-unit">Days</div></div>';
+      streakRow.appendChild(item);
+    });
+
+    // Render activity feed with grouped headers
+    var feed = document.getElementById('adoptedFeed');
+    feed.innerHTML = '';
+    var skillName = currentSkill.name.toLowerCase();
+
+    function addFeedHeader(text) {
+      var h = document.createElement('div');
+      h.className = 'adopted-feed-header';
+      h.textContent = text;
+      feed.appendChild(h);
+    }
+    var feedPreviews = {
+      ben: [
+        '"Today was kinda rough because Marcus kept talking in class and I got in trouble too..."',
+        '"I told the teacher it wasn\'t fair and she actually listened for once..."',
+        '"Nothing happened. It was just a normal day I guess."'
+      ],
+      gabe: [
+        '"We played this game at recess where you have to freeze and I won three times..."',
+        '"My friend said something weird at lunch and I didn\'t know what to say..."',
+        '"I drew a robot in art class and the teacher put it on the wall!"'
+      ],
+      shane: [
+        '"I learned how to do a cartwheel today and only fell once..."',
+        '"The substitute teacher was really nice and let us pick our seats..."',
+        '"We had a fire drill and I was the line leader!"'
+      ]
+    };
+    var previewIdx = {};
+
+    function getPreview(kid) {
+      if (!previewIdx[kid]) previewIdx[kid] = 0;
+      var previews = feedPreviews[kid] || feedPreviews.ben;
+      var text = previews[previewIdx[kid] % previews.length];
+      previewIdx[kid]++;
+      return text;
+    }
+
+    function addFeedItem(kid, time, dayNum) {
+      var name = kid.charAt(0).toUpperCase() + kid.slice(1);
+      var item = document.createElement('div');
+      item.className = 'adopted-feed-item';
+      item.style.cursor = 'pointer';
+      item.innerHTML =
+        '<div class="adopted-feed-leading">' +
+          '<div class="avatar" data-kid="' + kid + '"><canvas class="rive-user" width="87" height="124"></canvas></div>' +
+          '<div class="adopted-feed-badge"><span class="mi">check</span></div>' +
+        '</div>' +
+        '<div class="adopted-feed-content">' +
+          '<div class="adopted-feed-title">' +
+            '<div class="adopted-feed-title-text"><b>' + name + '</b> finished <b>' + currentSkill.name + '</b></div>' +
+            '<span class="adopted-feed-time">' + time + '</span>' +
+          '</div>' +
+          '<div class="adopted-feed-preview">' + getPreview(kid) + '</div>' +
+        '</div>';
+      item.addEventListener('click', (function(k, d) {
+        return function() { openTranscript(k, d, '4:32 PM'); };
+      })(kid, dayNum));
+      feed.appendChild(item);
+    }
+
+    // Today is Tue Apr 28 (not a skill day), so no "Today" section.
+    // Yesterday was Mon Apr 27 (skill day).
+    addFeedHeader('Yesterday');
+    kids.forEach(function(kid) { addFeedItem(kid, '1d', 27); });
+
+    // Last 7 days: Fri Apr 24 (4d ago) and Wed Apr 22 (6d ago)
+    addFeedHeader('Last 7 days');
+    kids.forEach(function(kid) { addFeedItem(kid, '4d', 24); });
+    kids.forEach(function(kid) { addFeedItem(kid, '6d', 22); });
   }
+
+  // Scroll gradient on adopted view
+  var adoptedGradient = document.querySelector('.adopted-gradient');
+  var adoptedScrollEl = document.querySelector('.adopted-scroll');
+  adoptedScrollEl.addEventListener('scroll', function() {
+    var banner = adoptedScrollEl.querySelector('.adopted-hero-banner');
+    var threshold = banner ? banner.offsetHeight : 260;
+    if (adoptedScrollEl.scrollTop > 200) {
+      adoptedGradient.classList.add('visible');
+    } else {
+      adoptedGradient.classList.remove('visible');
+    }
+  });
 
   // Skills tab cards -> adopted view
   document.querySelectorAll('.skill-card').forEach(function(card) {
@@ -2664,7 +3274,7 @@ window.DS_META = {
     }
   }
 
-  document.getElementById('adoptedSettingsBtn').addEventListener('click', function() {
+  document.getElementById('infoAvatarsBtn').addEventListener('click', function() {
     updateCtxArchiveBtn();
     openCtxMenu();
   });
@@ -2707,6 +3317,50 @@ window.DS_META = {
     isArchived = true;
     setBadgeArchived();
   });
+
+  // Info about sheet
+  var infoAboutScrim = document.getElementById('infoAboutScrim');
+  var infoAboutSheet = document.getElementById('infoAboutSheet');
+
+  function openInfoAbout() {
+    // Populate with current skill data
+    document.getElementById('infoAboutName').textContent = currentSkill.name;
+    document.getElementById('infoAboutAge').textContent = currentSkill.age;
+    document.getElementById('infoAboutDesc').textContent = currentSkill.desc;
+
+    // Render beat timeline
+    var beats = skillBeats[currentSkill.name] || defaultBeats;
+    var container = document.getElementById('infoAboutBeats');
+    container.innerHTML = '';
+    beats.forEach(function(beat, i) {
+      var isFirst = (i === 0);
+      var isLast = (i === beats.length - 1);
+      var step = document.createElement('div');
+      step.className = 'beat-step';
+      step.innerHTML =
+        '<div class="beat-step-timeline">' +
+          '<div class="beat-step-line-top" style="' + (isFirst ? 'visibility:hidden' : '') + '"></div>' +
+          '<div class="beat-step-dot"><div class="beat-step-dot-inner"></div></div>' +
+          (isLast ? '' : '<div class="beat-step-line"></div>') +
+        '</div>' +
+        '<div class="beat-step-content">' +
+          '<div class="beat-step-title">' + beat.title + '</div>' +
+          '<div class="beat-step-desc">' + beat.desc + '</div>' +
+        '</div>';
+      container.appendChild(step);
+    });
+
+    infoAboutScrim.classList.add('visible');
+    infoAboutSheet.classList.add('visible');
+  }
+  function closeInfoAbout() {
+    infoAboutScrim.classList.remove('visible');
+    infoAboutSheet.classList.remove('visible');
+  }
+
+  document.getElementById('infoAboutBtn').addEventListener('click', openInfoAbout);
+  document.getElementById('infoAboutClose').addEventListener('click', closeInfoAbout);
+  infoAboutScrim.addEventListener('click', closeInfoAbout);
 
   // Calendar sheet (See all)
   var calScrim = document.getElementById('calScrim');
@@ -2754,32 +3408,49 @@ window.DS_META = {
     updateCalFeed(dayNum, status);
   }
 
+  var calPreviews = {
+    ben: '"Today was kinda rough because Marcus kept talking in class and I got in trouble too..."',
+    gabe: '"We played this game at recess where you have to freeze and I won three times..."',
+    shane: '"I learned how to do a cartwheel today and only fell once..."'
+  };
+
   function updateCalFeed(dayNum, status) {
-    var header = document.querySelector('.cal-today-header');
-    var section = document.querySelector('.cal-today-section');
+    var section = document.getElementById('calDayFeed');
+    section.innerHTML = '';
+
+    // Header
     var isToday = (dayNum === 28);
+    var header = document.createElement('div');
+    header.className = 'adopted-feed-header';
     header.textContent = (isToday ? 'Today, ' : '') + 'April ' + dayNum;
-    section.querySelectorAll('.cal-today-card').forEach(function(c) { c.remove(); });
+    section.appendChild(header);
+
     var items = calFeed[dayNum];
     if (!items || items.length === 0) {
       var empty = document.createElement('div');
-      empty.className = 'cal-today-card';
-      empty.style.cssText = 'color:var(--text-quaternary,#717680);font-size:14px;';
+      empty.style.cssText = 'color:var(--text-quaternary,#717680);font-size:14px;padding:12px 0;';
       empty.textContent = (status === 'no-skill') ? 'No activity this day' : 'No activity yet';
       section.appendChild(empty);
       return;
     }
     items.forEach(function(item) {
+      var kid = item.kid;
+      var name = kid.charAt(0).toUpperCase() + kid.slice(1);
       var card = document.createElement('div');
-      card.className = 'cal-today-card';
+      card.className = 'adopted-feed-item';
       card.style.cursor = 'pointer';
       card.innerHTML =
-        '<div class="cal-today-avatar">' +
-          '<div class="avatar" data-kid="' + item.kid + '"><canvas class="rive-user" width="87" height="124"></canvas></div>' +
-          '<div class="cal-today-badge"><span class="mi" style="font-size:12px;">check</span></div>' +
+        '<div class="adopted-feed-leading">' +
+          '<div class="avatar" data-kid="' + kid + '"><canvas class="rive-user" width="87" height="124"></canvas></div>' +
+          '<div class="adopted-feed-badge"><span class="mi">check</span></div>' +
         '</div>' +
-        '<div class="cal-today-text">' + item.text + ' <span class="cal-time">' + item.time + '</span></div>' +
-        '<span class="mi cal-today-chevron">chevron_forward</span>';
+        '<div class="adopted-feed-content">' +
+          '<div class="adopted-feed-title">' +
+            '<div class="adopted-feed-title-text"><b>' + name + '</b> finished <b>' + (currentSkill.name || 'School dump') + '</b></div>' +
+            '<span class="adopted-feed-time">' + item.time + '</span>' +
+          '</div>' +
+          '<div class="adopted-feed-preview">' + (calPreviews[kid] || '') + '</div>' +
+        '</div>';
       card.addEventListener('click', function() { openTranscript(item.kid, dayNum, item.time); });
       section.appendChild(card);
     });
@@ -2846,14 +3517,18 @@ window.DS_META = {
         initRiveAvatar(c, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
       }
     });
-    calSheet.classList.add('dimmed');
+    if (calSheet.classList.contains('visible')) calSheet.classList.add('dimmed');
+    var scrim = document.getElementById('transcriptScrim');
+    scrim.classList.add('visible');
     transcriptSheet.classList.add('visible');
   }
   function closeTranscript() {
     transcriptSheet.classList.remove('visible');
+    document.getElementById('transcriptScrim').classList.remove('visible');
     calSheet.classList.remove('dimmed');
   }
   document.getElementById('transcriptBack').addEventListener('click', closeTranscript);
+  document.getElementById('transcriptScrim').addEventListener('click', closeTranscript);
 
   // Make existing static today cards clickable
   document.querySelectorAll('.cal-today-card').forEach(function(card) {
@@ -3103,6 +3778,41 @@ window.DS_META = {
   if (adoptZeevCanvas) initRiveAvatar(adoptZeevCanvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: USER_STATE });
   var adoptMaliCanvas = document.querySelector('#adoptAvatarMali canvas.rive-user');
   if (adoptMaliCanvas) initRiveAvatar(adoptMaliCanvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: COPARENT_STATE });
+
+  // Hook into shell screen dropdown
+  window.onScreenChange = function(index) {
+    // 0=Skills tab, 1=Explore, 2=Skill detail, 3=Adopt in chat, 4=Adopted skill view
+    exploreOverlay.classList.remove('visible');
+    detailScreen.classList.remove('visible');
+    adoptScreen.classList.remove('visible');
+    adoptedScreen.classList.remove('visible');
+
+    if (index === 0) {
+      // already on skills tab
+    } else if (index === 1) {
+      exploreOverlay.classList.add('visible');
+    } else if (index === 2) {
+      var firstCard = document.querySelector('.skill-card');
+      if (firstCard) { readFromCard(firstCard); updateDetail(); }
+      detailScreen.classList.add('visible');
+    } else if (index === 3) {
+      var firstCard = document.querySelector('.skill-card');
+      if (firstCard) { readFromCard(firstCard); updateDetail(); updateAdopt(); }
+      adoptScreen.classList.add('visible');
+      openAdoptChat();
+    } else if (index === 4) {
+      var firstCard = document.querySelector('.skill-card');
+      if (firstCard) { readFromCard(firstCard); updateAdopted(); }
+      adoptedScreen.classList.add('visible');
+    }
+  };
+
+  // Hook into shell state dropdown
+  window.onStateChange = function(index) {
+    // 0=Active, 1=Still, 2=NUX
+    var states = ['active', 'still', 'nux'];
+    setSkillsState(states[index] || 'active');
+  };
 
 })();
 </script>
