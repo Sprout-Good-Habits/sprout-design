@@ -337,7 +337,9 @@
   color: var(--text-primary, #181d27);
 }
 .act-item-time {
-  font-size: var(--font-size-text-xs, 12px);
+  flex-shrink: 0;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
   color: var(--text-quaternary, #717680);
 }
 .act-item-placeholder {
@@ -352,6 +354,89 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* ── Alt 1: Label + Description ── */
+.act-item-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+}
+.act-item-label-text {
+  flex: 1;
+  min-width: 0;
+}
+.act-item-quote {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Alt 2: Label + Quote (brand bar + quote) ── */
+.act-item-thumb {
+  display: none;
+  align-items: stretch;
+  gap: var(--spacing-md, 8px);
+}
+.act-item-thumb-bar {
+  width: 2px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--fg-brand-primary, #0ba5ec);
+}
+.act-item-thumb-text {
+  flex: 1; min-width: 0;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Notification toggle visibility (driven by .device-screen class) ── */
+.opt-notif-thumb .act-item-quote { display: none; }
+.opt-notif-thumb .act-item-thumb { display: flex; }
+
+/* ── Toggle controls in metadata ── */
+.act-toggles { margin-top: 8px; }
+.act-toggle-group { margin-bottom: 16px; }
+.act-toggle-label {
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+  margin-bottom: 6px;
+}
+.act-toggle-row {
+  display: flex;
+  gap: 4px;
+}
+.act-toggle-btn {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium, 500);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  color: var(--text-secondary, #414651);
+  background: var(--bg-primary, #fff);
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+  text-align: center;
+  line-height: 18px;
+}
+.act-toggle-btn:hover { background: var(--gray-50, #fafafa); }
+.act-toggle-btn.active {
+  background: var(--brand-50, #f0f9ff);
+  border-color: var(--brand-200, #b9e6fe);
+  color: var(--brand-700, #026aa2);
+  font-weight: var(--font-weight-semibold, 600);
 }
 
 /* ── Bottom gradient fade ── */
@@ -1205,34 +1290,52 @@
       <div class="act-section-header">Today</div>
 
       <!-- Ben completed School dump -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#f670c7;">&#x1F3EB;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> finished School dump <span class="act-item-time">1h</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Ben</b> finished <b>School dump</b></div> <span class="act-item-time">1h</span></div>
+          <div class="act-item-quote">"Today was kinda rough because Marcus kept talking in class and I got in trouble too even though I wasn't doing anything."</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"Today was kinda rough because Marcus kept talking in class and I got in trouble too even though I wasn't doing anything."</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Shane completed Hot Take Olympics -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#fac515;">&#x1F525;</div>
         </div>
         <div class="act-item-content">
-          <b>Shane</b> finished Hot Take Olympics <span class="act-item-time">2h</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Shane</b> finished <b>Hot Take Olympics</b></div> <span class="act-item-time">2h</span></div>
+          <div class="act-item-quote">"Pineapple on pizza is actually good because the sweetness balances the salt and anyone who disagrees hasn't tried it properly."</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"Pineapple on pizza is actually good because the sweetness balances the salt and anyone who disagrees hasn't tried it properly."</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Gabe completed 20 Questions -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#f38744;">&#x2753;</div>
         </div>
         <div class="act-item-content">
-          <b>Gabe</b> finished 20 Questions <span class="act-item-time">3h</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Gabe</b> finished <b>20 Questions</b></div> <span class="act-item-time">3h</span></div>
+          <div class="act-item-quote">"Is it alive? Is it bigger than a car? Can you find it at school?"</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"Is it alive? Is it bigger than a car? Can you find it at school?"</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Yesterday -->
@@ -1240,24 +1343,36 @@
       <div class="act-section-header">Yesterday</div>
 
       <!-- Ben completed T-rex interview -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#47cd89;">&#x1F3AD;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> finished T-rex interview <span class="act-item-time">18h</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Ben</b> finished <b>T-rex interview</b></div> <span class="act-item-time">18h</span></div>
+          <div class="act-item-quote">"Well, my arms are short but my personality is huge. Next question."</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"Well, my arms are short but my personality is huge. Next question."</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Gabe completed One-sentence story -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#a48afb;">&#x1F4D6;</div>
         </div>
         <div class="act-item-content">
-          <b>Gabe</b> finished One-sentence story <span class="act-item-time">22h</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Gabe</b> finished <b>One-sentence story</b></div> <span class="act-item-time">22h</span></div>
+          <div class="act-item-quote">"The dragon opened the fridge, found no pizza, and decided to become a chef instead."</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"The dragon opened the fridge, found no pizza, and decided to become a chef instead."</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Last 7 days -->
@@ -1265,34 +1380,52 @@
       <div class="act-section-header">Last 7 days</div>
 
       <!-- Shane completed Bedtime defense -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#f97066;">&#x1F6CF;&#xFE0F;</div>
         </div>
         <div class="act-item-content">
-          <b>Shane</b> finished Bedtime defense <span class="act-item-time">3d</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Shane</b> finished <b>Bedtime defense</b></div> <span class="act-item-time">3d</span></div>
+          <div class="act-item-quote">"I should stay up because I need to protect the house from imaginary burglars."</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"I should stay up because I need to protect the house from imaginary burglars."</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Ben completed Would you rather -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#528bff;">&#x1F60A;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> finished Would you rather <span class="act-item-time">5d</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Ben</b> finished <b>Would you rather</b></div> <span class="act-item-time">5d</span></div>
+          <div class="act-item-quote">"Would you rather have spaghetti for hair or sneeze confetti forever?"</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"Would you rather have spaghetti for hair or sneeze confetti forever?"</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Gabe completed Hot Take Olympics -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#fac515;">&#x1F525;</div>
         </div>
         <div class="act-item-content">
-          <b>Gabe</b> finished Hot Take Olympics <span class="act-item-time">6d</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Gabe</b> finished <b>Hot Take Olympics</b></div> <span class="act-item-time">6d</span></div>
+          <div class="act-item-quote">"Dogs are better than cats because dogs actually care about you and cats just judge you silently."</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"Dogs are better than cats because dogs actually care about you and cats just judge you silently."</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Last 30 days -->
@@ -1300,24 +1433,36 @@
       <div class="act-section-header">Last 30 days</div>
 
       <!-- Ben completed Callback -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#36bffa;">&#x1F9E0;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> finished Callback <span class="act-item-time">2w</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Ben</b> finished <b>Callback</b></div> <span class="act-item-time">2w</span></div>
+          <div class="act-item-quote">"Remember when Dad got lost at the mall and we had to find him at the pretzel stand?"</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"Remember when Dad got lost at the mall and we had to find him at the pretzel stand?"</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Shane completed 20 Questions -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="shane"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#f38744;">&#x2753;</div>
         </div>
         <div class="act-item-content">
-          <b>Shane</b> finished 20 Questions <span class="act-item-time">3w</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Shane</b> finished <b>20 Questions</b></div> <span class="act-item-time">3w</span></div>
+          <div class="act-item-quote">"Does it have legs? Can it fly? Is it something you'd find in the kitchen?"</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"Does it have legs? Can it fly? Is it something you'd find in the kitchen?"</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Older -->
@@ -1325,24 +1470,36 @@
       <div class="act-section-header">Older</div>
 
       <!-- Gabe completed School dump -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#f670c7;">&#x1F3EB;</div>
         </div>
         <div class="act-item-content">
-          <b>Gabe</b> finished School dump <span class="act-item-time">1mo</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Gabe</b> finished <b>School dump</b></div> <span class="act-item-time">1mo</span></div>
+          <div class="act-item-quote">"We had a substitute teacher and she let us draw for the last 20 minutes which was actually really cool."</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"We had a substitute teacher and she let us draw for the last 20 minutes which was actually really cool."</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Ben completed Bedtime defense -->
-      <div class="act-item">
+      <div class="act-item act-item-stacked">
         <div class="act-item-leading">
           <div class="avatar" data-kid="ben"><canvas class="rive-user" width="86" height="124"></canvas></div>
           <div class="act-item-badge" style="background:#f97066;">&#x1F6CF;&#xFE0F;</div>
         </div>
         <div class="act-item-content">
-          <b>Ben</b> finished Bedtime defense <span class="act-item-time">1mo</span>
-        </div>      </div>
+          <div class="act-item-label"><div class="act-item-label-text"><b>Ben</b> finished <b>Bedtime defense</b></div> <span class="act-item-time">1mo</span></div>
+          <div class="act-item-quote">"My bedtime should be later because I'm basically a teenager now and teenagers stay up late."</div>
+          <div class="act-item-thumb">
+            <div class="act-item-thumb-bar"></div>
+            <div class="act-item-thumb-text">"My bedtime should be later because I'm basically a teenager now and teenagers stay up late."</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div style="height:120px;"></div>
@@ -1609,7 +1766,7 @@ window.DS_META = {
   desc: 'Home tab only view (based on Navigation v3). Chat accessible via header Sprout avatar.',
   owner: 'Leti',
   status: 'In progress',
-  screen: ['Default', 'NUX'],
+  state: ['Default', 'NUX'],
   notes: '\
 <h3>How ACT inbox works</h3>\
 <p>The ACT tab is a <strong>notification feed</strong>, not a thread list. Each item shows the most relevant current state of an entity. Preview text = latest generation, not latest chat.</p>\
@@ -1625,13 +1782,39 @@ window.DS_META = {
 <li>If one parent approves, the other sees a disabled "Approved" button (not removed).</li>\
 </ul>\
 <p><strong>Not everything leads to a thread</strong> &ndash; approving a screen time request is a single tap. The thread is there for context when you want it, not the mandatory destination.</p>\
-<p><strong>Time sections</strong>: Today, Yesterday, Last 7 days, Last 30 days, Older</p>'
+<p><strong>Time sections</strong>: Today, Yesterday, Last 7 days, Last 30 days, Older</p>' +
+  '<h3>Decisions to make</h3>' +
+  '<div class="act-toggles">' +
+  '<div class="act-toggle-group">' +
+    '<div class="act-toggle-label">1. Notification text</div>' +
+    '<p style="font-size:13px;color:#535862;margin:0 0 6px;">Label + Description shows a 2-line excerpt below the label in plain text. Label + Quote adds a brand-colored bar next to the excerpt.</p>' +
+    '<div class="act-toggle-row">' +
+      '<button class="act-toggle-btn active" onclick="actToggle(\'notif\',0,this)">Label + Description</button>' +
+      '<button class="act-toggle-btn" onclick="actToggle(\'notif\',1,this)">Label + Quote</button>' +
+    '</div>' +
+  '</div>' +
+  '</div>'
 };
 </script>
 <script src="/product-explorer/nav.js"></script>
 <script src="/product-explorer/shell.js"></script>
 <script>
 (function() {
+  // ── A/B toggle controls ──
+  var screen = document.querySelector('.device-screen');
+  var toggleMap = {
+    notif: ['', 'opt-notif-thumb']
+  };
+  window.actToggle = function(type, idx, btn) {
+    var row = btn.parentElement;
+    row.querySelectorAll('.act-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var classes = toggleMap[type];
+    if (!classes || !screen) return;
+    classes.forEach(function(c) { if (c) screen.classList.remove(c); });
+    if (classes[idx]) screen.classList.add(classes[idx]);
+  };
+
   var RIVE_SPROUT_SRC = '/kid-design-system/sprout.riv';
   var RIVE_USER_SRC = '/kid-design-system/character2.91.riv';
   var SM_NAME = 'State Machine 1';
