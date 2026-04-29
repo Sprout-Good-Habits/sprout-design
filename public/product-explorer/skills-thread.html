@@ -1,0 +1,3110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/@rive-app/canvas@2.35.2"></script>
+<title>Sprout Product Explorer -- Skills v1</title>
+<link rel="stylesheet" href="/product-explorer/tokens.css">
+<link rel="stylesheet" href="/product-explorer/styles.css">
+<link rel="stylesheet" href="/kid-design-system/components/device-frame.css">
+<link rel="stylesheet" href="/kid-design-system/components/avatar.css">
+<link rel="stylesheet" href="/kid-design-system/components/status-bar.css">
+<link rel="stylesheet" href="/kid-design-system/components/button.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-messages.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-chips.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-composer.css">
+<link rel="stylesheet" href="/kid-design-system/components/chat-toolbar.css">
+<link rel="stylesheet" href="/kid-design-system/components/reasoning-transcript.css">
+<style>
+/* -- Page-specific -- */
+.device-screen { background: var(--brand-25, #f5fbff); }
+
+/* -- Material Symbols -- */
+.mi {
+  font-family: 'Material Symbols Outlined';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.mi-sm { font-size: 20px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
+
+/* ======================================
+   SKILLS TAB (starting screen)
+   ====================================== */
+.skills-header {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 10px;
+  z-index: 10;
+}
+.skills-header-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-md, 36px);
+  line-height: var(--line-height-display-md, 44px);
+  color: #000;
+  letter-spacing: -0.72px;
+}
+.skills-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg, 12px);
+}
+.header-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 296px;
+  border: 1px solid white;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-primary, #181d27);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px -2px rgba(0,0,0,0.08);
+}
+.header-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+}
+.header-btn .mi { position: relative; z-index: 1; }
+
+.skills-scroll {
+  position: absolute;
+  top: 116px; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.skills-scroll::-webkit-scrollbar { display: none; }
+.skills-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 16px 120px;
+}
+.skill-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+.skill-card:active { opacity: 0.7; }
+.skill-card-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md, 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 38px;
+  overflow: hidden;
+}
+.skill-card-icon[data-color="yellow"]  { background: #fac515; }
+.skill-card-icon[data-color="orange"]  { background: #f38744; }
+.skill-card-icon[data-color="red"]     { background: #f97066; }
+.skill-card-icon[data-color="pink"]    { background: #f670c7; }
+.skill-card-icon[data-color="violet"]  { background: #a48afb; }
+.skill-card-icon[data-color="blue"]    { background: #528bff; }
+.skill-card-icon[data-color="sky"]     { background: #36bffa; }
+.skill-card-icon[data-color="green"]   { background: #47cd89; }
+.skill-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.skill-card-name {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.skill-card-avatars {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.skill-card-avatars .avatar {
+  width: 24px;
+  height: 24px;
+  margin-right: -6px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid white;
+  background: var(--brand-100, #e0f2fe);
+  overflow: hidden;
+}
+.skill-card-avatars .avatar canvas.rive-user {
+  width: 35px;
+  height: 50px;
+  top: -14px;
+}
+.skill-card-meta-label {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: 1;
+  color: var(--text-quaternary, #717680);
+  padding-left: 8px;
+}
+
+/* ======================================
+   BOTTOM TAB BAR + SPROUT FAB
+   ====================================== */
+.tab-bar-wrap {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 0 21px 18px;
+  background: linear-gradient(to top, var(--brand-25, #f5fbff) 80%, rgba(245,251,255,0));
+  padding-top: 16px;
+  z-index: 20;
+}
+.tab-bar-pill {
+  flex: 1;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid white;
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  overflow: hidden;
+  padding: 3px;
+  display: flex;
+}
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px;
+  border-radius: var(--radius-full, 9999px);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+.tab-bar-item .mi { font-size: 24px; color: var(--text-primary, #181d27); }
+.tab-bar-item-label {
+  font-size: 10px;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #181d27);
+  min-width: 100%;
+  text-align: center;
+}
+.tab-bar-item.active {
+  background: var(--bg-secondary, #fafafa);
+  mix-blend-mode: multiply;
+}
+.tab-bar-item.active .mi { color: var(--brand-500, #0ba5ec); }
+.tab-bar-item.active .tab-bar-item-label {
+  color: var(--brand-500, #0ba5ec);
+  font-weight: var(--font-weight-semibold, 600);
+}
+.tab-bar-fab {
+  width: 62px;
+  height: 62px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--brand-100, #e0f2fe);
+  border: 1.3px solid white;
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+.tab-bar-fab canvas.rive-sprout {
+  position: absolute;
+  width: 167px;
+  height: 178px;
+  left: 50%;
+  top: -34px;
+  transform: translateX(-50%);
+}
+
+/* ======================================
+   SHARED OVERLAY TRANSITIONS
+   ====================================== */
+.screen-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  z-index: 25;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease-out;
+}
+.screen-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+.thread-gradient {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 116px;
+  background: linear-gradient(to bottom, var(--brand-25, #f5fbff) 35%, rgba(245,251,255,0));
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ======================================
+   EXPLORE OVERLAY
+   ====================================== */
+.explore-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  z-index: 24;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease-out;
+}
+.explore-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+.explore-toolbar {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 10px;
+  z-index: 10;
+}
+.explore-toolbar-title {
+  flex: 1;
+  text-align: center;
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: #000;
+}
+.explore-pills {
+  position: absolute;
+  top: 116px; left: 0; right: 0;
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  z-index: 10;
+}
+.explore-pills::-webkit-scrollbar { display: none; }
+.explore-pill {
+  padding: 6px 12px;
+  border-radius: var(--radius-full, 9999px);
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+}
+.explore-pill.active {
+  background: var(--brand-500, #0ba5ec);
+  color: white;
+}
+.explore-pill:not(.active) {
+  background: var(--brand-200, #b9e6fe);
+  color: var(--text-secondary, #414651);
+}
+.explore-scroll {
+  position: absolute;
+  top: 168px; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.explore-scroll::-webkit-scrollbar { display: none; }
+.explore-section-header {
+  padding: 8px 16px;
+}
+.explore-section-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-xs, 24px);
+  line-height: var(--line-height-display-xs, 32px);
+  color: #000;
+}
+.explore-section-desc {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+
+/* Explore cards - horizontal carousel (Top picks) */
+.explore-carousel {
+  display: flex;
+  gap: 16px;
+  padding: 0 16px 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.explore-carousel::-webkit-scrollbar { display: none; }
+.explore-card {
+  flex-shrink: 0;
+  width: 291px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+.explore-card:active { opacity: 0.7; }
+.explore-card-thumb {
+  width: 291px;
+  height: 164px;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-4xl, 24px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 64px;
+}
+.explore-card-thumb[data-color="yellow"]  { background: #fac515; }
+.explore-card-thumb[data-color="orange"]  { background: #f38744; }
+.explore-card-thumb[data-color="red"]     { background: #f97066; }
+.explore-card-thumb[data-color="pink"]    { background: #f670c7; }
+.explore-card-thumb[data-color="violet"]  { background: #a48afb; }
+.explore-card-thumb[data-color="blue"]    { background: #528bff; }
+.explore-card-thumb[data-color="sky"]     { background: #36bffa; }
+.explore-card-thumb[data-color="green"]   { background: #47cd89; }
+.explore-card-name {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.explore-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-quaternary, #717680);
+}
+.explore-card-meta .mi-sm { font-size: 20px; }
+
+/* Explore cards - vertical list (category selected) */
+.explore-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px 120px;
+}
+.explore-list-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+.explore-list-card:active { opacity: 0.7; }
+.explore-list-card-thumb {
+  width: 100%;
+  height: 209px;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-4xl, 24px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 80px;
+}
+.explore-list-card-thumb[data-color="yellow"]  { background: #fac515; }
+.explore-list-card-thumb[data-color="orange"]  { background: #f38744; }
+.explore-list-card-thumb[data-color="red"]     { background: #f97066; }
+.explore-list-card-thumb[data-color="pink"]    { background: #f670c7; }
+.explore-list-card-thumb[data-color="violet"]  { background: #a48afb; }
+.explore-list-card-thumb[data-color="blue"]    { background: #528bff; }
+.explore-list-card-thumb[data-color="sky"]     { background: #36bffa; }
+.explore-list-card-thumb[data-color="green"]   { background: #47cd89; }
+
+/* Explore bottom bar */
+.explore-bottom {
+  position: absolute;
+  bottom: 34px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 16px;
+  z-index: 10;
+}
+.explore-search-pill {
+  flex: 1;
+  height: 49px;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid white;
+  border-radius: var(--radius-4xl, 24px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 13px;
+  cursor: text;
+}
+.explore-search-pill .mi { color: var(--text-quaternary, #717680); }
+.explore-search-text {
+  font-size: var(--font-size-text-md, 16px);
+  color: var(--text-placeholder, #717680);
+}
+.explore-edit-btn {
+  width: 49px;
+  height: 49px;
+  background: var(--brand-25, #f5fbff);
+  border: 1px solid white;
+  border-radius: var(--radius-4xl, 24px);
+  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-primary, #181d27);
+  flex-shrink: 0;
+}
+
+/* ======================================
+   SKILL DETAIL SCREEN (new for v1)
+   ====================================== */
+.detail-hero-banner {
+  display: flex;
+  align-items: flex-end;
+  height: 260px;
+  justify-content: center;
+  padding: 0 20px 40px;
+  margin: 0 -16px;
+  overflow: hidden;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 80px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.detail-hero-banner[data-color="yellow"]  { background: #fac515; }
+.detail-hero-banner[data-color="orange"]  { background: #f38744; }
+.detail-hero-banner[data-color="red"]     { background: #f97066; }
+.detail-hero-banner[data-color="pink"]    { background: #f670c7; }
+.detail-hero-banner[data-color="violet"]  { background: #a48afb; }
+.detail-hero-banner[data-color="blue"]    { background: #528bff; }
+.detail-hero-banner[data-color="sky"]     { background: #36bffa; }
+.detail-hero-banner[data-color="green"]   { background: #47cd89; }
+.detail-toolbar {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg, 12px);
+  padding: 0 16px 10px;
+  z-index: 10;
+}
+.detail-scroll {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.detail-scroll::-webkit-scrollbar { display: none; }
+.detail-hero-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding-top: 8px;
+}
+.detail-hero-name {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-xs, 24px);
+  line-height: var(--line-height-display-xs, 32px);
+  color: var(--text-primary, #181d27);
+}
+.detail-hero-cat {
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-quaternary, #717680);
+}
+.detail-get-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--brand-500, #0ba5ec);
+  color: white;
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+.detail-get-btn:active { background: var(--brand-600, #0086c9); }
+
+/* Stats row */
+.detail-stats {
+  display: flex;
+  align-items: stretch;
+}
+.detail-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  color: var(--text-quaternary, #717680);
+}
+.detail-stat-label {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.detail-stat-value {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-xs, 24px);
+  line-height: var(--line-height-display-xs, 32px);
+}
+.detail-stat-sub {
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+}
+.detail-stat-divider {
+  width: 1px;
+  background: var(--border-secondary, #e9eaeb);
+  align-self: center;
+  height: 40px;
+  flex-shrink: 0;
+}
+.detail-divider {
+  width: 100%;
+  height: 0;
+  border-top: 1px solid var(--border-secondary, #e9eaeb);
+}
+.detail-section-title {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.detail-section-body {
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.detail-section-body .more-link {
+  color: var(--fg-brand-primary, #0ba5ec);
+  cursor: pointer;
+}
+
+/* ======================================
+   ADOPT CHAT SCREEN
+   ====================================== */
+.adopt-toolbar {
+  position: absolute;
+  top: 62px; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg, 12px);
+  padding: 0 16px 10px;
+  z-index: 10;
+}
+.adopt-toolbar .toolbar-pill:last-child { flex: none; }
+.toolbar-pill {
+  flex: 1;
+  height: 44px;
+  border-radius: 296px;
+  box-shadow: 0 4px 16px -2px rgba(0,0,0,0.08);
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+  padding: 0 6px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.toolbar-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+}
+.toolbar-pill > * { position: relative; z-index: 1; }
+.toolbar-pill-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--brand-100, #e0f2fe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.toolbar-pill-emoji {
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+.toolbar-pill-text {
+  flex: 1;
+  min-width: 0;
+}
+.toolbar-pill-name {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.toolbar-pill-sub {
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-secondary, #414651);
+  white-space: nowrap;
+}
+
+/* Adopt chat overrides (uses chat-messages.css + chat-chips.css + chat-composer.css + chat-toolbar.css) */
+#adoptScreen .chat-thread {
+  bottom: 90px;
+  padding-top: 128px;
+  padding-bottom: 24px;
+}
+#adoptScreen .composer-area {
+  background: var(--brand-25, #f5fbff);
+}
+#adoptScreen .composer-area::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 100%;
+  height: 48px;
+  background: linear-gradient(to top, var(--brand-25, #f5fbff) 0%, rgba(245,251,255,0) 100%);
+  pointer-events: none;
+}
+
+/* ======================================
+   ADOPTED SKILL VIEW
+   ====================================== */
+.adopted-hero-banner {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 140px 20px 24px;
+  overflow: hidden;
+  background: var(--brand-dark-500, #2970ff);
+}
+.adopted-hero-banner-emoji {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 64px;
+  line-height: 1;
+}
+.adopted-scroll {
+  position: absolute;
+  top: 244px; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 24px 16px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.adopted-scroll::-webkit-scrollbar { display: none; }
+
+/* Title block */
+.adopted-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.adopted-title-name {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-xs, 24px);
+  line-height: var(--line-height-display-xs, 32px);
+  color: var(--text-primary, #181d27);
+}
+.adopted-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  background: var(--green-200, #abefc6);
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--green-600, #079455);
+  text-align: center;
+  flex-shrink: 0;
+}
+.adopted-subtitle {
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-quaternary, #717680);
+}
+
+/* Avatar stack button (trailing) */
+.adopted-avatar-stack-btn {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 44px;
+  padding: 0 6px;
+  border-radius: 296px;
+  border: 1px solid white;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px -2px rgba(0,0,0,0.08);
+}
+.adopted-avatar-stack-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+}
+.adopted-avatar-stack {
+  display: flex;
+  align-items: baseline;
+  padding-right: 8px;
+  position: relative;
+  z-index: 1;
+}
+.adopted-avatar-stack .avatar {
+  width: 32px;
+  height: 32px;
+  margin-right: -8px;
+  border: 1px solid white;
+}
+.adopted-avatar-stack .avatar canvas.rive-user {
+  width: 46px;
+  height: 66px;
+  top: -20px;
+}
+
+/* Filter sheet */
+.filter-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.filter-scrim.visible { opacity: 1; pointer-events: auto; }
+.filter-sheet {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: white;
+  border-radius: 24px 24px 0 0;
+  z-index: 41;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  max-height: 60%;
+  padding-bottom: 34px;
+}
+.filter-sheet.visible { transform: translateY(0); }
+.filter-sheet-handle {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 4px;
+}
+.filter-sheet-handle-bar {
+  width: 36px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--gray-300, #d5d7da);
+}
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 12px;
+}
+.filter-header-title {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  color: var(--text-primary, #181d27);
+}
+.filter-header-reset {
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--fg-brand-primary, #0ba5ec);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-medium, 500);
+}
+.filter-section {
+  padding: 8px 16px;
+}
+.filter-section-label {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--text-tertiary, #535862);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 12px;
+}
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: white;
+  border: 1.5px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #181d27);
+  transition: border-color 0.15s, background 0.15s;
+}
+.filter-chip.selected {
+  border-color: var(--brand-500, #0ba5ec);
+  background: var(--brand-50, #f0f9ff);
+  color: var(--brand-700, #026aa2);
+}
+.filter-chip .avatar { width: 20px; height: 20px; }
+.filter-chip .avatar canvas.rive-user { width: 29px; height: 41px; top: -12px; }
+
+/* Beat timeline (reasoning-transcript style) */
+.beat-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.beat-step {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+.beat-step-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 24px;
+}
+.beat-step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 2px;
+}
+.beat-step-dot-inner {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: var(--brand-300, #7cd4fd);
+}
+.beat-step-line {
+  width: 1px;
+  flex: 1;
+  min-height: 4px;
+  background: var(--border-secondary, #e9eaeb);
+}
+.beat-step-line-top {
+  width: 1px;
+  height: 4px;
+  background: var(--border-secondary, #e9eaeb);
+}
+.beat-step-line-top:first-child {
+  background: transparent;
+}
+.beat-step-content {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 0;
+}
+.beat-step-title {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.beat-step-desc {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-tertiary, #535862);
+}
+.beat-step-time {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-quaternary, #717680);
+  flex-shrink: 0;
+  padding-top: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Run history - act-item style (from parent-home) */
+.run-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  padding: var(--spacing-lg, 12px) 0;
+}
+.run-item + .run-item { border-top: 1px solid var(--border-secondary, #e9eaeb); }
+.run-item-leading {
+  position: relative;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+}
+.run-item-leading .avatar {
+  position: absolute;
+  top: 0; left: 0;
+  width: 48px;
+  height: 48px;
+  border: 1px solid white;
+}
+.run-item-leading .avatar canvas.rive-user {
+  width: 69px;
+  height: 99px;
+  top: -30px;
+}
+.run-item-badge {
+  position: absolute;
+  right: -2px; bottom: -2px;
+  width: 20px; height: 20px;
+  border-radius: 9999px;
+  border: 1.5px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 10px;
+  z-index: 2;
+}
+.run-item-content {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.run-item-content b {
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #181d27);
+}
+.run-item-time {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-quaternary, #717680);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.run-item-trailing {
+  color: var(--text-quaternary, #717680);
+  flex-shrink: 0;
+}
+
+/* Activity widget */
+.activity-widget {
+  background: white;
+  border-radius: var(--radius-2xl, 16px);
+  box-shadow: 0 0 4px -2px rgba(0,0,0,0.04);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.activity-widget-row {
+  display: flex;
+  align-items: center;
+}
+.activity-widget-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.activity-widget-day-label {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-quaternary, #717680);
+  width: 16px;
+  text-align: center;
+}
+.activity-widget-day-label.active {
+  background: var(--fg-brand-primary, #0ba5ec);
+  color: white;
+  border-radius: var(--radius-full, 9999px);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Bar states: completed (gray pill + blue bar), no-kids (gray pill only), no-skill (tiny gray sliver) */
+.activity-widget-bar-wrap {
+  position: relative;
+  height: 60px;
+  width: 20px;
+  background: var(--gray-100, #f5f5f5);
+  border-radius: var(--radius-full, 9999px);
+  overflow: clip;
+}
+.activity-widget-bar-wrap[data-state="no-skill"] {
+  background: transparent;
+  border-radius: var(--radius-xxs, 2px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.activity-widget-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--fg-brand-primary, #0ba5ec);
+}
+.activity-widget-bar-wrap[data-state="no-skill"] .activity-widget-bar {
+  position: static;
+  height: 4px;
+  background: var(--gray-100, #f5f5f5);
+}
+.activity-widget-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-secondary, #e9eaeb);
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--fg-brand-primary, #0ba5ec);
+  cursor: pointer;
+}
+
+/* ======================================
+   CALENDAR SHEET (See all)
+   ====================================== */
+.cal-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.cal-scrim.visible { opacity: 1; pointer-events: auto; }
+.cal-sheet {
+  position: absolute;
+  left: 0; right: 0; top: 62px; bottom: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: 24px 24px 0 0;
+  z-index: 41;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.cal-sheet.visible { transform: translateY(0); }
+.cal-sheet-handle {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 4px;
+  flex-shrink: 0;
+}
+.cal-sheet-handle-bar {
+  width: 36px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--gray-300, #d5d7da);
+}
+.cal-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 12px;
+  flex-shrink: 0;
+}
+.cal-sheet-header-title {
+  flex: 1;
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: 18px;
+  color: var(--text-primary, #181d27);
+  text-align: center;
+}
+
+/* Scrollable body below sticky header */
+.cal-sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+}
+.cal-sheet-body::-webkit-scrollbar { display: none; }
+
+/* Streak row */
+.cal-streak-section {
+  padding: 0 16px;
+}
+.cal-streak-label {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+  padding: 8px 0;
+}
+.cal-streak-row {
+  display: flex;
+  gap: 4px;
+}
+.cal-streak-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--border-secondary, #e9eaeb);
+  border-radius: var(--radius-2xl, 16px);
+}
+.cal-streak-avatar {
+  flex-shrink: 0;
+}
+.cal-streak-avatar .avatar {
+  width: 40px;
+  height: 40px;
+  border: 2.5px solid white;
+}
+.cal-streak-info { flex: 1; min-width: 0; }
+.cal-streak-count {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.cal-streak-unit {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+
+/* Calendar grid */
+.cal-grid {
+  padding: 16px;
+}
+.cal-week {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+.cal-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius-2xl, 16px);
+  flex-shrink: 0;
+}
+.cal-day.today {
+  background: var(--brand-50, #f0f9ff);
+}
+.cal-day-num {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-quaternary, #717680);
+  text-align: center;
+  min-width: 100%;
+}
+.cal-day-indicator {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Completed: blue pill with count */
+.cal-day-indicator[data-status="completed"] {
+  background: var(--fg-brand-primary, #0ba5ec);
+  border-radius: 9999px;
+  padding: 4px;
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: white;
+  width: auto;
+  min-width: 24px;
+}
+/* No skill: gray dash */
+.cal-day-indicator[data-status="no-skill"]::after {
+  content: '';
+  width: 16px;
+  height: 2px;
+  border-radius: 9999px;
+  background: var(--gray-200, #e9eaeb);
+}
+/* Empty / future: gray circle outline */
+.cal-day-indicator[data-status="empty"]::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--gray-200, #e9eaeb);
+  box-sizing: border-box;
+}
+/* Selected day */
+.cal-day.selected {
+  background: var(--brand-100, #e0f2fe);
+  filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.04));
+  cursor: pointer;
+}
+.cal-day { cursor: pointer; }
+/* Hidden placeholder */
+.cal-day.hidden { opacity: 0; pointer-events: none; cursor: default; }
+
+/* Today feed */
+.cal-today-section {
+  background: white;
+  padding: 16px;
+  min-height: 300px;
+}
+.cal-today-header {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+  padding: 8px 0;
+}
+.cal-today-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+.cal-today-avatar {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  flex-shrink: 0;
+}
+.cal-today-avatar .avatar {
+  width: 60px;
+  height: 60px;
+  border: 1px solid white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.cal-today-avatar .avatar canvas.rive-user {
+  width: 87px;
+  height: 124px;
+  top: -36px;
+}
+.cal-today-badge {
+  position: absolute;
+  left: 38px; top: 38px;
+  width: 24px; height: 24px;
+  border-radius: 9999px;
+  border: 1px solid white;
+  background: var(--green-400, #47cd89);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.cal-today-badge .mi { font-size: 12px; }
+.cal-today-text {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.cal-today-text b {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+}
+.cal-today-text .cal-time {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-quaternary, #717680);
+}
+.cal-today-chevron {
+  color: var(--text-quaternary, #717680);
+  flex-shrink: 0;
+}
+
+/* Transcript sheet */
+.cal-sheet.dimmed {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.transcript-sheet {
+  position: absolute;
+  left: 0; right: 0; top: 72px; bottom: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: 40px 40px 0 0;
+  z-index: 42;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.transcript-sheet.visible { transform: translateY(0); }
+.transcript-toolbar {
+  height: 70px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 16px 10px;
+}
+.transcript-toolbar .header-btn { position: relative; z-index: 1; }
+.transcript-header {
+  padding: 0 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.transcript-date {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+}
+.transcript-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-display-md, 36px);
+  line-height: var(--line-height-display-md, 44px);
+  letter-spacing: -0.72px;
+  color: black;
+}
+.transcript-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-regular, 400);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+}
+.transcript-msg {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.transcript-msg .avatar {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  margin-top: -2px;
+}
+.transcript-msg .avatar canvas.rive-user { width: 40px; height: 58px; top: -17px; }
+.transcript-msg .avatar canvas.rive-sprout { width: 60px; height: 86px; top: -25px; }
+.transcript-msg-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ======================================
+   ADOPTED CONTEXT MENU
+   ====================================== */
+.adopted-ctx-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.adopted-ctx-scrim.visible { opacity: 1; pointer-events: auto; }
+.adopted-ctx-menu {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-radius: var(--radius-xl, 20px) var(--radius-xl, 20px) 0 0;
+  z-index: 51;
+  transform: translateY(100%);
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  overflow: hidden;
+  padding-bottom: 34px;
+}
+.adopted-ctx-menu.visible {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.adopted-ctx-handle {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 8px;
+}
+.adopted-ctx-handle-bar {
+  width: 36px;
+  height: 5px;
+  border-radius: 100px;
+  background: var(--gray-300, #d5d7da);
+}
+.adopted-ctx-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-weight: var(--font-weight-regular, 400);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.adopted-ctx-item:active { background: var(--gray-50, #fafafa); }
+.adopted-ctx-item + .adopted-ctx-item { border-top: 1px solid var(--border-secondary, #e9eaeb); }
+.adopted-ctx-item .mi { color: var(--text-tertiary, #717680); font-size: 20px; }
+.adopted-ctx-item--destructive { color: var(--error-600, #d92d20); }
+.adopted-ctx-item--destructive .mi { color: var(--error-600, #d92d20); }
+
+/* Rename sheet */
+.rename-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 52;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.rename-scrim.visible { opacity: 1; pointer-events: auto; }
+.rename-sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-radius: var(--radius-xl, 20px) var(--radius-xl, 20px) 0 0;
+  z-index: 53;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  padding: 0 16px 34px;
+}
+.rename-sheet.visible { transform: translateY(0); }
+.rename-sheet-handle {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 20px;
+}
+.rename-sheet-handle-bar {
+  width: 36px;
+  height: 5px;
+  border-radius: 100px;
+  background: var(--gray-300, #d5d7da);
+}
+.rename-sheet-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  color: var(--text-primary, #181d27);
+  margin-bottom: 16px;
+}
+.rename-field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-primary, #d5d7da);
+  border-radius: var(--radius-md, 12px);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  color: var(--text-primary, #181d27);
+  outline: none;
+  box-sizing: border-box;
+}
+.rename-field:focus { border-color: var(--brand-500, #0ba5ec); box-shadow: 0 0 0 3px rgba(11,165,236,0.16); }
+.rename-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+.rename-actions .btn { flex: 1; }
+
+/* Archive confirmation sheet */
+.archive-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 52;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.archive-scrim.visible { opacity: 1; pointer-events: auto; }
+.archive-sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-radius: var(--radius-xl, 20px) var(--radius-xl, 20px) 0 0;
+  z-index: 53;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  padding: 0 16px 34px;
+}
+.archive-sheet.visible { transform: translateY(0); }
+.archive-sheet-handle {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 20px;
+}
+.archive-sheet-handle-bar {
+  width: 36px;
+  height: 5px;
+  border-radius: 100px;
+  background: var(--gray-300, #d5d7da);
+}
+.archive-sheet-title {
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  color: var(--text-primary, #181d27);
+  margin-bottom: 8px;
+}
+.archive-sheet-desc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+  margin-bottom: 20px;
+}
+.archive-actions {
+  display: flex;
+  gap: 12px;
+}
+.archive-actions .btn { flex: 1; }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="content-area">
+    <div class="page-content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="two-col">
+        <div class="col-left">
+          <div class="device-wrapper">
+            <div class="device-inner-shadow">
+              <div class="device-mockup">
+                <div class="device-screen" style="height:874px;">
+
+<!-- ===========================
+     BASE: SKILLS TAB
+     =========================== -->
+<div class="status-bar">
+  <span class="status-bar-time">9:41</span>
+  <span class="status-bar-icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+  </span>
+</div>
+
+<div class="skills-header">
+  <span class="skills-header-title">Skills</span>
+  <div class="skills-header-actions">
+    <button class="header-btn" id="exploreBtn" aria-label="Explore">
+      <span class="mi">explore</span>
+    </button>
+    <button class="header-btn" aria-label="Filter">
+      <span class="mi">filter_list</span>
+    </button>
+  </div>
+</div>
+
+<div class="skills-scroll">
+  <div class="skills-grid" id="skillsGrid">
+    <div class="skill-card" data-skill="school-dump" data-emoji="&#x1F3EB;" data-name="School dump" data-category="Talk" data-by="Sprout" data-users="5.1K" data-age="5+" data-kids="Ben, Gabe" data-desc="Right after school, Sprout asks about the one weird thing that happened. One sharp follow-up, then a summary using their exact words. You get flagged on anything worth knowing." data-opener="Tell me the one weird thing that happened today." data-status="active">
+      <div class="skill-card-icon" data-color="pink">&#x1F3EB;</div>
+      <div class="skill-card-body">
+        <div class="skill-card-name">School dump</div>
+        <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben, Gabe</span></div>
+      </div>
+    </div>
+    <div class="skill-card" data-skill="hot-takes" data-emoji="&#x1F525;" data-name="Hot Take Olympics" data-category="Debate" data-by="Sprout" data-users="4.2K" data-age="6+" data-kids="Ben, Gabe, Shane" data-desc="60 seconds, five hot takes. Sprout rates each 1-10 with a one-sentence reason. No cop-out scores. One take gets the gold medal." data-opener="60 seconds. Five hot takes. I rate each. Go." data-status="active">
+      <div class="skill-card-icon" data-color="yellow">&#x1F525;</div>
+      <div class="skill-card-body">
+        <div class="skill-card-name">Hot Take Olympics</div>
+        <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben, Gabe, Shane</span></div>
+      </div>
+    </div>
+    <div class="skill-card" data-skill="20q" data-emoji="&#x2753;" data-name="20 Questions" data-category="Play" data-by="Sprout" data-users="4.7K" data-age="5+" data-kids="Ben, Gabe, Shane" data-desc="Kid picks anything in the room. Sprout guesses in 20 yes/no questions, thinking out loud between each. Misfires once on purpose, then nails it." data-opener="Pick anything in the room. I'll guess in 20 yes/no questions. Ready?" data-status="active">
+      <div class="skill-card-icon" data-color="orange">&#x2753;</div>
+      <div class="skill-card-body">
+        <div class="skill-card-name">20 Questions</div>
+        <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben, Gabe, Shane</span></div>
+      </div>
+    </div>
+    <div class="skill-card" data-skill="trex" data-emoji="&#x1F3AD;" data-name="T-rex interview" data-category="Perform" data-by="Sprout" data-users="3.8K" data-age="5+" data-kids="Ben, Gabe" data-desc="Kid picks a character, gets interviewed by Sprout as a serious journalist. NPR voice, absurd questions. Signs off like a real broadcast." data-opener="Okay, you're a T-rex being interviewed. Ready?" data-status="active">
+      <div class="skill-card-icon" data-color="green">&#x1F3AD;</div>
+      <div class="skill-card-body">
+        <div class="skill-card-name">T-rex interview</div>
+        <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben, Gabe</span></div>
+      </div>
+    </div>
+    <div class="skill-card" data-skill="story" data-emoji="&#x1F4D6;" data-name="One-sentence story" data-category="Create" data-by="Sprout" data-users="3.2K" data-age="5+" data-kids="Gabe" data-desc="Build a story one sentence at a time, alternating. Sprout adds complications, kid drives the plot. 10 sentences total, then it gets a title." data-opener="We're writing a story. One sentence each. I start. Ready?" data-status="active">
+      <div class="skill-card-icon" data-color="violet">&#x1F4D6;</div>
+      <div class="skill-card-body">
+        <div class="skill-card-name">One-sentence story</div>
+        <div class="skill-card-avatars"><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Gabe</span></div>
+      </div>
+    </div>
+    <div class="skill-card" data-skill="wyr" data-emoji="&#x1F60A;" data-name="Would you rather" data-category="Play" data-by="Sprout" data-users="5.8K" data-age="5+" data-kids="Ben, Gabe, Shane" data-desc="Five would-you-rathers, no passing. Starts tame, ends in spaghetti-feet-vs-bread-hands territory. Sprout roasts weak answers." data-opener="Five would-you-rathers. No passing. Go." data-status="paused">
+      <div class="skill-card-icon" data-color="blue">&#x1F60A;</div>
+      <div class="skill-card-body">
+        <div class="skill-card-name">Would you rather</div>
+        <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben, Gabe, Shane</span></div>
+      </div>
+    </div>
+    <div class="skill-card" data-skill="callback" data-emoji="&#x1F9E0;" data-name="Callback" data-category="Talk" data-by="Sprout" data-users="2.1K" data-age="5+" data-kids="Ben" data-desc="Sprout opens unprompted with something it remembers from a past conversation. Proves it was actually listening. Tags a detail to follow up on next time." data-opener="Wait, did that thing with Noah end up happening?" data-status="active">
+      <div class="skill-card-icon" data-color="sky">&#x1F9E0;</div>
+      <div class="skill-card-body">
+        <div class="skill-card-name">Callback</div>
+        <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben</span></div>
+      </div>
+    </div>
+    <div class="skill-card" data-skill="bedtime-defense" data-emoji="&#x1F6CF;&#xFE0F;" data-name="Bedtime defense" data-category="Debate" data-by="Sprout" data-users="3.9K" data-age="6+" data-kids="Ben, Gabe, Shane" data-desc="Make your case for a later bedtime. Sprout plays devil's advocate with real rebuttals. No condescension. One side wins." data-opener="Make your case. Why should bedtime be later?" data-status="active">
+      <div class="skill-card-icon" data-color="red">&#x1F6CF;&#xFE0F;</div>
+      <div class="skill-card-body">
+        <div class="skill-card-name">Bedtime defense</div>
+        <div class="skill-card-avatars"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="avatar" data-kid="shane"><canvas class="rive-user" width="35" height="50"></canvas></div><span class="skill-card-meta-label">Ben, Gabe, Shane</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter sheet -->
+<div class="filter-scrim" id="filterScrim"></div>
+<div class="filter-sheet" id="filterSheet">
+  <div class="filter-sheet-handle"><div class="filter-sheet-handle-bar"></div></div>
+  <div class="filter-header">
+    <span class="filter-header-title">Filter</span>
+    <button class="filter-header-reset" id="filterReset">Reset</button>
+  </div>
+  <div class="filter-section">
+    <div class="filter-section-label">Kid</div>
+    <div class="filter-chips">
+      <div class="filter-chip selected" data-filter-kid="all">All</div>
+      <div class="filter-chip" data-filter-kid="ben"><div class="avatar" data-kid="ben"><canvas class="rive-user" width="29" height="41"></canvas></div> Ben</div>
+      <div class="filter-chip" data-filter-kid="gabe"><div class="avatar" data-kid="gabe"><canvas class="rive-user" width="29" height="41"></canvas></div> Gabe</div>
+      <div class="filter-chip" data-filter-kid="shane"><div class="avatar" data-kid="shane"><canvas class="rive-user" width="29" height="41"></canvas></div> Shane</div>
+    </div>
+  </div>
+  <div class="filter-section">
+    <div class="filter-section-label">Status</div>
+    <div class="filter-chips">
+      <div class="filter-chip selected" data-filter-status="all">All</div>
+      <div class="filter-chip" data-filter-status="active"><span style="width:6px;height:6px;border-radius:9999px;background:var(--sprout-500);display:inline-block;"></span> Active</div>
+      <div class="filter-chip" data-filter-status="paused"><span style="width:6px;height:6px;border-radius:9999px;background:var(--orange-400,#f38744);display:inline-block;"></span> Paused</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tab bar with Sprout FAB -->
+<div class="tab-bar-wrap">
+  <div class="tab-bar-pill">
+    <button class="tab-bar-item"><span class="mi">home</span><span class="tab-bar-item-label">Home</span></button>
+    <button class="tab-bar-item"><span class="mi">group</span><span class="tab-bar-item-label">Family</span></button>
+    <button class="tab-bar-item active"><span class="mi">dashboard</span><span class="tab-bar-item-label">Skills</span></button>
+  </div>
+  <div class="tab-bar-fab"><canvas class="rive-sprout" id="fabSprout" width="167" height="178"></canvas></div>
+</div>
+
+
+<!-- ===========================
+     EXPLORE OVERLAY
+     =========================== -->
+<div class="explore-overlay" id="exploreOverlay">
+  <div class="status-bar">
+    <span class="status-bar-time">9:41</span>
+    <span class="status-bar-icons">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+    </span>
+  </div>
+  <div class="thread-gradient"></div>
+  <div class="explore-toolbar">
+    <div><button class="header-btn" id="exploreBackBtn" aria-label="Back"><span class="mi">chevron_backward</span></button></div>
+    <span class="explore-toolbar-title">Explore</span>
+    <div style="width:44px;"></div>
+  </div>
+  <div class="explore-pills" id="explorePills">
+    <button class="explore-pill active">Top picks</button>
+    <button class="explore-pill">Talk</button>
+    <button class="explore-pill">Play</button>
+    <button class="explore-pill">Create</button>
+    <button class="explore-pill">Perform</button>
+    <button class="explore-pill">Debate</button>
+  </div>
+
+  <!-- Top picks view (carousels) -->
+  <div class="explore-scroll" id="exploreCarouselView">
+    <div class="explore-section-header"><div class="explore-section-title">Featured</div><div class="explore-section-desc">Curated top picks from this week</div></div>
+    <div class="explore-carousel">
+      <div class="explore-card" data-emoji="&#x1F3EB;" data-name="School dump" data-category="Talk" data-by="Sprout" data-users="5.1K" data-age="5+" data-desc="Right after school, Sprout asks your kid about the one weird thing that happened today. One sharp follow-up, then a summary using their exact words. You get flagged on anything worth knowing." data-opener="Tell me the one weird thing that happened today."><div class="explore-card-thumb" data-color="pink">&#x1F3EB;</div><div><div class="explore-card-name">School dump</div><div class="explore-card-meta">by <b style="font-weight:500;">Sprout</b> &middot; <span class="mi mi-sm">diamond</span> 5.1K</div></div></div>
+      <div class="explore-card" data-emoji="&#x1F525;" data-name="Hot Take Olympics" data-category="Debate" data-by="Sprout" data-users="4.2K" data-age="6+" data-desc="60 seconds, five hot takes. Sprout rates each 1-10 with a one-sentence reason. No cop-out scores. One take gets the gold medal." data-opener="60 seconds. Five hot takes. I rate each. Go."><div class="explore-card-thumb" data-color="yellow">&#x1F525;</div><div><div class="explore-card-name">Hot Take Olympics</div><div class="explore-card-meta">by <b style="font-weight:500;">Sprout</b> &middot; <span class="mi mi-sm">diamond</span> 4.2K</div></div></div>
+      <div class="explore-card" data-emoji="&#x1F3AD;" data-name="T-rex interview" data-category="Perform" data-by="Sprout" data-users="3.8K" data-age="5+" data-desc="Your kid picks a character (dinosaur, pirate, superhero) and gets interviewed by Sprout as a serious journalist. NPR voice, absurd questions." data-opener="Okay, you're a T-rex being interviewed. Ready? So, Mr. Rex. Tough day at work?"><div class="explore-card-thumb" data-color="green">&#x1F3AD;</div><div><div class="explore-card-name">T-rex interview</div><div class="explore-card-meta">by <b style="font-weight:500;">Sprout</b> &middot; <span class="mi mi-sm">diamond</span> 3.8K</div></div></div>
+    </div>
+    <div class="explore-section-header"><div class="explore-section-title">Trending</div><div class="explore-section-desc">Most popular skills this week</div></div>
+    <div class="explore-carousel">
+      <div class="explore-card" data-emoji="&#x2753;" data-name="20 Questions" data-category="Play" data-by="Sprout" data-users="4.7K" data-age="5+" data-desc="Kid picks anything in the room. Sprout guesses in 20 yes/no questions, thinking out loud between each. Misfires once on purpose, then nails it." data-opener="Pick anything in the room. I'll guess in 20 yes/no questions. Ready?"><div class="explore-card-thumb" data-color="orange">&#x2753;</div><div><div class="explore-card-name">20 Questions</div><div class="explore-card-meta">by <b style="font-weight:500;">Sprout</b> &middot; <span class="mi mi-sm">diamond</span> 4.7K</div></div></div>
+      <div class="explore-card" data-emoji="&#x1F4D6;" data-name="One-sentence story" data-category="Create" data-by="Sprout" data-users="3.2K" data-age="5+" data-desc="Build a story one sentence at a time, alternating. Sprout adds complications, kid drives the plot. 10 sentences total, then it gets a title." data-opener="We're writing a story. One sentence each. I start. Ready?"><div class="explore-card-thumb" data-color="violet">&#x1F4D6;</div><div><div class="explore-card-name">One-sentence story</div><div class="explore-card-meta">by <b style="font-weight:500;">Sprout</b> &middot; <span class="mi mi-sm">diamond</span> 3.2K</div></div></div>
+      <div class="explore-card" data-emoji="&#x1F60A;" data-name="Would you rather" data-category="Play" data-by="Sprout" data-users="5.8K" data-age="5+" data-desc="Five would-you-rathers, no passing. Starts tame, ends in spaghetti-feet-vs-bread-hands territory. Sprout roasts weak answers." data-opener="Five would-you-rathers. No passing. Go."><div class="explore-card-thumb" data-color="blue">&#x1F60A;</div><div><div class="explore-card-name">Would you rather</div><div class="explore-card-meta">by <b style="font-weight:500;">Sprout</b> &middot; <span class="mi mi-sm">diamond</span> 5.8K</div></div></div>
+    </div>
+    <div class="explore-section-header"><div class="explore-section-title">New this week</div><div class="explore-section-desc">Fresh skills just added</div></div>
+    <div class="explore-carousel">
+      <div class="explore-card" data-emoji="&#x1F9E0;" data-name="Callback" data-category="Talk" data-by="Sprout" data-users="2.1K" data-age="5+" data-desc="Sprout opens unprompted with something it remembers from a past conversation. Proves it was actually listening. Tags a detail to follow up on next time." data-opener="Wait, did that thing with Noah end up happening?"><div class="explore-card-thumb" data-color="sky">&#x1F9E0;</div><div><div class="explore-card-name">Callback</div><div class="explore-card-meta">by <b style="font-weight:500;">Sprout</b> &middot; <span class="mi mi-sm">diamond</span> 2.1K</div></div></div>
+      <div class="explore-card" data-emoji="&#x1F3A4;" data-name="Freestyle rap trade" data-category="Create" data-by="Sprout" data-users="1.4K" data-age="10+" data-desc="Rap battle. Four bars each, pick a topic. Sprout goes first, kid fires back. Two rounds, then best-bar-of-the-match verdict." data-opener="Rap battle. Four bars each. Topic: snacks. I go first."><div class="explore-card-thumb" data-color="red">&#x1F3A4;</div><div><div class="explore-card-name">Freestyle rap trade</div><div class="explore-card-meta">by <b style="font-weight:500;">Sprout</b> &middot; <span class="mi mi-sm">diamond</span> 1.4K</div></div></div>
+      <div class="explore-card" data-emoji="&#x2696;&#xFE0F;" data-name="Court of appeals" data-category="Perform" data-by="Sprout" data-users="2.9K" data-age="6+" data-desc="Sprout plays judge. Kid argues why they shouldn't have to do a chore. Cross-examination, then a ruling with a verbal gavel." data-opener="Court is now in session. State your case."><div class="explore-card-thumb" data-color="violet">&#x2696;&#xFE0F;</div><div><div class="explore-card-name">Court of appeals</div><div class="explore-card-meta">by <b style="font-weight:500;">Sprout</b> &middot; <span class="mi mi-sm">diamond</span> 2.9K</div></div></div>
+    </div>
+    <div style="height:80px;"></div>
+  </div>
+
+  <!-- Category view (vertical list) -->
+  <div class="explore-scroll" id="exploreCategoryView" style="display:none;">
+    <div class="explore-section-header">
+      <div class="explore-section-title" id="catViewTitle">Productivity</div>
+      <div class="explore-section-desc" id="catViewDesc">Curated tools for getting things done</div>
+    </div>
+    <div class="explore-list" id="catViewList">
+      <!-- filled dynamically -->
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="explore-bottom">
+    <div class="explore-search-pill"><span class="mi">search</span><span class="explore-search-text">Search</span></div>
+    <button class="explore-edit-btn"><span class="mi">edit</span></button>
+  </div>
+</div>
+
+
+<!-- ===========================
+     SKILL DETAIL (from explore)
+     =========================== -->
+<div class="screen-overlay" id="detailScreen" style="z-index:26;">
+  <div class="status-bar">
+    <span class="status-bar-time">9:41</span>
+    <span class="status-bar-icons">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+    </span>
+  </div>
+  <div class="detail-toolbar">
+    <button class="header-btn" id="detailBack" aria-label="Back"><span class="mi">chevron_backward</span></button>
+    <div style="flex:1;"></div>
+  </div>
+  <div class="detail-scroll">
+    <div class="detail-hero-banner" id="detailBanner" data-color="blue">
+      <span id="detailIcon">&#x2600;&#xFE0F;</span>
+    </div>
+    <div class="detail-hero-info">
+      <div class="detail-hero-name" id="detailName">Morning routine</div>
+      <div class="detail-hero-cat" id="detailCat">Routines</div>
+    </div>
+    <button class="detail-get-btn" id="detailGetBtn">Get</button>
+    <div class="detail-divider"></div>
+    <div class="detail-stats">
+      <div class="detail-stat"><span class="detail-stat-label">AGES</span><span class="detail-stat-value" id="detailAge">4+</span><span class="detail-stat-sub">years</span></div>
+      <div class="detail-stat-divider"></div>
+      <div class="detail-stat"><span class="detail-stat-label">DEVELOPER</span><div class="avatar avatar-xs" id="detailByAvatar"><canvas class="rive-sprout" width="64" height="92"></canvas></div><span class="detail-stat-sub" id="detailBy">Sprout team</span></div>
+    </div>
+    <div class="detail-divider"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="detail-section-title">About</div>
+      <div class="detail-section-body" id="detailDesc">Sprout walks your child through their morning routine step by step.</div>
+    </div>
+    <div class="detail-divider"></div>
+
+    <!-- How it works: beat timeline -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="detail-section-title">How it works</div>
+      <div class="beat-timeline" id="detailBeats">
+        <!-- filled dynamically -->
+      </div>
+    </div>
+    <div style="height:40px;"></div>
+  </div>
+</div>
+
+
+<!-- ===========================
+     ADOPT IN CHAT
+     =========================== -->
+<div class="screen-overlay" id="adoptScreen" style="z-index:30;">
+  <div class="status-bar">
+    <span class="status-bar-time">9:41</span>
+    <span class="status-bar-icons">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+    </span>
+  </div>
+  <div class="header-frost"></div>
+  <div class="adopt-toolbar">
+    <button class="header-btn" id="adoptBack" aria-label="Back"><span class="mi">chevron_backward</span></button>
+    <div class="toolbar-pill" id="adoptPill">
+      <div class="toolbar-pill-icon"><span class="toolbar-pill-emoji" id="adoptEmoji">&#x2600;&#xFE0F;</span></div>
+      <div class="toolbar-pill-text">
+        <div class="toolbar-pill-name" id="adoptName">Morning routine</div>
+        <div class="toolbar-pill-sub">Customize &amp; assign</div>
+      </div>
+    </div>
+    <div class="toolbar-pill">
+      <div class="chat-header-avatars">
+        <div class="avatar avatar-sm avatar-bordered" id="adoptAvatarZeev"><canvas class="rive-user" width="46" height="66"></canvas></div>
+        <div class="avatar avatar-sm avatar-bordered" id="adoptAvatarMali"><canvas class="rive-user" width="46" height="66"></canvas></div>
+        <div class="avatar avatar-sm avatar-bordered" id="adoptAvatarSprout"><canvas class="rive-sprout" width="86" height="124"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-thread">
+    <!-- Sprout message 1 -->
+    <div class="msg-group msg-incoming">
+      <div class="msg-row msg-incoming">
+        <div class="msg-avatar"><div class="avatar avatar-sm"><canvas class="rive-sprout" width="86" height="124"></canvas></div></div>
+        <div class="msg-col">
+          <div class="sender-indicator">
+            <span class="sender-indicator-name">Sprout</span>
+            <button class="reasoning-indicator" type="button"><span class="reasoning-indicator-label">Show thinking</span><svg viewBox="0 0 16 16" class="reasoning-indicator-chevron" fill="none"><polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+          <div class="msg-bubble msg-bubble-in"><div>Great choice! <b id="adoptRef">School dump</b> helps your kids start the day strong. Which kids should I set this up for?</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kid selection already answered (chips removed per parent-chat-now behavior) -->
+    <div class="msg-group msg-outgoing">
+      <div class="msg-row msg-outgoing">
+        <div class="msg-bubble msg-bubble-out"><div>All of them!</div></div>
+      </div>
+    </div>
+
+    <!-- Sprout message 2 -->
+    <div class="msg-group msg-incoming">
+      <div class="msg-row msg-incoming">
+        <div class="msg-avatar"><div class="avatar avatar-sm"><canvas class="rive-sprout" width="86" height="124"></canvas></div></div>
+        <div class="msg-col">
+          <div class="sender-indicator">
+            <span class="sender-indicator-name">Sprout</span>
+            <button class="reasoning-indicator" type="button"><span class="reasoning-indicator-label">Show thinking</span><svg viewBox="0 0 16 16" class="reasoning-indicator-chevron" fill="none"><polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+          <div class="msg-bubble msg-bubble-in"><div>Got it, everyone's in. Anything you'd like to customize? I can adjust the tone, set specific times, or tweak the opener.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Parent reply -->
+    <div class="msg-group msg-outgoing">
+      <div class="msg-row msg-outgoing">
+        <div class="msg-bubble msg-bubble-out"><div>Make it encouraging but not too silly</div></div>
+      </div>
+    </div>
+
+    <!-- Sprout confirmation -->
+    <div class="msg-group msg-incoming">
+      <div class="msg-row msg-incoming">
+        <div class="msg-avatar"><div class="avatar avatar-sm"><canvas class="rive-sprout" width="86" height="124"></canvas></div></div>
+        <div class="msg-col">
+          <div class="sender-indicator">
+            <span class="sender-indicator-name">Sprout</span>
+            <button class="reasoning-indicator" type="button"><span class="reasoning-indicator-label">Show thinking</span><svg viewBox="0 0 16 16" class="reasoning-indicator-chevron" fill="none"><polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+          <div class="msg-bubble msg-bubble-in"><div>Done! Here's what I set up:<br><br><b>Tone:</b> Warm and encouraging<br><b>Kids:</b> Ben, Gabe, Shane<br><br>Want me to activate it now?</div></div>
+          <div class="option-chips" id="adoptActionChips" style="flex-direction:column; align-items:flex-start; overflow:visible; padding:0;">
+            <button class="option-chip" id="adoptActivate">Yes</button>
+            <button class="option-chip" id="adoptLater">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Composer -->
+  <div class="composer-area">
+    <div class="composer-row">
+      <div class="composer-pill">
+        <div class="composer-input" contenteditable="false" data-placeholder="Customize this skill..."></div>
+        <div class="composer-toolbar">
+          <div class="composer-toolbar-left">
+            <button class="composer-icon-btn" aria-label="Add">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <div class="composer-toolbar-right">
+            <button class="composer-icon-btn" aria-label="Voice">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="21" x2="12" y2="17"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reasoning transcript sheet -->
+  <div class="reasoning-transcript-scrim" id="adoptThoughtScrim"></div>
+  <div class="reasoning-transcript-sheet" id="adoptThoughtSheet">
+    <div class="sheet-top" style="padding-bottom:0">
+      <div class="sheet-handle"></div>
+    </div>
+    <div class="reasoning-transcript-header">
+      <div class="reasoning-transcript-header-top">
+        <span class="reasoning-transcript-header-label">Reasoning transcript</span>
+        <button class="reasoning-transcript-close" id="adoptThoughtBack" type="button">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <span class="reasoning-transcript-header-time">4 seconds</span>
+    </div>
+    <div class="reasoning-transcript-body">
+      <div class="reasoning-step">
+        <div class="reasoning-step-timeline">
+          <div class="reasoning-step-line-top"></div>
+          <div class="reasoning-step-dot completed"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="reasoning-step-line"></div>
+        </div>
+        <div class="reasoning-step-content">
+          <div class="reasoning-step-title">Understanding skill request</div>
+          <div class="reasoning-step-desc">Analyzing the selected skill configuration and family context</div>
+        </div>
+      </div>
+      <div class="reasoning-step">
+        <div class="reasoning-step-timeline">
+          <div class="reasoning-step-line-top"></div>
+          <div class="reasoning-step-dot completed"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="reasoning-step-line"></div>
+        </div>
+        <div class="reasoning-step-content">
+          <div class="reasoning-step-title">Preparing customization</div>
+          <div class="reasoning-step-desc">Setting tone and assigning kids based on parent preferences</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===========================
+     ADOPTED SKILL VIEW
+     =========================== -->
+<div class="screen-overlay" id="adoptedScreen" style="z-index:35;">
+  <div class="status-bar">
+    <span class="status-bar-time">9:41</span>
+    <span class="status-bar-icons">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181d27"/><rect x="4" y="2" width="3" height="10" rx="1" fill="#181d27"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#181d27"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#181d27"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C9.7 3.6 11.2 4.3 12.3 5.4L14 3.7C12.4 2.1 10.3 1.1 8 1.1C5.7 1.1 3.6 2.1 2 3.7L3.7 5.4C4.8 4.3 6.3 3.6 8 3.6Z" fill="#181d27"/><path d="M8 7.1C9 7.1 9.9 7.5 10.6 8.1L12.3 6.4C11.1 5.3 9.6 4.6 8 4.6C6.4 4.6 4.9 5.3 3.7 6.4L5.4 8.1C6.1 7.5 7 7.1 8 7.1Z" fill="#181d27"/><circle cx="8" cy="10.5" r="1.5" fill="#181d27"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#181d27" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#181d27"/><path d="M24 5v3a2 2 0 0 0 0-3z" fill="#181d27" fill-opacity="0.4"/></svg>
+    </span>
+  </div>
+
+  <!-- Blue hero banner with emoji -->
+  <div class="adopted-hero-banner">
+    <div class="adopted-hero-banner-emoji" id="adoptedIcon">&#x1F319;</div>
+  </div>
+
+  <div class="detail-toolbar">
+    <button class="header-btn" id="adoptedBack" aria-label="Back"><span class="mi">chevron_backward</span></button>
+    <div style="flex:1;"></div>
+    <button class="adopted-avatar-stack-btn" id="adoptedSettingsBtn" aria-label="Members">
+      <div class="adopted-avatar-stack">
+        <div class="avatar" data-kid="ben"><canvas class="rive-user" width="46" height="66"></canvas></div>
+        <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="46" height="66"></canvas></div>
+        <div class="avatar" data-kid="shane"><canvas class="rive-user" width="46" height="66"></canvas></div>
+      </div>
+    </button>
+  </div>
+
+  <div class="adopted-scroll">
+    <!-- Title block -->
+    <div>
+      <div class="adopted-title-row">
+        <div class="adopted-title-name" id="adoptedName">Routine</div>
+        <div class="adopted-badge" id="adoptedBadge">Active</div>
+      </div>
+      <div class="adopted-subtitle" id="adoptedSubtitle">Weekly on Mon, Tue, and Wed</div>
+    </div>
+
+    <!-- Activity widget -->
+    <div class="activity-widget">
+      <div class="activity-widget-row">
+        <div class="activity-widget-day"><div class="activity-widget-day-label">M</div><div class="activity-widget-bar-wrap"><div class="activity-widget-bar" style="height:40px;"></div></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label active">T</div><div class="activity-widget-bar-wrap" data-state="no-skill"><div class="activity-widget-bar"></div></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label">W</div><div class="activity-widget-bar-wrap"></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label">T</div><div class="activity-widget-bar-wrap"></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label">F</div><div class="activity-widget-bar-wrap"></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label">S</div><div class="activity-widget-bar-wrap"></div></div>
+        <div class="activity-widget-day"><div class="activity-widget-day-label">S</div><div class="activity-widget-bar-wrap"></div></div>
+      </div>
+      <div class="activity-widget-link">See all</div>
+    </div>
+
+    <!-- About -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="detail-section-title">About</div>
+      <div class="detail-section-body" id="adoptedDesc" style="max-height:72px;overflow:hidden;text-overflow:ellipsis;">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy.</div>
+    </div>
+
+    <div class="detail-divider"></div>
+
+    <!-- How it works -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="detail-section-title">How it works</div>
+      <div class="beat-timeline" id="adoptedBeats">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <div style="height:40px;"></div>
+  </div>
+
+  <!-- Calendar sheet (See all) -->
+  <div class="cal-scrim" id="calScrim"></div>
+  <div class="cal-sheet" id="calSheet">
+    <div class="cal-sheet-handle"><div class="cal-sheet-handle-bar"></div></div>
+    <div class="cal-sheet-header">
+      <button class="header-btn" id="calCloseBtn" aria-label="Close"><span class="mi">close</span></button>
+      <span class="cal-sheet-header-title">April 2026</span>
+      <button class="header-btn" aria-label="Previous month"><span class="mi">chevron_backward</span></button>
+      <button class="header-btn" aria-label="Next month"><span class="mi">chevron_forward</span></button>
+    </div>
+
+    <div class="cal-sheet-body">
+    <!-- Streak cards -->
+    <div class="cal-streak-section">
+      <div class="cal-streak-label">Streak</div>
+      <div class="cal-streak-row">
+        <div class="cal-streak-card">
+          <div class="cal-streak-avatar"><div class="avatar avatar-md" data-kid="ben"><canvas class="rive-user" width="58" height="83"></canvas></div></div>
+          <div class="cal-streak-info"><div class="cal-streak-count">10</div><div class="cal-streak-unit">Days</div></div>
+        </div>
+        <div class="cal-streak-card">
+          <div class="cal-streak-avatar"><div class="avatar avatar-md" data-kid="gabe"><canvas class="rive-user" width="58" height="83"></canvas></div></div>
+          <div class="cal-streak-info"><div class="cal-streak-count">10</div><div class="cal-streak-unit">Days</div></div>
+        </div>
+        <div class="cal-streak-card">
+          <div class="cal-streak-avatar"><div class="avatar avatar-md" data-kid="shane"><canvas class="rive-user" width="58" height="83"></canvas></div></div>
+          <div class="cal-streak-info"><div class="cal-streak-count">10</div><div class="cal-streak-unit">Days</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar grid -->
+    <div class="cal-grid">
+      <!-- Week 1: Apr 1-5 (Wed-Sun, pad Mon+Tue) -->
+      <div class="cal-week">
+        <div class="cal-day hidden"><div class="cal-day-num">0</div><div class="cal-day-indicator"></div></div>
+        <div class="cal-day hidden"><div class="cal-day-num">0</div><div class="cal-day-indicator"></div></div>
+        <div class="cal-day"><div class="cal-day-num">1</div><div class="cal-day-indicator" data-status="empty"></div></div>
+        <div class="cal-day"><div class="cal-day-num">2</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">3</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">4</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">5</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+      </div>
+      <!-- Week 2: Apr 6-12 -->
+      <div class="cal-week">
+        <div class="cal-day"><div class="cal-day-num">6</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">7</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">8</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">9</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">10</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">11</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">12</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+      </div>
+      <!-- Week 3: Apr 13-19 -->
+      <div class="cal-week">
+        <div class="cal-day"><div class="cal-day-num">13</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">14</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">15</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">16</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">17</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">18</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">19</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+      </div>
+      <!-- Week 4: Apr 20-26 -->
+      <div class="cal-week">
+        <div class="cal-day"><div class="cal-day-num">20</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">21</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">22</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">23</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">24</div><div class="cal-day-indicator" data-status="completed">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">25</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">26</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+      </div>
+      <!-- Week 5: Apr 27-30 (+pad) -->
+      <div class="cal-week">
+        <div class="cal-day"><div class="cal-day-num">27</div><div class="cal-day-indicator" data-status="completed">2</div></div>
+        <div class="cal-day today"><div class="cal-day-num">28</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day"><div class="cal-day-num">29</div><div class="cal-day-indicator" data-status="empty"></div></div>
+        <div class="cal-day"><div class="cal-day-num">30</div><div class="cal-day-indicator" data-status="no-skill"></div></div>
+        <div class="cal-day hidden"><div class="cal-day-num">0</div><div class="cal-day-indicator"></div></div>
+        <div class="cal-day hidden"><div class="cal-day-num">0</div><div class="cal-day-indicator"></div></div>
+        <div class="cal-day hidden"><div class="cal-day-num">0</div><div class="cal-day-indicator"></div></div>
+      </div>
+    </div>
+
+    <!-- Today feed -->
+    <div class="cal-today-section">
+      <div class="cal-today-header">Today, April 28</div>
+      <div class="cal-today-card">
+        <div class="cal-today-avatar">
+          <div class="avatar" data-kid="ben"><canvas class="rive-user" width="87" height="124"></canvas></div>
+          <div class="cal-today-badge"><span class="mi" style="font-size:12px;">check</span></div>
+        </div>
+        <div class="cal-today-text"><b>Ben</b> completed morning routine. <span class="cal-time">1h</span></div>
+        <span class="mi cal-today-chevron">chevron_forward</span>
+      </div>
+      <div class="cal-today-card">
+        <div class="cal-today-avatar">
+          <div class="avatar" data-kid="gabe"><canvas class="rive-user" width="87" height="124"></canvas></div>
+          <div class="cal-today-badge"><span class="mi" style="font-size:12px;">check</span></div>
+        </div>
+        <div class="cal-today-text"><b>Gabe</b> completed morning routine. <span class="cal-time">1h</span></div>
+        <span class="mi cal-today-chevron">chevron_forward</span>
+      </div>
+    </div>
+    </div><!-- /.cal-sheet-body -->
+  </div>
+
+  <!-- Transcript sheet -->
+  <div class="transcript-sheet" id="transcriptSheet">
+    <div class="transcript-toolbar">
+      <button class="header-btn" id="transcriptBack" aria-label="Back"><span class="mi">chevron_backward</span></button>
+    </div>
+    <div class="transcript-header">
+      <div class="transcript-date" id="transcriptDate">April 28 · 4:32 PM</div>
+      <div class="transcript-title">Transcript</div>
+    </div>
+    <div class="transcript-body" id="transcriptBody"></div>
+  </div>
+
+  <!-- Context menu -->
+  <div class="adopted-ctx-scrim" id="adoptedCtxScrim"></div>
+  <div class="adopted-ctx-menu" id="adoptedCtxMenu">
+    <div class="adopted-ctx-handle"><div class="adopted-ctx-handle-bar"></div></div>
+    <button class="adopted-ctx-item" id="ctxRename"><span class="mi mi-sm">edit</span>Rename</button>
+    <button class="adopted-ctx-item" id="ctxEdit"><span class="mi mi-sm">chat</span>Edit</button>
+    <button class="adopted-ctx-item adopted-ctx-item--destructive" id="ctxArchive"><span class="mi mi-sm">archive</span>Archive</button>
+  </div>
+
+  <!-- Rename sheet -->
+  <div class="rename-scrim" id="renameScrim"></div>
+  <div class="rename-sheet" id="renameSheet">
+    <div class="rename-sheet-handle"><div class="rename-sheet-handle-bar"></div></div>
+    <div class="rename-sheet-title">Rename skill</div>
+    <input class="rename-field" id="renameField" type="text" placeholder="Skill name" autocomplete="off">
+    <div class="rename-actions">
+      <button class="btn btn-secondary btn-md" id="renameCancel">Cancel</button>
+      <button class="btn btn-primary btn-md" id="renameSave">Save</button>
+    </div>
+  </div>
+
+  <!-- Archive confirmation sheet -->
+  <div class="archive-scrim" id="archiveScrim"></div>
+  <div class="archive-sheet" id="archiveSheet">
+    <div class="archive-sheet-handle"><div class="archive-sheet-handle-bar"></div></div>
+    <div class="archive-sheet-title">Archive this skill?</div>
+    <div class="archive-sheet-desc">This skill will stop running for all assigned kids. You can restore it later from your archived skills.</div>
+    <div class="archive-actions">
+      <button class="btn btn-secondary btn-md" id="archiveCancel">Cancel</button>
+      <button class="btn btn-destructive btn-md" id="archiveConfirm">Archive</button>
+    </div>
+  </div>
+</div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-right" id="col-right"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.DS_META = {
+  title: 'Skills v1',
+  desc: 'Full Skills v1 flow: browse adopted skills, explore the skill library, preview/adopt via chat, and view adopted skill with assignment and run history.',
+  owner: 'Leti',
+  status: 'In progress',
+  screen: ['Skills tab', 'Explore', 'Skill detail', 'Adopt in chat', 'Adopted skill view'],
+  notes: '\
+<h3>Flow</h3>\
+<ol>\
+<li><b>Skills tab</b> - Grid of adopted skills. Tap "explore" to browse.</li>\
+<li><b>Explore</b> - Browse by category (carousels or vertical list). Tap a card to preview.</li>\
+<li><b>Skill detail</b> - Metadata, stats, description. Tap "Get" to adopt.</li>\
+<li><b>Adopt in chat</b> - Customize the skill: pick kids, adjust steps/tone. Activate or save.</li>\
+<li><b>Adopted skill view</b> - Blue banner hero, activity chart, about, how-it-works beat timeline.</li>\
+</ol>\
+<h3>Interactions</h3>\
+<ul>\
+<li><b>Tap skill card</b> on Skills tab - opens adopted skill view</li>\
+<li><b>Tap explore icon</b> - opens explore overlay</li>\
+<li><b>Tap explore card</b> - opens skill detail</li>\
+<li><b>Tap "Get"</b> - opens adopt chat</li>\
+<li><b>Tap "Activate now"</b> - opens adopted skill view</li>\
+<li><b>Category pills</b> - switch between carousel and vertical list views</li>\
+</ul>'
+};
+</script>
+<script src="/product-explorer/nav.js"></script>
+<script src="/product-explorer/shell.js"></script>
+<script>
+(function() {
+  var exploreOverlay = document.getElementById('exploreOverlay');
+  var detailScreen = document.getElementById('detailScreen');
+  var adoptScreen = document.getElementById('adoptScreen');
+  var adoptedScreen = document.getElementById('adoptedScreen');
+
+  var currentSkill = {};
+
+  function readFromCard(el) {
+    currentSkill = {
+      emoji: el.getAttribute('data-emoji') || el.querySelector('.skill-card-icon,.explore-card-thumb,.explore-list-card-thumb').innerHTML,
+      name: el.getAttribute('data-name'),
+      category: el.getAttribute('data-category'),
+      by: el.getAttribute('data-by'),
+      users: el.getAttribute('data-users'),
+      age: el.getAttribute('data-age'),
+      desc: el.getAttribute('data-desc'),
+      opener: el.getAttribute('data-opener'),
+      kids: el.getAttribute('data-kids') || 'Ben, Gabe',
+      status: el.getAttribute('data-status') || 'active'
+    };
+  }
+
+  // Beats data per skill name
+  var skillBeats = {
+    'School dump': [
+      { title: 'The question', desc: 'Sprout asks about the one weird thing that happened today.' },
+      { title: 'The moment', desc: 'Your kid shares a story, or says nothing happened.' },
+      { title: 'Follow-up', desc: 'Sprout picks up on a specific detail and digs in.' },
+      { title: 'Go deeper', desc: 'Your kid expands on the story in their own words.' },
+      { title: 'Summary', desc: 'Sprout plays it back using their exact language.' },
+      { title: 'Parent flag', desc: 'Anything worth knowing gets sent your way.' }
+    ],
+    'Hot Take Olympics': [
+      { title: 'Kick off', desc: 'Your kid has 60 seconds to fire off five hot takes.' },
+      { title: 'Rate each take', desc: 'Sprout scores every take 1 to 10, no cop-out scores.' },
+      { title: 'Escalate', desc: 'Takes get bolder as the round goes on.' },
+      { title: 'Gold medal', desc: 'The best take of the round gets crowned.' }
+    ],
+    '20 Questions': [
+      { title: 'Pick something', desc: 'Your kid silently picks anything in the room.' },
+      { title: 'Narrow down', desc: 'Sprout asks yes/no questions, thinking out loud between each.' },
+      { title: 'Misfire', desc: 'Sprout intentionally guesses wrong around question 10.' },
+      { title: 'Final guess', desc: 'Right or wrong, Sprout reveals its answer and offers a rematch.' }
+    ],
+    'T-rex interview': [
+      { title: 'Pick a character', desc: 'Your kid chooses who to be: dinosaur, pirate, superhero.' },
+      { title: 'Interview begins', desc: 'Sprout goes full NPR journalist with a straight face.' },
+      { title: 'Deep questions', desc: 'Real interview questions applied to an absurd character.' },
+      { title: 'Sign off', desc: 'Sprout wraps with a broadcast-style outro.' }
+    ]
+  };
+  // Default beats for any skill
+  var defaultBeats = [
+    { title: 'Opener', desc: 'Sprout kicks things off with a prompt or question.' },
+    { title: 'Engage', desc: 'Your kid responds, plays along, or pushes back.' },
+    { title: 'Back and forth', desc: 'Sprout reacts, follows up, or raises the stakes.' },
+    { title: 'Wrap up', desc: 'The interaction ends with a summary, verdict, or rematch.' }
+  ];
+
+  function updateDetail() {
+    document.getElementById('detailIcon').innerHTML = currentSkill.emoji;
+    document.getElementById('detailName').textContent = currentSkill.name;
+    document.getElementById('detailCat').textContent = currentSkill.category;
+    document.getElementById('detailAge').textContent = currentSkill.age;
+    document.getElementById('detailBy').textContent = currentSkill.by === 'Sprout' ? 'Sprout team' : currentSkill.by;
+    document.getElementById('detailDesc').textContent = currentSkill.desc;
+
+    // Set banner color from emoji
+    var banner = document.getElementById('detailBanner');
+    banner.setAttribute('data-color', getEmojiColor(currentSkill.emoji));
+
+    // Render beat timeline
+    var beats = skillBeats[currentSkill.name] || defaultBeats;
+    var container = document.getElementById('detailBeats');
+    container.innerHTML = '';
+    beats.forEach(function(beat, i) {
+      var isFirst = (i === 0);
+      var isLast = (i === beats.length - 1);
+      var step = document.createElement('div');
+      step.className = 'beat-step';
+      step.innerHTML =
+        '<div class="beat-step-timeline">' +
+          '<div class="beat-step-line-top" style="' + (isFirst ? 'visibility:hidden' : '') + '"></div>' +
+          '<div class="beat-step-dot"><div class="beat-step-dot-inner"></div></div>' +
+          (isLast ? '' : '<div class="beat-step-line"></div>') +
+        '</div>' +
+        '<div class="beat-step-content">' +
+          '<div class="beat-step-title">' + beat.title + '</div>' +
+          '<div class="beat-step-desc">' + beat.desc + '</div>' +
+        '</div>';
+      container.appendChild(step);
+    });
+  }
+
+  function updateAdopt() {
+    document.getElementById('adoptEmoji').innerHTML = currentSkill.emoji;
+    document.getElementById('adoptName').textContent = currentSkill.name;
+    var ref = document.getElementById('adoptRef');
+    if (ref) ref.textContent = currentSkill.name;
+  }
+
+  function updateAdopted() {
+    document.getElementById('adoptedIcon').innerHTML = currentSkill.emoji;
+    document.getElementById('adoptedName').textContent = currentSkill.name;
+    document.getElementById('adoptedDesc').textContent = currentSkill.desc;
+
+    // Update status badge from skill card data
+    var badge = document.getElementById('adoptedBadge');
+    var status = currentSkill.status || 'active';
+    if (status === 'paused') {
+      badge.textContent = 'Paused';
+      badge.style.background = 'var(--orange-100, #ffead5)';
+      badge.style.color = 'var(--orange-600, #e04f16)';
+    } else {
+      badge.textContent = 'Active';
+      badge.style.background = '';
+      badge.style.color = '';
+    }
+
+    // Render beat timeline in "How it works"
+    var beats = skillBeats[currentSkill.name] || defaultBeats;
+    var container = document.getElementById('adoptedBeats');
+    container.innerHTML = '';
+    beats.forEach(function(beat, i) {
+      var isFirst = (i === 0);
+      var isLast = (i === beats.length - 1);
+      var step = document.createElement('div');
+      step.className = 'beat-step';
+      step.innerHTML =
+        '<div class="beat-step-timeline">' +
+          '<div class="beat-step-line-top" style="' + (isFirst ? 'visibility:hidden' : '') + '"></div>' +
+          '<div class="beat-step-dot"><div class="beat-step-dot-inner"></div></div>' +
+          (isLast ? '' : '<div class="beat-step-line"></div>') +
+        '</div>' +
+        '<div class="beat-step-content">' +
+          '<div class="beat-step-title">' + beat.title + '</div>' +
+          '<div class="beat-step-desc">' + beat.desc + '</div>' +
+        '</div>';
+      container.appendChild(step);
+    });
+  }
+
+  // Skills tab cards -> adopted view
+  document.querySelectorAll('.skill-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      readFromCard(card);
+      updateAdopted();
+      adoptedScreen.classList.add('visible');
+    });
+  });
+
+  // Explore button
+  document.getElementById('exploreBtn').addEventListener('click', function() {
+    exploreOverlay.classList.add('visible');
+  });
+  document.getElementById('exploreBackBtn').addEventListener('click', function() {
+    detailScreen.classList.remove('visible');
+    exploreOverlay.classList.remove('visible');
+  });
+
+  // Explore cards -> detail
+  function bindExploreCards(container) {
+    container.querySelectorAll('.explore-card, .explore-list-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        readFromCard(card);
+        updateDetail();
+        updateAdopt();
+        updateAdopted();
+        detailScreen.classList.add('visible');
+      });
+    });
+  }
+  bindExploreCards(document.getElementById('exploreCarouselView'));
+
+  // Detail back
+  document.getElementById('detailBack').addEventListener('click', function() {
+    detailScreen.classList.remove('visible');
+  });
+
+  // Scroll adopt chat to bottom so action chips are visible
+  function openAdoptChat() {
+    resetAdoptChips();
+    var thread = adoptScreen.querySelector('.chat-thread');
+    if (thread) setTimeout(function() { thread.scrollTop = thread.scrollHeight; }, 50);
+  }
+
+  // Detail Get -> adopt chat
+  document.getElementById('detailGetBtn').addEventListener('click', function() {
+    adoptScreen.classList.add('visible');
+    openAdoptChat();
+  });
+
+  // Adopt back
+  document.getElementById('adoptBack').addEventListener('click', function() {
+    adoptScreen.classList.remove('visible');
+  });
+
+  // Action chip behavior (matches parent-chat-now: select -> fade others -> hide -> navigate)
+  var actionChips = document.getElementById('adoptActionChips');
+
+  function resetAdoptChips() {
+    if (!actionChips) return;
+    actionChips.style.display = '';
+    actionChips.querySelectorAll('.option-chip').forEach(function(c) {
+      c.classList.remove('selected', 'faded');
+    });
+  }
+
+  if (actionChips) {
+    actionChips.querySelectorAll('.option-chip').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        if (chip.classList.contains('selected') || chip.classList.contains('faded')) return;
+        chip.classList.add('selected');
+        actionChips.querySelectorAll('.option-chip').forEach(function(c) {
+          if (c !== chip) c.classList.add('faded');
+        });
+        var isActivate = (chip.id === 'adoptActivate');
+        setTimeout(function() {
+          actionChips.style.display = 'none';
+          if (isActivate) {
+            adoptedScreen.classList.add('visible');
+          } else {
+            adoptScreen.classList.remove('visible');
+            detailScreen.classList.remove('visible');
+          }
+        }, 300);
+      });
+    });
+  }
+
+  // adoptActivate / adoptLater handled by action chip behavior above
+
+  // Reasoning transcript sheet for adopt chat
+  var adoptThoughtScrim = document.getElementById('adoptThoughtScrim');
+  var adoptThoughtSheet = document.getElementById('adoptThoughtSheet');
+  var adoptThoughtBack = document.getElementById('adoptThoughtBack');
+
+  function openAdoptThought() {
+    adoptThoughtScrim.classList.add('open');
+    adoptThoughtSheet.classList.add('open');
+  }
+  function closeAdoptThought() {
+    adoptThoughtScrim.classList.remove('open');
+    adoptThoughtSheet.classList.remove('open');
+    adoptScreen.querySelectorAll('.reasoning-indicator-chevron.open').forEach(function(c) { c.classList.remove('open'); });
+  }
+
+  if (adoptThoughtScrim) adoptThoughtScrim.addEventListener('click', closeAdoptThought);
+  if (adoptThoughtBack) adoptThoughtBack.addEventListener('click', closeAdoptThought);
+
+  adoptScreen.querySelectorAll('.reasoning-indicator').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      btn.querySelector('.reasoning-indicator-chevron').classList.add('open');
+      openAdoptThought();
+    });
+  });
+
+  // Adopted back -> close everything
+  document.getElementById('adoptedBack').addEventListener('click', function() {
+    closeCalSheet();
+    adoptedScreen.classList.remove('visible');
+    adoptScreen.classList.remove('visible');
+    detailScreen.classList.remove('visible');
+  });
+
+  // Context menu on avatar stack button
+  var ctxScrim = document.getElementById('adoptedCtxScrim');
+  var ctxMenu = document.getElementById('adoptedCtxMenu');
+  var renameScrim = document.getElementById('renameScrim');
+  var renameSheet = document.getElementById('renameSheet');
+  var renameField = document.getElementById('renameField');
+  var archiveScrim = document.getElementById('archiveScrim');
+  var archiveSheet = document.getElementById('archiveSheet');
+
+  function openCtxMenu() {
+    ctxScrim.classList.add('visible');
+    ctxMenu.classList.add('visible');
+  }
+  function closeCtxMenu() {
+    ctxScrim.classList.remove('visible');
+    ctxMenu.classList.remove('visible');
+  }
+  function openRenameSheet() {
+    renameField.value = document.getElementById('adoptedName').textContent;
+    renameScrim.classList.add('visible');
+    renameSheet.classList.add('visible');
+    setTimeout(function() { renameField.focus(); renameField.select(); }, 350);
+  }
+  function closeRenameSheet() {
+    renameScrim.classList.remove('visible');
+    renameSheet.classList.remove('visible');
+  }
+  function openArchiveSheet() {
+    archiveScrim.classList.add('visible');
+    archiveSheet.classList.add('visible');
+  }
+  function closeArchiveSheet() {
+    archiveScrim.classList.remove('visible');
+    archiveSheet.classList.remove('visible');
+  }
+
+  var isArchived = false;
+  var ctxArchiveBtn = document.getElementById('ctxArchive');
+
+  function setBadgeActive() {
+    var badge = document.getElementById('adoptedBadge');
+    badge.textContent = 'Active';
+    badge.style.background = '';
+    badge.style.color = '';
+  }
+  function setBadgeArchived() {
+    var badge = document.getElementById('adoptedBadge');
+    badge.textContent = 'Archived';
+    badge.style.background = 'var(--gray-200, #e9eaeb)';
+    badge.style.color = 'var(--text-secondary, #414651)';
+  }
+  function updateCtxArchiveBtn() {
+    if (isArchived) {
+      ctxArchiveBtn.innerHTML = '<span class="mi mi-sm">unarchive</span>Activate';
+      ctxArchiveBtn.classList.remove('adopted-ctx-item--destructive');
+    } else {
+      ctxArchiveBtn.innerHTML = '<span class="mi mi-sm">archive</span>Archive';
+      ctxArchiveBtn.classList.add('adopted-ctx-item--destructive');
+    }
+  }
+
+  document.getElementById('adoptedSettingsBtn').addEventListener('click', function() {
+    updateCtxArchiveBtn();
+    openCtxMenu();
+  });
+  ctxScrim.addEventListener('click', closeCtxMenu);
+
+  document.getElementById('ctxRename').addEventListener('click', function() {
+    closeCtxMenu();
+    setTimeout(openRenameSheet, 200);
+  });
+  document.getElementById('ctxEdit').addEventListener('click', function() {
+    closeCtxMenu();
+    updateAdopt();
+    adoptScreen.classList.add('visible');
+    openAdoptChat();
+  });
+  ctxArchiveBtn.addEventListener('click', function() {
+    closeCtxMenu();
+    if (isArchived) {
+      isArchived = false;
+      setBadgeActive();
+    } else {
+      setTimeout(openArchiveSheet, 200);
+    }
+  });
+
+  renameScrim.addEventListener('click', closeRenameSheet);
+  document.getElementById('renameCancel').addEventListener('click', closeRenameSheet);
+  document.getElementById('renameSave').addEventListener('click', function() {
+    var newName = renameField.value.trim();
+    if (newName) {
+      document.getElementById('adoptedName').textContent = newName;
+    }
+    closeRenameSheet();
+  });
+
+  archiveScrim.addEventListener('click', closeArchiveSheet);
+  document.getElementById('archiveCancel').addEventListener('click', closeArchiveSheet);
+  document.getElementById('archiveConfirm').addEventListener('click', function() {
+    closeArchiveSheet();
+    isArchived = true;
+    setBadgeArchived();
+  });
+
+  // Calendar sheet (See all)
+  var calScrim = document.getElementById('calScrim');
+  var calSheet = document.getElementById('calSheet');
+  var seeAllLink = document.querySelector('.activity-widget-link');
+  var transcriptSheet = document.getElementById('transcriptSheet');
+
+  function openCalSheet() {
+    calScrim.classList.add('visible');
+    calSheet.classList.add('visible');
+    selectCalDay(document.querySelector('.cal-day.today') || document.querySelector('.cal-day:not(.hidden)'));
+  }
+  function closeCalSheet() {
+    closeTranscript();
+    calScrim.classList.remove('visible');
+    calSheet.classList.remove('visible');
+  }
+  if (seeAllLink) seeAllLink.addEventListener('click', openCalSheet);
+  if (calScrim) calScrim.addEventListener('click', closeCalSheet);
+  var calCloseBtn = document.getElementById('calCloseBtn');
+  if (calCloseBtn) calCloseBtn.addEventListener('click', closeCalSheet);
+
+  // Day feed data keyed by day number
+  var calFeed = {
+    3:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:15 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:42 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'4:01 PM'}],
+    6:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:20 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:50 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'4:10 PM'}],
+    8:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:12 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:30 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'3:55 PM'}],
+    10:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:18 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:45 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'4:05 PM'}],
+    13:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:10 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:35 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'3:58 PM'}],
+    15:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:22 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:48 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'4:12 PM'}],
+    17:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:14 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:40 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'4:02 PM'}],
+    20:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:16 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:44 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'4:08 PM'}],
+    22:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:11 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:38 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'3:59 PM'}],
+    24:[{kid:'ben',text:'<b>Ben</b> completed school dump.',time:'3:19 PM'},{kid:'gabe',text:'<b>Gabe</b> completed school dump.',time:'3:46 PM'},{kid:'shane',text:'<b>Shane</b> completed school dump.',time:'4:06 PM'}],
+    27:[{kid:'ben',text:'<b>Ben</b> completed morning routine.',time:'1h'},{kid:'gabe',text:'<b>Gabe</b> completed morning routine.',time:'1h'}]
+  };
+
+  function selectCalDay(dayEl) {
+    if (!dayEl || dayEl.classList.contains('hidden')) return;
+    document.querySelectorAll('.cal-day.selected').forEach(function(d) { d.classList.remove('selected'); });
+    dayEl.classList.add('selected');
+    var dayNum = parseInt(dayEl.querySelector('.cal-day-num').textContent);
+    var indicator = dayEl.querySelector('.cal-day-indicator');
+    var status = indicator ? indicator.getAttribute('data-status') : '';
+    updateCalFeed(dayNum, status);
+  }
+
+  function updateCalFeed(dayNum, status) {
+    var header = document.querySelector('.cal-today-header');
+    var section = document.querySelector('.cal-today-section');
+    var isToday = (dayNum === 28);
+    header.textContent = (isToday ? 'Today, ' : '') + 'April ' + dayNum;
+    section.querySelectorAll('.cal-today-card').forEach(function(c) { c.remove(); });
+    var items = calFeed[dayNum];
+    if (!items || items.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'cal-today-card';
+      empty.style.cssText = 'color:var(--text-quaternary,#717680);font-size:14px;';
+      empty.textContent = (status === 'no-skill') ? 'No activity this day' : 'No activity yet';
+      section.appendChild(empty);
+      return;
+    }
+    items.forEach(function(item) {
+      var card = document.createElement('div');
+      card.className = 'cal-today-card';
+      card.style.cursor = 'pointer';
+      card.innerHTML =
+        '<div class="cal-today-avatar">' +
+          '<div class="avatar" data-kid="' + item.kid + '"><canvas class="rive-user" width="87" height="124"></canvas></div>' +
+          '<div class="cal-today-badge"><span class="mi" style="font-size:12px;">check</span></div>' +
+        '</div>' +
+        '<div class="cal-today-text">' + item.text + ' <span class="cal-time">' + item.time + '</span></div>' +
+        '<span class="mi cal-today-chevron">chevron_forward</span>';
+      card.addEventListener('click', function() { openTranscript(item.kid, dayNum, item.time); });
+      section.appendChild(card);
+    });
+    if (window.initRiveAvatars) window.initRiveAvatars(section);
+  }
+
+  document.querySelectorAll('.cal-day').forEach(function(day) {
+    day.addEventListener('click', function() { selectCalDay(day); });
+  });
+
+  // Transcript content per kid
+  function sproutMsg(text) {
+    return '<div class="transcript-msg"><div class="avatar avatar-xs"><canvas class="rive-sprout" width="64" height="92"></canvas></div><div class="transcript-msg-text">' + text + '</div></div>';
+  }
+  function kidMsg(kid, text) {
+    return '<div class="transcript-msg"><div class="avatar avatar-xs" data-kid="' + kid + '"><canvas class="rive-user" width="35" height="50"></canvas></div><div class="transcript-msg-text">' + text + '</div></div>';
+  }
+
+  var transcriptLines = {
+    ben: [
+      ['s', 'Tell me the one weird thing that happened today.'],
+      ['k', 'Okay so at lunch, Marcus tried to trade his sandwich for like five fruit snacks and Mrs. Chen saw and made him write an apology note.'],
+      ['s', 'An apology note for a sandwich trade? What did it say?'],
+      ['k', 'He had to write "I will not run a black market in the cafeteria." He spelled market wrong.'],
+      ['s', 'That is genuinely the best sentence I have heard all week. So Marcus is running a cafeteria black market. What else does he trade?'],
+      ['k', 'He has like a whole system. Chips are worth two fruit snacks, cookies are worth three. He keeps track in a notebook.'],
+      ['s', 'Got it. Ben watched a kid get busted for running an organized snack economy at lunch. Apology note included. The notebook is still at large.']
+    ],
+    gabe: [
+      ['s', 'Tell me the one weird thing that happened today.'],
+      ['k', 'Nothing happened.'],
+      ['s', 'Nothing? Not one single weird thing in the entire day?'],
+      ['k', 'Well, the fire alarm went off during math and we had to stand outside for like twenty minutes.'],
+      ['s', 'That counts. Was it real or a drill?'],
+      ['k', 'Someone burned popcorn in the teachers lounge. You could smell it from outside.'],
+      ['s', 'Got it. Gabe had to evacuate because a teacher burned popcorn. Twenty minutes of unexpected outside time. The popcorn did not survive.']
+    ],
+    shane: [
+      ['s', 'Tell me the one weird thing that happened today.'],
+      ['k', 'A bird flew into the classroom window and everyone screamed.'],
+      ['s', 'Was the bird okay?'],
+      ['k', 'Yeah it just sat on the windowsill for a while and then flew away. But Lily cried because she thought it was dead.'],
+      ['s', 'Got it. A bird hit the window, Lily cried, bird walked it off. Classic Tuesday.']
+    ]
+  };
+
+  function buildTranscript(kid) {
+    var lines = transcriptLines[kid] || transcriptLines.ben;
+    return lines.map(function(l) {
+      return l[0] === 's' ? sproutMsg(l[1]) : kidMsg(kid, l[1]);
+    }).join('');
+  }
+
+  // Transcript sheet
+  function openTranscript(kid, dayNum, time) {
+    document.getElementById('transcriptDate').textContent = 'April ' + dayNum + ' \u00B7 ' + time;
+    document.getElementById('transcriptBody').innerHTML = buildTranscript(kid);
+    // Init Rive avatars in transcript body
+    var body = document.getElementById('transcriptBody');
+    if (window.initRiveAvatars) window.initRiveAvatars(body);
+    body.querySelectorAll('canvas.rive-sprout').forEach(function(c) {
+      if (!c._riveInited) {
+        c._riveInited = true;
+        initRiveAvatar(c, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+      }
+    });
+    calSheet.classList.add('dimmed');
+    transcriptSheet.classList.add('visible');
+  }
+  function closeTranscript() {
+    transcriptSheet.classList.remove('visible');
+    calSheet.classList.remove('dimmed');
+  }
+  document.getElementById('transcriptBack').addEventListener('click', closeTranscript);
+
+  // Make existing static today cards clickable
+  document.querySelectorAll('.cal-today-card').forEach(function(card) {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function() {
+      var kid = card.querySelector('.avatar') ? card.querySelector('.avatar').getAttribute('data-kid') : 'ben';
+      openTranscript(kid, 28, '4:32 PM');
+    });
+  });
+
+  // Category pill switching
+  var allExploreCards = [
+    // Talk — Kid opens up, Rant/vent, Flex/brag, Mood/reflection, Memory proof
+    { emoji:'&#x1F3EB;', name:'School dump', category:'Talk', by:'Sprout', users:'5.1K', age:'5+', desc:'Right after school, Sprout asks about the one weird thing that happened. One sharp follow-up, then a summary using their exact words. You get flagged on anything worth knowing.', opener:'Tell me the one weird thing that happened today.' },
+    { emoji:'&#x1F4AC;', name:'Weirdest thing today', category:'Talk', by:'Sprout', users:'3.4K', age:'5+', desc:'Sprout and your kid trade the weirdest things they each saw today. One follow-up, one weird thing back. Books a rematch for tomorrow.', opener:'What\'s the weirdest thing you saw today? One thing.' },
+    { emoji:'&#x1F9E0;', name:'Callback', category:'Talk', by:'Sprout', users:'2.1K', age:'5+', desc:'Sprout opens unprompted with something it remembers from a past conversation. Proves it was actually listening. Tags a detail to follow up on next time.', opener:'Wait, did that thing with Noah end up happening?' },
+    { emoji:'&#x1F4AA;', name:'Biggest flex this week', category:'Talk', by:'Sprout', users:'2.8K', age:'5+', desc:'Kid brags about something, Sprout hypes with specific details. Not generic praise, real engagement with what they did.', opener:'What\'s the biggest flex from your week?' },
+    { emoji:'&#x1F614;', name:'Tank check', category:'Talk', by:'Sprout', users:'3.1K', age:'5+', desc:'How full is your tank today? 1 to 10. Sprout asks for the reason and validates without pivoting to advice.', opener:'How full is your tank today? 1 to 10.' },
+    { emoji:'&#x1F621;', name:'Rant about a rule', category:'Talk', by:'Sprout', users:'2.6K', age:'6+', desc:'Kid picks a family or school rule they hate and goes off. Sprout validates, riffs, and engages with the frustration.', opener:'Pick a rule you hate. Any rule. Go.' },
+    // Play — Guessing, Choosing, Ranking, Trivia
+    { emoji:'&#x2753;', name:'20 Questions', category:'Play', by:'Sprout', users:'4.7K', age:'5+', desc:'Kid picks anything in the room. Sprout guesses in 20 yes/no questions, thinking out loud between each. Misfires once on purpose, then nails it.', opener:'Pick anything in the room. I\'ll guess in 20 yes/no questions. Ready?' },
+    { emoji:'&#x1F60A;', name:'Would you rather', category:'Play', by:'Sprout', users:'5.8K', age:'5+', desc:'Five would-you-rathers, no passing. Starts tame, ends in spaghetti-feet-vs-bread-hands territory. Sprout roasts weak answers.', opener:'Five would-you-rathers. No passing. Go.' },
+    { emoji:'&#x26A1;', name:'This or that', category:'Play', by:'Sprout', users:'4.3K', age:'5+', desc:'30 seconds, rapid-fire pairs. Pizza or tacos. Dog or cat. No thinking. 15-20 pairs, then Sprout calls out the surprising pick.', opener:'30 seconds. I say two things, you pick one. No thinking. Go.' },
+    { emoji:'&#x1F9EE;', name:'Math duel', category:'Play', by:'Sprout', users:'3.5K', age:'6+', desc:'10 spoken math problems, increasing difficulty. Sprout hesitates on one to feel human. Final score and rematch offered.', opener:'Math duel. 10 problems, increasing difficulty. No fingers. Go.' },
+    { emoji:'&#x1F30D;', name:'Science what-if', category:'Play', by:'Sprout', users:'2.9K', age:'6+', desc:'What if gravity stopped? Sprout drops a wild scenario, kid brainstorms, Sprout layers in real physics. Kid picks the next what-if.', opener:'What if gravity stopped working for ten minutes. What happens?' },
+    { emoji:'&#x1F50D;', name:'Name that thing', category:'Play', by:'Sprout', users:'3.7K', age:'5+', desc:'Three clues, guess the thing. Sprout goes first with broad-to-obvious clues, then they swap. Sprout guesses wrong on purpose at clue 1.', opener:'Three clues. Guess the thing. I go first.' },
+    // Create — Story, Invent, Song/rap, Wordplay
+    { emoji:'&#x1F4D6;', name:'One-sentence story', category:'Create', by:'Sprout', users:'3.2K', age:'5+', desc:'Build a story one sentence at a time, alternating. Sprout adds complications, kid drives the plot. 10 sentences total, then it gets a title.', opener:'We\'re writing a story. One sentence each. I start. Ready?' },
+    { emoji:'&#x1F3A4;', name:'Freestyle rap trade', category:'Create', by:'Sprout', users:'1.4K', age:'10+', desc:'Rap battle. Four bars each, pick a topic. Sprout goes first, kid fires back. Two rounds, then best-bar-of-the-match verdict.', opener:'Rap battle. Four bars each. Topic: snacks. I go first.' },
+    { emoji:'&#x1F3B5;', name:'Song about the dog', category:'Create', by:'Sprout', users:'2.3K', age:'5+', desc:'Co-write a song about something real (pet, meal, sibling). Sprout sings the chorus, kid picks verse topics. Ends with a duet.', opener:'We\'re writing a song. What\'s it about?' },
+    { emoji:'&#x1F525;', name:'Pun war', category:'Create', by:'Sprout', users:'2.7K', age:'6+', desc:'Pick a topic, trade puns. First to groan loses. Real wordplay only, no regular jokes. Sprout plays smug pun-dad.', opener:'Pun war. Pick a topic. First to groan loses.' },
+    { emoji:'&#x1F3B2;', name:'Rhyme battle', category:'Create', by:'Sprout', users:'3.0K', age:'5+', desc:'Pick a word, take turns rhyming. First to blank loses. 2-3 rounds with new starting words each time.', opener:'Pick a word. I rhyme. You rhyme. First to blank loses.' },
+    { emoji:'&#x1F35C;', name:'Invent a new cereal', category:'Create', by:'Sprout', users:'2.5K', age:'5+', desc:'Name, mascot, terrible slogan. Kid leads, Sprout riffs. Ends with the full pitch read in TV-announcer voice.', opener:'We\'re inventing a cereal. Name, mascot, terrible slogan. You lead.' },
+    // Perform — Roleplay, Impressions, Physical
+    { emoji:'&#x1F3AD;', name:'T-rex interview', category:'Perform', by:'Sprout', users:'3.8K', age:'5+', desc:'Kid picks a character, gets interviewed by Sprout as a serious journalist. NPR voice, absurd questions. Signs off like a real broadcast.', opener:'Okay, you\'re a T-rex being interviewed. Ready?' },
+    { emoji:'&#x1F436;', name:'Be the family dog', category:'Perform', by:'Sprout', users:'3.1K', age:'5+', desc:'Kid plays their own dog for 60 seconds. Sprout is a reporter asking about the mailman, the food, and the favorite family member.', opener:'You\'re the dog now. For 60 seconds. I\'m a reporter. What\'s life like?' },
+    { emoji:'&#x1F4CB;', name:'Homework return desk', category:'Perform', by:'Sprout', users:'2.9K', age:'6+', desc:'Sprout is a customer service clerk at the homework return desk. Kid tries to return homework. Increasingly absurd store policy.', opener:'Welcome to the homework return desk. What\'s the issue?' },
+    { emoji:'&#x2696;&#xFE0F;', name:'Court of appeals', category:'Perform', by:'Sprout', users:'2.9K', age:'6+', desc:'Sprout plays judge. Kid argues why they shouldn\'t have to do a chore. Cross-examination, then a ruling with a verbal gavel.', opener:'Court is now in session. State your case.' },
+    { emoji:'&#x1F3ED;', name:'Sibling impression', category:'Perform', by:'Sprout', users:'2.4K', age:'6+', desc:'Do your best impression of a sibling. Sprout rates 1-10 with three specific observations, then coaches a second attempt.', opener:'Do your best impression of your sibling. I\'ll rate it. Go.' },
+    // Debate — Hot takes, Debate me
+    { emoji:'&#x1F525;', name:'Hot Take Olympics', category:'Debate', by:'Sprout', users:'4.2K', age:'6+', desc:'60 seconds, five hot takes. Sprout rates each 1-10 with a one-sentence reason. No cop-out scores. One take gets the gold medal.', opener:'60 seconds. Five hot takes. I rate each. Go.' },
+    { emoji:'&#x1F354;', name:'Food takes', category:'Debate', by:'Sprout', users:'3.6K', age:'5+', desc:'Three most controversial food opinions. Sprout reacts, rates, and argues back. Then drops its own contrarian take.', opener:'I want your three most controversial food opinions. Right now.' },
+    { emoji:'&#x1F6CF;&#xFE0F;', name:'Bedtime defense', category:'Debate', by:'Sprout', users:'3.9K', age:'6+', desc:'Make your case for a later bedtime. Sprout plays devil\'s advocate with real rebuttals. No condescension. One side wins.', opener:'Make your case. Why should bedtime be later?' },
+    { emoji:'&#x1F4DA;', name:'Homework should be banned', category:'Debate', by:'Sprout', users:'3.3K', age:'6+', desc:'Kid defends banning homework. Sprout steelmans the opposite. Trap question included. Two rounds, then a verdict.', opener:'Defend it. Homework should be banned. Go.' }
+  ];
+
+  var emojiColors = {
+    '&#x1F3EB;':'pink', '&#x1F525;':'yellow', '&#x2753;':'orange', '&#x1F3AD;':'green',
+    '&#x1F4D6;':'violet', '&#x1F60A;':'blue', '&#x1F9E0;':'sky', '&#x1F6CF;&#xFE0F;':'red',
+    '&#x1F4AC;':'sky', '&#x1F4AA;':'orange', '&#x1F614;':'violet', '&#x1F621;':'red',
+    '&#x26A1;':'yellow', '&#x1F9EE;':'orange', '&#x1F30D;':'green', '&#x1F50D;':'sky',
+    '&#x1F3A4;':'red', '&#x1F3B5;':'pink', '&#x1F3B2;':'violet', '&#x1F35C;':'yellow',
+    '&#x1F436;':'green', '&#x1F4CB;':'orange', '&#x2696;&#xFE0F;':'violet', '&#x1F3ED;':'pink',
+    '&#x1F354;':'yellow', '&#x1F4DA;':'blue'
+  };
+  // Decode HTML entities so lookups work with both raw entities and decoded emoji
+  var _emojiDecoder = document.createElement('span');
+  var decodedEmojiColors = {};
+  Object.keys(emojiColors).forEach(function(k) {
+    _emojiDecoder.innerHTML = k;
+    decodedEmojiColors[_emojiDecoder.textContent] = emojiColors[k];
+  });
+  function getEmojiColor(emoji) { return emojiColors[emoji] || decodedEmojiColors[emoji] || 'green'; }
+
+  var catDescs = {
+    'Talk': 'Conversations that open kids up',
+    'Play': 'Games and challenges, voice only',
+    'Create': 'Stories, songs, and wordplay',
+    'Perform': 'Roleplay, impressions, and bits',
+    'Debate': 'Opinions, hot takes, and arguments'
+  };
+
+  var carouselView = document.getElementById('exploreCarouselView');
+  var categoryView = document.getElementById('exploreCategoryView');
+  var catViewTitle = document.getElementById('catViewTitle');
+  var catViewDesc = document.getElementById('catViewDesc');
+  var catViewList = document.getElementById('catViewList');
+
+  document.querySelectorAll('.explore-pill').forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.explore-pill').forEach(function(p) { p.classList.remove('active'); });
+      pill.classList.add('active');
+      var label = pill.textContent.trim();
+
+      if (label === 'Top picks') {
+        carouselView.style.display = '';
+        categoryView.style.display = 'none';
+      } else {
+        carouselView.style.display = 'none';
+        categoryView.style.display = '';
+        catViewTitle.textContent = label;
+        catViewDesc.textContent = catDescs[label] || '';
+
+        var filtered = allExploreCards.filter(function(c) { return c.category === label; });
+        catViewList.innerHTML = '';
+        filtered.forEach(function(c) {
+          var div = document.createElement('div');
+          div.className = 'explore-list-card';
+          div.setAttribute('data-emoji', c.emoji);
+          div.setAttribute('data-name', c.name);
+          div.setAttribute('data-category', c.category);
+          div.setAttribute('data-by', c.by);
+          div.setAttribute('data-users', c.users);
+          div.setAttribute('data-age', c.age);
+          div.setAttribute('data-desc', c.desc);
+          div.setAttribute('data-opener', c.opener);
+          div.innerHTML = '<div class="explore-list-card-thumb" data-color="' + getEmojiColor(c.emoji) + '">' + c.emoji + '</div><div><div class="explore-card-name">' + c.name + '</div><div class="explore-card-meta">by <b style="font-weight:500;">' + c.by + '</b> &middot; <span class="mi mi-sm">diamond</span> ' + c.users + '</div></div>';
+          catViewList.appendChild(div);
+        });
+        bindExploreCards(catViewList);
+      }
+    });
+  });
+
+  // Screen state switching (metadata dropdown)
+  window.onScreenChange = function(index) {
+    exploreOverlay.classList.remove('visible');
+    detailScreen.classList.remove('visible');
+    adoptScreen.classList.remove('visible');
+    adoptedScreen.classList.remove('visible');
+
+    // Default skill data
+    var first = document.querySelector('.skill-card');
+    if (first) {
+      readFromCard(first);
+      updateDetail();
+      updateAdopt();
+      updateAdopted();
+    }
+
+    if (index === 1) {
+      exploreOverlay.classList.add('visible');
+    } else if (index === 2) {
+      exploreOverlay.classList.add('visible');
+      detailScreen.classList.add('visible');
+    } else if (index === 3) {
+      exploreOverlay.classList.add('visible');
+      detailScreen.classList.add('visible');
+      adoptScreen.classList.add('visible');
+      openAdoptChat();
+    } else if (index === 4) {
+      adoptedScreen.classList.add('visible');
+    }
+  };
+
+  // ── Filter sheet ──
+  var filterScrim = document.getElementById('filterScrim');
+  var filterSheet = document.getElementById('filterSheet');
+  var filterBtn = document.querySelector('.skills-header-actions .header-btn:last-child');
+
+  function openFilter() {
+    filterScrim.classList.add('visible');
+    filterSheet.classList.add('visible');
+  }
+  function closeFilter() {
+    filterScrim.classList.remove('visible');
+    filterSheet.classList.remove('visible');
+  }
+
+  if (filterBtn) filterBtn.addEventListener('click', openFilter);
+  if (filterScrim) filterScrim.addEventListener('click', closeFilter);
+
+  // Filter chip selection
+  document.querySelectorAll('.filter-chip[data-filter-kid]').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      document.querySelectorAll('.filter-chip[data-filter-kid]').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+    });
+  });
+  document.querySelectorAll('.filter-chip[data-filter-status]').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      document.querySelectorAll('.filter-chip[data-filter-status]').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+    });
+  });
+  document.getElementById('filterReset').addEventListener('click', function() {
+    document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('selected'); });
+    document.querySelectorAll('.filter-chip[data-filter-kid="all"], .filter-chip[data-filter-status="all"]').forEach(function(c) { c.classList.add('selected'); });
+  });
+
+  // ── Rive avatars ──
+  var RIVE_SPROUT_SRC = '/kid-design-system/sprout.riv';
+  var RIVE_USER_SRC = '/kid-design-system/character2.91.riv';
+  var SM_NAME = 'State Machine 1';
+  var ARTBOARD = 'Village-character';
+
+  var SPROUT_STATE = { hairID: 1 };
+  var USER_STATE = { skinID: 3, hairID: 2, hairshadeID: 4, clothingID: 1, clothingcolourID: 2, eyeshadeID: 1 };
+  var COPARENT_STATE = { skinID: 5, hairID: 4, hairshadeID: 8, beardID: 2, beardshadeID: 8, clothingID: 3, clothingcolourID: 5, eyeshadeID: 3 };
+  var BEN_STATE = { skinID: 0, hairID: 2, hairshadeID: 4, clothingID: 1, clothingcolourID: 2, eyeshadeID: 1 };
+  var GABE_STATE = { skinID: 0, hairID: 5, hairshadeID: 6, clothingID: 2, clothingcolourID: 4, eyeshadeID: 2 };
+  var SHANE_STATE = { skinID: 0, hairID: 1, hairshadeID: 4, clothingID: 3, clothingcolourID: 1, eyeshadeID: 1 };
+  var KID_STATES = { ben: BEN_STATE, gabe: GABE_STATE, shane: SHANE_STATE };
+
+  function initRiveAvatar(canvas, opts) {
+    var w = parseInt(canvas.getAttribute('width'), 10) || 86;
+    var h = parseInt(canvas.getAttribute('height'), 10) || 124;
+    canvas.width = w; canvas.height = h;
+    var r;
+    try {
+      r = new rive.Rive({
+        src: opts.src, canvas: canvas, autoplay: true,
+        stateMachines: SM_NAME, artboard: opts.artboard || undefined,
+        fit: rive.Fit.Contain, alignment: rive.Alignment.Center,
+        onLoad: function() {
+          if (!r) return;
+          r.resizeDrawingSurfaceToCanvas();
+          try {
+            var inputs = r.stateMachineInputs(SM_NAME);
+            if (inputs && opts.state) {
+              inputs.forEach(function(inp) {
+                if (opts.state[inp.name] !== undefined) inp.value = opts.state[inp.name];
+              });
+            }
+          } catch(e) {}
+        }
+      });
+    } catch(e) { console.warn('Rive init failed', e); }
+  }
+
+  // Sprout FAB
+  var fabC = document.getElementById('fabSprout');
+  if (fabC) initRiveAvatar(fabC, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+
+  // All Sprout avatars (detail stat, chat bubbles, FAB)
+  document.querySelectorAll('canvas.rive-sprout').forEach(function(c) {
+    if (c.id === 'fabSprout') return; // already inited above
+    initRiveAvatar(c, { src: RIVE_SPROUT_SRC, state: SPROUT_STATE });
+  });
+
+  // All kid avatars
+  function initRiveAvatarsIn(container) {
+    (container || document).querySelectorAll('.avatar[data-kid]').forEach(function(el) {
+      var c = el.querySelector('canvas.rive-user');
+      var kid = el.getAttribute('data-kid');
+      if (c && !c._riveInited) {
+        c._riveInited = true;
+        initRiveAvatar(c, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: KID_STATES[kid] || BEN_STATE });
+      }
+    });
+  }
+  initRiveAvatarsIn(document);
+  window.initRiveAvatars = initRiveAvatarsIn;
+
+  // Adopt toolbar avatars
+  var adoptZeevCanvas = document.querySelector('#adoptAvatarZeev canvas.rive-user');
+  if (adoptZeevCanvas) initRiveAvatar(adoptZeevCanvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: USER_STATE });
+  var adoptMaliCanvas = document.querySelector('#adoptAvatarMali canvas.rive-user');
+  if (adoptMaliCanvas) initRiveAvatar(adoptMaliCanvas, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: COPARENT_STATE });
+
+})();
+</script>
+</body>
+</html>
