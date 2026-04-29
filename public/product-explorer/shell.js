@@ -775,22 +775,25 @@
       html += '</div></div></div></div>';
     }
 
-    // Screen dropdown
-    if (meta.screen && Array.isArray(meta.screen)) {
-      var screenDefault = meta.screenDefault || 0;
+    // Screen / State dropdown
+    var screenList = meta.state || meta.screen;
+    var screenLabel = meta.state ? 'State' : 'Screen';
+    var screenDefaultKey = meta.state ? 'stateDefault' : 'screenDefault';
+    if (screenList && Array.isArray(screenList)) {
+      var screenDefault = meta[screenDefaultKey] || 0;
       html += '<div class="meta-row">';
       html += '<div class="meta-icon">' + META_ICONS.screen + '</div>';
-      html += '<div class="meta-label">Screen</div>';
+      html += '<div class="meta-label">' + screenLabel + '</div>';
       html += '<div class="meta-value">';
       html += '<div class="device-dropdown-wrap" id="screen-dropdown-wrap">';
       html += '<span class="badge badge-gray badge-device" onclick="toggleMetaDropdown(event,\'screen-dropdown\')">';
-      html += '<span id="screen-badge-text">' + meta.screen[screenDefault] + '</span>' + META_ICONS.chevron;
+      html += '<span id="screen-badge-text">' + screenList[screenDefault] + '</span>' + META_ICONS.chevron;
       html += '</span>';
       html += '<div class="device-dropdown" id="screen-dropdown">';
-      html += '<div class="device-dropdown-header">Select a screen</div>';
-      for (var s = 0; s < meta.screen.length; s++) {
+      html += '<div class="device-dropdown-header">Select a ' + screenLabel.toLowerCase() + '</div>';
+      for (var s = 0; s < screenList.length; s++) {
         var sActive = s === screenDefault ? ' active' : '';
-        html += '<button class="device-dropdown-item' + sActive + '" data-index="' + s + '" onclick="selectMetaOption(\'screen\',' + s + ',this)">' + meta.screen[s] + '</button>';
+        html += '<button class="device-dropdown-item' + sActive + '" data-index="' + s + '" onclick="selectMetaOption(\'screen\',' + s + ',this)">' + screenList[s] + '</button>';
       }
       html += '</div></div></div></div>';
     }
