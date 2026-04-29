@@ -412,7 +412,7 @@
   text-align: center;
   word-break: break-word;
   overflow: hidden;
-  background: var(--brand-100, #e0f2fe);
+  background: linear-gradient(135deg, var(--brand-200, #b9e6fe), var(--brand-100, #e0f2fe));
 }
 
 /* ── Notification toggle visibility (driven by .device-screen class) ── */
@@ -1924,21 +1924,26 @@ window.DS_META = {
   status: 'In progress',
   state: ['Default', 'Still', 'NUX'],
   notes: '\
-<h3>How ACT inbox works</h3>\
-<p>The ACT tab is a <strong>notification feed</strong>, not a thread list. Each item shows the most relevant current state of an entity. Preview text = latest generation, not latest chat.</p>\
-<p><strong>Three postures per item</strong></p>\
+<h3>Flow</h3>\
+<ol>\
+<li><b>Home feed</b> &ndash; Notification-style feed of quest completions per child, grouped by time (Today, Yesterday, Last 7 days, Last 30 days, Older). Preview text = latest generation.</li>\
+<li><b>Chat sheet</b> &ndash; Tap the Sprout avatar (bottom right) to slide up a chat composer with @mentions and attachments.</li>\
+<li><b>Chat history</b> &ndash; Inside the chat sheet, tap the clock icon to browse past conversations with search.</li>\
+</ol>\
+<h3>States (use dropdown)</h3>\
 <ul>\
-<li><strong>Quick action</strong> &ndash; deal with it right there. Approve, decline, acknowledge. Some items resolve without ever opening a thread.</li>\
-<li><strong>Get context</strong> &ndash; tap through to the thread where it originated. Read history, see the canvas detail.</li>\
-<li><strong>Interactive mode</strong> &ndash; talk to Sprout to figure out the right call. Opens into the thread chat.</li>\
+<li><b>Default</b> &ndash; Active family with recent quest completions across multiple children and time periods.</li>\
+<li><b>Still</b> &ndash; Infrequent user. Only older items remain, all under "Older." Signals re-engagement opportunity.</li>\
+<li><b>NUX</b> &ndash; New user. Sprout onboarding prompts: add a child, pick a quest, invite a co-parent.</li>\
 </ul>\
-<p><strong>Cross-parent action surfacing</strong></p>\
+<h3>Interactions</h3>\
 <ul>\
-<li>Actions surface to whichever parent needs to act, not whoever set it up.</li>\
-<li>If one parent approves, the other sees a disabled "Approved" button (not removed).</li>\
-</ul>\
-<p><strong>Not everything leads to a thread</strong> &ndash; approving a screen time request is a single tap. The thread is there for context when you want it, not the mandatory destination.</p>\
-<p><strong>Time sections</strong>: Today, Yesterday, Last 7 days, Last 30 days, Older</p>' +
+<li><b>Tap feed item</b> &ndash; navigates to the parent chat thread</li>\
+<li><b>Tap Sprout avatar</b> (bottom right) &ndash; opens chat sheet overlay</li>\
+<li><b>Tap scrim</b> &ndash; closes chat sheet</li>\
+<li><b>Tap clock icon</b> in chat sheet &ndash; opens chat history sub-sheet</li>\
+<li><b>Scroll feed</b> &ndash; toolbar gets a bottom border</li>\
+</ul>' +
   '<h3>Decisions to make</h3>' +
   '<div class="act-toggles">' +
   '<div class="act-toggle-group">' +
@@ -2187,7 +2192,7 @@ window.DS_META = {
 
   var nullSproutsInited = false;
   var stillInited = false;
-  window.onScreenChange = function(index) {
+  window.onStateChange = function(index) {
     // 0 = Default, 1 = Still, 2 = NUX
     feedSections.forEach(function(s) { s.style.display = index === 0 ? '' : 'none'; });
     if (stillState) stillState.style.display = index === 1 ? 'block' : 'none';
