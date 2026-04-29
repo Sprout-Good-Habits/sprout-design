@@ -1178,7 +1178,7 @@
   <!-- Feed -->
   <div class="act-feed">
 
-    <!-- Null state: Sprout onboarding notifications (hidden by default) -->
+    <!-- NUX: Sprout onboarding notifications (hidden by default) -->
     <div id="nullState" style="display:none;">
       <div class="act-section">
         <div class="act-section-header">Today</div>
@@ -1768,7 +1768,7 @@ window.DS_META = {
   desc: 'Tab-based navigation: bottom bar with Home, Family, and Skills tabs. Chat accessible via header Sprout avatar.',
   owner: 'Leti',
   status: 'In progress',
-  screen: ['Default', 'Null state'],
+  screen: ['Default', 'NUX'],
   notes: '\
 <h3>How ACT inbox works</h3>\
 <p>The ACT tab is a <strong>notification feed</strong>, not a thread list. Each item shows the most relevant current state of an entity. Preview text = latest generation, not latest chat.</p>\
@@ -2005,7 +2005,7 @@ window.DS_META = {
 
   var nullSproutsInited = false;
   window.onScreenChange = function(index) {
-    // 0 = Default, 1 = Null state
+    // 0 = Default, 1 = NUX
     var showFeed = index === 0;
 
     feedSections.forEach(function(s) { s.style.display = showFeed ? '' : 'none'; });
