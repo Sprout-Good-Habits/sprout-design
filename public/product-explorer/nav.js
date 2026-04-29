@@ -45,6 +45,7 @@ window.DS_NAV = [
       { label: 'Navigation', icon: 'home', badge: 'v2', href: '/product-explorer/navigation-v2.html' },
       { label: 'Navigation', icon: 'home', badge: 'v3', href: '/product-explorer/navigation-v3.html' },
       { label: 'Navigation', icon: 'home', badge: 'v4', href: '/product-explorer/navigation-v4.html' },
+      { label: 'Home', icon: 'home', badge: 'v2', href: '/product-explorer/parent-home-v2.html' },
       { label: 'Skills', icon: 'grid', href: '/product-explorer/skills-thread.html' },
       { label: 'Family', icon: 'grid', href: '/product-explorer/family.html' }
     ]
