@@ -38,16 +38,17 @@ window.DS_NAV = [
     collapsible: true,
     defaultOpen: true,
     children: [
+      { label: 'Home', icon: 'home', badge: 'Ready', badgeColor: 'green', badge2: 'v2', href: '/product-explorer/parent-home-v2.html' },
+      { label: 'Skills', icon: 'grid', badge: 'Ready', badgeColor: 'green', href: '/product-explorer/skills-thread.html' },
+      { label: 'Family', icon: 'grid', badge: 'Ready', badgeColor: 'green', href: '/product-explorer/family.html' },
+      { label: 'Parent Chat', icon: 'message-chat', badge: 'Ready', badgeColor: 'green', badge2: 'Now', href: '/product-explorer/parent-chat-now.html' },
+      { separator: true },
       { label: 'Parent Chat', icon: 'message-chat', badge: 'v3', href: '/product-explorer/parent-chat-3.html' },
-      { label: 'Parent Chat', icon: 'message-chat', badge: 'Now', href: '/product-explorer/parent-chat-now.html' },
       { label: 'Parent Chat', icon: 'message-chat', badge: 'Later', href: '/product-explorer/parent-chat-later.html' },
       { label: 'Home', icon: 'home', href: '/product-explorer/parent-home.html' },
       { label: 'Navigation', icon: 'home', badge: 'v2', href: '/product-explorer/navigation-v2.html' },
       { label: 'Navigation', icon: 'home', badge: 'v3', href: '/product-explorer/navigation-v3.html' },
-      { label: 'Navigation', icon: 'home', badge: 'v4', href: '/product-explorer/navigation-v4.html' },
-      { label: 'Home', icon: 'home', badge: 'v2', href: '/product-explorer/parent-home-v2.html' },
-      { label: 'Skills', icon: 'grid', href: '/product-explorer/skills-thread.html' },
-      { label: 'Family', icon: 'grid', href: '/product-explorer/family.html' }
+      { label: 'Navigation', icon: 'home', badge: 'v4', href: '/product-explorer/navigation-v4.html' }
     ]
   },
   {

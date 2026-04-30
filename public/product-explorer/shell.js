@@ -56,6 +56,9 @@
     '.nav-icon .material-symbols-outlined{font-size:20px;line-height:1;}',
     /* Badge pill */
     '.nav-badge{margin-left:auto;background:#f0f9ff;border:1px solid #b9e6fe;color:#026aa2;font-size:12px;font-weight:500;line-height:1;border-radius:6px;padding:2px 6px;white-space:nowrap;flex-shrink:0;}',
+    '.nav-badge+.nav-badge{margin-left:4px;}',
+    '.nav-badge--green{background:#ecfdf3;border-color:#abefc6;color:#067647;}',
+    '.nav-separator{height:1px;background:#e9eaeb;margin:4px 8px;}',
     /* Chevron */
     '.nav-chevron{width:16px;height:16px;margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#a4a7ae;}',
     '.nav-chevron .material-symbols-outlined{font-size:16px;line-height:1;}',
@@ -221,13 +224,16 @@
               html += '</a>';
             }
             html += '</div>';
+          } else if (child.separator) {
+            html += '<div class="nav-separator"></div>';
           } else {
             // Regular leaf child
             var childActive = child.href && isActive(child.href) ? ' active' : '';
             html += '<a class="nav-child' + childActive + '" href="' + (child.href || '#') + '">';
             if (childIcon) html += '<span class="nav-icon">' + childIcon + '</span>';
             html += '<span class="nav-child-label">' + child.label + '</span>';
-            if (child.badge) html += '<span class="nav-badge">' + child.badge + '</span>';
+            if (child.badge2) html += '<span class="nav-badge">' + child.badge2 + '</span>';
+            if (child.badge) html += '<span class="nav-badge' + (child.badgeColor === 'green' ? ' nav-badge--green' : '') + '">' + child.badge + '</span>';
             html += '</a>';
           }
         }
@@ -246,13 +252,15 @@
         html += '<div class="nav-children' + (sectionActive ? '' : ' collapsed') + '">';
         for (var j = 0; j < item.children.length; j++) {
           var child = item.children[j];
+          if (child.separator) { html += '<div class="nav-separator"></div>'; continue; }
           var childActive = child.href && isActive(child.href) ? ' active' : '';
           var childIcon = child.icon && ICONS[child.icon] ? ICONS[child.icon] : '';
 
           html += '<a class="nav-child' + childActive + '" href="' + (child.href || '#') + '">';
           if (childIcon) html += '<span class="nav-icon">' + childIcon + '</span>';
           html += '<span class="nav-child-label">' + child.label + '</span>';
-          if (child.badge) html += '<span class="nav-badge">' + child.badge + '</span>';
+          if (child.badge2) html += '<span class="nav-badge">' + child.badge2 + '</span>';
+          if (child.badge) html += '<span class="nav-badge' + (child.badgeColor === 'green' ? ' nav-badge--green' : '') + '">' + child.badge + '</span>';
           html += '</a>';
         }
         html += '</div>';
