@@ -3010,7 +3010,7 @@ window.DS_META = {
             '<div class="adopted-feed-title-text"><b>' + name + '</b> finished <b>' + currentSkill.name + '</b></div>' +
             '<span class="adopted-feed-time">' + time + '</span>' +
           '</div>' +
-          '<div class="adopted-feed-preview">' + getPreview(kid) + '</div>' +
+          '' +
         '</div>';
       item.addEventListener('click', (function(k, d) {
         return function() { openTranscript(k, d, '4:32 PM'); };
@@ -3401,7 +3401,7 @@ window.DS_META = {
             '<div class="adopted-feed-title-text"><b>' + name + '</b> finished <b>' + (currentSkill.name || 'School dump') + '</b></div>' +
             '<span class="adopted-feed-time">' + item.time + '</span>' +
           '</div>' +
-          '<div class="adopted-feed-preview">' + (calPreviews[kid] || '') + '</div>' +
+          '' +
         '</div>';
       card.addEventListener('click', function() { openTranscript(item.kid, dayNum, item.time); });
       section.appendChild(card);
