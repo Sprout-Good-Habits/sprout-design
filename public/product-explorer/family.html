@@ -1215,32 +1215,6 @@
   color: #fff;
   margin-top: 8px;
 }
-
-/* ── State toggle controls (metadata panel) ── */
-.fam-toggles { margin-top: 8px; }
-.fam-toggle-group { margin-bottom: 16px; }
-.fam-toggle-label {
-  font-size: 13px; font-weight: var(--font-weight-semibold, 600);
-  color: var(--text-primary, #181d27); margin-bottom: 6px;
-}
-.fam-toggle-row { display: flex; gap: 4px; }
-.fam-toggle-btn {
-  flex: 1; padding: 6px 10px; font-size: 12px;
-  font-weight: var(--font-weight-medium, 500);
-  font-family: var(--font-family-body, 'Inter', sans-serif);
-  color: var(--text-secondary, #414651);
-  background: var(--bg-primary, #fff);
-  border: 1px solid var(--border-secondary, #e9eaeb);
-  border-radius: var(--radius-sm, 6px);
-  cursor: pointer; text-align: center; line-height: 18px;
-  transition: all 0.15s;
-}
-.fam-toggle-btn.active {
-  background: var(--brand-50, #f0f9ff);
-  border-color: var(--brand-200, #b9e6fe);
-  color: var(--brand-700, #026aa2);
-  font-weight: var(--font-weight-semibold, 600);
-}
 </style>
 </head>
 <body>
@@ -1700,25 +1674,20 @@
 <script>
 window.DS_META = {
   title: 'Family',
-  desc: 'The Family tab is the parent\'s management hub for children, devices, and tasks. It surfaces the "Kids" card for at-a-glance status and taps through to full kid profiles.',
+  desc: 'The Family tab is the parent\'s management hub for children, devices, and skills. It surfaces the "Kids" card for at-a-glance status and taps through to full kid profiles.',
   owner: 'Leti',
   status: 'In progress',
   screen: ['Kids', 'Ben Profile', 'Gabe Profile', 'Shane Profile'],
   screenDefault: 0,
+  state: ['Active', 'NUX', 'Pending'],
   notes: '<h2>Two connected screens</h2>' +
-    '<p><strong>Kids</strong> is a card on the Family tab showing all children with live status. Tapping a child navigates to their <strong>Kid Profile</strong>, a detail screen with tasks and devices.</p>' +
-    '<h2>States</h2>' +
-    '<div class="fam-toggles">' +
-    '<div class="fam-toggle-group">' +
-      '<div class="fam-toggle-label">Family state</div>' +
-      '<p style="font-size:13px;color:#535862;margin:0 0 6px;">Switch between Active (3 kids), NUX (no kids yet), and Pending (one child awaiting activation).</p>' +
-      '<div class="fam-toggle-row">' +
-        '<button class="fam-toggle-btn active" onclick="setFamilyState(\'active\',this)">Active</button>' +
-        '<button class="fam-toggle-btn" onclick="setFamilyState(\'nux\',this)">NUX</button>' +
-        '<button class="fam-toggle-btn" onclick="setFamilyState(\'pending\',this)">Pending</button>' +
-      '</div>' +
-    '</div>' +
-    '</div>' +
+    '<p><strong>Kids</strong> is a card on the Family tab showing all children with live status. Tapping a child navigates to their <strong>Kid Profile</strong>, a detail screen with skills and devices.</p>' +
+    '<h2>States (use dropdown)</h2>' +
+    '<ul>' +
+      '<li><strong>Active:</strong> 3 kids with streaks, 2 co-parents</li>' +
+      '<li><strong>NUX:</strong> No kids yet, shows "Add kid" and "Add co-parent" CTAs</li>' +
+      '<li><strong>Pending:</strong> One child (Gabe) awaiting activation with amber badge</li>' +
+    '</ul>' +
     '<h2>Key patterns</h2>' +
     '<ul>' +
       '<li><strong>Pending badge:</strong> Amber pill next to name when child is not yet activated</li>' +
@@ -1726,6 +1695,17 @@ window.DS_META = {
       '<li><strong>Segment control:</strong> Skills / Devices tabs in kid profile</li>' +
       '<li><strong>Skill tap:</strong> Tapping a skill in the kid profile navigates to the Adopted skill view (see <a href="/product-explorer/skills-thread.html" style="color:var(--brand-600,#0086c9);text-decoration:none;">Skills</a>). Not prototyped here.</li>' +
       '<li><strong>Calendar day tap:</strong> Tapping a day in the calendar shows the skills completed that day. Tapping a skill entry opens its transcript. Transcript not prototyped here.</li>' +
+    '</ul>' +
+    '<h2>Interactions</h2>' +
+    '<ul>' +
+      '<li><strong>Tap kid row:</strong> Opens kid profile (slides in from right)</li>' +
+      '<li><strong>Back button:</strong> Closes profile</li>' +
+      '<li><strong>Tap "See all" in Trends:</strong> Opens calendar sheet with month grid</li>' +
+      '<li><strong>Tap calendar day:</strong> Shows that day\'s activity feed below the grid</li>' +
+      '<li><strong>Tap "Add child" (header):</strong> Opens add member sheet (Kid tab)</li>' +
+      '<li><strong>Tap "Invite" button:</strong> Opens add member sheet (Parent tab)</li>' +
+      '<li><strong>Parent invite:</strong> QR code view or copy link with toast confirmation</li>' +
+      '<li><strong>Profile segment control:</strong> Switches between Skills and Devices tabs</li>' +
     '</ul>'
 };
 </script>
@@ -2128,10 +2108,7 @@ window.DS_META = {
   };
 
 
-  window.setFamilyState = function(state, btn) {
-    var row = btn.parentElement;
-    row.querySelectorAll('.fam-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
-    btn.classList.add('active');
+  window.setFamilyState = function(state) {
     document.getElementById('kidsNowCard').style.display = 'none';
     document.getElementById('kidsEmptyCard').style.display = 'none';
     document.getElementById('kidsPendingCard').style.display = 'none';
@@ -2139,8 +2116,12 @@ window.DS_META = {
     else if (state === 'nux') { document.getElementById('kidsEmptyCard').style.display = ''; }
     else if (state === 'pending') { document.getElementById('kidsPendingCard').style.display = ''; KID_PROFILES.gabe.pending = true; }
     if (state !== 'pending') { KID_PROFILES.gabe.pending = false; }
-    // familyMembersCard is now part of kidsNowCard section
     if (screenProfile.classList.contains('visible')) { closeProfile(); }
+  };
+
+  window.onStateChange = function(index) {
+    var states = ['active', 'nux', 'pending'];
+    setFamilyState(states[index] || 'active');
   };
 })();
 </script>
