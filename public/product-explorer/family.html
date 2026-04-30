@@ -294,8 +294,6 @@
   cursor: pointer;
   transition: background 0.12s;
 }
-.fam-kid-row:hover { background: var(--gray-50, #fafafa); }
-.fam-kid-row:active { background: var(--gray-100, #f5f5f5); }
 .fam-kid-avatar {
   position: relative;
   flex-shrink: 0;
@@ -399,16 +397,17 @@
   pointer-events: none;
 }
 
-/* ── Profile: white container ── */
+/* ── Profile: content container (brand-25 bg, matches adopted skill layout) ── */
 .pro-container {
-  background: var(--bg-primary, #fff);
-  border-radius: 24px 24px 0 0;
+  background: var(--brand-25, #f5fbff);
+  margin-top: -15px;
   padding: 16px;
+  padding-bottom: 34px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: -12px;
   position: relative;
+  min-height: calc(100% - 249px);
 }
 
 /* ── Profile: name ── */
@@ -431,9 +430,10 @@
 
 /* ── Profile: stats card ── */
 .pro-stats-card {
-  background: var(--brand-25, #f5fbff);
-  border-radius: var(--radius-3xl, 20px);
-  padding: 16px;
+  background: white;
+  border-radius: var(--radius-2xl, 16px);
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.04);
+  padding: 12px 16px;
   display: flex;
   gap: 16px;
 }
@@ -472,7 +472,7 @@
 /* ── Profile: segment control (Figma) ── */
 .pro-segment {
   display: flex;
-  background: var(--brand-50, #f0f9ff);
+  background: var(--gray-100, #f5f5f5);
   border-radius: var(--radius-lg, 10px);
   padding: 4px;
   gap: 4px;
@@ -494,9 +494,324 @@
   transition: all 0.2s;
 }
 .pro-segment-btn.active {
-  background: var(--brand-25, #f5fbff);
+  background: white;
   color: var(--text-secondary, #414651);
   box-shadow: 0 1px 3px rgba(10,13,18,0.1), 0 1px 2px -1px rgba(10,13,18,0.1);
+}
+
+/* ── Profile: Trends activity widget ── */
+.pro-activity-widget {
+  background: white;
+  border-radius: var(--radius-2xl, 16px);
+  box-shadow: 0 0 4px -2px rgba(0,0,0,0.04);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pro-activity-widget-label {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+}
+.pro-activity-widget-row {
+  display: flex;
+  align-items: center;
+}
+.pro-activity-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.pro-activity-day-label {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-quaternary, #717680);
+  width: 16px;
+  text-align: center;
+}
+.pro-activity-day-label.active {
+  background: var(--fg-brand-primary, #0ba5ec);
+  color: white;
+  border-radius: var(--radius-full, 9999px);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pro-activity-bar-wrap {
+  position: relative;
+  height: 60px;
+  width: 20px;
+  background: var(--gray-100, #f5f5f5);
+  border-radius: var(--radius-full, 9999px);
+  overflow: clip;
+}
+.pro-activity-bar-wrap[data-state="no-skill"] {
+  background: transparent;
+  border-radius: var(--radius-xxs, 2px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.pro-activity-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--fg-brand-primary, #0ba5ec);
+}
+.pro-activity-bar-wrap[data-state="no-skill"] .pro-activity-bar {
+  position: static;
+  height: 4px;
+  background: var(--gray-100, #f5f5f5);
+}
+.pro-activity-bar-wrap[data-state="projected"] {
+  background: transparent;
+}
+.pro-activity-bar-wrap[data-state="projected"] .pro-activity-bar {
+  background: var(--gray-100, #f5f5f5);
+}
+.pro-activity-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-secondary, #e9eaeb);
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--fg-brand-primary, #0ba5ec);
+  cursor: pointer;
+}
+
+/* ── Profile: Calendar sheet ── */
+.pro-cal-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,13,18,0.2);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.pro-cal-scrim.visible { opacity: 1; pointer-events: auto; }
+.pro-cal-sheet {
+  position: absolute;
+  left: 0; right: 0; top: 62px; bottom: 0;
+  background: var(--brand-25, #f5fbff);
+  border-radius: 24px 24px 0 0;
+  z-index: 41;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.pro-cal-sheet.visible { transform: translateY(0); }
+.pro-cal-handle {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 4px;
+  flex-shrink: 0;
+}
+.pro-cal-handle-bar {
+  width: 36px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--gray-300, #d5d7da);
+}
+.pro-cal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.pro-cal-header::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 100%;
+  height: 24px;
+  background: linear-gradient(to bottom, var(--brand-25, #f5fbff) 0%, rgba(245,251,255,0) 100%);
+  pointer-events: none;
+}
+.pro-cal-header-title {
+  flex: 1;
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: 18px;
+  color: var(--text-primary, #181d27);
+  text-align: center;
+}
+.pro-cal-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+}
+.pro-cal-body::-webkit-scrollbar { display: none; }
+.pro-cal-grid {
+  padding: 16px;
+}
+.pro-cal-week {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+.pro-cal-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius-2xl, 16px);
+  flex-shrink: 0;
+}
+.pro-cal-day.hidden { opacity: 0; pointer-events: none; cursor: default; }
+.pro-cal-day-num {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: var(--text-quaternary, #717680);
+  text-align: center;
+  min-width: 100%;
+}
+.pro-cal-day.today {
+  background: var(--brand-50, #f0f9ff);
+}
+.pro-cal-day-indicator {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pro-cal-day-indicator[data-status="completed"] {
+  background: var(--fg-brand-primary, #0ba5ec);
+  border-radius: 9999px;
+  padding: 4px;
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: var(--line-height-text-xs, 16px);
+  color: white;
+  width: auto;
+  min-width: 24px;
+}
+.pro-cal-day-indicator[data-status="no-skill"]::after {
+  content: '';
+  width: 16px;
+  height: 2px;
+  border-radius: 9999px;
+  background: var(--gray-200, #e9eaeb);
+}
+.pro-cal-day-indicator[data-status="empty"]::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--gray-200, #e9eaeb);
+  box-sizing: border-box;
+}
+
+/* ── Profile: Calendar day detail section ── */
+.pro-cal-day { cursor: pointer; }
+.pro-cal-day.selected {
+  background: var(--brand-100, #e0f2fe);
+  filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.04));
+}
+.pro-cal-day-section {
+  background: white;
+  padding: 16px;
+  flex: 1;
+}
+.pro-cal-day-header {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-quaternary, #717680);
+  padding: 8px 0;
+}
+.pro-cal-day-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+.pro-cal-day-card + .pro-cal-day-card {
+  border-top: 1px solid var(--border-secondary, #e9eaeb);
+}
+.pro-cal-day-card-icon {
+  position: relative;
+  flex-shrink: 0;
+}
+.pro-cal-day-card-icon-emoji {
+  width: 48px; height: 48px;
+  border-radius: var(--radius-md, 12px);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 28px;
+  overflow: hidden;
+}
+.pro-cal-day-card-badge {
+  position: absolute;
+  right: -4px; bottom: -4px;
+  width: 20px; height: 20px;
+  border-radius: 9999px;
+  border: 1.5px solid white;
+  background: var(--green-400, #47cd89);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 2;
+}
+.pro-cal-day-card-badge .act-icon { font-size: 12px; }
+.pro-cal-day-card-text {
+  flex: 1;
+  min-width: 0;
+}
+.pro-cal-day-card-title {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-secondary, #414651);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.pro-cal-day-card-title b {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #181d27);
+}
+.pro-cal-day-card-time {
+  font-size: var(--font-size-text-xs, 12px);
+  color: var(--text-quaternary, #717680);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.pro-cal-day-card-preview {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  color: var(--text-tertiary, #535862);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pro-cal-day-empty {
+  color: var(--text-quaternary, #717680);
+  font-size: 14px;
+  padding: 12px 0;
 }
 
 /* ── Profile: tab panes (reduced gap after segment) ── */
@@ -506,25 +821,21 @@
 .pro-quest-list {
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius-3xl, 20px);
-  overflow: hidden;
 }
 .pro-quest-card {
-  background: var(--brand-25, #f5fbff);
+  background: transparent;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px;
-  border-bottom: 1px solid var(--border-secondary, #e9eaeb);
+  padding: 12px 0;
 }
-.pro-quest-card:last-child { border-bottom: none; }
 .pro-quest-icon {
-  width: 40px; height: 40px;
-  border-radius: var(--radius-md, 8px);
+  width: 48px; height: 48px;
+  border-radius: var(--radius-md, 12px);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  font-family: 'TossFace', sans-serif;
-  font-size: 24px;
+  font-family: 'TossFace', 'Apple Color Emoji', sans-serif;
+  font-size: 28px;
   overflow: hidden;
 }
 .pro-quest-info { flex: 1; min-width: 0; }
@@ -904,7 +1215,6 @@
   color: #fff;
   margin-top: 8px;
 }
-.fam-sheet-btn:active { opacity: 0.85; }
 
 /* ── State toggle controls (metadata panel) ── */
 .fam-toggles { margin-top: 8px; }
@@ -925,7 +1235,6 @@
   cursor: pointer; text-align: center; line-height: 18px;
   transition: all 0.15s;
 }
-.fam-toggle-btn:hover { background: var(--gray-50, #fafafa); }
 .fam-toggle-btn.active {
   background: var(--brand-50, #f0f9ff);
   border-color: var(--brand-200, #b9e6fe);
@@ -1039,12 +1348,31 @@
     </div>
   </div>
 
-  <!-- ═══ EMPTY STATE (hidden) ═══ -->
+  <!-- ═══ NUX STATE (hidden) ═══ -->
   <div class="act-section" id="kidsEmptyCard" style="display:none;">
-    <div class="fam-empty">
-      <span class="act-icon" style="font-size:24px;color:var(--text-quaternary,#717680);">face</span>
-      <div class="fam-empty-text">Add your first child to get started</div>
-      <button class="btn btn-primary btn-sm" aria-label="Add child">Add Child</button>
+    <div class="fam-kid-row" onclick="openSheet('child')" style="cursor:pointer;">
+      <div class="fam-kid-avatar">
+        <div class="avatar" style="background:transparent;border:2px dashed var(--light-blue-200,#b9e6fe);display:flex;align-items:center;justify-content:center;">
+          <span class="act-icon" style="font-size:24px;color:var(--light-blue-500,#36bffa);">person_add</span>
+        </div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name" style="color:var(--text-tertiary,#535862);">Add kid</div>
+        <div class="fam-kid-meta">Set up your first kid</div>
+      </div>
+      <button class="btn btn-primary btn-sm" style="min-width:72px;" onclick="event.stopPropagation();openSheet('child')">Add</button>
+    </div>
+    <div class="fam-kid-row" onclick="openSheet('parent')" style="cursor:pointer;">
+      <div class="fam-kid-avatar">
+        <div class="avatar" style="background:transparent;border:2px dashed var(--light-blue-200,#b9e6fe);display:flex;align-items:center;justify-content:center;">
+          <span class="act-icon" style="font-size:24px;color:var(--light-blue-500,#36bffa);">group_add</span>
+        </div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name" style="color:var(--text-tertiary,#535862);">Add co-parent</div>
+        <div class="fam-kid-meta">Invite a partner to manage together</div>
+      </div>
+      <button class="btn btn-primary btn-sm" style="min-width:72px;" onclick="event.stopPropagation();openSheet('parent')">Invite</button>
     </div>
   </div>
 
@@ -1074,6 +1402,16 @@
         </div>
       </div>
       <span class="act-icon act-icon-sm fam-kid-chevron">chevron_right</span>
+    </div>
+
+    <div class="fam-kid-row" style="cursor:default;">
+      <div class="fam-kid-avatar">
+        <div class="avatar avatar-md avatar-bg-violet" id="famZeevPending"><canvas class="rive-user" width="58" height="83"></canvas></div>
+      </div>
+      <div class="fam-kid-info">
+        <div class="fam-kid-name">Zeev</div>
+        <div class="fam-kid-meta">Co-parent</div>
+      </div>
     </div>
   </div>
 
@@ -1105,14 +1443,14 @@
   <div class="fam-sheet-handle"></div>
   <div class="fam-sheet-title">Add to family</div>
   <div class="fam-segment" id="sheetSegment" style="margin-top:0;margin-bottom:16px;">
-    <button class="fam-segment-btn active" onclick="switchSheetTab('child',this)">Child</button>
+    <button class="fam-segment-btn active" onclick="switchSheetTab('child',this)">Kid</button>
     <button class="fam-segment-btn" onclick="switchSheetTab('parent',this)">Parent</button>
   </div>
   <!-- Child tab -->
   <div id="sheetChildPane">
     <div class="fam-sheet-field">
       <div class="fam-sheet-label">Name</div>
-      <input class="fam-sheet-input" type="text" placeholder="Child's name">
+      <input class="fam-sheet-input" type="text" placeholder="Kid's name">
     </div>
     <div class="fam-sheet-row">
       <div class="fam-sheet-field">
@@ -1124,8 +1462,8 @@
         <input class="fam-sheet-input" type="text" placeholder="e.g. 3rd">
       </div>
     </div>
-    <button class="fam-sheet-btn" onclick="closeAddChild()">Add child</button>
-    <p style="font-size:12px;color:var(--text-quaternary,#717680);text-align:center;margin-top:12px;line-height:18px;">By adding a child you agree to our <a href="#" style="color:var(--brand-600,#0086c9);text-decoration:none;">Privacy Policy</a></p>
+    <button class="fam-sheet-btn" onclick="closeAddChild()">Add kid</button>
+    <p style="font-size:12px;color:var(--text-quaternary,#717680);text-align:center;margin-top:12px;line-height:18px;">By adding a kid you agree to our <a href="#" style="color:var(--brand-600,#0086c9);text-decoration:none;">Privacy Policy</a></p>
   </div>
   <!-- Parent tab -->
   <div id="sheetParentPane" style="display:none;">
@@ -1163,7 +1501,7 @@
 <!-- ═══════════════════════════════════════
      SCREEN 2: KID PROFILE
      ═══════════════════════════════════════ -->
-<div class="fam-screen" id="screenProfile" style="background:var(--bg-sky,#e0f2fe);">
+<div class="fam-screen" id="screenProfile" style="background:var(--brand-25,#f5fbff);">
 
 <!-- Status bar -->
 <div class="status-bar">
@@ -1200,7 +1538,7 @@
     </div>
   </div>
 
-  <!-- White container -->
+  <!-- Content container -->
   <div class="pro-container">
     <!-- Name + meta -->
     <div>
@@ -1212,62 +1550,39 @@
       </div>
     </div>
 
-    <!-- Stats card: streak -->
-    <div class="pro-stats-card" id="profileStatsRow">
-      <div class="pro-stat">
-        <div class="pro-stat-icon" style="font-family:'TossFace',sans-serif;font-size:40px;line-height:1;">&#x1F525;</div>
-        <div class="pro-stat-text">
-          <span class="pro-stat-value" id="profileStreak">7</span>
-          <span class="pro-stat-label">Days</span>
-        </div>
+    <!-- Trends: weekly activity widget -->
+    <div class="pro-activity-widget" id="profileTrends">
+      <div class="pro-activity-widget-label">Trends</div>
+      <div class="pro-activity-widget-row" id="profileWeekRow">
+        <div class="pro-activity-day"><div class="pro-activity-day-label">M</div><div class="pro-activity-bar-wrap"><div class="pro-activity-bar" style="height:60px;"></div></div></div>
+        <div class="pro-activity-day"><div class="pro-activity-day-label">T</div><div class="pro-activity-bar-wrap"><div class="pro-activity-bar" style="height:40px;"></div></div></div>
+        <div class="pro-activity-day"><div class="pro-activity-day-label active">W</div><div class="pro-activity-bar-wrap"><div class="pro-activity-bar" style="height:20px;"></div></div></div>
+        <div class="pro-activity-day"><div class="pro-activity-day-label">T</div><div class="pro-activity-bar-wrap" data-state="no-skill"><div class="pro-activity-bar"></div></div></div>
+        <div class="pro-activity-day"><div class="pro-activity-day-label">F</div><div class="pro-activity-bar-wrap" data-state="no-skill"><div class="pro-activity-bar"></div></div></div>
+        <div class="pro-activity-day"><div class="pro-activity-day-label">S</div><div class="pro-activity-bar-wrap" data-state="no-skill"><div class="pro-activity-bar"></div></div></div>
+        <div class="pro-activity-day"><div class="pro-activity-day-label">S</div><div class="pro-activity-bar-wrap" data-state="no-skill"><div class="pro-activity-bar"></div></div></div>
       </div>
+      <div class="pro-activity-link" onclick="openProfileCal()">See all</div>
     </div>
 
     <!-- VPC Setup CTA (pending) -->
     <div class="fam-vpc-cta" id="profileVpcCta" style="display:none;">
       <span class="act-icon" style="font-size:32px;color:#92400e;">smartphone</span>
       <div class="fam-vpc-cta-title">Set up device</div>
-      <div class="fam-vpc-cta-desc">Activate this child's account to connect their device and start using Sprout.</div>
+      <div class="fam-vpc-cta-desc">Activate this kid's account to connect their device and start using Sprout.</div>
       <button class="btn btn-primary btn-sm">Activate</button>
     </div>
 
     <!-- Segment control -->
     <div class="pro-segment" id="profileSegment">
-      <button class="pro-segment-btn active" onclick="switchTab('tasks',this)">Quests</button>
+      <button class="pro-segment-btn active" onclick="switchTab('tasks',this)">Skills</button>
       <button class="pro-segment-btn" onclick="switchTab('devices',this)">Devices</button>
     </div>
 
     <!-- Quests tab -->
     <div class="fam-tab-pane active" id="pane-tasks">
-      <div class="pro-quest-list">
-        <div class="pro-quest-card">
-          <div class="pro-quest-icon" style="background:var(--yellow-400,#fac515);">&#x1F9EE;</div>
-          <div class="pro-quest-info">
-            <div class="pro-quest-name">Math quiz</div>
-          </div>
-          <span class="pro-quest-badge">Required</span>
-          <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">more_vert</span>
-        </div>
-        <div class="pro-quest-card">
-          <div class="pro-quest-icon" style="background:var(--blue-dark-400,#528bff);">&#x1F4D2;</div>
-          <div class="pro-quest-info">
-            <div class="pro-quest-name">Journaling</div>
-          </div>
-          <span class="pro-quest-badge">Required</span>
-          <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">more_vert</span>
-        </div>
-        <div class="pro-quest-card">
-          <div class="pro-quest-icon" style="background:var(--gray-400,#a4a7ae);">&#x1F1EB;&#x1F1F7;</div>
-          <div class="pro-quest-info">
-            <div class="pro-quest-name">Learn french</div>
-          </div>
-          <span class="pro-quest-badge">Required</span>
-          <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">more_vert</span>
-        </div>
-        <div class="pro-quest-card" style="cursor:pointer;justify-content:center;gap:4px;color:var(--brand-500,#0ba5ec);">
-          <span class="act-icon" style="font-size:20px;">add</span>
-          <span style="font-weight:500;font-size:14px;">Add quest</span>
-        </div>
+      <div class="pro-quest-list" id="profileSkillsList">
+        <!-- Populated by JS per kid -->
       </div>
     </div>
 
@@ -1275,7 +1590,7 @@
     <div class="fam-tab-pane" id="pane-devices">
       <div class="pro-quest-list">
         <div class="pro-quest-card">
-          <div class="pro-quest-icon" style="background:var(--brand-100,#e0f2fe);"><span class="act-icon" style="font-size:20px;color:var(--brand-600,#0086c9);">tablet</span></div>
+          <div class="pro-quest-icon" style="background:var(--brand-100,#e0f2fe);"><span class="act-icon" style="font-size:24px;color:var(--brand-600,#0086c9);">tablet</span></div>
           <div class="pro-quest-info">
             <div class="pro-quest-name">iPad Air</div>
             <div class="pro-quest-detail">iPadOS 17.4</div>
@@ -1283,24 +1598,92 @@
           <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">chevron_right</span>
         </div>
         <div class="pro-quest-card">
-          <div class="pro-quest-icon" style="background:var(--brand-100,#e0f2fe);"><span class="act-icon" style="font-size:20px;color:var(--brand-600,#0086c9);">smartphone</span></div>
+          <div class="pro-quest-icon" style="background:var(--brand-100,#e0f2fe);"><span class="act-icon" style="font-size:24px;color:var(--brand-600,#0086c9);">smartphone</span></div>
           <div class="pro-quest-info">
             <div class="pro-quest-name">iPhone 14</div>
             <div class="pro-quest-detail">iOS 17.3</div>
           </div>
           <span class="act-icon act-icon-sm" style="color:var(--text-quaternary);">chevron_right</span>
         </div>
-        <div class="pro-quest-card" style="cursor:pointer;justify-content:center;gap:4px;color:var(--brand-500,#0ba5ec);">
-          <span class="act-icon" style="font-size:20px;">add</span>
-          <span style="font-weight:500;font-size:14px;">Link device</span>
+        <div class="pro-quest-card" style="cursor:pointer;">
+          <div class="pro-quest-icon" style="background:transparent;border:2px dashed var(--brand-300,#7cd4fd);"><span class="act-icon" style="font-size:20px;color:var(--brand-500,#0ba5ec);">add</span></div>
+          <div class="pro-quest-info"><div class="pro-quest-name" style="color:var(--brand-500,#0ba5ec);">Link device</div></div>
         </div>
       </div>
     </div>
 
 
-    <div style="height:80px;"></div>
   </div>
-</div>
+
+</div><!-- /pro-scroll -->
+
+<!-- Calendar sheet (See all) -->
+<div class="pro-cal-scrim" id="proCalScrim"></div>
+<div class="pro-cal-sheet" id="proCalSheet">
+    <div class="pro-cal-handle"><div class="pro-cal-handle-bar"></div></div>
+    <div class="pro-cal-header">
+      <button class="act-header-btn" id="proCalClose" aria-label="Close"><span class="act-icon">close</span></button>
+      <span class="pro-cal-header-title">April 2026</span>
+      <button class="act-header-btn" aria-label="Previous month"><span class="act-icon">chevron_left</span></button>
+      <button class="act-header-btn" aria-label="Next month"><span class="act-icon">chevron_right</span></button>
+    </div>
+    <div class="pro-cal-body">
+      <div class="pro-cal-grid" id="proCalGrid">
+        <!-- Week 1: Apr 1-5 (Wed-Sun, pad Mon+Tue) -->
+        <div class="pro-cal-week">
+          <div class="pro-cal-day hidden"><div class="pro-cal-day-num">0</div><div class="pro-cal-day-indicator"></div></div>
+          <div class="pro-cal-day hidden"><div class="pro-cal-day-num">0</div><div class="pro-cal-day-indicator"></div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">1</div><div class="pro-cal-day-indicator" data-status="completed">3</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">2</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">3</div><div class="pro-cal-day-indicator" data-status="completed">2</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">4</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">5</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+        </div>
+        <!-- Week 2: Apr 6-12 -->
+        <div class="pro-cal-week">
+          <div class="pro-cal-day"><div class="pro-cal-day-num">6</div><div class="pro-cal-day-indicator" data-status="completed">3</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">7</div><div class="pro-cal-day-indicator" data-status="completed">2</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">8</div><div class="pro-cal-day-indicator" data-status="completed">3</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">9</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">10</div><div class="pro-cal-day-indicator" data-status="completed">2</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">11</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">12</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+        </div>
+        <!-- Week 3: Apr 13-19 -->
+        <div class="pro-cal-week">
+          <div class="pro-cal-day"><div class="pro-cal-day-num">13</div><div class="pro-cal-day-indicator" data-status="completed">3</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">14</div><div class="pro-cal-day-indicator" data-status="completed">1</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">15</div><div class="pro-cal-day-indicator" data-status="completed">3</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">16</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">17</div><div class="pro-cal-day-indicator" data-status="completed">2</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">18</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">19</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+        </div>
+        <!-- Week 4: Apr 20-26 -->
+        <div class="pro-cal-week">
+          <div class="pro-cal-day"><div class="pro-cal-day-num">20</div><div class="pro-cal-day-indicator" data-status="completed">3</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">21</div><div class="pro-cal-day-indicator" data-status="completed">2</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">22</div><div class="pro-cal-day-indicator" data-status="completed">3</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">23</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">24</div><div class="pro-cal-day-indicator" data-status="completed">1</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">25</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">26</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+        </div>
+        <!-- Week 5: Apr 27-30 (+pad) -->
+        <div class="pro-cal-week">
+          <div class="pro-cal-day"><div class="pro-cal-day-num">27</div><div class="pro-cal-day-indicator" data-status="completed">3</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">28</div><div class="pro-cal-day-indicator" data-status="completed">2</div></div>
+          <div class="pro-cal-day today"><div class="pro-cal-day-num">29</div><div class="pro-cal-day-indicator" data-status="completed">1</div></div>
+          <div class="pro-cal-day"><div class="pro-cal-day-num">30</div><div class="pro-cal-day-indicator" data-status="no-skill"></div></div>
+          <div class="pro-cal-day hidden"><div class="pro-cal-day-num">0</div><div class="pro-cal-day-indicator"></div></div>
+          <div class="pro-cal-day hidden"><div class="pro-cal-day-num">0</div><div class="pro-cal-day-indicator"></div></div>
+          <div class="pro-cal-day hidden"><div class="pro-cal-day-num">0</div><div class="pro-cal-day-indicator"></div></div>
+        </div>
+      </div>
+      <div class="pro-cal-day-section" id="proCalDayFeed"></div>
+    </div>
+  </div>
+
 </div><!-- /screenProfile -->
 
               </div>
@@ -1328,10 +1711,10 @@ window.DS_META = {
     '<div class="fam-toggles">' +
     '<div class="fam-toggle-group">' +
       '<div class="fam-toggle-label">Family state</div>' +
-      '<p style="font-size:13px;color:#535862;margin:0 0 6px;">Switch between normal (3 active kids), empty (no kids yet), and pending (one child awaiting activation).</p>' +
+      '<p style="font-size:13px;color:#535862;margin:0 0 6px;">Switch between Active (3 kids), NUX (no kids yet), and Pending (one child awaiting activation).</p>' +
       '<div class="fam-toggle-row">' +
-        '<button class="fam-toggle-btn active" onclick="setFamilyState(\'normal\',this)">Normal</button>' +
-        '<button class="fam-toggle-btn" onclick="setFamilyState(\'empty\',this)">Empty</button>' +
+        '<button class="fam-toggle-btn active" onclick="setFamilyState(\'active\',this)">Active</button>' +
+        '<button class="fam-toggle-btn" onclick="setFamilyState(\'nux\',this)">NUX</button>' +
         '<button class="fam-toggle-btn" onclick="setFamilyState(\'pending\',this)">Pending</button>' +
       '</div>' +
     '</div>' +
@@ -1340,7 +1723,9 @@ window.DS_META = {
     '<ul>' +
       '<li><strong>Pending badge:</strong> Amber pill next to name when child is not yet activated</li>' +
       '<li><strong>Age tier:</strong> Auto-calculated from birthdate, parents can override with "Custom" badge</li>' +
-      '<li><strong>Segment control:</strong> Quests / Devices tabs in kid profile</li>' +
+      '<li><strong>Segment control:</strong> Skills / Devices tabs in kid profile</li>' +
+      '<li><strong>Skill tap:</strong> Tapping a skill in the kid profile navigates to the Adopted skill view (see <a href="/product-explorer/skills-thread.html" style="color:var(--brand-600,#0086c9);text-decoration:none;">Skills</a>). Not prototyped here.</li>' +
+      '<li><strong>Calendar day tap:</strong> Tapping a day in the calendar shows the skills completed that day. Tapping a skill entry opens its transcript. Transcript not prototyped here.</li>' +
     '</ul>'
 };
 </script>
@@ -1398,7 +1783,7 @@ window.DS_META = {
   var ZEEV_STATE = { skinID: 5, hairID: 4, hairshadeID: 8, beardID: 2, beardshadeID: 8, clothingID: 3, clothingcolourID: 5, eyeshadeID: 3 };
 
   // Init family list avatars
-  var avatarMap = { famBen: BEN_STATE, famGabe: GABE_STATE, famShane: SHANE_STATE, famBenPending: BEN_STATE, famZeev: ZEEV_STATE, famMali: MALI_STATE };
+  var avatarMap = { famBen: BEN_STATE, famGabe: GABE_STATE, famShane: SHANE_STATE, famBenPending: BEN_STATE, famZeev: ZEEV_STATE, famZeevPending: ZEEV_STATE, famMali: MALI_STATE };
   Object.keys(avatarMap).forEach(function(id) {
     var c = document.querySelector('#' + id + ' canvas.rive-user');
     if (c) initRiveAvatar(c, { src: RIVE_USER_SRC, artboard: ARTBOARD, state: avatarMap[id] });
@@ -1408,7 +1793,7 @@ window.DS_META = {
   var addChildScrim = document.getElementById('addChildScrim');
   var addChildSheet = document.getElementById('addChildSheet');
 
-  function openSheet(tab) {
+  window.openSheet = function(tab) {
     switchSheetTab(tab || 'child');
     addChildScrim.classList.add('visible');
     addChildSheet.classList.add('visible');
@@ -1507,6 +1892,190 @@ window.DS_META = {
     });
   }
 
+  /* ═══ CALENDAR SHEET ═══ */
+  var proCalScrim = document.getElementById('proCalScrim');
+  var proCalSheet = document.getElementById('proCalSheet');
+  window.openProfileCal = function() {
+    proCalScrim.classList.add('visible');
+    proCalSheet.classList.add('visible');
+    // Select today by default
+    var todayEl = proCalSheet.querySelector('.pro-cal-day.today');
+    if (todayEl) selectProCalDay(todayEl);
+  };
+  function closeProfileCal() {
+    proCalScrim.classList.remove('visible');
+    proCalSheet.classList.remove('visible');
+  }
+  document.getElementById('proCalClose').addEventListener('click', closeProfileCal);
+  proCalScrim.addEventListener('click', closeProfileCal);
+
+  // Day feed data for kid profile calendar (keyed by day number)
+  var proCalFeed = {
+    1: [{kid:'ben',skill:'School dump',time:'3:15 PM',preview:'Had a weird day, my teacher made us do a fire drill during lunch...'},{kid:'ben',skill:'Hot Take Olympics',time:'3:45 PM',preview:'Hotdogs are sandwiches. Fight me.'},{kid:'ben',skill:'20 Questions',time:'4:10 PM',preview:'It was the pencil sharpener. Sprout got it in 14.'}],
+    3: [{kid:'ben',skill:'School dump',time:'3:20 PM',preview:'Marcus got in trouble again and I felt bad for him...'},{kid:'ben',skill:'Callback',time:'3:50 PM',preview:'Yeah that thing with Noah totally happened!'}],
+    6: [{kid:'ben',skill:'School dump',time:'3:12 PM',preview:'We had a sub today and she was actually cool...'},{kid:'ben',skill:'Hot Take Olympics',time:'3:40 PM',preview:'Breakfast for dinner is better than dinner for dinner.'},{kid:'ben',skill:'Bedtime defense',time:'4:05 PM',preview:'I should stay up because I finished all my homework early...'}],
+    7: [{kid:'ben',skill:'T-rex interview',time:'3:30 PM',preview:'I was a T-rex chef. Sprout asked how I crack eggs...'},{kid:'ben',skill:'20 Questions',time:'4:00 PM',preview:'It was my shoe. Sprout guessed boot first.'}],
+    8: [{kid:'ben',skill:'School dump',time:'3:18 PM',preview:'We started a new science project about volcanoes...'},{kid:'ben',skill:'Hot Take Olympics',time:'3:48 PM',preview:'Cats are better than dogs. I said what I said.'},{kid:'ben',skill:'Callback',time:'4:15 PM',preview:'Yeah the volcano project is going great actually.'}],
+    10: [{kid:'ben',skill:'School dump',time:'3:14 PM',preview:'We presented our projects today and mine was the best...'},{kid:'ben',skill:'Bedtime defense',time:'3:55 PM',preview:'If I go to bed early I won\'t finish my book...'}],
+    13: [{kid:'ben',skill:'School dump',time:'3:22 PM',preview:'Had gym today and we played dodgeball...'},{kid:'ben',skill:'Hot Take Olympics',time:'3:50 PM',preview:'Pizza is overrated. There I said it.'},{kid:'ben',skill:'20 Questions',time:'4:20 PM',preview:'It was the whiteboard eraser. Got it in 18!'}],
+    14: [{kid:'ben',skill:'T-rex interview',time:'3:35 PM',preview:'I was a pirate accountant. Best interview ever.'}],
+    15: [{kid:'ben',skill:'School dump',time:'3:16 PM',preview:'We had a spelling bee and I got third place...'},{kid:'ben',skill:'Callback',time:'3:42 PM',preview:'The dodgeball thing was so fun, we played again...'},{kid:'ben',skill:'Bedtime defense',time:'4:10 PM',preview:'I need to practice spelling for the next bee...'}],
+    17: [{kid:'ben',skill:'School dump',time:'3:20 PM',preview:'Field trip to the science museum was amazing...'},{kid:'ben',skill:'Hot Take Olympics',time:'3:55 PM',preview:'Museums are better than theme parks.'}],
+    20: [{kid:'ben',skill:'School dump',time:'3:10 PM',preview:'We started learning about space today...'},{kid:'ben',skill:'20 Questions',time:'3:38 PM',preview:'It was the globe. Sprout got it in 8!'},{kid:'ben',skill:'Bedtime defense',time:'4:05 PM',preview:'I want to watch the documentary about Mars...'}],
+    21: [{kid:'ben',skill:'T-rex interview',time:'3:25 PM',preview:'I was an astronaut cat. Very serious interview.'},{kid:'ben',skill:'Callback',time:'3:50 PM',preview:'I finished the Mars documentary, it was so cool.'}],
+    22: [{kid:'ben',skill:'School dump',time:'3:15 PM',preview:'We did a class debate today about homework...'},{kid:'ben',skill:'Hot Take Olympics',time:'3:45 PM',preview:'Homework should be banned. Obviously.'},{kid:'ben',skill:'Bedtime defense',time:'4:12 PM',preview:'If homework was banned I would not need extra time...'}],
+    24: [{kid:'ben',skill:'School dump',time:'3:18 PM',preview:'Last week before break, everyone is excited...'}],
+    27: [{kid:'ben',skill:'School dump',time:'3:20 PM',preview:'Today was kinda rough because Marcus kept talking in class...'},{kid:'ben',skill:'Hot Take Olympics',time:'3:48 PM',preview:'Summer is the worst season. Spring forever.'},{kid:'ben',skill:'Callback',time:'4:10 PM',preview:'The Marcus thing worked out, we talked at recess.'}],
+    28: [{kid:'ben',skill:'T-rex interview',time:'3:30 PM',preview:'I was a time-traveling sandwich. Very philosophical.'},{kid:'ben',skill:'20 Questions',time:'4:00 PM',preview:'It was the clock. Sprout got it in 11.'}],
+    29: [{kid:'ben',skill:'School dump',time:'3:14 PM',preview:'Had art class and we painted self-portraits...'}]
+  };
+
+  var proCalPreviews = {
+    ben: '"Today was kinda rough because Marcus kept talking in class and I got in trouble..."',
+    gabe: '"We played this game at recess where you have to freeze and I won three times..."',
+    shane: '"I learned how to do a cartwheel today and only fell once..."'
+  };
+
+  function selectProCalDay(dayEl) {
+    if (!dayEl || dayEl.classList.contains('hidden')) return;
+    proCalSheet.querySelectorAll('.pro-cal-day.selected').forEach(function(d) { d.classList.remove('selected'); });
+    dayEl.classList.add('selected');
+    var dayNum = parseInt(dayEl.querySelector('.pro-cal-day-num').textContent);
+    var indicator = dayEl.querySelector('.pro-cal-day-indicator');
+    var status = indicator ? indicator.getAttribute('data-status') : '';
+    updateProCalFeed(dayNum, status);
+  }
+
+  function updateProCalFeed(dayNum, status) {
+    var section = document.getElementById('proCalDayFeed');
+    section.innerHTML = '';
+    var isToday = (dayNum === 29);
+    var header = document.createElement('div');
+    header.className = 'pro-cal-day-header';
+    header.textContent = (isToday ? 'Today, ' : '') + 'April ' + dayNum;
+    section.appendChild(header);
+
+    var items = proCalFeed[dayNum];
+    if (!items || items.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'pro-cal-day-empty';
+      empty.textContent = 'No activity this day';
+      section.appendChild(empty);
+      return;
+    }
+    items.forEach(function(item) {
+      var skillId = skillIdFromName(item.skill);
+      var emoji = skillEmojiFromName(item.skill) || '';
+      var bg = SKILL_COLORS[skillId] || 'var(--brand-100,#e0f2fe)';
+      var card = document.createElement('div');
+      card.className = 'pro-cal-day-card';
+      card.innerHTML =
+        '<div class="pro-cal-day-card-icon">' +
+          '<div class="pro-cal-day-card-icon-emoji" style="background:' + bg + ';">' + emoji + '</div>' +
+          '<div class="pro-cal-day-card-badge"><span class="act-icon">check</span></div>' +
+        '</div>' +
+        '<div class="pro-cal-day-card-text">' +
+          '<div class="pro-cal-day-card-title">' +
+            '<span>Finished <b>' + item.skill + '</b></span>' +
+            '<span class="pro-cal-day-card-time">' + item.time + '</span>' +
+          '</div>' +
+        '</div>';
+      section.appendChild(card);
+    });
+  }
+
+  function skillIdFromName(name) {
+    var skill = ALL_SKILLS.find(function(s) { return s.name === name; });
+    return skill ? skill.id : '';
+  }
+  function skillEmojiFromName(name) {
+    var skill = ALL_SKILLS.find(function(s) { return s.name === name; });
+    return skill ? skill.emoji : '';
+  }
+
+  proCalSheet.querySelectorAll('.pro-cal-day').forEach(function(day) {
+    day.addEventListener('click', function() { selectProCalDay(day); });
+  });
+
+  // Per-kid weekly trends data (bar heights out of 60px max)
+  // Today is Wednesday (index 2). Days after today show projected (gray) bars.
+  var TODAY_INDEX = 2;
+  var KID_TRENDS = {
+    ben:   [60, 40, 20, 45, 50, 30, 20],
+    gabe:  [40, 20, 40, 35, 20, 25, 15],
+    shane: [20, 0, 20, 30, 25, 15, 10]
+  };
+
+  function updateTrendsWidget(kidId) {
+    var bars = KID_TRENDS[kidId] || [0,0,0,0,0,0,0];
+    var row = document.getElementById('profileWeekRow');
+    var days = row.querySelectorAll('.pro-activity-day');
+    days.forEach(function(day, i) {
+      var wrap = day.querySelector('.pro-activity-bar-wrap');
+      var bar = day.querySelector('.pro-activity-bar');
+      if (bars[i] > 0) {
+        if (i > TODAY_INDEX) {
+          wrap.setAttribute('data-state', 'projected');
+        } else {
+          wrap.removeAttribute('data-state');
+        }
+        bar.style.height = bars[i] + 'px';
+      } else {
+        wrap.setAttribute('data-state', 'no-skill');
+        bar.style.height = '';
+      }
+    });
+  }
+
+  // Skill colors matching skills-thread.html
+  var SKILL_COLORS = {
+    'school-dump': '#f670c7',
+    'hot-takes': '#fac515',
+    '20q': '#f38744',
+    'trex': '#47cd89',
+    'story': '#a48afb',
+    'callback': '#36bffa',
+    'bedtime-defense': '#f97066'
+  };
+
+  var ALL_SKILLS = [
+    { id: 'school-dump', name: 'School dump', emoji: '\u{1F3EB}', color: 'pink' },
+    { id: 'hot-takes', name: 'Hot Take Olympics', emoji: '\u{1F525}', color: 'yellow' },
+    { id: '20q', name: '20 Questions', emoji: '\u{2753}', color: 'orange' },
+    { id: 'trex', name: 'T-rex interview', emoji: '\u{1F3AD}', color: 'green' },
+    { id: 'story', name: 'One-sentence story', emoji: '\u{1F4D6}', color: 'violet' },
+    { id: 'callback', name: 'Callback', emoji: '\u{1F9E0}', color: 'sky' },
+    { id: 'bedtime-defense', name: 'Bedtime defense', emoji: '\u{1F6CF}\u{FE0F}', color: 'red' }
+  ];
+
+  var KID_SKILLS = {
+    ben: ['school-dump', 'hot-takes', '20q', 'trex', 'callback', 'bedtime-defense'],
+    gabe: ['school-dump', 'hot-takes', '20q', 'story', 'bedtime-defense'],
+    shane: ['hot-takes', '20q', 'bedtime-defense']
+  };
+
+  function updateSkillsList(kidId) {
+    var list = document.getElementById('profileSkillsList');
+    var ids = KID_SKILLS[kidId] || [];
+    var html = '';
+    ids.forEach(function(skillId) {
+      var skill = ALL_SKILLS.find(function(s) { return s.id === skillId; });
+      if (!skill) return;
+      html += '<div class="pro-quest-card">' +
+        '<div class="pro-quest-icon" style="background:' + SKILL_COLORS[skillId] + ';">' + skill.emoji + '</div>' +
+        '<div class="pro-quest-info"><div class="pro-quest-name">' + skill.name + '</div></div>' +
+        '<span class="pro-quest-badge">Active</span>' +
+      '</div>';
+    });
+    html += '<div class="pro-quest-card" style="cursor:pointer;">' +
+      '<div class="pro-quest-icon" style="background:transparent;border:2px dashed var(--brand-300,#7cd4fd);">' +
+        '<span class="act-icon" style="font-size:20px;color:var(--brand-500,#0ba5ec);">add</span>' +
+      '</div>' +
+      '<div class="pro-quest-info"><div class="pro-quest-name" style="color:var(--brand-500,#0ba5ec);">Add skill</div></div>' +
+    '</div>';
+    list.innerHTML = html;
+  }
+
   /* ═══ SCREEN NAVIGATION ═══ */
   var screenFamily = document.getElementById('screenFamily');
   var screenProfile = document.getElementById('screenProfile');
@@ -1518,13 +2087,13 @@ window.DS_META = {
     currentKid = kidId;
 
     document.getElementById('profileTitle').textContent = kid.name;
-    document.getElementById('profileStreak').textContent = kid.streak;
     document.getElementById('profileAge').textContent = kid.age + ' years old';
     document.getElementById('profileGrade').textContent = kid.grade;
     document.getElementById('profileTierBadge').textContent = kid.tierLabel;
     var isPending = kid.pending;
-    document.getElementById('profileStatsRow').style.display = isPending ? 'none' : '';
+    document.getElementById('profileTrends').style.display = isPending ? 'none' : '';
     document.getElementById('profileSegment').style.display = isPending ? 'none' : '';
+    if (!isPending) { updateTrendsWidget(kidId); updateSkillsList(kidId); }
     document.getElementById('profileVpcCta').style.display = isPending ? '' : 'none';
     document.querySelectorAll('.fam-tab-pane').forEach(function(p) { p.style.display = isPending ? 'none' : ''; });
     if (!isPending) {
@@ -1541,6 +2110,7 @@ window.DS_META = {
   };
 
   window.closeProfile = function() {
+    closeProfileCal();
     screenProfile.classList.remove('visible');
     currentKid = null;
   };
@@ -1565,8 +2135,8 @@ window.DS_META = {
     document.getElementById('kidsNowCard').style.display = 'none';
     document.getElementById('kidsEmptyCard').style.display = 'none';
     document.getElementById('kidsPendingCard').style.display = 'none';
-    if (state === 'normal') { document.getElementById('kidsNowCard').style.display = ''; }
-    else if (state === 'empty') { document.getElementById('kidsEmptyCard').style.display = ''; }
+    if (state === 'active') { document.getElementById('kidsNowCard').style.display = ''; }
+    else if (state === 'nux') { document.getElementById('kidsEmptyCard').style.display = ''; }
     else if (state === 'pending') { document.getElementById('kidsPendingCard').style.display = ''; KID_PROFILES.gabe.pending = true; }
     if (state !== 'pending') { KID_PROFILES.gabe.pending = false; }
     // familyMembersCard is now part of kidsNowCard section
