@@ -41,7 +41,7 @@ window.DS_NAV = [
       { label: 'Home', icon: 'home', badge: 'Ready', badgeColor: 'green', href: '/product-explorer/parent-home-v2.html' },
       { label: 'Skills', icon: 'grid', badge: 'Ready', badgeColor: 'green', href: '/product-explorer/skills-thread.html' },
       { label: 'Family', icon: 'grid', badge: 'Ready', badgeColor: 'green', href: '/product-explorer/family.html' },
-      { label: 'Parent Chat', icon: 'message-chat', badge: 'Ready', badgeColor: 'green', href: '/product-explorer/parent-chat-now.html' },
+      { label: 'Chat', icon: 'message-chat', badge: 'Ready', badgeColor: 'green', href: '/product-explorer/parent-chat-now.html' },
       { separator: true },
       { label: 'Parent Chat', icon: 'message-chat', badge: 'v3', href: '/product-explorer/parent-chat-3.html' },
       { label: 'Parent Chat', icon: 'message-chat', badge: 'Later', href: '/product-explorer/parent-chat-later.html' },
